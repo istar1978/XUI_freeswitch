@@ -7,3 +7,7 @@ setup:
 	cd jsapp && \
 	npm install && \
 	bower install
+
+release:
+	echo todo ...
+

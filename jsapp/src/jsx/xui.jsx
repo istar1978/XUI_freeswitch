@@ -10,8 +10,9 @@
 			console.log("menu.target", x.target);
 			console.log(this.props);
 			if (this.props.item.id == "MM_DASHBOARD") {
-				React.render(<NavBar items = {NAVLIST} />,
-					document.getElementById('sidebar'));
+				window.location = '/';
+				// React.render(<NavBar items = {NAVLIST} />,
+				// 	document.getElementById('sidebar'));
 			} else if (this.props.item.id == "MM_SHOW") {
 				var list = [
 					{id: "M_SHOW_application", description: "Applications", data: "application"},
