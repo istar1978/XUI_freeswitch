@@ -892,7 +892,13 @@
 		handleGatewayDelete: function(e) {
 			e.preventDefault();
 			var gwname = e.target.getAttribute("data-action-target");
-			fsAPI("sofia", "profile external kill_gw " + gwname);
+			var _this = this;
+			fsAPI("sofia", "profile external killgw " + gwname, function(data) {
+				if (data.message.substr(0, 3) == "+OK") {
+					console.log(gwname + "deleted, how to delete from the dom?");
+					// ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(_this).parentNode);
+				}
+			});
 		},
 
 		handleGatewayDetail: function(e) {
