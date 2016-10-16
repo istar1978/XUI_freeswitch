@@ -868,12 +868,58 @@
 		getInitialState: function() {
 			return {
 				rows: [],
-				gwDetails: {name: undefined}
+				gwDetails: {name: undefined},
+				profileDetails: {name: undefined}
 			};
 		},
 
-		handleProfileStart: function() {
+		handleProfileStart: function(e) {
+			var profile = e.target.getAttribute("data-action-target");
+			fsAPI("sofia", "profile " + profile + " start");
+		},
 
+		handleProfileStop: function(e) {
+			var profile = e.target.getAttribute("data-action-target");
+			fsAPI("sofia", "profile " + profile + " stop");
+		},
+
+		handleProfileRestart: function(e) {
+			var profile = e.target.getAttribute("data-action-target");
+			fsAPI("sofia", "profile " + profile + " restart");
+		},
+
+		handleProfileRescan: function(e) {
+			var profile = e.target.getAttribute("data-action-target");
+			fsAPI("sofia", "profile " + profile + " rescan");
+		},
+
+		handleProfileMore: function(e) {
+			e.preventDefault();
+
+			var _this = this;
+			var profile_name = e.target.getAttribute("data-action-target");
+
+			if (this.state.profileDetails.name) {
+				this.setState({profileDetails: {name: undefined}});
+				return;
+			}
+
+			fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
+				var msg = $(data.message);
+				console.log(msg);
+				var profile = msg[2];
+				var info = profile.firstElementChild.firstElementChild;
+
+				var rows = [];
+
+				rows.push({k: info.localName, v: info.innerText});
+
+				while(info = info.nextElementSibling) {
+					rows.push({k: info.localName, v: info.innerText});
+				}
+
+				_this.setState({profileDetails: {name: profile_name, rows: rows}});
+			});
 		},
 
 		handleGatewayReg: function(e) {
@@ -947,6 +993,35 @@
 				});
 
 				this.setState({rows: rows});
+			} else if (e.eventChannel == "FSevent.custom::sofia::profile_start") {
+				rows = [];
+				var found = 0;
+				var profile_name = e.data["profile_name"];
+
+				this.state.rows.forEach(function(row) {
+
+					if (row.type == "profile" && row.name == profile_name) {
+						row.state = "RUNNING(0)";
+					}
+					rows.push(row);
+				});
+
+				if (!found) {
+					var profile_uri = e.data["profile_uri"];
+					var _this = this;
+
+					var actions = [
+						{"action": "Start",   onClick: _this.handleProfileStart},
+						{"action": "Stop",    onClick: _this.handleProfileStop},
+						{"action": "Restart", onClick: _this.handleProfileRestart},
+						{"action": "Rescan",  onClick: _this.handleProfileRescan},
+						{"action": "More",    onClick: _this.handleProfileMore}
+					];
+
+					rows.push({name: profile_name, type: "profile", data: profile_uri, state: "RUNNING(0)", actions: actions});
+				}
+
+				this.setState({rows: rows});
 			}
 		},
 
@@ -957,6 +1032,10 @@
 				handler: this.handleFSEvent
 			});
 
+			verto.subscribe("FSevent.custom::sofia::profile_start", {
+				handler: this.handleFSEvent
+			});
+
 			fsAPI("sofia", "xmlstatus", function(data) {
 				var rows = [];
 				var msg = $(data.message);
@@ -964,11 +1043,11 @@
 				msg.find("profile").each(function() {
 					var profile = this;
 					var actions = [
-						{"action": "Start"},
-						{"action": "Stop"},
-						{"action": "Restart"},
-						{"action": "Rescan"},
-						{"action": "More"}
+						{"action": "Start",   onClick: _this.handleProfileStart},
+						{"action": "Stop",    onClick: _this.handleProfileStop},
+						{"action": "Restart", onClick: _this.handleProfileRestart},
+						{"action": "Rescan",  onClick: _this.handleProfileRescan},
+						{"action": "More",    onClick: _this.handleProfileMore}
 					];
 					var row = {
 						"name": $(profile).find("name").text(),
@@ -1016,6 +1095,7 @@
 
 		componentWillUnmount: function() {
 			verto.unsubscribe("FSevent.custom::sofia::gateway_state");
+			verto.unsubscribe("FSevent.custom::sofia::profile_start");
 		},
 
 		render: function() {
@@ -1024,8 +1104,6 @@
 
 			this.state.rows.forEach(function(row) {
 				var actions = [];
-				var gateway_params = [];
-				var gateways;
 
 				if (row.actions) {
 					var separator = <span></span>;
@@ -1038,14 +1116,6 @@
 					});
 				}
 
-				if (_this.state.gwDetails.name == row.name) {
-					_this.state.gwDetails.rows.forEach(function(p) {
-						gateway_params.push(<li>{p.k}: {p.v}</li>);
-					})
-
-					gateways = <ul>{gateway_params}</ul>
-				}
-
 				rows.push(<tr key={row.name + '+' + row.type}>
 					<td>{row.name}</td>
 					<td>{row.type}</td>
@@ -1054,11 +1124,31 @@
 					<td>{actions}</td>
 				</tr>);
 
-				if (gateways) {
+				if (_this.state.gwDetails.name == row.name) {
+					var gateway_params = [];
+					var gateways;
+
+					_this.state.gwDetails.rows.forEach(function(p) {
+						gateway_params.push(<li>{p.k}: {p.v}</li>);
+					})
+
+					gateways = <ul>{gateway_params}</ul>
+
 					rows.push(<tr key={row.name + '+' + row.type + '-gateway-details'}>
-						<td colSpan={5}>
-						{gateways}
-						</td>
+						<td colSpan={5}>{gateways}</td>
+					</tr>);
+				} else if (_this.state.profileDetails.name == row.name) {
+					var profile_params = [];
+					var profiles;
+
+					_this.state.profileDetails.rows.forEach(function(p) {
+						profile_params.push(<li>{p.k}: {p.v}</li>);
+					})
+
+					profiles = <ul>{profile_params}</ul>
+
+					rows.push(<tr key={row.name + '+' + row.type + '-profile-details'}>
+						<td colSpan={5}>{profiles}</td>
 					</tr>);
 				}
 			});
