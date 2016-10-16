@@ -1,0 +1,19 @@
+#web-phone {
+	float: right;
+	position: fixed;
+	width:250px;
+	right:10px;
+	top: 50px;
+	padding:10px;
+	border:1px solid #000;
+	border-top: 0;
+	background-color:#ddd;
+	/*display:none;*/
+	z-index:1000;
+}
+
+/* Phone Login State */
+#navbar ul li a.Trying { color:yellow !important; }
+#navbar ul li a.Online { color:lime !important;}
+#navbar ul li a.Busy { color:red !important; }
+#navbar ul li a.Offline { color:grey !important;}

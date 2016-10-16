@@ -1,0 +1,47 @@
+<configuration name="verto.conf" description="HTML5 Verto Endpoint">
+
+  <settings>
+    <param name="debug" value="10"/>
+    <param name="enable-fs-events" value="true"/>
+    <!-- <param name="enable-presence" value="true"/> -->
+  </settings>
+
+  <profiles>
+    <profile name="mine">
+      <param name="bind-local" value="0.0.0.0:8081"/>
+      <param name="bind-local" value="0.0.0.0:8082" secure="true"/>
+      <param name="secure-combined" value="/usr/local/freeswitch/certs/wss.pem"/>
+      <param name="secure-chain" value="/usr/local/freeswitch/certs/wss.pem"/>
+      <param name="userauth" value="true"/>
+      <param name="mcast-ip" value="224.1.1.1"/>
+      <param name="mcast-port" value="1337"/>
+      <param name="rtp-ip" value="$${local_ip_v4}"/>
+      <!--  <param name="ext-rtp-ip" value=""/> -->
+      <param name="local-network" value="localnet.auto"/>
+      <param name="outbound-codec-string" value="opus,vp8"/>
+      <param name="inbound-codec-string" value="opus,vp8"/>
+      <param name="apply-candidate-acl" value="wan.auto"/>
+      <param name="timer-name" value="soft"/>
+
+      <vhosts>
+        <vhost domain="localhost">
+          <param name="alias" value="seven.local freeswitch.org"/>
+          <param name="root" value="/Users/dujinfang/workspace/freeswitch/xui/www"/>
+          <param name="script_root" value="/Users/dujinfang/workspace/freeswitch/xui/lua/xui"/>
+          <param name="index" value="index.html"/>
+<!--
+          <param name="auth-realm" value="FreeSWITCH"/>
+          <param name="auth-user" value="freeswitch"/>
+          <param name="auth-pass" value="rocks"/>
+-->
+          <rewrites>
+            <rule expression="^/api" value="/__xtra_init__.lua"/>
+          </rewrites>
+        </vhost>
+
+      </vhosts>
+
+    </profile>
+  </profiles>
+
+</configuration>

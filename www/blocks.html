@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="/assets/img/xui.png">
+
+	<title>XUI Blocks</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link href="dashboard.css" rel="stylesheet">
+	<link href="assets/css/xui.css" rel="stylesheet">
+
+	<!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+	<!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+	<script src="/assets/js/ie-emulation-modes-warning.js"></script>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+
+  <xml id="toolbox" style="display: none">
+    <category name="IVR">
+      <block type="fsStart"></block>
+      <block type="IVR"></block>
+      <block type="IVREntry"></block>
+    </category>
+
+    <category name="FreeSWITCH">
+      <block type="fsConsoleLog"></block>
+      <block type="fsSetTTS"></block>
+      <block type="fsFilePath"></block>
+      <block type="fsSessionAnswer"></block>
+      <block type="fsSessionGet"></block>
+      <block type="fsSessionSet"></block>
+      <block type="fsSessionPlay"></block>
+      <block type="fsSessionSpeak"></block>
+      <block type="fsSessionRead"></block>
+      <block type="fsSessionExecute"></block>
+    </category>
+
+    <category name="FSDB">
+      <block type="fsDBH"></block>
+      <block type="fsDBHQuery"></block>
+      <block type="fsDBHRow"></block>
+    </category>
+
+    <sep></sep>
+
+    <category name="Logic">
+      <category name="If">
+        <block type="controls_if"></block>
+        <block type="controls_if">
+          <mutation else="1"></mutation>
+        </block>
+        <block type="controls_if">
+          <mutation elseif="1" else="1"></mutation>
+        </block>
+      </category>
+      <category name="Boolean">
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+        <block type="logic_negate"></block>
+        <block type="logic_boolean"></block>
+        <block type="logic_null"></block>
+        <block type="logic_ternary"></block>
+      </category>
+    </category>
+    <category name="Loops">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+      <block type="controls_for">
+        <field name="VAR">i</field>
+        <value name="FROM">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <value name="TO">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+        <value name="BY">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
+    </category>
+    <category name="Math">
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="math_single"></block>
+      <block type="math_trig"></block>
+      <block type="math_constant"></block>
+      <block type="math_number_property"></block>
+      <block type="math_change">
+        <value name="DELTA">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+      </block>
+      <block type="math_round"></block>
+      <block type="math_on_list"></block>
+      <block type="math_modulo"></block>
+      <block type="math_constrain">
+        <value name="LOW">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <value name="HIGH">
+          <block type="math_number">
+            <field name="NUM">100</field>
+          </block>
+        </value>
+      </block>
+      <block type="math_random_int">
+        <value name="FROM">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <value name="TO">
+          <block type="math_number">
+            <field name="NUM">100</field>
+          </block>
+        </value>
+      </block>
+      <block type="math_random_float"></block>
+    </category>
+    <category name="Lists">
+      <block type="lists_create_empty"></block>
+      <block type="lists_create_with"></block>
+      <block type="lists_repeat">
+        <value name="NUM">
+          <block type="math_number">
+            <field name="NUM">5</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_length"></block>
+      <block type="lists_isEmpty"></block>
+      <block type="lists_indexOf"></block>
+      <block type="lists_getIndex"></block>
+      <block type="lists_setIndex"></block>
+    </category>
+    <category name="Variables" custom="VARIABLE"></category>
+    <category name="Functions" custom="PROCEDURE"></category>
+
+    <category name="Text">
+      <block type="text"></block>
+      <block type="text_join"></block>
+      <block type="text_create_join_container"></block>
+      <block type="text_create_join_item"></block>
+      <block type="text_append"></block>
+      <block type="text_length"></block>
+      <block type="text_isEmpty"></block>
+      <block type="text_indexOf"></block>
+      <block type="text_charAt"></block>
+      <block type="text_getSubstring"></block>
+      <block type="text_changeCase"></block>
+      <block type="text_trim"></block>
+      <block type="text_print"></block>
+      <block type="text_prompt_ext"></block>
+      <block type="text_prompt"></block>
+    </category>
+  </xml>
+
+	<div class="container-fluid" id='body'>
+
+		<div id="mainMenu"></div>
+
+		<div class="xxrow" style="clear:both">
+<!-- 			<div class="col-sm-3 col-md-2 sidebar" id="sidebar"></div>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
+ -->
+			<!-- </div> -->
+      <div style="float:right">
+        <button id="exportLua">Export Lua ...</button>
+        <button id="loadBlock">Load</button>
+        <button id="saveBlock">Save</button>
+      </div>
+      <div id="blocklyDiv" class="col-sm-12" style="height: 880px; width: 99%;"></div>
+		</div>
+	</div>
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<!-- // <script src="assets/js/jquery.min.js"></script> -->
+	<!-- // <script src="assets/js/bootstrap.min.js"></script> -->
+	<!-- <script src="assets/js/docs.min.js"></script> -->
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+	<script src="/assets/js/_bower.js"></script>
+	<script src="/assets/blockly/blockly_compressed.js"></script>
+	<script src="/assets/blockly/blocks_compressed.js"></script>
+	<script src="/assets/blockly/lua_compressed.js"></script>
+	<script src="/assets/blockly/javascript_compressed.js"></script>
+	<script src="/assets/blockly/fs_blocks.js"></script>
+	<script src="/assets/blockly/fs_blocks_lua.js"></script>
+	<script src="/assets/blockly/fs_blocks_javascript.js"></script>
+	<script src="/assets/blockly/en.js"></script>
+	<script src="/assets/js/xui.js"></script>
+	<script src="/assets/js/jsx/xui.js"></script>
+	<script src="/assets/js/jsx/blocks.js"></script>
+	<script>
+
+  var onresize = function(e) {
+    $('#blocklyDiv').height(window.innerHeight - $('#blocklyDiv').offset().top);
+    // $('#blocklyDiv').width(window.innerWidth - 400);
+  };
+
+  window.addEventListener('resize', onresize, false);
+  onresize();
+
+	var workspace = Blockly.inject('blocklyDiv', {
+		toolbox: document.getElementById('toolbox'),
+		media: "/assets/blockly/media/"
+	});
+
+	function toJS() {
+		var code = Blockly.JavaScript.workspaceToCode(workspace);
+		console.log(code);
+		return code;
+	}
+
+	function toLua() {
+		var code = Blockly.Lua.workspaceToCode(workspace);
+		console.log(code);
+		return code;
+	}
+
+  $('#loadBlock').click(function() {
+    $.get("/api/blocks/demo", function(xml_text) {
+      console.log(xml_text);
+      var xml = Blockly.Xml.textToDom(xml_text);
+      Blockly.Xml.domToWorkspace(xml, workspace);
+    })
+  });
+
+	$('#saveBlock').click(function() {
+		var xml = Blockly.Xml.workspaceToDom(workspace);
+		var xml_text = Blockly.Xml.domToText(xml);
+    var js_code = "alert(1);";//toJS();
+		var lua_code = toLua();
+		console.log(xml_text);
+
+    $.post("/api/blocks/demo", {
+			xml: xml_text,
+			js_code: js_code,
+			lua_code: lua_code
+		}, function(data) {
+			console.log(data);
+			// createMessage("#top-message", "{% trans "Saved At" %} " + new Date(), 3000)
+		});
+
+		return false;
+	});
+
+	function load_blockly() {
+		var xml_text = '{{ blockly.xml | null }}';
+		if (xml_text.length > 0) {
+			var xml = Blockly.Xml.textToDom(xml_text);
+			Blockly.Xml.domToWorkspace(workspace, xml);
+		}
+	}
+
+	// load_blockly();
+
+  function download(filename, text) {
+      var pom = document.createElement('a');
+      pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      pom.setAttribute('download', filename);
+
+      if (document.createEvent) {
+          var event = document.createEvent('MouseEvents');
+          event.initEvent('click', true, true);
+          pom.dispatchEvent(event);
+      }
+      else {
+          pom.click();
+      }
+  }
+
+
+  $('#exportLua').click(function() {
+    download("test.lua", toLua());
+  })
+
+	</script>
+
+</body>
+</html>

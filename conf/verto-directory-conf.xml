@@ -1,0 +1,5 @@
+    <param name="jsonrpc-allowed-methods" value="verto,jsapi"/>
+    <param name="jsonrpc-allowed-jsapi" value="cti,fsapi"/>
+    <param name="jsonrpc-allowed-fsapi" value="show,fsapi,status"/>
+    <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence,FSevent"/>
+
