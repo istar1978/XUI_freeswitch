@@ -16,7 +16,7 @@
 			} else if (this.props.item.id == "MM_SHOW") {
 				var list = [
 					{id: "M_SHOW_application", description: "Applications", data: "application"},
-					{id: "M_SHOW_registrations", description: "Registrations"},
+					{id: "M_SHOW_registrations", description: "Registrations", data: "registrations"},
 					{id: "M_SHOW_module", description: "Modules"},
 					{id: "M_SHOW_endpoint", description: "Endpoints"},
 					{id: "M_SHOW_codec", description: "Codecs"},
@@ -33,6 +33,9 @@
 					{id: "M_SHOW_tasks", description: "Tasks"},
 					{id: "M_SHOW_limit", description: "Limit"}
 				];
+
+				ReactDOM.render(<br/>,
+					document.getElementById('sidebar'));
 
 				ReactDOM.render(<NavBar items = {list} />,
 					document.getElementById('sidebar'));
@@ -727,7 +730,7 @@
 		render: function() {
 			var rows = [];
 			this.props.rows.forEach(function(row) {
-				rows.push(<tr key={row.reg_user}>
+				rows.push(<tr key={row.reg_user + row.token}>
 					<td>{row.reg_user }</td>
 					<td>{row.realm }</td>
 					<td>{row.expires }</td>
@@ -851,7 +854,7 @@
 				return <ShowFSComplete rows = {this.state.rows} title = {this.props.title}/>
 			} else if (this.props.what == "module") {
 				return <ShowFSModule rows = {this.state.rows} title = {this.props.title}/>
-			} else if (this.props.what == "registration") {
+			} else if (this.props.what == "registrations") {
 				return <ShowFSRegistration rows = {this.state.rows} title = {this.props.title}/>
 			} else if (this.props.what == "tasks") {
 				return <ShowFSTasks rows = {this.state.rows} title = {this.props.title}/>
