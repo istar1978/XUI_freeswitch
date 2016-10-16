@@ -106,6 +106,7 @@
 			} else if (this.props.item.id == "M_CHANNELS") {
 				ReactDOM.render(<ChannelsPage/>, document.getElementById("main"));
 			} else if (this.props.item.id == "M_USERS") {
+				ReactDOM.render(<UsersPage/>, document.getElementById("main"));
 			} else if (this.props.item.id == "M_SOFIA") {
 				ReactDOM.render(<SofiaPage/>, document.getElementById("main"));
 			} else if (this.props.item.id.substring(0, 7) == "M_SHOW_") {
@@ -330,6 +331,93 @@
 			</div>
 		}
 	});
+
+	var UsersPage = React.createClass({
+		getInitialState: function() {
+			return {rows: []};
+		},
+
+		handleClick: function(x) {
+		},
+
+		componentWillMount: function() {
+		},
+
+		componentWillUnmount: function() {
+		},
+
+		componentDidMount: function() {
+			var _this = this;
+			fsAPI("list_users", "", function(data) {
+				// console.log(data.message);
+				var lines = data.message.split("\n");
+				var rows = [];
+
+				for (var i = 0; i < lines.length; i++) {
+					if (i == 0 || i >= lines.length - 2) continue;
+
+					cols = lines[i].split("|");
+					row = {};
+
+					row.index = i;
+					row.userid    = cols[0];
+					row.context   = cols[1];
+					row.domain    = cols[2];
+					row.group     = cols[3];
+					row.contact   = cols[4];
+					row.callgroup = cols[5];
+					row.cidname   = cols[6];
+					row.cidnumber = cols[7];
+					rows.push(row);
+				}
+
+				_this.setState({rows: rows});
+			}, function(e) {
+				console.log("list_users ERR");
+			});
+		},
+
+		handleFSEvent: function(v, e) {
+		},
+
+		render: function() {
+			var rows = [];
+			this.state.rows.forEach(function(row) {
+				rows.push(<tr key={row.index}>
+						<td>{row.userid}</td>
+						<td>{row.context}</td>
+						<td>{row.domain}</td>
+						<td>{row.group}</td>
+						<td>{row.constact}</td>
+						<td>{row.callgroup}</td>
+						<td>{row.cidname}</td>
+						<td>{row.cidnumber}</td>
+				</tr>);
+			})
+
+			return <div>
+				<h1>Users</h1>
+				<div>
+					<table className="table">
+					<tbody>
+					<tr>
+						<th>ID</th>
+						<th>Context</th>
+						<th>Domain</th>
+						<th>Group</th>
+						<th>Contact</th>
+						<th>Callgroup</th>
+						<th>CidName</th>
+						<th>CidNumber</th>
+					</tr>
+					{rows}
+					</tbody>
+					</table>
+				</div>
+			</div>
+		}
+	});
+
 
 	var ShowFSApplication = React.createClass({
 		render: function() {
