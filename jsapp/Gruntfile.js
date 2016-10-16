@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         },
         mainFiles: {
           'jquery-json': 'src/jquery.json.js',
-          'react': ['react.js', 'JSXTransformer.js']
+          'react': ['react.js', 'react-dom.js']
         },
         bowerOptions: {
           relative: false

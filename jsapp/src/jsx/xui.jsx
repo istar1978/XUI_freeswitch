@@ -11,7 +11,7 @@
 			console.log(this.props);
 			if (this.props.item.id == "MM_DASHBOARD") {
 				window.location = '/';
-				// React.render(<NavBar items = {NAVLIST} />,
+				// ReactDOM.render(<NavBar items = {NAVLIST} />,
 				// 	document.getElementById('sidebar'));
 			} else if (this.props.item.id == "MM_SHOW") {
 				var list = [
@@ -34,14 +34,14 @@
 					{id: "M_SHOW_limit", description: "Limit"}
 				];
 
-				React.render(<NavBar items = {list} />,
+				ReactDOM.render(<NavBar items = {list} />,
 					document.getElementById('sidebar'));
 			} else if (this.props.item.id == "MM_PHONE") {
 
 			} else if (this.props.item.id == "MM_BLOCKS") {
 				window.location = "/blocks.html";
 			} else {
-				React.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
+				ReactDOM.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
 			}
 		},
 
@@ -101,19 +101,19 @@
 			this.props.resetALL(e.currentTarget.getAttribute("data-item-id"));
 
 			if (this.props.item.id == "M_OVERVIEW") {
-				React.render(<OverViewPage auto_update={true}/>, document.getElementById("main"));
+				ReactDOM.render(<OverViewPage auto_update={true}/>, document.getElementById("main"));
 			} else if (this.props.item.id == "M_CALLS") {
 			} else if (this.props.item.id == "M_CHANNELS") {
-				React.render(<ChannelsPage/>, document.getElementById("main"));
+				ReactDOM.render(<ChannelsPage/>, document.getElementById("main"));
 			} else if (this.props.item.id == "M_USERS") {
 			} else if (this.props.item.id == "M_SOFIA") {
-				React.render(<SofiaPage/>, document.getElementById("main"));
+				ReactDOM.render(<SofiaPage/>, document.getElementById("main"));
 			} else if (this.props.item.id.substring(0, 7) == "M_SHOW_") {
 				var what = this.props.item.id.substr(7);
-				React.render(<div></div>, document.getElementById("main"));
-				React.render(<ShowFSPage what={what} title={this.props.item.description}/>, document.getElementById("main"));
+				ReactDOM.render(<div></div>, document.getElementById("main"));
+				ReactDOM.render(<ShowFSPage what={what} title={this.props.item.description}/>, document.getElementById("main"));
 			} else {
-				React.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
+				ReactDOM.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
 			}
 		},
 

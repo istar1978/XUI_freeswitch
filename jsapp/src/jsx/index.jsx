@@ -1,12 +1,12 @@
 $(document).ready(function(){
 
-	React.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
+	ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
 		document.getElementById('mainMenu'));
 
-	React.render(<NavBar items = {NAVLIST} />,
+	ReactDOM.render(<NavBar items = {NAVLIST} />,
 		document.getElementById('sidebar'));
 
-	React.render(<OverViewPage/>,
+	ReactDOM.render(<OverViewPage/>,
 		document.getElementById('main')
 	);
 });
