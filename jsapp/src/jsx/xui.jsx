@@ -25,10 +25,16 @@
 			console.log("menu", x);
 			console.log("menu.target", x.target);
 			console.log(this.props);
-			if (this.props.item.id == "MM_DASHBOARD") {
+			if (this.props.item.id == "MM_HOME") {
 				window.location = '/';
-				// ReactDOM.render(<NavBar items = {NAVLIST} />,
-				// 	document.getElementById('sidebar'));
+			} else if (this.props.item.id == "MM_DASHBOARD") {
+				ReactDOM.render(<br />,
+					document.getElementById('sidebar'));
+
+				ReactDOM.render(<NavBar items = {NAVLIST} />,
+					document.getElementById('sidebar'));
+
+				ReactDOM.render(<OverViewPage auto_update={true}/>, document.getElementById("main"));
 			} else if (this.props.item.id == "MM_SHOW") {
 				var list = [
 					{id: "M_SHOW_application", description: "Applications", data: "application"},
@@ -55,6 +61,10 @@
 
 				ReactDOM.render(<NavBar items = {list} />,
 					document.getElementById('sidebar'));
+
+				var what = list[0].id.substr(7);
+				ReactDOM.render(<div></div>, document.getElementById("main"));
+				ReactDOM.render(<ShowFSPage what={what} title={list[0].description}/>, document.getElementById("main"));
 			} else if (this.props.item.id == "MM_PHONE") {
 
 			} else if (this.props.item.id == "MM_BLOCKS") {
@@ -214,8 +224,8 @@
 		componentDidMount: function() {
 			if (this.props.auto_update) {
 				var _this = this;
-				fsStatus(function(s) {
-					_this.setState({msg: s});
+				fsStatus(function(e) {
+					_this.setState({msg: e.message});
 				})
 			}
 		},
@@ -1553,7 +1563,7 @@
 	/* ------------------------------------------------------------ */
 
 	var MENUS = [
-		{id: "MM_DASHBOARD", description: 'Dashboard'},
+		{id: "MM_DASHBOARD", description: 'Dashboard', data: ''},
 		{id: "MM_SHOW", description: 'Show', data: 'show'},
 		{id: "MM_BLOCKS", description: 'Blocks'},
 		{id: "MM_CONFERENCES", description: 'Conferences', data: 'conferences'},

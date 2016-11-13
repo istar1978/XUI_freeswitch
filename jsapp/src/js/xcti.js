@@ -51,6 +51,14 @@ var callbacks = {
 	onEvent: function(v, e) {
 		console.debug("GOT EVENT", e);
 	},
+
+/*
+	success_cb: function(a, b) {
+	},
+
+	error_cb: function(a, b) {
+	}
+*/
 };
 
 

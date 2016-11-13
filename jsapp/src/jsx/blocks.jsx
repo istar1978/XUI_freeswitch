@@ -38,13 +38,10 @@ var BlocksPage = React.createClass({
 
 $(document).ready(function(){
 
+	var MENUS = [
+		{id: "MM_HOME", description: 'Home'},
+	];
+
 	ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
 		document.getElementById('mainMenu'));
-
-	// React.render(<NavBar items = {NAVLIST} />,
-	// 	document.getElementById('sidebar'));
-
-	// React.render(<BlocksPage/>,
-		// document.getElementById('main')
-	// );
 });
