@@ -84,6 +84,8 @@
 					document.getElementById('sidebar'));
 
 				ReactDOM.render(<ConferencePage name = {list[0].data}/>, document.getElementById("main"));
+			} else if (this.props.item.id == "MM_ABOUT") {
+				ReactDOM.render(<AboutPage />, document.getElementById('main'));
 			} else {
 				ReactDOM.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
 			}
@@ -201,6 +203,19 @@
 			);
 		}
 
+	});
+
+	var AboutPage = React.createClass({
+
+		render: function() {
+			return <div><h1>About XUI</h1>
+				<p>
+					<p>Author: Seven Du</p>
+
+					See <a href="https://github.com/seven1240/xui" target="_blank">XUI Github page</a> for more info.
+				</p>
+			</div>;
+		}
 	});
 
 	var OverViewPage = React.createClass({
