@@ -2022,9 +2022,11 @@
         switch (method) {
         case "verto.subscribe":
             for (i in e.unauthorizedChannels) {
+                if (!e.unauthorizedChannels.hasOwnProperty(i)) continue;
                 drop_bad(verto, e.unauthorizedChannels[i]);
             }
             for (i in e.subscribedChannels) {
+                if (!e.subscribedChannels.hasOwnProperty(i)) continue;
                 mark_ready(verto, e.subscribedChannels[i]);
             }
 
@@ -2062,9 +2064,9 @@
 
     function mark_ready(verto, channel) {
         for (var j in verto.eventSUBS[channel]) {
-            console.error("jjjj", j);
+            if (!verto.eventSUBS[channel].hasOwnProperty(j)) continue;
             verto.eventSUBS[channel][j].ready = true;
-            console.log("jjjj subscribed to channel: " + channel);
+            console.log("subscribed to channel: " + channel);
             if (verto.eventSUBS[channel][j].readyHandler) {
                 verto.eventSUBS[channel][j].readyHandler(verto, channel);
             }
@@ -2169,6 +2171,7 @@
                         channel = handle[i].eventChannel;
 
                         for (var j in verto.eventSUBS[channel]) {
+                            if (!verto.eventSUBS[channel].hasOwnProperty(j)) continue;
                             if (verto.eventSUBS[channel][j].serno == handle[i].serno) {} else {
                                 repl.push(verto.eventSUBS[channel][j]);
                             }
@@ -2185,6 +2188,7 @@
             }
 
             for (var u in unsubChannels) {
+                if (!unsubChannels.hasOwnProperty(u)) continue;
                 console.log("Sending Unsubscribe for: ", u);
                 sendChannels.push(u);
             }
@@ -2377,6 +2381,7 @@
                     console.error("UNSUBBED or invalid EVENT " + key + " IGNORED");
                 } else {
                     for (var i in list) {
+                        if (!list.hasOwnProperty(i)) continue;
                         var sub = list[i];
 
                         if (!sub || !sub.ready) {
@@ -2729,7 +2734,7 @@
         var eventHandler = function(v, e, la) {
             var packet = e.data;
 
-            //console.error("READ:", packet);
+            // console.error("READ:", packet);
 
             if (packet.name != la.name) {
                 return;
