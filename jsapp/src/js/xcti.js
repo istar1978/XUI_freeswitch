@@ -1,14 +1,17 @@
+'use strict';
 
 var verto;
 var host = window.location.hostname;
+var domain = host;
 
 var callbacks = {
 
 	onMessage: function(verto, dialog, msg, data) {
-		console.log(msg);
+		console.log("GOT MSG", msg);
 
 		switch (msg) {
 		case $.verto.enum.message.pvtEvent:
+			console.error("pvtEvent", data.pvtData);
 			break;
 		case $.verto.enum.message.display:
 			break;
