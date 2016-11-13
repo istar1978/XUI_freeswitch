@@ -68,9 +68,16 @@ verto = new $.verto({
 		socketUrl: "wss://" + host + ":8082",
 		tag: "webcam",
 		audioParams: {
-	}
+		},
+		iceServers: [
+		// { url: 'stun:[YOUR_STUN_SERVER]',}
+		],
+		// These can be set per-call as well as per-login.
+		deviceParams: {
+			useMic: 'any',
+			useSpeak: 'any',
+		},
 }, callbacks);
-
 
 $('#ocean_callButton').click(function() {
 	options = {
