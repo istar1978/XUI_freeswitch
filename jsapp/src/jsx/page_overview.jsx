@@ -28,4 +28,39 @@
  *
  */
 
-/* THIS FILE IS INTENTIONALLY LEFT BLANK */
+	var OverViewPage = React.createClass({
+		// overview is so special because it must wait the websocket connected before it can get any data
+		getInitialState: function() {
+			return {msg: "connecting ..."};
+		},
+
+		handleClick: function(x) {
+		},
+
+		componentWillMount: function() {
+			// listen to "update-status" event
+			window.addEventListener("update-status", this.handleUpdateStatus);
+		},
+
+		componentWillUnmount: function() {
+			window.removeEventListener("update-status", this.handleUpdateStatus);
+		},
+
+		componentDidMount: function() {
+			if (this.props.auto_update) {
+				var _this = this;
+				fsStatus(function(e) {
+					_this.setState({msg: e.message});
+				})
+			}
+		},
+
+		handleUpdateStatus: function(e) {
+			// console.log("eeee", e.detail);
+			this.setState({msg: e.detail.message});
+		},
+
+		render: function() {
+			return <div><pre>{this.state.msg}</pre></div>;
+		}
+	});

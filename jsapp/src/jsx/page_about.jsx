@@ -28,4 +28,14 @@
  *
  */
 
-/* THIS FILE IS INTENTIONALLY LEFT BLANK */
+	var AboutPage = React.createClass({
+
+		render: function() {
+			return <div>
+				<h1>About XUI</h1>
+				<p>XUI is a FreeSWITCH UI framework and implementation.</p>
+				<p>Author: Seven Du</p>
+				<p>See <a href="https://github.com/seven1240/xui" target="_blank">XUI Github page</a> for more info.</p>
+			</div>;
+		}
+	});
