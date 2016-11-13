@@ -4,13 +4,23 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     react: {
+      single_file_output: {
+        files: {
+          '../www/assets/js/jsx/blocks.js': 'src/jsx/blocks.jsx'
+        }
+      },
+      single_file_output: {
+        files: {
+          '../www/assets/js/jsx/index.js': 'src/jsx/index.jsx'
+        }
+      },
       dynamic_mappings: {
         files: [
           {
             expand: true,
             cwd: 'src/jsx',
-            src: ['**/*.jsx'],
-            dest: '../www/assets/js/jsx',
+            src: ['**/*.jsx', '!blocks.jsx', '!index.jsx'],
+            dest: 'src/js/jsx',
             ext: '.js'
           }
         ]
