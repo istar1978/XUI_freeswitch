@@ -2037,20 +2037,18 @@
         }
     };
 
-    $.verto.prototype.sendMethod = function(method, params) {
+    $.verto.prototype.sendMethod = function(method, params, success_cb, error_cb) {
         var verto = this;
 
-        verto.rpcClient.call(method, params,
-
-        function(e) {
-            /* Success */
+        if (!success_cb) success_cb = function(e) {
             verto.processReply(method, true, e);
-        },
+        };
 
-        function(e) {
-            /* Error */
+        if (!error_cb) error_cb = function(e) {
             verto.processReply(method, false, e);
-        });
+        };
+
+        verto.rpcClient.call(method, params, success_cb, error_cb);
     };
 
     function do_sub(verto, channel, obj) {
