@@ -8,7 +8,8 @@
 			'cidName': member[1][2],
 			'codec': member[1][3],
 			'status': JSON.parse(member[1][4]),
-			'email': member[1][5].email
+			'email': member[1][5].email,
+			'active': false
 		};
 
 		// console.log("m", m);
@@ -64,6 +65,7 @@
 				var list = [
 					{id: "M_CONF_3000", description: "3000-" + domain, data: "3000-" + domain},
 					{id: "M_CONF_3500", description: "3500-" + domain, data: "3500-" + domain},
+					{id: "M_CONF_3800", description: "3800-" + domain, data: "3800-" + domain}
 				];
 
 				ReactDOM.render(<br/>, document.getElementById('sidebar'));
@@ -624,8 +626,50 @@
 	});
 
 
+	var Member = React.createClass({
+		propTypes: {
+			onMemberClick: React.PropTypes.func,
+		},
+
+		getInitialState: function() {
+			return this.props.member;
+		},
+
+		// allow the parent to set my state
+		componentWillReceiveProps: function(props) {
+			// console.log("props", props);
+			this.setState(props.member);
+		},
+
+		handleClick: function(e) {
+			var member_id = e.currentTarget.getAttribute("data-member-id");
+			this.state.active = !this.state.active;
+			this.setState(this.state);
+
+			this.props.onMemberClick(member_id, this.state.active);
+		},
+
+		render: function() {
+			var row = this.state;
+			var className = this.state.active ? "member active selected" : "member";
+			return <tr className={className} data-member-id={row.memberID} onClick={this.handleClick}>
+						<td>{row.memberID}</td>
+						<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
+						<td>{row.status.audio.floor ? "F" : "f"} |
+							{row.status.audio.talking ? " T" : " t"} |
+							{row.status.audio.deaf ? " D" : " d"} |
+							{row.status.audio.muted ? " M" : " m"} |
+							{row.status.audio.onHold ? " H" : " h"} |
+							{row.status.audio.energyScore}
+						</td>
+						<td>{row.email}</td>
+				</tr>;
+		}
+	});
+
 	var ConferencePage = React.createClass({
 		la: null,
+		activeMembers: {},
 
 		getInitialState: function() {
 			return {name: this.props.name, rows: [], la: null};
@@ -635,7 +679,43 @@
 			return "conference-" + what + "." + this.props.name + "@" + domain;
 		},
 
-		handleClick: function(x) {
+		handleControlClick: function(e) {
+			var data = e.target.getAttribute("data");
+			console.log("data", data);
+
+			if (data == "lock") {
+				fsAPI("conference", this.props.name + " lock");
+			} else if (data == "unlock") {
+				fsAPI("conference", this.props.name + " unlock");
+			} else if (data == "select") {
+				var rows = [];
+				var _this = this;
+				if (this.state.rows.length > 0) {
+					var active = !this.state.rows[0].active;
+
+					this.state.rows.forEach(function(row) {
+						row.active = active;
+						rows.push(row);
+						console.log("row", row.active);
+						_this.activeMembers[row.memberID] = active;
+					});
+					this.setState({rows: rows});
+				}
+				return;
+			}
+
+			for(var member in this.activeMembers) {
+				if (this.activeMembers[member] == true) {
+					args = this.props.name + " " + data + " " + member;
+					// console.log("args", args);
+					fsAPI("conference", args);
+				}
+			}
+		},
+
+		handleMemberClick: function(member_id, isActive) {
+			console.log("member_id", member_id);
+			this.activeMembers[member_id] = isActive;
 		},
 
 		componentWillMount: function() {
@@ -677,15 +757,17 @@
 			case "modify":
 				var rows = []
 
-				this.state.rows.forEach(function(row) {
+				this.state.rows = this.state.rows.map(function(row) {
 					if (row.uuid == a.key ) {
-						rows.push(translateMember([a.key, a.data]));
+						var member = translateMember([a.key, a.data]);
+						member.active = row.active;
+						return member;
 					} else {
-						rows.push(row);
+						return row;
 					}
 				});
 
-				this.setState({rows: rows});
+				this.setState(this.state);
 				break;
 
 			case "del":
@@ -712,21 +794,22 @@
 		},
 
 		render: function() {
-			var rows = [];
-			this.state.rows.forEach(function(row) {
-				console.log("row", row);
-				rows.push(<tr key={row.uuid}>
-						<td>{row.memberID}</td>
-						<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
-						<td>{row.status.audio.floor}</td>
-						<td>{row.email}</td>
-				</tr>);
-			})
+			var _this = this;
 
 			return <div>
+				<div id="conference-controls">
+					<button onClick={this.handleControlClick} data="mute">Mute</button>
+					<button onClick={this.handleControlClick} data="unmute">unMute</button>
+					<button onClick={this.handleControlClick} data="hup">Hup</button>
+					-
+					<button onClick={this.handleControlClick} data="select">Select</button>
+					-
+					<button onClick={this.handleControlClick} data="lock">Lock</button>
+					<button onClick={this.handleControlClick} data="unlock">unLock</button>
+				</div>
 				<h1>Conference {this.props.name}</h1>
 				<div>
-					<table className="table">
+					<table className="table conference">
 					<tbody>
 					<tr>
 						<th>MemberID</th>
@@ -734,7 +817,11 @@
 						<th>Status</th>
 						<th>Email</th>
 					</tr>
-					{rows}
+					{
+						this.state.rows.map(function(member) {
+							return <Member member={member} key={member.uuid} onMemberClick={_this.handleMemberClick} />
+						})
+					}
 					</tbody>
 					</table>
 				</div>
