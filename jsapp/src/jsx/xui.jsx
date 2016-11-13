@@ -1,5 +1,20 @@
 // $(document).ready(function(){
 
+	function translateMember(member) {
+		m = {
+			'uuid': member[0],
+			'memberID': member[1][0],
+			'cidNumber': member[1][1],
+			'cidName': member[1][2],
+			'codec': member[1][3],
+			'status': JSON.parse(member[1][4]),
+			'email': member[1][5].email
+		};
+
+		// console.log("m", m);
+		return m;
+	}
+
 	var MainMenuItem = React.createClass({
 		getInitialState: function() {
 			return this.props.item;
@@ -43,13 +58,28 @@
 
 			} else if (this.props.item.id == "MM_BLOCKS") {
 				window.location = "/blocks.html";
+			} else if (this.props.item.id == "MM_CONFERENCES") {
+				// this.props.history.push('/some/path');
+
+				var list = [
+					{id: "M_CONF_3000", description: "3000-" + domain, data: "3000-" + domain},
+					{id: "M_CONF_3500", description: "3500-" + domain, data: "3500-" + domain},
+				];
+
+				ReactDOM.render(<br/>, document.getElementById('sidebar'));
+
+				ReactDOM.render(<NavBar items = {list} />,
+					document.getElementById('sidebar'));
+
+				ReactDOM.render(<ConferencePage name = {list[0].data}/>, document.getElementById("main"));
 			} else {
 				ReactDOM.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
 			}
 		},
 
 		render: function() {
-			return <li><a href="#" onClick={this.handleClick}>{this.props.item.description}</a></li>;
+			var href = "#" + this.props.item.data;
+			return <li><a href={href} onClick={this.handleClick}>{this.props.item.description}</a></li>;
 		}
 	});
 
@@ -117,6 +147,9 @@
 				var what = this.props.item.id.substr(7);
 				ReactDOM.render(<div></div>, document.getElementById("main"));
 				ReactDOM.render(<ShowFSPage what={what} title={this.props.item.description}/>, document.getElementById("main"));
+			} else if (this.props.item.id.substring(0, 7) == "M_CONF_") {
+				ReactDOM.render(<div></div>, document.getElementById("main"));
+				ReactDOM.render(<ConferencePage name={this.props.item.data} title={this.props.item.description}/>, document.getElementById("main"));
 			} else {
 				ReactDOM.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
 			}
@@ -590,6 +623,124 @@
 		}
 	});
 
+
+	var ConferencePage = React.createClass({
+		la: null,
+
+		getInitialState: function() {
+			return {name: this.props.name, rows: [], la: null};
+		},
+
+		getChannelName: function(what) { // liveArray chat mod
+			return "conference-" + what + "." + this.props.name + "@" + domain;
+		},
+
+		handleClick: function(x) {
+		},
+
+		componentWillMount: function() {
+		},
+
+		componentWillUnmount: function() {
+			if (this.la) this.la.destroy();
+		},
+
+		componentDidMount: function() {
+			console.log("name:", this.props.name);
+			this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
+			this.la.onChange = this.handleConferenceEvent;
+		},
+
+		handleConferenceEvent: function(la, a) {
+			// console.log("onChange FSevent:", la);
+			console.log("onChange FSevent:", a);
+
+			switch (a.action) {
+
+			case "init":
+				break;
+
+			case "bootObj":
+				var rows = [];
+				a.data.forEach(function(member) {
+					rows.push(translateMember(member));
+				})
+				this.setState({rows: rows});
+				break;
+
+			case "add":
+				var rows = this.state.rows;
+				rows.push(translateMember([a.key, a.data]));
+				this.setState({rows: rows});
+				break;
+
+			case "modify":
+				var rows = []
+
+				this.state.rows.forEach(function(row) {
+					if (row.uuid == a.key ) {
+						rows.push(translateMember([a.key, a.data]));
+					} else {
+						rows.push(row);
+					}
+				});
+
+				this.setState({rows: rows});
+				break;
+
+			case "del":
+				var rows = []
+
+				this.state.rows.forEach(function(row) {
+					if (row.uuid != a.key ) rows.push(row);
+				});
+
+				this.setState({rows: rows});
+				break;
+
+			case "clear":
+				this.setState({rows: []});
+				break;
+
+			case "reorder":
+				break;
+
+			default:
+				console.log("unknow action: ", a.action);
+				break;
+			}
+		},
+
+		render: function() {
+			var rows = [];
+			this.state.rows.forEach(function(row) {
+				console.log("row", row);
+				rows.push(<tr key={row.uuid}>
+						<td>{row.memberID}</td>
+						<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
+						<td>{row.status.audio.floor}</td>
+						<td>{row.email}</td>
+				</tr>);
+			})
+
+			return <div>
+				<h1>Conference {this.props.name}</h1>
+				<div>
+					<table className="table">
+					<tbody>
+					<tr>
+						<th>MemberID</th>
+						<th>CID</th>
+						<th>Status</th>
+						<th>Email</th>
+					</tr>
+					{rows}
+					</tbody>
+					</table>
+				</div>
+			</div>
+		}
+	});
 
 	var ShowFSApplication = React.createClass({
 		render: function() {
@@ -1316,9 +1467,10 @@
 
 	var MENUS = [
 		{id: "MM_DASHBOARD", description: 'Dashboard'},
-		{id: "MM_SHOW", description: 'Show'},
+		{id: "MM_SHOW", description: 'Show', data: 'show'},
 		{id: "MM_BLOCKS", description: 'Blocks'},
-		{id: "MM_ABOUT", description: 'About'}
+		{id: "MM_CONFERENCES", description: 'Conferences', data: 'conferences'},
+		{id: "MM_ABOUT", description: 'About', data: 'about'}
 	];
 
 	var RMENUS = [
