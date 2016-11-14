@@ -6,11 +6,7 @@ module.exports = function(grunt) {
     react: {
       single_file_output: {
         files: {
-          '../www/assets/js/jsx/blocks.js': 'src/jsx/blocks.jsx'
-        }
-      },
-      single_file_output: {
-        files: {
+          '../www/assets/js/jsx/blocks.js': 'src/jsx/blocks.jsx',
           '../www/assets/js/jsx/index.js': 'src/jsx/index.jsx'
         }
       },
