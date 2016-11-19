@@ -13,5 +13,8 @@
     "phantomjs": "~1.9.13",
     "grunt-react": "~0.12.1",
     "grunt-bower-concat": "~0.4.0"
+  },
+  "dependencies": {
+    "react-bootstrap": "^0.30.6"
   }
 }

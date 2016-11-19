@@ -48,6 +48,10 @@
 				ReactDOM.render(<UsersPage/>, document.getElementById("main"));
 			} else if (this.props.item.id == "M_SOFIA") {
 				ReactDOM.render(<SofiaPage/>, document.getElementById("main"));
+			} else if (this.props.item.id == "M_SET_USERS") {
+				ReactDOM.render(<UsersPage/>, document.getElementById("main"));
+			} else if (this.props.item.id == "M_SET_ROUTES") {
+				ReactDOM.render(<RoutesPage/>, document.getElementById("main"));
 			} else if (this.props.item.id.substring(0, 7) == "M_SHOW_") {
 				var what = this.props.item.id.substr(7);
 				ReactDOM.render(<div></div>, document.getElementById("main"));

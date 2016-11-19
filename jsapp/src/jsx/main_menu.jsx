@@ -99,6 +99,19 @@
 			ReactDOM.render(<ConferencePage name = {list[0].data}/>, document.getElementById("main"));
 		} else if (this.props.item.id == "MM_ABOUT") {
 			ReactDOM.render(<AboutPage />, document.getElementById('main'));
+		} else if (this.props.item.id == "MM_SETTINGS") {
+			var list = [
+				{id: "M_SET_USERS", description: "Users", data: "users"},
+				{id: "M_SET_ROUTES", description: "Routes", data: "routes"},
+				{id: "M_SET_OTHERS", description: "Others ...", data: "others"},
+			];
+
+			ReactDOM.render(<br/>, document.getElementById('sidebar'));
+
+			ReactDOM.render(<NavBar items = {list} />,
+				document.getElementById('sidebar'));
+
+			ReactDOM.render(<RoutesPage />, document.getElementById('main'));
 		} else {
 			ReactDOM.render(<span>{this.props.item.description}</span>, document.getElementById('main'));
 		}

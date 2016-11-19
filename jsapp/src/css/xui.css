@@ -17,3 +17,11 @@
 #navbar ul li a.Online { color:lime !important;}
 #navbar ul li a.Busy { color:red !important; }
 #navbar ul li a.Offline { color:grey !important;}
+
+#conference-controls {
+	float:right;
+}
+
+.controls {
+	float: right;
+}
