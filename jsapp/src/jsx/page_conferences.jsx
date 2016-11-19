@@ -157,12 +157,13 @@
 				break;
 
 			case "modify":
-				var rows = []
+				var rows = [];
+				var _this = this;
 
 				this.state.rows = this.state.rows.map(function(row) {
 					if (row.uuid == a.key ) {
 						var member = translateMember([a.key, a.data]);
-						member.active = row.active;
+						member.active = _this.activeMembers[member.memberID];
 						return member;
 					} else {
 						return row;
