@@ -29,3 +29,5 @@
  */
 
 /* THIS FILE IS INTENTIONALLY LEFT BLANK */
+
+'use strict';

@@ -1,3 +1,5 @@
+'use strict';
+
 import React from 'react';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 

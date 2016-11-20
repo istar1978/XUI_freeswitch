@@ -1,11 +1,11 @@
 all:
-	npm run build
+	cd jsapp && make
 
 watch:
-	npm run build:watch
+	cd jsapp && make watch
 
 livereload:
-	npm run livereload
+	cd jsapp && make livereload
 
 grunt:
 	cd jsapp && grunt
@@ -13,6 +13,11 @@ grunt:
 setup:
 	cd jsapp && \
 	npm install && \
+	bower install
+
+csetup:
+	cd jsapp && \
+	cnpm install && \
 	bower install
 
 release:

@@ -30,6 +30,10 @@ prepare:
 
     make setup
 
+or if you are in China:
+
+    make csetup
+
 on terminal 1:
 
     make livereload

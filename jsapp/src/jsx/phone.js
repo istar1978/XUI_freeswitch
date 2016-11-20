@@ -29,6 +29,8 @@
  *
  */
 
+'use strict';
+
 import React from 'react';
 import { NavItem } from 'react-bootstrap';
 

@@ -28,8 +28,9 @@
  *
  */
 
-import React from 'react';
+'use strict';
 
+import React from 'react';
 
 var ShowFSApplication = React.createClass({
 	render: function() {

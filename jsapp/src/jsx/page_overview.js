@@ -27,6 +27,9 @@
  *
  *
  */
+
+'use strict';
+
 import React from 'react';
 
 var OverViewPage = React.createClass({

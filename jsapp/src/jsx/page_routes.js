@@ -28,6 +28,8 @@
  *
  */
 
+'use strict';
+
 import React from 'react';
 
 var RoutesPage = React.createClass({
