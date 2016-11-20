@@ -32,13 +32,10 @@ module.exports = function(grunt) {
           'modernizr'
         ],
         dependencies: {
-          'underscore': 'jquery',
-          'backbone': 'underscore',
-          'jquery-mousewheel': 'jquery'
+          'jquery-json': 'jquery'
         },
         mainFiles: {
-          'jquery-json': 'src/jquery.json.js',
-          'react': ['react.js', 'react-dom.js']
+          'jquery-json': 'dist/jquery.json.min.js'
         },
         bowerOptions: {
           relative: false
@@ -53,24 +50,6 @@ module.exports = function(grunt) {
       dist: {
         src: ['src/**/*.js'],
         dest: '../www/assets/js/<%= pkg.name %>.js'
-      }
-    },
-
-    sass: {
-      options: {
-        sourcemap: 'none'
-      },
-      dist: {
-        // files: [{
-        //   expand: true,
-        //   cwd: 'src/css/desktop',
-        //   src: ['*.scss'],
-        //   dest: 'src/css/',
-        //   ext: '.css'
-        // }]
-        files: {
-          '../www/assets/css/desktop1.css': 'src/css/desktop.scss'
-        }
       }
     },
 
@@ -117,19 +96,19 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  // grunt.loadNpmTasks('grunt-contrib-uglify');
+  // grunt.loadNpmTasks('grunt-contrib-jshint');
+  // grunt.loadNpmTasks('grunt-contrib-qunit');
+  // grunt.loadNpmTasks('grunt-contrib-watch');
+  // grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-bower-concat');
-  grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.loadNpmTasks('grunt-react');
+  // grunt.loadNpmTasks('grunt-contrib-sass');
+  // grunt.loadNpmTasks('grunt-react');
 
   grunt.registerTask('test', ['jshint', 'qunit']);
 
   grunt.registerTask('unglify', ['jshint', 'qunit', 'concat', 'bower_concat', 'uglify']);
-  // grunt.registerTask('default', ['jshint', 'concat', 'bower_concat']);
-  grunt.registerTask('default', ['react', 'concat', 'bower_concat']);
+  // grunt.registerTask('default', ['jshint', 'react', 'concat', 'bower_concat']);
+  grunt.registerTask('default', ['bower_concat']);
 
 };

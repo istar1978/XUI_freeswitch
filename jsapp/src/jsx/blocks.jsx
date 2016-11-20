@@ -29,6 +29,75 @@
  *
  */
 
+import React from 'react'
+import ReactDOM from 'react-dom';
+import { Button } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
+import { NavItem } from 'react-bootstrap';
+import { NavDropdown } from 'react-bootstrap';
+import { MenuItem } from 'react-bootstrap';
+import Phone from './phone';
+
+class MainMenu extends React.Component {
+
+	handleSelect(k, e) {
+		console.log("key", k);
+		console.log("event", e);
+
+		if (k == "MM_HOME") {
+			window.location = "/";
+		} else if (k == "MM_EXPORT") {
+			download("test.lua", toLua());
+		} else if (k == "MM_LOAD") {
+			$.get("/api/blocks/demo", function(xml_text) {
+				console.log(xml_text);
+				var xml = Blockly.Xml.textToDom(xml_text);
+				Blockly.Xml.domToWorkspace(xml, workspace);
+			});
+		} else if (k == "MM_SAVE") {
+			var xml = Blockly.Xml.workspaceToDom(workspace);
+			var xml_text = Blockly.Xml.domToText(xml);
+			var js_code = "alert(1);";//toJS();
+			var lua_code = toLua();
+			console.log(xml_text);
+
+			$.post("/api/blocks/demo", {
+				xml: xml_text,
+				js_code: js_code,
+				lua_code: lua_code
+			}, function(data) {
+					console.log(data);
+				// createMessage("#top-message", "{% trans "Saved At" %} " + new Date(), 3000)
+			});
+		}
+	}
+
+	render() {
+		var menus = this.props.menus.map(function(item) {
+			return <NavItem eventKey={item.id} key={item.id}>{item.description}</NavItem>;
+		});
+
+		var rmenus = this.props.rmenus.map(function(item) {
+			return <NavItem eventKey={item.id} key={item.id}>{item.description}</NavItem>;
+		});
+
+		return <Navbar inverse fixedTop staticTop onSelect={this.handleSelect}>
+			<Navbar.Header>
+				<Navbar.Brand>
+					<a href="#"><img src="/assets/img/xui.png" style={{height: "24px"}}/></a>
+				</Navbar.Brand>
+				<Navbar.Toggle />
+			</Navbar.Header>
+			<Navbar.Collapse>
+				<Nav>{ menus }</Nav>
+				<Nav pullRight><Phone /></Nav>
+				<Nav pullRight> { rmenus }</Nav>
+			</Navbar.Collapse>
+		</Navbar>;
+	}
+}
+
 var BlocksPage = React.createClass({
 	// overview is so special because it must wait the websocket connected before it can get any data
 	getInitialState: function() {
@@ -48,12 +117,6 @@ var BlocksPage = React.createClass({
 	},
 
 	componentDidMount: function() {
-		if (this.props.auto_update) {
-			var _this = this;
-			fsStatus(function(s) {
-				_this.setState({msg: s});
-			})
-		}
 	},
 
 	handleUpdateStatus: function(e) {
@@ -73,6 +136,12 @@ $(document).ready(function(){
 		{id: "MM_HOME", description: 'Home'},
 	];
 
-	ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
+	var RMENUS = [
+		{id: "MM_EXPORT", description: 'Export Lua ...'},
+		{id: "MM_LOAD", description: 'Load'},
+		{id: "MM_SAVE", description: 'Save'}
+	];
+
+	ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS} />,
 		document.getElementById('mainMenu'));
 });

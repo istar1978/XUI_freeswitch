@@ -75,7 +75,7 @@ var callbacks = {
 	onWSClose: function(v, success) {
 		console.log("close");
 		console.log(v);
-		console.log(success);
+		fire_event("verto-disconnect", v);
 	},
 
 	onEvent: function(v, e) {
@@ -92,10 +92,15 @@ var callbacks = {
 };
 
 
-verto = new $.verto({
+var verto = null;
+
+$(document).ready(function(){
+	var protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
+
+	verto = new $.verto({
 		login: "1000" + "@" + host,
 		passwd: "1234",
-		socketUrl: "wss://" + host + ":8082",
+		socketUrl: protocol + host + ":" + window.location.port,
 		tag: "webcam",
 		audioParams: {
 		},
@@ -107,7 +112,8 @@ verto = new $.verto({
 			useMic: 'any',
 			useSpeak: 'any',
 		},
-}, callbacks);
+	}, callbacks);
+});
 
 $('#ocean_callButton').click(function() {
 	options = {

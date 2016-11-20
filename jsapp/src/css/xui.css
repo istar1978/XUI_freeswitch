@@ -8,15 +8,16 @@
 	border:1px solid #000;
 	border-top: 0;
 	background-color:#ddd;
+	color: #000;
 	/*display:none;*/
 	z-index:1000;
 }
 
 /* Phone Login State */
-#navbar ul li a.Trying { color:yellow !important; }
-#navbar ul li a.Online { color:lime !important;}
-#navbar ul li a.Busy { color:red !important; }
-#navbar ul li a.Offline { color:grey !important;}
+#phone-state.Trying { color:yellow !important; }
+#phone-state.Online { color:lime !important;}
+#phone-state.Busy { color:red !important; }
+#phone-state.Offline { color:grey !important;}
 
 #conference-controls {
 	float:right;
@@ -24,4 +25,8 @@
 
 .controls {
 	float: right;
+}
+
+.leftBar {
+	border-left: 1px solid #999;
 }
