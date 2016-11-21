@@ -32,6 +32,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import { NavItem } from 'react-bootstrap';
 
 
@@ -163,11 +164,11 @@ var Phone = React.createClass({
 			answerButton = <button onClick={this.handleAnswer}>Answer</button>
 		}
 
-		return 	<NavItem eventKey="phone"><span id="phone-state" className={state} href="#" onClick={this.handleMenuClick}>Phone</span>
+		return 	<NavItem eventKey="phone"><T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				Phone....<br/>
 				<input id="dest_number" name="dest_number" defaultValue="demo"/>
-				<button onClick={this.handleCall}>Call</button>
+				<button onClick={this.handleCall}><T.span text={{ key: "Call"}} /></button>
 				<br/>
 				<span>{this.state.cidname} {this.state.callState}</span>
 				{hangupButton}

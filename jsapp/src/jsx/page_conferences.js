@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 
 var Member = React.createClass({
 	propTypes: {
@@ -205,16 +206,16 @@ var ConferencePage = React.createClass({
 
 		return <div>
 			<div id="conference-controls">
-				<button onClick={this.handleControlClick} data="mute">Mute</button>
-				<button onClick={this.handleControlClick} data="unmute">unMute</button>
-				<button onClick={this.handleControlClick} data="hup">Hup</button>
+				<button onClick={this.handleControlClick} data="mute"><T.span text={{ key: "Mute"}} /></button>
+				<button onClick={this.handleControlClick} data="unmute"><T.span text={{ key: "unMute"}} /></button>
+				<button onClick={this.handleControlClick} data="hup"><T.span text={{ key: "Hangup"}} /></button>
 				-
-				<button onClick={this.handleControlClick} data="select">Select</button>
+				<button onClick={this.handleControlClick} data="select"><T.span text={{ key: "Select"}} /></button>
 				-
-				<button onClick={this.handleControlClick} data="lock">Lock</button>
-				<button onClick={this.handleControlClick} data="unlock">unLock</button>
+				<button onClick={this.handleControlClick} data="lock"><T.span text={{ key: "Lock"}} /></button>
+				<button onClick={this.handleControlClick} data="unlock"><T.span text={{ key: "unLock"}} /></button>
 			</div>
-			<h1>Conference {this.props.name}</h1>
+			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
 			<div>
 				<table className="table conference">
 				<tbody>

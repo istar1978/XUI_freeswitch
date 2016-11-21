@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 
 var OverViewPage = React.createClass({
 	// overview is so special because it must wait the websocket connected before it can get any data
@@ -63,7 +64,7 @@ var OverViewPage = React.createClass({
 	},
 
 	render: function() {
-		return <div><h1>Status</h1><pre>{this.state.msg}</pre></div>;
+		return <div><h1><T.span text={{ key: "Status"}} /></h1><pre>{this.state.msg}</pre></div>;
 	}
 });
 

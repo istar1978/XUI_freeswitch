@@ -30,9 +30,12 @@
 
 'use strict';
 
+// globals
+
 var verto;
 var host = window.location.hostname;
 var domain = host;
+var languages = {}
 
 var callbacks = {
 

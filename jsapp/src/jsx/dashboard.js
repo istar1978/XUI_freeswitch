@@ -32,6 +32,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import OverViewPage from "./page_overview";
 import ChannelsPage from "./page_channels";
@@ -47,11 +48,11 @@ class DashBoard extends React.Component {
 				<Col sm={2}>
 					<br />
 					<Nav bsStyle="pills" stacked>
-						<NavItem eventKey="M_OVERVIEW">OverView</NavItem>
-						<NavItem eventKey="M_Calls">Calls</NavItem>
-						<NavItem eventKey="M_Channels">Channels</NavItem>
-						<NavItem eventKey="M_Users">Users</NavItem>
-						<NavItem eventKey="M_Sofia">Sofia</NavItem>
+						<NavItem eventKey="M_OVERVIEW"><T.span text={{ key: "Overview"}} /></NavItem>
+						<NavItem eventKey="M_Calls"><T.span text={{ key: "Calls"}} /></NavItem>
+						<NavItem eventKey="M_Channels"><T.span text={{ key: "Channels"}} /></NavItem>
+						<NavItem eventKey="M_Users"><T.span text={{ key: "Users"}} /></NavItem>
+						<NavItem eventKey="M_Sofia"><T.span text={{ key: "Sofia"}} /></NavItem>
 					</Nav>
 				</Col>
 				<Col sm={10} className="leftBar">

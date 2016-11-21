@@ -36,28 +36,24 @@ import ReactDOM from 'react-dom';
 import MainMenu from './main-menu';
 import SideBar from "./sidebar";
 import DashBoard from "./dashboard";
+import T from 'i18n-react';
+
+var lang="zh";
+if (languages[lang]) T.setTexts(languages[lang]);
 
 var MENUS = [
-	{id: "MM_DASHBOARD", description: 'Dashboard', data: ''},
-	{id: "MM_SHOW", description: 'Show', data: 'show'},
-	{id: "MM_BLOCKS", description: 'Blocks'},
-	{id: "MM_CONFERENCES", description: 'Conferences', data: 'conferences'},
-	{id: "MM_ABOUT", description: 'About', data: 'about'}
+	{id: "MM_DASHBOARD", description: <T.span text={{ key: "DashBoard"}} />, data: ''},
+	{id: "MM_SHOW", description: <T.span text={{ key: "Show"}} />, data: 'show'},
+	{id: "MM_BLOCKS", description: <T.span text={{ key: "Blocks"}} />},
+	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: 'conferences'},
+	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: 'about'}
 ];
 
 var RMENUS = [
-	{id: "MM_SETTINGS", description: 'Settings'},
-	{id: "MM_PROFILE", description: 'Profile'},
-	{id: "MM_HELP", description: 'Help'}
+	{id: "MM_SETTINGS", description: <T.span text={{ key: "Settings"}} />},
+	{id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />},
+	{id: "MM_HELP", description: <T.span text={{ key: "Help"}} />}
 ];
-
-var NAVLIST = [
-	{id: "M_OVERVIEW", description: 'OverView'},
-	{id: "M_CALLS", description: 'Calls'},
-	{id: "M_CHANNELS", description: 'Channels'},
-	{id: "M_USERS", description: 'Users'},
-	{id: "M_SOFIA", description: 'Sofia'}
-]
 
 ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
 	document.getElementById('mainMenu'));
