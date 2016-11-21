@@ -26,5 +26,22 @@ languages["zh"] = {
 	Lock: "锁定",
 	unLock: "解锁",
 	Loop: "循环",
-	Speak: "发言"
+	Speak: "发言",
+
+	New: "新建",
+	Delete: "删除",
+
+	Routes: "路由",
+	Route: "路由",
+	Name: "名称",
+	Description: "描述",
+	Prefix: "前缀",
+	Length: "长度",
+	DNC: "被叫号码变换",
+	SDNC: "主叫号码变换",
+	Context: "呼叫源",
+	Dest: "目的地类型",
+	"Dest Type": "目的地类型",
+	"Dest UUID": "目的地UUID",
+	Body: "文本"
 };

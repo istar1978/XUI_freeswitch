@@ -32,6 +32,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import UsersPage from "./page_users";
 import RoutesPage from "./page_routes";
@@ -44,8 +45,8 @@ class Settings extends React.Component {
 				<Col sm={2}>
 					<br />
 					<Nav bsStyle="pills" stacked>
-						<NavItem eventKey="M_USERS">Users</NavItem>
-						<NavItem eventKey="M_ROUTES">Routes</NavItem>
+						<NavItem eventKey="M_USERS"><T.span text="Users" /></NavItem>
+						<NavItem eventKey="M_ROUTES"><T.span text="Routes" /></NavItem>
 					</Nav>
 				</Col>
 				<Col sm={10} className="leftBar">

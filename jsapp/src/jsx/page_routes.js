@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import { Modal, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
 class NewRoute extends React.Component {
@@ -74,42 +75,42 @@ class NewRoute extends React.Component {
 
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg">Create New Route</Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Route" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 			<Form horizontal id="newRouteForm">
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}>Name</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" /></Col>
 					<Col sm={10}><FormControl type="input" name="name" placeholder="Name" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
-					<Col componentClass={ControlLabel} sm={2}>Description</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
 					<Col sm={10}><FormControl type="input" name="description" placeholder="Description" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="fromPrefix">
-					<Col componentClass={ControlLabel} sm={2}>Prefix</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" /></Col>
 					<Col sm={10}><FormControl type="input" name="prefix" placeholder="Prefix" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formLength">
-					<Col componentClass={ControlLabel} sm={2}>Length</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="length" /></Col>
 					<Col sm={10}><FormControl type="input" name="length" placeholder="4" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDNC">
-					<Col componentClass={ControlLabel} sm={2}>DNC</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="DNC" /></Col>
 					<Col sm={10}><FormControl type="input" name="dnc" placeholder="DNC" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formSDNC">
-					<Col componentClass={ControlLabel} sm={2}>SDNC</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="SDNC" /></Col>
 					<Col sm={10}><FormControl type="input" name="sdnc" placeholder="SDNC" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formContext">
-					<Col componentClass={ControlLabel} sm={2}>Context</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="context" placeholder="select">
 							<option value="default">default</option>
@@ -119,7 +120,7 @@ class NewRoute extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formDestType">
-					<Col componentClass={ControlLabel} sm={2}>Dest Type</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="dest_type" placeholder="select">
 							<option value="LOCAL">Local User</option>
@@ -131,17 +132,17 @@ class NewRoute extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formDestUUID">
-					<Col componentClass={ControlLabel} sm={2}>Dest UUID</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest UUID" /></Col>
 					<Col sm={10}><FormControl type="input" name="dest_uuid" placeholder="UUID" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formBody">
-					<Col componentClass={ControlLabel} sm={2}>Body</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Body" /></Col>
 					<Col sm={10}> <FormControl componentClass="textarea" name="body" placeholder="textarea" /></Col>
 				</FormGroup>
 
 				<FormGroup>
-					<Col smOffset={2} sm={10}><Button type="button" bsStyle="primary" onClick={this.handleSubmit}>Save</Button></Col>
+					<Col smOffset={2} sm={10}><Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button></Col>
 				</FormGroup>
 			</Form>
 			</Modal.Body>
@@ -232,27 +233,27 @@ class RoutesPage extends React.Component {
 					<td>{row.prefix}</td>
 					<td>{row.dest_type}</td>
 					<td>{row.dest}</td>
-					<td><a href='#' onClick={_this.handleDelete} data-id={row.id}>DELETE</a></td>
+					<td><T.a href='#' onClick={_this.handleDelete} data-id={row.id} text="Delete" /></td>
 			</tr>;
 		})
 
 		return <div>
 			<div className="controls">
-				<button onClick={this.handleControlClick} data="new">New</button>
+				<T.button onClick={this.handleControlClick} data="new" text="New" />
 			</div>
 
-			<h1>Routes</h1>
+			<h1><T.span text="Routes" /></h1>
 
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
 					<th>ID</th>
-					<th>Context</th>
-					<th>Name</th>
-					<th>Prefix</th>
-					<th>Type</th>
-					<th>Dest</th>
+					<th><T.span text="Context" /></th>
+					<th><T.span text="Name" /></th>
+					<th><T.span text="Prefix" /></th>
+					<th><T.span text="Dest Type" /></th>
+					<th><T.span text="Dest" /></th>
 					<th>*</th>
 				</tr>
 				{rows}
