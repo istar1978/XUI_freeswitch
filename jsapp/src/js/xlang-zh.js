@@ -54,6 +54,8 @@ languages["zh"] = {
 	"CID Name": "主叫名称",
 	"CID Number": "主叫号码",
 	Number: "号码",
+	Password: "密码",
+	"VM Password": "VM密码",
 	Domain: "域",
 	Type: "类型",
 

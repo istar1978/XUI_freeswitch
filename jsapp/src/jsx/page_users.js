@@ -95,13 +95,13 @@ class NewUser extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Password"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
 					<Col sm={10}><FormControl type="password" name="vm_password" placeholder="12345678900" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formContext">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
-					<Col sm={10}><FormControl type="input" name="context" value="default"/></Col>
+					<Col sm={10}><FormControl type="input" name="context" defaultValue="default"/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formCidName">
