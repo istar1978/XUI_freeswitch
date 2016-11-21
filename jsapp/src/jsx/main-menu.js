@@ -44,6 +44,7 @@ import FSShow from './fs_show';
 import Conferences from './conferences';
 import AboutPage from './page_about';
 import Phone from './phone';
+import Settings from './settings';
 
 class MainMenu extends React.Component {
 
@@ -61,6 +62,8 @@ class MainMenu extends React.Component {
 			ReactDOM.render(<Conferences/>, document.getElementById('main'));
 		} else if (k == "MM_ABOUT") {
 			ReactDOM.render(<AboutPage/>, document.getElementById('main'));
+		} else if (k == "MM_SETTINGS") {
+			ReactDOM.render(<Settings/>, document.getElementById('main'));
 		} else {
 			ReactDOM.render(<div>{k}</div>, document.getElementById('main'));
 		}
