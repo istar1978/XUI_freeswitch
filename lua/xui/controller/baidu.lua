@@ -89,13 +89,8 @@ post("/tts", function(params)
 			"&client_id=" .. obj.APPKEY ..
 			"&client_secret=" .. obj.SECKEY
 
-	print(url)
-
 	local api = freeswitch.API()
 	local ret = api:execute("curl", url .. " timeout 3")
-	print("ret=" .. ret)
-
-	-- print(ret)
 
 	local response = utils.json_decode(ret)
 	local dest = response.access_token
@@ -105,21 +100,16 @@ post("/tts", function(params)
 				"&cuid=" .. "78-0C-B8-C7-52-F9" ..
 				"&ctp=" .. "1" ..
 				"&tok=" .. dest
-	local filename = utils.tmpname('ivr-')
-
-	freeswitch.consoleLog("err",url..config.upload_path)
-	--os.execute("curl -q '"  .. url .. "' > /usr/local/freeswitch/xui/upload/ivr.mp3")
+	local filename = utils.tmpname('tts-')
 
 	os.execute("curl -q '" .. url .. "'> "..filename..".mp3")
-
-	-- print(filename)
 
 	local f = assert(io.open(filename..".mp3"),"rb")
 	local size = assert(f:seek("end"))
 	local record = {}
 	record.name = params.request.input
 	record.mime = "audio/mp3"
-	record.abs_path = filename
+	record.abs_path = filename..".mp3"
 	record.file_size = "" .. size        
 	record.description = 'TTS'
 	record.dir_path = config.upload_path
