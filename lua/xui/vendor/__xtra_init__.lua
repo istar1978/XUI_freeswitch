@@ -19,17 +19,21 @@ if xtra_debug then
 end
 
 local cur_dir = debug.getinfo(1).source;
-cur_dir = string.gsub(debug.getinfo(1).source, "^@(.+/)[^/]+$", "%1")
+cur_dir = string.gsub(debug.getinfo(1).source, "^@(.+/)vendor/__xtra_init__.lua$", "%1")
 
 package.path = package.path .. ";" .. cur_dir .. "?.lua"
+package.path = package.path .. ";" .. cur_dir .. "vendor/?.lua"
 package.path = package.path .. ";" .. cur_dir .. "controller/?.lua"
+freeswitch.consoleLog("INFO", package.path);
 
-require 'utils'
 require 'xtra_config'
+require 'utils'
 require 'xtra'
 
 -- Now run the actuall controller
 xtra.controller_path = string.gsub(xtra.controller_path, ".lua", "")
+freeswitch.consoleLog("INFO", xtra.controller_path);
+
 require(xtra.controller_path)
 
 if not xtra.rest_matched then
