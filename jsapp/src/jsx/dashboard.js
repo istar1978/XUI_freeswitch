@@ -37,7 +37,7 @@ import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import OverViewPage from "./page_overview";
 import ChannelsPage from "./page_channels";
 import CallsPage from "./page_calls";
-import UsersPage from "./page_users";
+import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
 
 class DashBoard extends React.Component {
@@ -60,7 +60,7 @@ class DashBoard extends React.Component {
 						<Tab.Pane eventKey="M_OVERVIEW" unmountOnExit><OverViewPage/></Tab.Pane>
 						<Tab.Pane eventKey="M_Calls" unmountOnExit><CallsPage/></Tab.Pane>
 						<Tab.Pane eventKey="M_Channels" unmountOnExit><ChannelsPage/></Tab.Pane>
-						<Tab.Pane eventKey="M_Users" unmountOnExit><UsersPage/></Tab.Pane>
+						<Tab.Pane eventKey="M_Users" unmountOnExit><FSUsersPage/></Tab.Pane>
 						<Tab.Pane eventKey="M_Sofia" unmountOnExit><SofiaPage/></Tab.Pane>
 					</Tab.Content>
 				</Col>

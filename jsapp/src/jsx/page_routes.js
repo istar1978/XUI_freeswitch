@@ -214,7 +214,7 @@ class RoutesPage extends React.Component {
 		$.getJSON("/api/routes", "", function(data) {
 			_this.setState({rows: data});
 		}, function(e) {
-			console.log("list_users ERR");
+			console.log("get routes ERR");
 		});
 	}
 

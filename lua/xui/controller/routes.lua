@@ -6,8 +6,8 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	routes = utils.get_model("routings", params.id)
-	return routes
+	route = utils.get_model("routings", params.id)
+	return route
 end)
 
 post('/', function(params)
@@ -28,8 +28,6 @@ put('/:id', function(params)
 end)
 
 delete('/:id', function(params)
-	print(serialize(params))
-
 	ret = utils.delete_model("routings", params.id);
 
 	if ret == 1 then

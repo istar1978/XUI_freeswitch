@@ -48,5 +48,16 @@ languages["zh"] = {
 	"Dest UUID": "目的地UUID",
 	Body: "文本",
 	"Confirm to Delete ?": "确认删除？",
-	"Click me to toggle fast delete mode": "点击以切换快速删除模式"
+	"Click me to toggle fast delete mode": "点击以切换快速删除模式",
+
+	"Create New User": "新建路由",
+	"CID Name": "主叫名称",
+	"CID Number": "主叫号码",
+	Number: "号码",
+	Domain: "域",
+	Type: "类型",
+
+
+
+	the_last_line_______: "Don't put anything beyond this line"
 };

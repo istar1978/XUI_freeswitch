@@ -31,3 +31,17 @@ CREATE TABLE gateways (
 	name VARCHAR,
 	data TEXT
 );
+
+CREATE TABLE users (
+	id INTEGER PRIMARY KEY,
+	extn VARCHAR,
+	name VARCHAR,
+	cid_number VARCHAR,
+	cid_name VARCHAR,
+	context VARCHAR,
+	domain VARCHAR,
+	password VARCHAR,
+	vm_password VARCHAR,
+	type VARCHAR,
+	disabled VARCHAR
+);

@@ -40,7 +40,7 @@ import RoutesPage from "./page_routes";
 class Settings extends React.Component {
 
 	render() {
-		return <Tab.Container id="left-tabs-example" defaultActiveKey="M_ROUTES">
+		return <Tab.Container id="left-tabs-example" defaultActiveKey="M_USERS">
 			<Row className="clearfix">
 				<Col sm={2}>
 					<br />
