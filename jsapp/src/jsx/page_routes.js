@@ -156,7 +156,7 @@ class NewRoute extends React.Component {
 class RoutesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: []};
+		this.state = { formShow: false, rows: [], danger: false};
 
 	    // This binding is necessary to make `this` work in the callback
 	    this.handleControlClick = this.handleControlClick.bind(this);
@@ -176,6 +176,12 @@ class RoutesPage extends React.Component {
 		var id = e.target.getAttribute("data-id");
 		console.log("deleting id", id);
 		var _this = this;
+
+		if (!this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
 
 		$.ajax({
 			type: "DELETE",
@@ -223,7 +229,9 @@ class RoutesPage extends React.Component {
 
 	render() {
 	    let formClose = () => this.setState({ formShow: false });
+	    let toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    var _this = this;
+	    var danger = this.state.danger ? "danger" : "";
 
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
@@ -233,7 +241,7 @@ class RoutesPage extends React.Component {
 					<td>{row.prefix}</td>
 					<td>{row.dest_type}</td>
 					<td>{row.dest}</td>
-					<td><T.a href='#' onClick={_this.handleDelete} data-id={row.id} text="Delete" /></td>
+					<td><T.a href='#' onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
 
@@ -254,7 +262,7 @@ class RoutesPage extends React.Component {
 					<th><T.span text="Prefix" /></th>
 					<th><T.span text="Dest Type" /></th>
 					<th><T.span text="Dest" /></th>
-					<th>*</th>
+					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>

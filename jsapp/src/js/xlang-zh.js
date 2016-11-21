@@ -46,5 +46,7 @@ languages["zh"] = {
 	Dest: "目的地类型",
 	"Dest Type": "目的地类型",
 	"Dest UUID": "目的地UUID",
-	Body: "文本"
+	Body: "文本",
+	"Confirm to Delete ?": "确认删除？",
+	"Click me to toggle fast delete mode": "点击以切换快速删除模式"
 };
