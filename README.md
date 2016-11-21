@@ -79,4 +79,10 @@ enable livearry-sync on conference profile:
 
 ref: conf/verto.conf.xml, then https://your-ip:8082
 
+More:
+
+* <https://facebook.github.io/react/>
+* <http://react-bootstrap.github.io/>
+
+
 Have fun!
