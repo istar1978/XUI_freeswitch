@@ -83,6 +83,6 @@ More:
 
 * <https://facebook.github.io/react/>
 * <http://react-bootstrap.github.io/>
-
+* <https://www.npmjs.com/package/i18n-react>
 
 Have fun!

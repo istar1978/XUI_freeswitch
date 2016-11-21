@@ -113,7 +113,7 @@ var ConferencePage = React.createClass({
 
 		for(var member in this.activeMembers) {
 			if (this.activeMembers[member] == true) {
-				args = this.props.name + " " + data + " " + member;
+				var args = this.props.name + " " + data + " " + member;
 				// console.log("args", args);
 				fsAPI("conference", args);
 			}
@@ -206,14 +206,14 @@ var ConferencePage = React.createClass({
 
 		return <div>
 			<div id="conference-controls">
-				<button onClick={this.handleControlClick} data="mute"><T.span text={{ key: "Mute"}} /></button>
-				<button onClick={this.handleControlClick} data="unmute"><T.span text={{ key: "unMute"}} /></button>
-				<button onClick={this.handleControlClick} data="hup"><T.span text={{ key: "Hangup"}} /></button>
+				<T.button onClick={this.handleControlClick} data="mute" text={{ key: "Mute"}} />
+				<T.button onClick={this.handleControlClick} data="unmute" text={{ key: "unMute"}} />
+				<T.button onClick={this.handleControlClick} data="hup" text={{ key: "Hangup"}} />
 				-
-				<button onClick={this.handleControlClick} data="select"><T.span text={{ key: "Select"}} /></button>
+				<T.button onClick={this.handleControlClick} data="select" text={{ key: "Select"}} />
 				-
-				<button onClick={this.handleControlClick} data="lock"><T.span text={{ key: "Lock"}} /></button>
-				<button onClick={this.handleControlClick} data="unlock"><T.span text={{ key: "unLock"}} /></button>
+				<T.button onClick={this.handleControlClick} data="lock" text={{ key: "Lock"}} />
+				<T.button onClick={this.handleControlClick} data="unlock" text={{ key: "unLock"}} />
 			</div>
 			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
 			<div>
