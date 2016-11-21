@@ -1,4 +1,4 @@
--- do_debug = true
+do_debug = true
 
 section =   XML_REQUEST["section"]
 tag_name =  XML_REQUEST["tag_name"]

@@ -1,7 +1,8 @@
 gw_name = params:getHeader("gateway_name")
 
 if gw_name then
-	XML_STRING = '<profiles><profile name="external"><gateways>'
+	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
+		<profiles><profile name="external"><gateways>]]
 
 	xdb.find("gateways", {name = gw_name}, function(row)
 		name = row["name"]
@@ -20,5 +21,5 @@ if gw_name then
 		XML_STRING = XML_STRING .. gw
 	end)
 
-	XML_STRING = XML_STRING .. "</gateways></profile></profiles>"
+	XML_STRING = XML_STRING .. "</gateways></profile></profiles></configuration>"
 end
