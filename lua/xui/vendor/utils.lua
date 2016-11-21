@@ -87,18 +87,24 @@ end
 
 function get_model(table_name, id)
 	t = {}
+	found = false
 	sql = "SELECT * FROM " .. table_name
 
 	if id then sql = sql .. " WHERE id = " .. id end
 
 	xtra.dbh:query(sql, function(row)
+		found = true
 		if id then
 			t = row
 		else
 			table.insert(t, row)
 		end
 	end)
-	return t
+	if found then
+		return t
+	else
+		return nil
+	end
 end
 
 function delete_model(table_name, id)

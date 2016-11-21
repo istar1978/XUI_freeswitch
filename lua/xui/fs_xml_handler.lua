@@ -26,22 +26,25 @@ require 'xdb'
 
 if config.db_auto_connect then xdb.connect(config.dsn) end
 
-pkg = cur_dir .. "fsxml/" .. tag_name .. "/" .. key_value .. ".lua"
--- print(pkg)
+if section == "directory" then
+	pkg = cur_dir .. "fsxml/directory.lua"
+elseif section == "dialplan" then
+	pkg = cur_dir .. "fsxml/dialplan.lua"
+else
+	pkg = cur_dir .. "fsxml/" .. tag_name .. "/" .. key_value .. ".lua"
+end
+
+if do_debug then print(pkg) end
 
 f, e = loadfile(pkg)
 if f then
 	f()
 	if XML_STRING then
-		XML_STRING = [[
-			<document type="freeswitch/xml">
-				<section name="configuration">
-					<configuration name="]] .. key_value .. '">' ..
-						XML_STRING .. [[
-					</configuration>
-				</section>
-			</document>
-		]]
+		XML_STRING = [[<document type="freeswitch/xml">
+			<section name="]] .. section .. [[">]] ..
+				XML_STRING .. [[
+			</section>
+		</document>]]
 	else
 		XML_STRING = "<xml></xml>"
 	end

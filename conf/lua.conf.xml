@@ -1,0 +1,2 @@
+<param name="xml-handler-script" value="/user/local/freeswitch/xui/lua/xui/fs_xml_handler.lua"/>
+<param name="xml-handler-bindings" value="dialplan|result|config|directory|channels|chatplan|languages"/>

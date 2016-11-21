@@ -45,3 +45,6 @@ CREATE TABLE users (
 	type VARCHAR,
 	disabled VARCHAR
 );
+
+
+INSERT INTO users (extn, password) VALUES ('admin', 'admin');

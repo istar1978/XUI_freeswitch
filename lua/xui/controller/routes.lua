@@ -2,12 +2,20 @@ content_type("application/json")
 
 get('/', function(params)
 	routes = utils.get_model("routings")
-	return routes
+	if (routes)	then
+		return routes
+	else
+		return "[]"
+	end
 end)
 
 get('/:id', function(params)
 	route = utils.get_model("routings", params.id)
-	return route
+	if route then
+		return route
+	else
+		return 404
+	end
 end)
 
 post('/', function(params)

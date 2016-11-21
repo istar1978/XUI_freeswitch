@@ -97,3 +97,7 @@ function xdb.find(t, cond, func)
 	sql = "SELECT * FROM " .. t .. condstr
 	xdb.dbh:query(sql, func)
 end
+
+function xdb.find_by_sql(sql, func)
+	xdb.dbh:query(sql, func)
+end

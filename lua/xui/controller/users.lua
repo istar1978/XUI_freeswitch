@@ -2,12 +2,21 @@ content_type("application/json")
 
 get('/', function(params)
 	users = utils.get_model("users")
-	return users
+
+	if (users) then
+		return users
+	else
+		return "[]"
+	end
 end)
 
 get('/:id', function(params)
 	user = utils.get_model("users", params.id)
-	return user
+	if user then
+		return user
+	else
+		return 404
+	end
 end)
 
 put('/:id', function(params)
@@ -27,7 +36,7 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("routings", params.id);
+	ret = utils.delete_model("users", params.id);
 
 	if ret == 1 then
 		return 200, "{}"
