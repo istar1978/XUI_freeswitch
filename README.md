@@ -18,10 +18,25 @@ install npm tools first
     npm install -g watch
     npm install -g wiredep-cli
     npm install -g usemin-cli
-    npm install -g browserify
+    npm install -g watchify
     npm install --save-dev babel-cli
 
+    cd jsapp
     npm install
+    bower install
+
+or if you are in China, see <https://npm.taobao.org/>
+
+    cnpm install -g jshint
+    cnpm install -g browserify
+    cnpm install -g watch
+    cnpm install -g wiredep-cli
+    cnpm install -g usemin-cli
+    cnpm install -g watchify
+    cnpm install --save-dev babel-cli
+
+    cd jsapp
+    cnpm install
     bower install
 
 ## Development
