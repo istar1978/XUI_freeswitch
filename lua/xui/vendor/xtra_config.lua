@@ -1,6 +1,6 @@
 config = {}
 
-config.dsn = "sqlite://xui";
+config.dsn = "sqlite://xui"
 config.db_user = "root"
 config.db_pass = "root"
 config.db_auto_connect = true
@@ -19,3 +19,4 @@ config.abnormal_instant_conference_timeout = "120"
 config.is_auth = true
 config.session_path = "/tmp"
 config.view_path="/Users/dujinfang/workspace/freeswitch/xui/lua/xui/view"
+config.prefix_table = "gw"

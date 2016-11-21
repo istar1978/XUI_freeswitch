@@ -510,7 +510,7 @@ end
 		xtra.controller = "index"
 	end
 
-	xtra.controller_path = "controller/" .. xtra.controller
+	xtra.controller_path = xtra.controller
 
 	if xtra.debug then
 		xtra.log("INFO", "method=" .. xtra.method ..

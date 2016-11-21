@@ -1,6 +1,8 @@
 # XUI Readme
 
-# Design
+This project is in active development and is not ready for production use.
+
+## Design
 
 ToDo...
 

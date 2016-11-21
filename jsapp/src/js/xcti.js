@@ -246,3 +246,10 @@ function translateMember(member) {
 	// console.log("m", m);
 	return m;
 }
+
+function form2json (selector) {
+	var ary = $(selector).serializeArray();
+	var obj = {};
+	for (var a = 0; a < ary.length; a++) obj[ary[a].name] = ary[a].value;
+	return obj;
+}

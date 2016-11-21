@@ -31,76 +31,209 @@
 'use strict';
 
 import React from 'react';
+import { Modal, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
-var RoutesPage = React.createClass({
-	getInitialState: function() {
-		return {rows: [], smShow: false, lgShow: false};
-	},
+class NewRoute extends React.Component {
+	propTypes: {handleNewRouteAdded: React.PropTypes.func}
 
-	handleControlClick: function(e) {
+	constructor(props) {
+		super(props);
+
+		this.last_id = 0;
+
+	    // This binding is necessary to make `this` work in the callback
+	    this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var route = form2json('#newRouteForm');
+		console.log("route", route);
+
+		$.ajax({
+			type: "POST",
+			url: "/api/routes",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(route),
+			success: function () {
+				_this.last_id++;
+				route.id = "NEW" + _this.last_id;
+				_this.props["data-handleNewRouteAdded"](route);
+			},
+			error: function(msg) {
+				console.error("route", msg);
+			}
+		});
+	}
+
+	render() {
+		console.log(this.props);
+
+		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg">Create New Route</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newRouteForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}>Name</Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="Name" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}>Description</Col>
+					<Col sm={10}><FormControl type="input" name="description" placeholder="Description" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="fromPrefix">
+					<Col componentClass={ControlLabel} sm={2}>Prefix</Col>
+					<Col sm={10}><FormControl type="input" name="prefix" placeholder="Prefix" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formLength">
+					<Col componentClass={ControlLabel} sm={2}>Length</Col>
+					<Col sm={10}><FormControl type="input" name="length" placeholder="4" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDNC">
+					<Col componentClass={ControlLabel} sm={2}>DNC</Col>
+					<Col sm={10}><FormControl type="input" name="dnc" placeholder="DNC" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSDNC">
+					<Col componentClass={ControlLabel} sm={2}>SDNC</Col>
+					<Col sm={10}><FormControl type="input" name="sdnc" placeholder="SDNC" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formContext">
+					<Col componentClass={ControlLabel} sm={2}>Context</Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="context" placeholder="select">
+							<option value="default">default</option>
+							<option value="public">public</option>
+						</FormControl>
+					</Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDestType">
+					<Col componentClass={ControlLabel} sm={2}>Dest Type</Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="dest_type" placeholder="select">
+							<option value="LOCAL">Local User</option>
+							<option value="GATEWAY">Gateway</option>
+							<option value="IP">IP</option>
+							<option value="SYSTEM">System</option>
+						</FormControl>
+					</Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDestUUID">
+					<Col componentClass={ControlLabel} sm={2}>Dest UUID</Col>
+					<Col sm={10}><FormControl type="input" name="dest_uuid" placeholder="UUID" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formBody">
+					<Col componentClass={ControlLabel} sm={2}>Body</Col>
+					<Col sm={10}> <FormControl componentClass="textarea" name="body" placeholder="textarea" /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}><Button type="button" bsStyle="primary" onClick={this.handleSubmit}>Save</Button></Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>Close</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
+class RoutesPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { formShow: false, rows: []};
+
+	    // This binding is necessary to make `this` work in the callback
+	    this.handleControlClick = this.handleControlClick.bind(this);
+	    this.handleDelete = this.handleDelete.bind(this);
+	}
+
+	handleControlClick(e) {
 		var data = e.target.getAttribute("data");
 		console.log("data", data);
-	},
 
-	handleClick: function(x) {
-	},
+		if (data == "new") {
+			this.setState({ formShow: true});
+		}
+	}
 
-	componentWillMount: function() {
-	},
-
-	componentWillUnmount: function() {
-	},
-
-	componentDidMount: function() {
+	handleDelete(e) {
+		var id = e.target.getAttribute("data-id");
+		console.log("deleting id", id);
 		var _this = this;
-		fsAPI("list_users", "", function(data) {
-			// console.log(data.message);
-			var lines = data.message.split("\n");
-			var rows = [];
 
-			for (var i = 0; i < lines.length; i++) {
-				if (i == 0 || i >= lines.length - 2) continue;
+		$.ajax({
+			type: "DELETE",
+			url: "/api/routes/" + id,
+			success: function () {
+				console.log("deleted")
+				var rows = _this.state.rows.filter(function(row) {
+					return row.id != id;
+				});
 
-				cols = lines[i].split("|");
-				row = {};
-
-				row.index = i;
-				row.userid    = cols[0];
-				row.context   = cols[1];
-				row.domain    = cols[2];
-				row.group     = cols[3];
-				row.contact   = cols[4];
-				row.callgroup = cols[5];
-				row.cidname   = cols[6];
-				row.cidnumber = cols[7];
-				rows.push(row);
+				_this.setState({rows: rows});
+			},
+			error: function(msg) {
+				console.error("route", msg);
 			}
+		});
+	}
 
-			_this.setState({rows: rows});
+	handleClick(x) {
+	}
+
+	componentWillMount() {
+	}
+
+	componentWillUnmount() {
+	}
+
+	componentDidMount() {
+		var _this = this;
+		$.getJSON("/api/routes", "", function(data) {
+			_this.setState({rows: data});
 		}, function(e) {
 			console.log("list_users ERR");
 		});
-	},
+	}
 
-	handleFSEvent: function(v, e) {
-	},
+	handleFSEvent(v, e) {
+	}
 
-	render: function() {
-		let smClose = () => this.setState({ smShow: false });
-	    let lgClose = () => this.setState({ lgShow: false });
+	handleRouteAdded(route) {
+		var rows = this.state.rows;
+		rows.push(route);
+		this.setState({rows: rows, formShow: false});
+    }
 
-		var rows = [];
-		this.state.rows.forEach(function(row) {
-			rows.push(<tr key={row.index}>
-					<td>{row.userid}</td>
+	render() {
+	    let formClose = () => this.setState({ formShow: false });
+	    var _this = this;
+
+		var rows = this.state.rows.map(function(row) {
+			return <tr key={row.id}>
+					<td>{row.id}</td>
 					<td>{row.context}</td>
-					<td>{row.domain}</td>
-					<td>{row.group}</td>
-					<td>{row.constact}</td>
-					<td>{row.callgroup}</td>
-					<td>{row.cidname}</td>
-					<td>{row.cidnumber}</td>
-			</tr>);
+					<td>{row.name}</td>
+					<td>{row.prefix}</td>
+					<td>{row.dest_type}</td>
+					<td>{row.dest}</td>
+					<td><a href='#' onClick={_this.handleDelete} data-id={row.id}>DELETE</a></td>
+			</tr>;
 		})
 
 		return <div>
@@ -116,16 +249,20 @@ var RoutesPage = React.createClass({
 				<tr>
 					<th>ID</th>
 					<th>Context</th>
+					<th>Name</th>
 					<th>Prefix</th>
 					<th>Type</th>
 					<th>Dest</th>
+					<th>*</th>
 				</tr>
 				{rows}
 				</tbody>
 				</table>
 			</div>
+
+			<NewRoute show={this.state.formShow} onHide={formClose} data-handleNewRouteAdded={this.handleRouteAdded.bind(this)}/>
 		</div>
 	}
-});
+}
 
 export default RoutesPage;

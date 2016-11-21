@@ -7,8 +7,16 @@ CREATE TABLE contexts (
 
 CREATE TABLE routings (
 	id INTEGER PRIMARY KEY,
-	context_id INTEGER,
-	data TEXT
+	name VARCHAR,
+	description VARCHAR,
+	prefix VARCHAR,
+	length, INTEGER,
+	context VARCHAR,
+	dnc VARCHAR,
+	sdnc VARCHAR,
+	dest_type VARCHAR,
+	dest_uuid VARCHAR,
+	body TEXT
 );
 
 CREATE TABLE profiles (
