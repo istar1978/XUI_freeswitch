@@ -51,7 +51,7 @@ var MENUS = [
 
 var RMENUS = [
 	{id: "MM_SETTINGS", description: <T.span text={{ key: "Settings"}} />},
-	{id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />},
+	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />},
 	{id: "MM_HELP", description: <T.span text={{ key: "Help"}} />}
 ];
 
