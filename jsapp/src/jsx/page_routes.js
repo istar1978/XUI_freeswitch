@@ -80,37 +80,37 @@ class NewRoute extends React.Component {
 			<Modal.Body>
 			<Form horizontal id="newRouteForm">
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" /></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="Name" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="route_to_beijing" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
-					<Col sm={10}><FormControl type="input" name="description" placeholder="Description" /></Col>
+					<Col sm={10}><FormControl type="input" name="description" placeholder="Beijing" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="fromPrefix">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" /></Col>
-					<Col sm={10}><FormControl type="input" name="prefix" placeholder="Prefix" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="prefix" placeholder="010" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formLength">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="length" /></Col>
-					<Col sm={10}><FormControl type="input" name="length" placeholder="4" /></Col>
+					<Col sm={10}><FormControl type="input" name="length" placeholder="11" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDNC">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="DNC" /></Col>
-					<Col sm={10}><FormControl type="input" name="dnc" placeholder="DNC" /></Col>
+					<Col sm={10}><FormControl type="input" name="dnc" placeholder="" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formSDNC">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="SDNC" /></Col>
-					<Col sm={10}><FormControl type="input" name="sdnc" placeholder="SDNC" /></Col>
+					<Col sm={10}><FormControl type="input" name="sdnc" placeholder="" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formContext">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"  className="mandatory"/></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="context" placeholder="select">
 							<option value="default">default</option>
@@ -138,7 +138,7 @@ class NewRoute extends React.Component {
 
 				<FormGroup controlId="formBody">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Body" /></Col>
-					<Col sm={10}> <FormControl componentClass="textarea" name="body" placeholder="textarea" /></Col>
+					<Col sm={10}> <FormControl componentClass="textarea" name="body" placeholder="" /></Col>
 				</FormGroup>
 
 				<FormGroup>

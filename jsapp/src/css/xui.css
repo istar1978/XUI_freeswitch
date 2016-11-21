@@ -30,3 +30,7 @@
 .leftBar {
 	border-left: 1px solid #999;
 }
+
+.mandatory {
+	color: red;
+}

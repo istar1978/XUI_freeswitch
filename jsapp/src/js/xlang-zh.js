@@ -30,7 +30,10 @@ languages["zh"] = {
 
 	New: "新建",
 	Delete: "删除",
+	Save: "保存",
+	Submit: "提交",
 
+	"Create New Route": "新建路由",
 	Routes: "路由",
 	Route: "路由",
 	Name: "名称",
