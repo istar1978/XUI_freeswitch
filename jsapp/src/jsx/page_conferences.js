@@ -109,6 +109,12 @@ var ConferencePage = React.createClass({
 				this.setState({rows: rows});
 			}
 			return;
+		} else if (data == "loop") {
+			console.log("loop");
+			fsAPI("luarun", "/tmp/a.lua");
+		} else if (data == "speak") {
+			console.log("speak");
+			fsAPI("luarun", "/tmp/b.lua");
 		}
 
 		for(var member in this.activeMembers) {
@@ -214,6 +220,9 @@ var ConferencePage = React.createClass({
 				-
 				<button onClick={this.handleControlClick} data="lock"><T.span text={{ key: "Lock"}} /></button>
 				<button onClick={this.handleControlClick} data="unlock"><T.span text={{ key: "unLock"}} /></button>
+				-
+				<button onClick={this.handleControlClick} data="loop"><T.span text={{ key: "Loop"}} /></button>
+				<button onClick={this.handleControlClick} data="speak"><T.span text={{ key: "Speak"}} /></button>
 			</div>
 			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
 			<div>
