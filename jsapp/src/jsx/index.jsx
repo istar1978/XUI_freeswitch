@@ -36,29 +36,63 @@ import T from 'i18n-react';
 import Languages from "./languages";
 import ReactDOM from 'react-dom';
 import MainMenu from './main-menu';
-import SideBar from "./sidebar";
+import FSShow from "./fs_show";
+import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
+import { Router, Route, IndexRoute, Link, hashHistory, browserHistory } from 'react-router'
+import Conferences from './conferences';
+import Settings from './settings';
+import Users from './page_users';
+import Routes from './page_routes';
 
 var lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
 
 var MENUS = [
-	{id: "MM_DASHBOARD", description: <T.span text={{ key: "DashBoard"}} />, data: ''},
-	{id: "MM_SHOW", description: <T.span text={{ key: "Show"}} />, data: 'show'},
-	{id: "MM_BLOCKS", description: <T.span text={{ key: "Blocks"}} />},
-	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: 'conferences'},
-	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: 'about'}
+	{id: "MM_DASHBOARD", description: <T.span text={{ key: "DashBoard"}} />, data: '/'},
+	{id: "MM_SHOW", description: <T.span text={{ key: "Show"}} />, data: '/show'},
+	{id: "MM_BLOCKS", description: <T.span text={{ key: "Blocks"}} />, data: '/blocks'},
+	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: '/conferences'},
+	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: '/about'}
 ];
 
 var RMENUS = [
-	{id: "MM_SETTINGS", description: <T.span text={{ key: "Settings"}} />},
-	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />},
-	{id: "MM_HELP", description: <T.span text={{ key: "Help"}} />}
+	{id: "MM_SETTINGS", description: <T.span text="Settings" />, data: "/settings/users"},
+	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />, data:"/profiles"},
+	{id: "MM_HELP", description: <T.span text="Help"/>, data: "/help"}
 ];
 
-ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
-	document.getElementById('mainMenu'));
+const Footer = React.createClass({
+	render() {
+		return <div id="footer">
+			<br/><br/><br/>
+			<Languages className="pull-ight"/>
+			Copyright &copy; Yantai Xiaoyingtao, ALL rights reserved
+			<br/><br/>
+		</div>
+	}
+})
 
-ReactDOM.render(<DashBoard/>, document.getElementById('main'));
+const App = React.createClass({
+	render() {
+		return <div><MainMenu menus = {MENUS} rmenus = {RMENUS}/>
+			<div id='main'>{this.props.children}</div>
+				<Footer/>
+			</div>
+		}
+})
 
-ReactDOM.render(<Languages/>, document.getElementById('lang'));
+ReactDOM.render(<Router history={hashHistory}>
+	<Route path="/" component={App}>
+		<IndexRoute component={DashBoard}/>
+		<Route path="show" component={FSShow} />
+		<Route path="about" component={AboutPage} />
+		<Route path="conferences" component={Conferences} />
+
+		<Route path="settings" component={Settings}>
+		    <IndexRoute component={Users}/>
+			<Route path="users" />
+			<Route path="routes" component={Routes} />
+		</Route>
+	</Route>
+</Router>, document.getElementById('body'))

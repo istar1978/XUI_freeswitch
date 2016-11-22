@@ -36,6 +36,7 @@ import T from 'i18n-react';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import UsersPage from "./page_users";
 import RoutesPage from "./page_routes";
+import { LinkContainer } from 'react-router-bootstrap';
 
 class Settings extends React.Component {
 
@@ -45,8 +46,8 @@ class Settings extends React.Component {
 				<Col sm={2}>
 					<br />
 					<Nav bsStyle="pills" stacked>
-						<NavItem eventKey="M_USERS"><T.span text="Users" /></NavItem>
-						<NavItem eventKey="M_ROUTES"><T.span text="Routes" /></NavItem>
+						<LinkContainer to="/settings/users"><NavItem eventKey="M_USERS"><T.span text="Users" /></NavItem></LinkContainer>
+						<LinkContainer to="/settings/routes"><NavItem eventKey="M_ROUTES"><T.span text="Routes" /></NavItem></LinkContainer>
 					</Nav>
 				</Col>
 				<Col sm={10} className="leftBar">

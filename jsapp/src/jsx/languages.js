@@ -58,7 +58,7 @@ class Languages extends React.Component {
 	}
 
 	render() {
-		return <T.span text={this.state.lang} onClick={this.handleClick}/>
+		return <div className="pull-right"><T.span text={this.state.lang} onClick={this.handleClick}/></div>
 	}
 
 }

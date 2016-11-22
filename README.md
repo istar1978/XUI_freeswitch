@@ -65,9 +65,9 @@ build:
 
 Enjoy!
 
-see: <http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/>
-and  <http://react-bootstrap.github.io/getting-started.html>
-and <https://github.com/lukehoban/es6features>
+* <http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/>
+* <http://react-bootstrap.github.io/getting-started.html>
+* <https://github.com/lukehoban/es6features>
 
 ## config
 
@@ -84,5 +84,7 @@ More:
 * <https://facebook.github.io/react/>
 * <http://react-bootstrap.github.io/>
 * <https://www.npmjs.com/package/i18n-react>
+* <https://github.com/ReactTraining/react-router>
+* <http://stackoverflow.com/questions/35687353/react-bootstrap-link-item-in-a-navitem>
 
 Have fun!

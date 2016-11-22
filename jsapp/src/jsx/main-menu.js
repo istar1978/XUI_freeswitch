@@ -39,46 +39,25 @@ import { Nav } from 'react-bootstrap';
 import { NavItem } from 'react-bootstrap';
 import { NavDropdown } from 'react-bootstrap';
 import { MenuItem } from 'react-bootstrap';
-import DashBoard from "./dashboard";
-import FSShow from './fs_show';
-import Conferences from './conferences';
-import AboutPage from './page_about';
+import { Router, Route, Link, browserHistory } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap';
 import Phone from './phone';
-import Settings from './settings';
 
 class MainMenu extends React.Component {
-
-	handleSelect(k, e) {
-		console.log("key", k);
-		console.log("event", e);
-
-		if (k == "MM_DASHBOARD") {
-			ReactDOM.render(<DashBoard/>, document.getElementById('main'));
-		} else if (k == "MM_SHOW") {
-			ReactDOM.render(<FSShow/>, document.getElementById('main'));
-		} else if (k == "MM_BLOCKS") {
-			window.location = "/blocks.html";
-		} else if (k == "MM_CONFERENCES") {
-			ReactDOM.render(<Conferences/>, document.getElementById('main'));
-		} else if (k == "MM_ABOUT") {
-			ReactDOM.render(<AboutPage/>, document.getElementById('main'));
-		} else if (k == "MM_SETTINGS") {
-			ReactDOM.render(<Settings/>, document.getElementById('main'));
-		} else {
-			ReactDOM.render(<div>{k}</div>, document.getElementById('main'));
-		}
-	}
-
 	render() {
 		var menus = this.props.menus.map(function(item) {
-			return <NavItem eventKey={item.id} key={item.id}>{item.description}</NavItem>;
+			return <LinkContainer to={item.data} key={item.id}>
+				<NavItem eventKey={item.id}>{item.description}</NavItem>
+			</LinkContainer>
 		});
 
 		var rmenus = this.props.rmenus.map(function(item) {
-			return <NavItem eventKey={item.id} key={item.id}>{item.description}</NavItem>;
+			return <LinkContainer to={item.data} key={item.id}>
+				<NavItem eventKey={item.id}>{item.description}</NavItem>
+			</LinkContainer>
 		});
 
-		return <Navbar inverse fixedTop staticTop onSelect={this.handleSelect}>
+		return <Navbar inverse fixedTop staticTop>
 			<Navbar.Header>
 				<Navbar.Brand>
 					<a href="#"><img src="/assets/img/xui.png" style={{height: "24px"}}/></a>
