@@ -31,15 +31,17 @@
 
 'use strict';
 
+
+var LANG = localStorage.getItem("lang");
+if (LANGUAGES[LANG]) T.setTexts(LANGUAGES[LANG]);
+
 import React from 'react'
+import T from 'i18n-react';
+import Languages from "./languages";
 import ReactDOM from 'react-dom';
 import MainMenu from './main-menu';
 import SideBar from "./sidebar";
 import DashBoard from "./dashboard";
-import T from 'i18n-react';
-
-var lang="zh";
-if (languages[lang]) T.setTexts(languages[lang]);
 
 var MENUS = [
 	{id: "MM_DASHBOARD", description: <T.span text={{ key: "DashBoard"}} />, data: ''},
@@ -59,3 +61,5 @@ ReactDOM.render(<MainMenu menus = {MENUS} rmenus = {RMENUS}/>,
 	document.getElementById('mainMenu'));
 
 ReactDOM.render(<DashBoard/>, document.getElementById('main'));
+
+ReactDOM.render(<Languages/>, document.getElementById('lang'));

@@ -35,7 +35,7 @@
 var verto;
 var host = window.location.hostname;
 var domain = host;
-var languages = {}
+var LANGUAGES = {}
 
 var callbacks = {
 

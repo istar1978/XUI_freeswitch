@@ -42,3 +42,11 @@
 .container {
 	width: 100% !important;
 }
+
+#main {
+	min-height: 480px;
+}
+
+#footer {
+	text-align: center;
+}

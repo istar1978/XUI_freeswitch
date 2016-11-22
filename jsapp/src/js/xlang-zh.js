@@ -1,4 +1,4 @@
-languages["zh"] = {
+LANGUAGES["zh"] = {
 	Status: "状态",
 	DashBoard: "首页",
 	Show: "Show",
