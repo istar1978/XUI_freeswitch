@@ -220,10 +220,10 @@ var ConferencePage = React.createClass({
 				<table className="table conference">
 				<tbody>
 				<tr>
-					<th>MemberID</th>
-					<th>CID</th>
-					<th>Status</th>
-					<th>Email</th>
+					<th><T.span text="Member ID"/></th>
+					<th><T.span text="CID"/></th>
+					<th><T.span text="Status"/></th>
+					<th><T.span text="Email"/></th>
 				</tr>
 				{
 					this.state.rows.map(function(member) {

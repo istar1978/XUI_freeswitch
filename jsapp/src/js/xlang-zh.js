@@ -59,7 +59,9 @@ LANGUAGES["zh"] = {
 	Domain: "域",
 	Type: "类型",
 
-
+	Email: "电子邮件",
+	"Member ID": "成员ID",
+	"CID": "主叫号码",
 
 	the_last_line_______: "Don't put anything beyond this line"
 };

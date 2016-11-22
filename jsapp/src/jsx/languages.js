@@ -37,17 +37,20 @@ class Languages extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var LANG = localStorage.getItem("lang");
-		this.state = {lang: LANG};
+		this.state = {lang: current_lang()};
 
 	    this.handleClick = this.handleClick.bind(this);
 	}
 
 	handleClick() {
-		var lang = "zh";
-		if (this.state.lang == "zh") {
-			lang = "en"
+		var lang;
+
+		if (this.state.lang == "zh-CN") {
+			lang = "en-US"
+		} else {
+			lang = "zh-CN"
 		}
+
 		console.log("lang", lang);
 		this.setState({lang : lang});
 		localStorage.setItem("lang", lang);

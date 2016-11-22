@@ -31,10 +31,6 @@
 
 'use strict';
 
-
-var LANG = localStorage.getItem("lang");
-if (LANGUAGES[LANG]) T.setTexts(LANGUAGES[LANG]);
-
 import React from 'react'
 import T from 'i18n-react';
 import Languages from "./languages";
@@ -42,6 +38,9 @@ import ReactDOM from 'react-dom';
 import MainMenu from './main-menu';
 import SideBar from "./sidebar";
 import DashBoard from "./dashboard";
+
+var lang_map = detect_language();
+if (lang_map) T.setTexts(lang_map);
 
 var MENUS = [
 	{id: "MM_DASHBOARD", description: <T.span text={{ key: "DashBoard"}} />, data: ''},

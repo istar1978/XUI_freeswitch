@@ -256,3 +256,24 @@ function form2json (selector) {
 	for (var a = 0; a < ary.length; a++) obj[ary[a].name] = ary[a].value;
 	return obj;
 }
+
+
+function current_lang()
+{
+	var lang = localStorage.getItem("lang");
+	if (!lang) lang = window.navigator.userLanguage || window.navigator.language;
+	if (!lang) lang = "en"
+	return lang;
+}
+
+function detect_language()
+{
+	var lang = current_lang();
+	var lang_map = LANGUAGES[lang];
+
+	if (!lang_map && lang.length > 2) {
+		lang_map = LANGUAGES[lang.substring(0,2)];
+	}
+
+	return lang_map;
+}
