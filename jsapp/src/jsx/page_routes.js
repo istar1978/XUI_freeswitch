@@ -42,8 +42,8 @@ class NewRoute extends React.Component {
 
 		this.last_id = 0;
 
-	    // This binding is necessary to make `this` work in the callback
-	    this.handleSubmit = this.handleSubmit.bind(this);
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	handleSubmit(e) {
