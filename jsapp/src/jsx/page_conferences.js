@@ -134,6 +134,17 @@ var ConferencePage = React.createClass({
 
 	componentDidMount: function() {
 		console.log("name:", this.props.name);
+		window.addEventListener("verto-login", this.handleVertoLogin);
+
+		if (verto) {
+			this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
+			this.la.onChange = this.handleConferenceEvent;
+		} // else verto is not ready yet, this happends on a refresh, wait for the verto-login event;
+	},
+
+	handleVertoLogin: function(e) {
+		// console.log("eeee", e.detail);
+		if (this.la) this.la.destroy;
 		this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
 		this.la.onChange = this.handleConferenceEvent;
 	},
