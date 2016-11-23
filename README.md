@@ -65,6 +65,8 @@ build:
 
 Enjoy!
 
+* <http://getbootstrap.com/2.3.2/index.html>
+* <http://www.bootcss.com/>
 * <http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/>
 * <http://react-bootstrap.github.io/getting-started.html>
 * <https://github.com/lukehoban/es6features>
