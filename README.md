@@ -81,6 +81,10 @@ enable livearry-sync on conference profile:
 
 ref: conf/verto.conf.xml, then https://your-ip:8082
 
+# Update
+
+If you pull/update code from github chances are we added new npm packages, so make sure `cd jsapp && npm install` if you see wired erros.
+
 More:
 
 * <https://facebook.github.io/react/>
