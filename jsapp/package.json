@@ -33,7 +33,7 @@
   },
   "scripts": {
     "lint": "jshint **.js",
-    "livereload": "live-reload --port 9091 index.html src/js/*.js src/jsx/*",
+    "livereload": "live-reload --port 9091 ../www/index.html ../www/assets/js/jsx/*.js",
     "wiredep": "wiredep -s index.html",
     "build:css": "cat src/css/*.css > ../www/assets/css/xui.css",
     "watch:css": "watch 'npm run build:css' src/css/",

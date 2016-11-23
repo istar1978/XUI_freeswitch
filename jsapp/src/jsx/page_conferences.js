@@ -32,6 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
+import { ButtonGroup,  Button } from 'react-bootstrap';
 
 var Member = React.createClass({
 	propTypes: {
@@ -217,14 +218,20 @@ var ConferencePage = React.createClass({
 
 		return <div>
 			<div id="conference-controls">
-				<T.button onClick={this.handleControlClick} data="mute" text={{ key: "Mute"}} />
-				<T.button onClick={this.handleControlClick} data="unmute" text={{ key: "unMute"}} />
-				<T.button onClick={this.handleControlClick} data="hup" text={{ key: "Hangup"}} />
-				-
-				<T.button onClick={this.handleControlClick} data="select" text={{ key: "Select"}} />
-				-
-				<T.button onClick={this.handleControlClick} data="lock" text={{ key: "Lock"}} />
-				<T.button onClick={this.handleControlClick} data="unlock" text={{ key: "unLock"}} />
+			<ButtonGroup>
+				<Button><T.span onClick={this.handleControlClick} text= "Mute" /></Button>
+				<Button><T.span onClick={this.handleControlClick} text= "unMute" /></Button>
+				<Button><T.span onClick={this.handleControlClick} text= "Hangup" /></Button>
+			</ButtonGroup>
+			&nbsp;&nbsp;
+			<ButtonGroup>
+				<Button><T.span onClick={this.handleControlClick} text= "Select" /></Button>
+			</ButtonGroup>
+			&nbsp;&nbsp;
+			<ButtonGroup>
+				<Button><T.span onClick={this.handleControlClick} text= "Lock" /></Button>
+				<Button><T.span onClick={this.handleControlClick} text= "unLock" /></Button>
+			</ButtonGroup>
 			</div>
 			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
 			<div>
