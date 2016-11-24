@@ -58,7 +58,8 @@ class Languages extends React.Component {
 	}
 
 	render() {
-		return <div className="pull-right"><T.span text={this.state.lang} onClick={this.handleClick}/></div>
+		var img = "/assets/img/" + this.state.lang + ".png";
+		return <div className="pull-right"><img src={img} onClick={this.handleClick}/></div>
 	}
 
 }
