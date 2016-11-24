@@ -44,6 +44,7 @@ import Conferences from './conferences';
 import Settings from './settings';
 import Users from './page_users';
 import Routes from './page_routes';
+import Blocks from './blocks.js';
 
 var lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -82,11 +83,15 @@ const App = React.createClass({
 		}
 })
 
+
+$(document).ready(function() {
+
 ReactDOM.render(<Router history={hashHistory}>
 	<Route path="/" component={App}>
 		<IndexRoute component={DashBoard}/>
 		<Route path="show" component={FSShow} />
 		<Route path="about" component={AboutPage} />
+		<Route path="blocks" component={Blocks} />
 		<Route path="conferences" component={Conferences} />
 
 		<Route path="settings" component={Settings}>
@@ -96,3 +101,5 @@ ReactDOM.render(<Router history={hashHistory}>
 		</Route>
 	</Route>
 </Router>, document.getElementById('body'))
+
+});
