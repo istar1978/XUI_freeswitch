@@ -50,3 +50,16 @@
 #footer {
 	text-align: center;
 }
+
+#loginbox {
+	text-align: center;
+}
+
+#loginbox input {
+	font-size: 40pt;
+	text-align: center;
+}
+
+#loginbox button {
+	font-size: 20pt;
+}

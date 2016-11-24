@@ -129,6 +129,12 @@ var Phone = React.createClass({
 		window.addEventListener("verto-dialog-state", this.handleVertoDialogState);
 	},
 
+	componentWillUnmount: function() {
+		window.removeEventListener("verto-login", this.handleVertoLogin);
+		window.removeEventListener("verto-disconnect", this.handleVertoDisconnect);
+		window.removeEventListener("verto-dialog-state", this.handleVertoDialogState);
+	},
+
 	render: function() {
 		var state;
 		var hangupButton = "";

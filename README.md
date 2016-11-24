@@ -92,5 +92,14 @@ More:
 * <https://www.npmjs.com/package/i18n-react>
 * <https://github.com/ReactTraining/react-router>
 * <http://stackoverflow.com/questions/35687353/react-bootstrap-link-item-in-a-navitem>
+* <https://github.com/bradwestfall/CSS-Tricks-React-Series>
+
+## The multiple ways of creating components
+
+I'm not sure wether we should use `React.createClass` way or the `extends React.Component` way. Pete Hunt (former Facebook React team developer) once wrote:
+
+> "You may see some talk about ES6 classes being the preferred way to create React components. This is untrue. Most people (including Facebook) are using React.createClass()."
+
+I'm not saying there's anything wrong with the ES6 way, I'm just saying you don't have to feel bad or behind if you do it the older React.createClass way.
 
 Have fun!

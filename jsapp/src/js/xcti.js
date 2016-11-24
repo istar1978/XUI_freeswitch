@@ -58,9 +58,11 @@ var callbacks = {
 	},
 
 	onWSLogin: function(v, success) {
-		console.log("login");
-		console.log(v);
-		console.log(success);
+		console.log("login", v);
+		console.log("login", success);
+
+		if (!success) return;
+
 		verto.subscribe("presence", {
 			handler: function(v, e) {
 				console.log("PRESENCE:", e);
@@ -83,26 +85,17 @@ var callbacks = {
 
 	onEvent: function(v, e) {
 		console.debug("GOT EVENT", e);
-	},
-
-/*
-	success_cb: function(a, b) {
-	},
-
-	error_cb: function(a, b) {
 	}
-*/
 };
 
-
-var verto = null;
-
-$(document).ready(function(){
+function verto_params() {
 	var protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
+	var username = localStorage.getItem('username');
+	var password = localStorage.getItem('password');
 
-	verto = new $.verto({
-		login: "1000" + "@" + host,
-		passwd: "1234",
+	return {
+		login: username + "@" + host,
+		passwd: password,
 		socketUrl: protocol + host + ":" + window.location.port,
 		tag: "webcam",
 		audioParams: {
@@ -115,7 +108,13 @@ $(document).ready(function(){
 			useMic: 'any',
 			useSpeak: 'any',
 		},
-	}, callbacks);
+	}
+}
+
+var verto = null;
+
+$(document).ready(function(){
+	verto = new $.verto(verto_params(), callbacks);
 });
 
 $('#ocean_callButton').click(function() {

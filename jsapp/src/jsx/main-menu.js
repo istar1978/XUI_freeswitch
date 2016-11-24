@@ -45,17 +45,19 @@ import Phone from './phone';
 
 class MainMenu extends React.Component {
 	render() {
-		var menus = this.props.menus.map(function(item) {
+		const menus = this.props.menus.map(function(item) {
 			return <LinkContainer to={item.data} key={item.id}>
 				<NavItem eventKey={item.id}>{item.description}</NavItem>
 			</LinkContainer>
 		});
 
-		var rmenus = this.props.rmenus.map(function(item) {
+		const rmenus = this.props.rmenus.map(function(item) {
 			return <LinkContainer to={item.data} key={item.id}>
 				<NavItem eventKey={item.id}>{item.description}</NavItem>
 			</LinkContainer>
 		});
+
+		const phone = this.props.rmenus.length > 0 ? <Phone /> : "";
 
 		return <Navbar inverse fixedTop staticTop>
 			<Navbar.Header>
@@ -67,7 +69,7 @@ class MainMenu extends React.Component {
 			<Navbar.Collapse>
 				<Nav>{ menus }</Nav>
 				<Nav pullRight>{ rmenus }</Nav>
-				<Nav pullRight><Phone /></Nav>
+				<Nav pullRight>{ phone }</Nav>
 			</Navbar.Collapse>
 		</Navbar>;
 	}
