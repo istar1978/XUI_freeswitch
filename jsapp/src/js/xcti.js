@@ -61,7 +61,10 @@ var callbacks = {
 		console.log("login", v);
 		console.log("login", success);
 
-		if (!success) return;
+		if (!success) {
+			fire_event("verto-login-error", v);
+			return;
+		}
 
 		verto.subscribe("presence", {
 			handler: function(v, e) {
