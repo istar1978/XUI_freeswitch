@@ -68,5 +68,7 @@ LANGUAGES["zh"] = {
 	"Login with username and password": "输入用户名和密码登录",
 	"Invalid username or password": "用户名/密码错误",
 
+	"Mandatory fields left blank": "红色字段不能为空",
+
 	the_last_line_______: "Don't put anything beyond this line"
 };

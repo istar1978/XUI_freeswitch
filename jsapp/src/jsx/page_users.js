@@ -41,6 +41,7 @@ class NewUser extends React.Component {
 		super(props);
 
 		this.last_id = 0;
+		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,19 +51,24 @@ class NewUser extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var route = form2json('#newUserForm');
-		console.log("route", route);
+		var user = form2json('#newUserForm');
+		console.log("user", user);
+
+		if (!user.extn || !user.name) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
 
 		$.ajax({
 			type: "POST",
 			url: "/api/users",
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(route),
+			data: JSON.stringify(user),
 			success: function () {
 				_this.last_id++;
-				route.id = "NEW" + _this.last_id;
-				_this.props["data-handleNewUserAdded"](route);
+				user.id = "NEW" + _this.last_id;
+				_this.props["data-handleNewUserAdded"](user);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -115,7 +121,10 @@ class NewUser extends React.Component {
 				</FormGroup>
 
 				<FormGroup>
-					<Col smOffset={2} sm={10}><Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button></Col>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
 				</FormGroup>
 			</Form>
 			</Modal.Body>

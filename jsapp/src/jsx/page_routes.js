@@ -41,6 +41,7 @@ class NewRoute extends React.Component {
 		super(props);
 
 		this.last_id = 0;
+		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -52,6 +53,11 @@ class NewRoute extends React.Component {
 		console.log("submit...");
 		var route = form2json('#newRouteForm');
 		console.log("route", route);
+
+		if (!route.extn || !route.name) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
 
 		$.ajax({
 			type: "POST",
@@ -142,7 +148,10 @@ class NewRoute extends React.Component {
 				</FormGroup>
 
 				<FormGroup>
-					<Col smOffset={2} sm={10}><Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button></Col>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
 				</FormGroup>
 			</Form>
 			</Modal.Body>
