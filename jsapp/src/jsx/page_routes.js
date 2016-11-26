@@ -241,7 +241,7 @@ class RoutesPage extends React.Component {
 					<td>{row.prefix}</td>
 					<td>{row.dest_type}</td>
 					<td>{row.dest}</td>
-					<td><T.a href='#' onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
 
