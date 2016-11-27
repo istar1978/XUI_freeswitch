@@ -1,4 +1,7 @@
 xdb = {}
+require 'sqlescape'
+
+local escape = sqlescape.EscapeFunction()
 
 function xdb.connect(dsn, user, pass)
 	xdb.dbh = freeswitch.Dbh(dsn)
@@ -26,7 +29,7 @@ local function get_update_string(kvp)
 	local comma = ""
 	local str = ""
 	for k, v in pairs(kvp) do
-		str = str .. comma .. k .. "='" .. v .. "'"
+		str = str .. comma .. k .. "=" .. escape(v)
 		comma = ","
 	end
 	return str
