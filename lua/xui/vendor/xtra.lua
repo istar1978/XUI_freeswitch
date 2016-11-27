@@ -13,16 +13,24 @@ xtra.http_uri = env:getHeader("HTTP-Request-URI")
 xtra.http_query = env:getHeader("HTTP-QUERY")
 xtra.rest_matched = false
 
-if env:getHeader("Request-Method") == "PUT" then
+xtra.method = env:getHeader("Request-Method")
+
+if xtra.method == "PUT" then
 	if env:getHeader("delete") == "true" then
 		xtra.method = "DELETE"
 	else
 		xtra.method = env:getHeader("Request-Method")
 	end
 else
-	xtra.method = env:getHeader("Request-Method")
+	if xtra.method == "POST" then
+		local browser_method = env:getHeader("X-BROWSER-METHOD")
+
+		if (browser_method) then
+			xtra.method = browser_method
+		end
+	end
 end
--- xtra.method = env:getHeader("Request-Method")
+
 xtra.rest_path = nil
 xtra.debug = xtra.debug or false
 xtra.log = freeswitch.consoleLog
