@@ -41,6 +41,8 @@ xdb.find_by_sql(sql, function(row)
 		table.insert(actions_table, {app = "bridge", args = "sofia/gateway/" .. row.body .. "/" .. dest})
 	elseif (row.dest_type == 'IP') then
 		table.insert(actions_table, {app = "bridge", args = "sofia/internal/" .. dest .. "@" .. row.body})
+	elseif (row.dest_type == 'IVRBLOCK') then
+		table.insert(actions_table, {app = "lua", args = "/tmp/blocks-" .. row.body .. ".lua"})
 	end
 end)
 
