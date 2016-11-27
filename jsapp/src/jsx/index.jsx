@@ -48,7 +48,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-router'
 import Conferences from './conferences';
 import Settings from './settings';
-import Users from './page_users';
+import {UsersPage, UserPage} from './page_users';
 import Routes from './page_routes';
 import Blocks from './blocks.js';
 import { Row, Col } from 'react-bootstrap';
@@ -91,6 +91,7 @@ const App = React.createClass({
 			console.log("props2", this.props);
 			main = <Row className="clearfix">
 				<Col sm={2}>
+					<br />
 					{this.props.sidebar}
 				</Col>
 				<Col sm={10} className="leftBar">
@@ -134,9 +135,10 @@ const Home = React.createClass({
 				<Route path="conferences" component={Conferences} />
 
 				<Route path="settings">
-				    <IndexRoute components={{sidebar: Settings, main: Users}}/>
-					<Route path="users" components={{sidebar: Settings, main: Users}}>
-						<Route path=":id" component={AboutPage}/>
+				    <IndexRoute components={{sidebar: Settings, main: UsersPage}}/>
+					<Route path="users">
+						<IndexRoute components={{sidebar: Settings, main: UsersPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: UserPage}}/>
 					</Route>
 					<Route path="routes" components={{sidebar: Settings, main: Routes}}/>
 				</Route>

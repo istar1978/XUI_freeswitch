@@ -32,7 +32,8 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Link } from 'react-router';
 
 class NewUser extends React.Component {
 	propTypes: {handleNewUserAdded: React.PropTypes.func}
@@ -135,6 +136,137 @@ class NewUser extends React.Component {
 	}
 }
 
+class EditControl extends FormControl {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		const props = Object.assign({}, this.props);
+		delete props.edit;
+
+		if (this.props.edit) {
+			return <FormControl {...props} />
+		}
+
+		return <span>{props.defaultValue}</span>
+	}
+
+}
+
+class UserPage extends React.Component {
+	propTypes: {handleNewUserAdded: React.PropTypes.func}
+
+	constructor(props) {
+		super(props);
+
+		this.state = {errmsg: '', user: {}, edit: false};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var user = form2json('#newUserForm');
+		console.log("user", user);
+
+		if (!user.extn || !user.name) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: "/api/users/" + user.id,
+			headers: {"X-BROWSER-METHOD": "PUT"},
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(user),
+			success: function () {
+				_this.setState({user: user, errmsg: {key: "Saved at", time: Date()}})
+			},
+			error: function(msg) {
+				console.error("route", msg);
+			}
+		});
+	}
+
+	handleControlClick(e) {
+		this.setState({edit: !this.state.edit});
+	}
+
+	componentDidMount() {
+		var _this = this;
+		$.getJSON("/api/users/" + this.props.params.id, "", function(data) {
+			console.log("user", data);
+			_this.setState({user: data});
+		}, function(e) {
+			console.log("get users ERR");
+		});
+	}
+
+	render() {
+		const user = this.state.user;
+		let save_btn = "";
+
+		if (this.state.edit) {
+			save_btn = <T.button type="button" onClick={this.handleSubmit} text="Save"/>
+		}
+
+		return <div>
+			<ButtonGroup className="controls">
+				<T.span text={this.state.errmsg} className="danger"/>&nbsp;&nbsp;
+				{ save_btn }
+				<T.button onClick={this.handleControlClick} text="Edit"/>
+			</ButtonGroup>
+
+			<h1>{user.extn}</h1>
+
+			<Form horizontal id="newUserForm">
+				<input type="hidden" name="id" defaultValue={user.id}/>
+				<FormGroup controlId="formExtn">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="extn" defaultValue={user.extn}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={user.name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formPassword">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Password" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="password" defaultValue={user.password} type="password"/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="vm_password" defaultValue={user.vm_password} type="password" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formContext">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={user.context}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formCidName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="cid_name" defaultValue={user.cid_name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formLength">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="cid_number" defaultValue={user.cid_number}/></Col>
+				</FormGroup>
+			</Form>
+		</div>
+	}
+}
+
 class UsersPage extends React.Component {
 	constructor(props) {
 		super(props);
@@ -220,7 +352,7 @@ class UsersPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td>{row.extn}</td>
+					<td><Link to={`/settings/users/${row.id}`}>{row.extn}</Link></td>
 					<td>{row.name}</td>
 					<td>{row.context}</td>
 					<td>{row.domain}</td>
@@ -261,4 +393,4 @@ class UsersPage extends React.Component {
 	}
 }
 
-export default UsersPage;
+export {UsersPage, UserPage};

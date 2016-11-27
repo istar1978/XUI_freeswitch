@@ -69,6 +69,7 @@ LANGUAGES["zh"] = {
 	"Invalid username or password": "用户名/密码错误",
 
 	"Mandatory fields left blank": "红色字段不能为空",
+	"Saved at": "最后保存于 *{time}*",
 
 	the_last_line_______: "Don't put anything beyond this line"
 };
