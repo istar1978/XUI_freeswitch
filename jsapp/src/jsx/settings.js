@@ -41,23 +41,14 @@ import { LinkContainer } from 'react-router-bootstrap';
 class Settings extends React.Component {
 
 	render() {
-		return <Tab.Container id="left-tabs-example" defaultActiveKey="M_USERS">
-			<Row className="clearfix">
-				<Col sm={2}>
-					<br />
-					<Nav bsStyle="pills" stacked>
-						<LinkContainer to="/settings/users"><NavItem eventKey="M_USERS"><T.span text="Users" /></NavItem></LinkContainer>
-						<LinkContainer to="/settings/routes"><NavItem eventKey="M_ROUTES"><T.span text="Routes" /></NavItem></LinkContainer>
-					</Nav>
-				</Col>
-				<Col sm={10} className="leftBar">
-					<Tab.Content animation>
-						<Tab.Pane eventKey="M_USERS" unmountOnExit><UsersPage/></Tab.Pane>
-						<Tab.Pane eventKey="M_ROUTES" unmountOnExit><RoutesPage/></Tab.Pane>
-					</Tab.Content>
-				</Col>
-			</Row>
-		</Tab.Container>;
+		return <Nav bsStyle="pills" stacked>
+			<LinkContainer to="/settings/users" key="M_OVERVIEW">
+				<NavItem eventKey="M_USER"><T.span text="Users"/></NavItem>
+			</LinkContainer>
+			<LinkContainer to="/settings/routes" key="M_ROUTS">
+				<NavItem eventKey="M_CALLS"><T.span text="Routes"/></NavItem>
+			</LinkContainer>
+		</Nav>
 	}
 }
 

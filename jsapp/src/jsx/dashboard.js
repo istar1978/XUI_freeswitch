@@ -39,33 +39,27 @@ import ChannelsPage from "./page_channels";
 import CallsPage from "./page_calls";
 import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
+import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
 class DashBoard extends React.Component {
-
 	render() {
-		return <Tab.Container id="left-tabs-example" defaultActiveKey="M_OVERVIEW">
-			<Row className="clearfix">
-				<Col sm={2}>
-					<br />
-					<Nav bsStyle="pills" stacked>
-						<NavItem eventKey="M_OVERVIEW"><T.span text={{ key: "Overview"}} /></NavItem>
-						<NavItem eventKey="M_Calls"><T.span text={{ key: "Calls"}} /></NavItem>
-						<NavItem eventKey="M_Channels"><T.span text={{ key: "Channels"}} /></NavItem>
-						<NavItem eventKey="M_Users"><T.span text={{ key: "Users"}} /></NavItem>
-						<NavItem eventKey="M_Sofia"><T.span text={{ key: "Sofia"}} /></NavItem>
-					</Nav>
-				</Col>
-				<Col sm={10} className="leftBar">
-					<Tab.Content animation>
-						<Tab.Pane eventKey="M_OVERVIEW" unmountOnExit><OverViewPage/></Tab.Pane>
-						<Tab.Pane eventKey="M_Calls" unmountOnExit><CallsPage/></Tab.Pane>
-						<Tab.Pane eventKey="M_Channels" unmountOnExit><ChannelsPage/></Tab.Pane>
-						<Tab.Pane eventKey="M_Users" unmountOnExit><FSUsersPage/></Tab.Pane>
-						<Tab.Pane eventKey="M_Sofia" unmountOnExit><SofiaPage/></Tab.Pane>
-					</Tab.Content>
-				</Col>
-			</Row>
-		</Tab.Container>;
+		return <Nav bsStyle="pills" stacked>
+			<IndexLinkContainer to="/" key="M_OVERVIEW">
+				<NavItem eventKey="M_OVERVIEW"><T.span text={{ key: "Overview"}}/></NavItem>
+			</IndexLinkContainer>
+			<LinkContainer to="/calls" key="M_CALLS">
+				<NavItem eventKey="M_CALLS"><T.span text={{ key: "Calls"}}/></NavItem>
+			</LinkContainer>
+			<LinkContainer to="/channels" key="M_CHANNELS">
+				<NavItem eventKey="M_CHANNELS"><T.span text={{ key: "Channels"}} /></NavItem>
+			</LinkContainer>
+			<LinkContainer to="/users" key="M_USERS">
+				<NavItem eventKey="M_USERS"><T.span text={{ key: "Users"}} /></NavItem>
+				</LinkContainer>
+			<LinkContainer to="/sofia" key="M_SOFIA">
+				<NavItem eventKey="M_SOFIA"><T.span text={{ key: "Sofia"}} /></NavItem>
+			</LinkContainer>
+		</Nav>
 	}
 }
 

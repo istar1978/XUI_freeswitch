@@ -39,18 +39,24 @@ import MainMenu from './main-menu';
 import FSShow from "./fs_show";
 import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
+import OverViewPage from "./page_overview";
+import ChannelsPage from "./page_channels";
+import CallsPage from "./page_calls";
+import FSUsersPage from "./page_fs_users";
+import SofiaPage from "./page_sofia";
+import { LinkContainer } from 'react-router-bootstrap';
 import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-router'
 import Conferences from './conferences';
 import Settings from './settings';
 import Users from './page_users';
 import Routes from './page_routes';
 import Blocks from './blocks.js';
+import { Row, Col } from 'react-bootstrap';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
 
 const MENUS = [
-	{id: "MM_DASHBOARD", description: <T.span text={{ key: "DashBoard"}} />, data: '/'},
 	{id: "MM_SHOW", description: <T.span text={{ key: "Show"}} />, data: '/show'},
 	{id: "MM_BLOCKS", description: <T.span text={{ key: "Blocks"}} />, data: '/blocks'},
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: '/conferences'},
@@ -76,11 +82,29 @@ const Footer = React.createClass({
 
 const App = React.createClass({
 	render() {
-		return <div><MainMenu menus = {MENUS} rmenus = {RMENUS}/>
-			<div id='main'>{this.props.children}</div>
-				<Footer/>
-			</div>
+		let main = <div></div>;
+
+		if (this.props.children) { //compoment
+			main = this.props.children;
+			console.log("props1", this.props);
+		} else { //components
+			console.log("props2", this.props);
+			main = <Row className="clearfix">
+				<Col sm={2}>
+					{this.props.sidebar}
+				</Col>
+				<Col sm={10} className="leftBar">
+					{this.props.main}
+				</Col>
+			</Row>
 		}
+
+		return <div>
+			<MainMenu menus = {MENUS} rmenus = {RMENUS}/>
+			{ main }
+			<Footer/>
+		</div>
+	}
 })
 
 const Home = React.createClass({
@@ -95,17 +119,26 @@ const Home = React.createClass({
 
 		return <Router history={hashHistory}>
 			<Route path="/" component={App}>
-				<IndexRoute component={DashBoard}/>
+				<IndexRoute components={{sidebar: DashBoard, main: OverViewPage}} />
+				<Route path="overview" components={{sidebar: DashBoard, main: OverViewPage}} onlyActiveOnIndex/>
+				<Route path="calls" components = {{sidebar: DashBoard, main: CallsPage}}/>
+				<Route path="channels" components = {{sidebar: DashBoard, main: ChannelsPage}}/>
+				<Route path="users" components = {{sidebar: DashBoard, main: FSUsersPage}}/>
+				<Route path="sofia" components = {{sidebar: DashBoard, main: SofiaPage}}/>
+
 				<Route path="show" component={FSShow} />
+
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>
 				<Route path="blocks" component={Blocks} />
 				<Route path="conferences" component={Conferences} />
 
-				<Route path="settings" component={Settings}>
-				    <IndexRoute component={Users}/>
-					<Route path="users" />
-					<Route path="routes" component={Routes} />
+				<Route path="settings">
+				    <IndexRoute components={{sidebar: Settings, main: Users}}/>
+					<Route path="users" components={{sidebar: Settings, main: Users}}>
+						<Route path=":id" component={AboutPage}/>
+					</Route>
+					<Route path="routes" components={{sidebar: Settings, main: Routes}}/>
 				</Route>
 			</Route>
 		</Router>
@@ -174,6 +207,7 @@ const Login = React.createClass({
 				<Redirect from="/logout" to="/"/>
 				<Route path="/:any" component={LoginBox}/>
 				<Route path="/:any/:more" component={LoginBox}/>
+				<Route path="/:any/:more/:more" component={LoginBox}/>
 			</Route>
 		</Router>
 	}

@@ -32,6 +32,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import ReactDOM from 'react-dom';
 import { Button } from 'react-bootstrap';
 import { Navbar } from 'react-bootstrap';
@@ -40,7 +41,7 @@ import { NavItem } from 'react-bootstrap';
 import { NavDropdown } from 'react-bootstrap';
 import { MenuItem } from 'react-bootstrap';
 import { Router, Route, Link, browserHistory } from 'react-router'
-import { LinkContainer } from 'react-router-bootstrap';
+import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import Phone from './phone';
 
 class MainMenu extends React.Component {
@@ -67,7 +68,12 @@ class MainMenu extends React.Component {
 				<Navbar.Toggle />
 			</Navbar.Header>
 			<Navbar.Collapse>
-				<Nav>{ menus }</Nav>
+				<Nav>
+					<IndexLinkContainer to="/">
+						<NavItem eventKey="MM_HOME"><T.span text="DashBoard"/></NavItem>
+					</IndexLinkContainer>
+					{ menus }
+				</Nav>
 				<Nav pullRight>{ rmenus }</Nav>
 				<Nav pullRight>{ phone }</Nav>
 			</Navbar.Collapse>

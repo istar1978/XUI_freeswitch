@@ -50,7 +50,7 @@ LANGUAGES["zh"] = {
 	"Confirm to Delete ?": "确认删除？",
 	"Click me to toggle fast delete mode": "点击以切换快速删除模式",
 
-	"Create New User": "新建路由",
+	"Create New User": "新建用户",
 	"CID Name": "主叫名称",
 	"CID Number": "主叫号码",
 	Number: "号码",
