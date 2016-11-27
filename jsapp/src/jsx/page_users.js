@@ -182,7 +182,7 @@ class UserPage extends React.Component {
 		$.ajax({
 			type: "POST",
 			url: "/api/users/" + user.id,
-			headers: {"X-BROWSER-METHOD": "PUT"},
+			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(user),
@@ -212,19 +212,23 @@ class UserPage extends React.Component {
 	render() {
 		const user = this.state.user;
 		let save_btn = "";
+		let err_msg = "";
 
 		if (this.state.edit) {
-			save_btn = <T.button type="button" onClick={this.handleSubmit} text="Save"/>
+			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+			if (this.state.errmsg) {
+				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
+			}
 		}
 
 		return <div>
 			<ButtonGroup className="controls">
-				<T.span text={this.state.errmsg} className="danger"/>&nbsp;&nbsp;
-				{ save_btn }
-				<T.button onClick={this.handleControlClick} text="Edit"/>
+				{err_msg} { save_btn }
+				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 
-			<h1>{user.extn}</h1>
+			<h1>{user.name} &lt;{user.extn}&gt;</h1>
+			<hr/>
 
 			<Form horizontal id="newUserForm">
 				<input type="hidden" name="id" defaultValue={user.id}/>

@@ -23,7 +23,7 @@ if xtra.method == "PUT" then
 	end
 else
 	if xtra.method == "POST" then
-		local browser_method = env:getHeader("X-BROWSER-METHOD")
+		local browser_method = env:getHeader("X-HTTP-Method-Override")
 
 		if (browser_method) then
 			xtra.method = browser_method
