@@ -52,5 +52,8 @@ CREATE TABLE blocks (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR,
 	description VARCHAR,
-	created_at_epoch INTEGER
+	created_at_epoch INTEGER,
+	xml TEXT,
+	js TEXT,
+	lua TEXT
 );

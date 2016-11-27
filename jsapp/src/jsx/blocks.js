@@ -46,10 +46,6 @@ class BlockPage extends React.Component {
 		console.log("did mount", this.props);
 		var _this = this;
 
-		$.getJSON("/api/blocks/" + this.props.params.id, function(block) {
-			_this.setState({block, block});
-		});
-
 		var onresize = function() {
 			var div = $('#main');
 
@@ -233,7 +229,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 		}
 
 		var init_blockly = function() {
-			var workspace = Blockly.inject('blocks', {
+			let workspace = Blockly.inject('blocks', {
 				toolbox: document.getElementById('toolbox'),
 				media: "/assets/blockly/media/"
 			});
@@ -274,6 +270,67 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			onresize();
 			window.addEventListener('resize', onresize, false);
 		}
+
+		$.getJSON("/api/blocks/" + this.props.params.id, function(block) {
+			_this.setState({block, block});
+
+			if (block && block.xml && block.xml.length > 0) {
+				Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
+			}
+		});
+	}
+
+	handleControlClick(e) {
+		let _this = this;
+		let data = e.target.getAttribute("data");
+
+		let toLua = function() {
+			let code = Blockly.Lua.workspaceToCode(_this.workspace);
+			console.log(code);
+			return code;
+		}
+
+		if (data == "save") {
+			let lua = toLua();
+			let block = {}
+			block.id = this.props.params.id;
+			block.lua = toLua();
+			let xml = Blockly.Xml.workspaceToDom(_this.workspace);
+			block.xml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(_this.workspace));
+			block.js = "alert(1);"// disabled;
+
+			$.ajax({
+				type: "POST",
+				url: "/api/blocks/" + block.id,
+				headers: {"X-HTTP-Method-Override": "PUT"},
+				dataType: "json",
+				contentType: "application/json",
+				data: JSON.stringify(block),
+				success: function () {
+					_this.setState({errmsg: {key: "Saved at", time: Date()}});
+				},
+				error: function(msg) {
+					console.error("block", msg);
+				}
+			});
+		} else if (data == "export") {
+			let download = function(filename, text) {
+				var pom = document.createElement('a');
+				pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				pom.setAttribute('download', filename);
+
+				if (document.createEvent) {
+					var event = document.createEvent('MouseEvents');
+					event.initEvent('click', true, true);
+					pom.dispatchEvent(event);
+				} else {
+					pom.click();
+				}
+			}
+
+		    download("test.lua", toLua());
+
+		}
 	}
 
 	componentWillUnmount() {
@@ -289,7 +346,8 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 
 		return <div id='blocks'>
 			<div className="controls">
-				<Button><T.span onClick={this.handleControlClick} data="save" text="Save" /></Button>
+				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export" /></Button>
+				<Button><T.span onClick={this.handleControlClick.bind(this)} data="save" text="Save" /></Button>
 			</div>
 			<h1><T.span text="Blocks"/> {this.state.block.name}</h1>
 		</div>;
