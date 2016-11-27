@@ -33,12 +33,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
-import OverViewPage from "./page_overview";
-import ChannelsPage from "./page_channels";
-import CallsPage from "./page_calls";
-import FSUsersPage from "./page_fs_users";
-import SofiaPage from "./page_sofia";
+import { Nav, NavItem } from 'react-bootstrap';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
 class DashBoard extends React.Component {
