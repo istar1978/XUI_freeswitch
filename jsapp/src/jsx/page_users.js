@@ -96,12 +96,12 @@ class NewUser extends React.Component {
 					<Col sm={10}><FormControl type="input" name="name" placeholder="route_to_beijing" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formName">
+				<FormGroup controlId="formPassword">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Password" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="password" name="password" placeholder="a$veryComplicated-Passw0rd" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formName">
+				<FormGroup controlId="formVMPassword">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
 					<Col sm={10}><FormControl type="password" name="vm_password" placeholder="12345678900" /></Col>
 				</FormGroup>
@@ -247,7 +247,7 @@ class UserPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="password" defaultValue={user.password} type="password"/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formName">
+				<FormGroup controlId="formVMPassword">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="vm_password" defaultValue={user.vm_password} type="password" /></Col>
 				</FormGroup>
