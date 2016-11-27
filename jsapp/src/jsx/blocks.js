@@ -224,7 +224,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 		}
 
 		var init_blockly = function() {
-			var workspace = Blockly.inject('main', {
+			var workspace = Blockly.inject('blocks', {
 				toolbox: document.getElementById('toolbox'),
 				media: "/assets/blockly/media/"
 			});
@@ -276,7 +276,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 	}
 
 	render() {
-		return <div>
+		return <div id='blocks'>
 			<h1>Blocks</h1>
 		</div>;
 	}
