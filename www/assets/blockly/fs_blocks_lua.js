@@ -50,8 +50,8 @@ Blockly.Lua.fsConsoleLog = function(block) {
   var level = block.getFieldValue('Level');
   var text = Blockly.Lua.valueToCode(block, 'args',
              Blockly.Lua.ORDER_ATOMIC) || '""';
-      text = text + ".. '\\n'";
-  var code = 'session:consoleLog("' + level + '", ' + text + ')\n';
+      text = text + '.. \\n"';
+  var code = 'session:consoleLog("' + level + '", " + text + ")\n';
   return code;
 };
 
