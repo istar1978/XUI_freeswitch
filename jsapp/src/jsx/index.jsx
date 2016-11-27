@@ -50,7 +50,7 @@ import Conferences from './conferences';
 import Settings from './settings';
 import {UsersPage, UserPage} from './page_users';
 import Routes from './page_routes';
-import Blocks from './blocks.js';
+import { BlocksPage, BlockPage } from './blocks.js';
 import { Row, Col } from 'react-bootstrap';
 
 const lang_map = detect_language();
@@ -131,7 +131,12 @@ const Home = React.createClass({
 
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>
-				<Route path="blocks" component={Blocks} />
+
+				<Route path="blocks">
+					<IndexRoute component={BlocksPage}/>
+					<Route path=":id" component={BlockPage}/>
+				</Route>
+
 				<Route path="conferences" component={Conferences} />
 
 				<Route path="settings">

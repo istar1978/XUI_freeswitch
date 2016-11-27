@@ -70,6 +70,13 @@ LANGUAGES["zh"] = {
 
 	"Mandatory fields left blank": "红色字段不能为空",
 	"Saved at": "最后保存于 *{time}*",
+	"Created At": "创建时间",
+
+	"Create New Block": "创建新积木",
+	"IVR Blocks": "IVR积木",
+	"Blocks": "积木",
+	"Block": "积木",
+	Description: "描述",
 
 	the_last_line_______: "Don't put anything beyond this line"
 };

@@ -31,15 +31,24 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
+import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Link } from 'react-router';
 
 class BlockPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.workspace = null;
+		this.state = {block: {name: "Loading ..."}};
 	}
 
 	componentDidMount() {
-		console.log("did mount");
+		console.log("did mount", this.props);
+		var _this = this;
+
+		$.getJSON("/api/blocks/" + this.props.params.id, function(block) {
+			_this.setState({block, block});
+		});
 
 		var onresize = function() {
 			var div = $('#main');
@@ -276,10 +285,190 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 	}
 
 	render() {
+
+
 		return <div id='blocks'>
-			<h1>Blocks</h1>
+			<div className="controls">
+				<Button><T.span onClick={this.handleControlClick} data="save" text="Save" /></Button>
+			</div>
+			<h1><T.span text="Blocks"/> {this.state.block.name}</h1>
 		</div>;
 	}
 }
 
-export default BlockPage;
+class NewBlock extends React.Component {
+	propTypes: {handleNewUserAdded: React.PropTypes.func}
+
+	constructor(props) {
+		super(props);
+
+		this.last_id = 0;
+		this.state = {errmsg: ''};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		let _this = this;
+
+		console.log("submit...");
+		let block = form2json('#newBlockForm');
+		console.log("block", block);
+
+		if (!block.name) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: "/api/blocks",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(block),
+			success: function () {
+				_this.last_id++;
+				block.id = "NEW" + _this.last_id;
+				_this.props["data-handleNewBlockAdded"](block);
+			},
+			error: function(msg) {
+				console.error("route", msg);
+			}
+		});
+	}
+
+	render() {
+		console.log(this.props);
+
+		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Block" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newBlockForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="cool_block" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescriptioin">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
+					<Col sm={10}><FormControl type="description" name="description" placeholder="IVR block for ..." /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>Close</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
+class BlocksPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {rows: [], formShow: false};
+
+		// this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
+	}
+
+	handleControlClick(e) {
+		this.setState({ formShow: true});
+	}
+
+	handleBlockAdded(block) {
+		var rows = this.state.rows;
+		rows.push(block);
+		this.setState({rows: rows, formShow: false});
+	}
+
+	handleDelete(e) {
+		var id = e.target.getAttribute("data-id");
+		console.log("deleting id", id);
+		var _this = this;
+
+		if (!this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
+
+		$.ajax({
+			type: "DELETE",
+			url: "/api/blocks/" + id,
+			success: function () {
+				console.log("deleted")
+				var rows = _this.state.rows.filter(function(row) {
+					return row.id != id;
+				});
+
+				_this.setState({rows: rows});
+			},
+			error: function(msg) {
+				console.error("block", msg);
+			}
+		});
+	}
+
+	componentDidMount() {
+		var _this = this;
+		$.getJSON("/api/blocks", function(blocks) {
+			console.log("blocks", blocks);
+			_this.setState({rows: blocks});
+		});
+	}
+
+	render() {
+		let formClose = () => this.setState({ formShow: false });
+		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+	    var danger = this.state.danger ? "danger" : "";
+
+		let _this = this;
+
+		let rows = this.state.rows.map(function(row) {
+			return <tr key={row.id}>
+					<td>{row.id}</td>
+					<td><Link to={`/blocks/${row.id}`}>{row.name}</Link></td>
+					<td>{row.description}</td>
+					<td>{row.created_at}</td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+			</tr>;
+		})
+
+		return <div>
+			<div className="controls">
+				<Button><T.span onClick={this.handleControlClick} data="new" text="New" /></Button>
+			</div>
+
+			<h1><T.span text="IVR Blocks"/></h1>
+			<div>
+				<table className="table">
+				<tbody>
+				<tr>
+					<th><T.span text="ID"/></th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="Description"/></th>
+					<th><T.span text="Created At"/></th>
+					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+				</tr>
+				{rows}
+				</tbody>
+				</table>
+			</div>
+
+			<NewBlock show={this.state.formShow} onHide={formClose} data-handleNewBlockAdded={this.handleBlockAdded.bind(this)}/>
+		</div>
+	}
+}
+
+export {BlocksPage, BlockPage};

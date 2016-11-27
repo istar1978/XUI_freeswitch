@@ -46,5 +46,11 @@ CREATE TABLE users (
 	disabled VARCHAR
 );
 
-
 INSERT INTO users (extn, password) VALUES ('admin', 'admin');
+
+CREATE TABLE blocks (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR,
+	description VARCHAR,
+	created_at_epoch INTEGER
+);
