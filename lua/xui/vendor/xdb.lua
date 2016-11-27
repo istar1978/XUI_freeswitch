@@ -5,6 +5,10 @@ function xdb.connect(dsn, user, pass)
 	assert(xdb.dbh:connected())
 end
 
+function xdb.dbh(dbh)
+	xdb.dbh = dbh
+end
+
 local function get_insert_string(kvp)
 	local comma = ""
 	local keys = ""
@@ -100,4 +104,10 @@ end
 
 function xdb.find_by_sql(sql, func)
 	xdb.dbh:query(sql, func)
+end
+
+function xdb.update_model(t, m)
+	local id = m.id
+	m.id = nil
+	return xdb.update(t, {id = id}, m)
 end

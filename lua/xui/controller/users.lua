@@ -1,4 +1,6 @@
 content_type("application/json")
+require 'xdb'
+xdb.dbh(xtra.dbh)
 
 get('/', function(params)
 	users = utils.get_model("users")
@@ -20,7 +22,13 @@ get('/:id', function(params)
 end)
 
 put('/:id', function(params)
-	return 500
+	print(serialize(params))
+	ret = xdb.update_model("users", params.request)
+	if ret then
+		return 200, "{}"
+	else
+		return 500
+	end
 end)
 
 post('/', function(params)
