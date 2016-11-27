@@ -369,7 +369,7 @@ class UsersPage extends React.Component {
 
 		return <div>
 			<div className="controls">
-				<T.button onClick={this.handleControlClick} data="new" text="New" />
+				<Button><T.span onClick={this.handleControlClick} data="new" text="New" /></Button>
 			</div>
 
 			<h1><T.span text="Users"/></h1>
