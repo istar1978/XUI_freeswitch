@@ -191,10 +191,8 @@ var ConferencePage = React.createClass({
 			break;
 
 		case "del":
-			var rows = []
-
-			this.state.rows.forEach(function(row) {
-				if (row.uuid != a.key ) rows.push(row);
+			var rows = this.state.rows.filter(function(row) {
+				return row.uuid != a.key;
 			});
 
 			this.setState({rows: rows});

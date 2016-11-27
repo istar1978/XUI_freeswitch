@@ -125,14 +125,9 @@ var ChannelsPage = React.createClass({
 
 			this.setState({rows: rows});
 		} else if (e.eventChannel == "FSevent.channel_hangup") {
-			var rows = [];
-			var uuid = e.data["Unique-ID"];
-
-			// delete from rows, maybe find a more efficient way?
-			this.state.rows.forEach(function(row) {
-				if (uuid != row.uuid) {
-					rows.push(row);
-				}
+			let uuid = e.data["Unique-ID"];
+			let rows = this.state.rows.filter(function(row) {
+				return uuid != row.uuid;
 			});
 
 			this.setState({rows: rows});
@@ -140,16 +135,15 @@ var ChannelsPage = React.createClass({
 	},
 
 	render: function() {
-		var rows = [];
-		this.state.rows.forEach(function(row) {
-			rows.push(<tr key={row.uuid}>
-					<td>{row.uuid}</td>
-					<td>{row.cid_num}</td>
-					<td>{row.dest}</td>
-					<td>{row.callstate}</td>
-					<td>{row.direction}</td>
-					<td>{row.created}</td>
-			</tr>);
+		let rows = this.state.rows.map(function(row) {
+			return <tr key={row.uuid}>
+				<td>{row.uuid}</td>
+				<td>{row.cid_num}</td>
+				<td>{row.dest}</td>
+				<td>{row.callstate}</td>
+				<td>{row.direction}</td>
+				<td>{row.created}</td>
+			</tr>
 		})
 
 		return <div>
