@@ -1,11 +1,4 @@
-CREATE TABLE contexts (
-	id INTEGER PRIMARY KEY,
-	name VARCHAR,
-	data TEXT
-);
-
-
-CREATE TABLE routings (
+CREATE TABLE routes (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR,
 	description VARCHAR,
@@ -17,19 +10,6 @@ CREATE TABLE routings (
 	dest_type VARCHAR,
 	dest_uuid VARCHAR,
 	body TEXT
-);
-
-CREATE TABLE profiles (
-	id INTEGER PRIMARY KEY,
-	name VARCHAR,
-	data TEXT
-);
-
-CREATE TABLE gateways (
-	id INTEGER PRIMARY KEY,
-	profile_id INTEGER,
-	name VARCHAR,
-	data TEXT
 );
 
 CREATE TABLE users (
@@ -46,7 +26,7 @@ CREATE TABLE users (
 	disabled VARCHAR
 );
 
-INSERT INTO users (extn, password) VALUES ('admin', 'admin');
+INSERT INTO users (extn, name, password) VALUES ('admin', 'Admin', 'admin');
 
 CREATE TABLE blocks (
 	id INTEGER PRIMARY KEY,
