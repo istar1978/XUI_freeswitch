@@ -54,7 +54,7 @@ class NewRoute extends React.Component {
 		var route = form2json('#newRouteForm');
 		console.log("route", route);
 
-		if (!route.extn || !route.name) {
+		if (!route.name || !route.prefix) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
@@ -133,6 +133,7 @@ class NewRoute extends React.Component {
 							<option value="GATEWAY">Gateway</option>
 							<option value="IP">IP</option>
 							<option value="SYSTEM">System</option>
+							<option value="IVRBLOCK">IVR Block</option>
 						</FormControl>
 					</Col>
 				</FormGroup>
