@@ -74,7 +74,7 @@ const Footer = React.createClass({
 		return <div id="footer">
 			<br/><br/><br/>
 			<Languages className="pull-ight"/>
-			Copyright &copy; Yantai Xiaoyingtao, ALL rights reserved
+			&copy; <T.span text="Copyright"/>
 			<br/><br/>
 		</div>
 	}
@@ -89,15 +89,15 @@ const App = React.createClass({
 			console.log("props1", this.props);
 		} else { //components
 			console.log("props2", this.props);
-			main = <Row className="clearfix">
+			main = <div id='main'><Row className="clearfix">
 				<Col sm={2}>
 					<br />
 					{this.props.sidebar}
 				</Col>
 				<Col sm={10} className="leftBar">
-					{this.props.main}
+					<div id='main'>{this.props.main}</div>
 				</Col>
-			</Row>
+			</Row></div>
 		}
 
 		return <div>
