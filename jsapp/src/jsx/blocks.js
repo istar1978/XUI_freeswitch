@@ -342,14 +342,12 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 	}
 
 	render() {
-
-
 		return <div id='blocks'>
 			<div className="controls">
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="save" text="Save" /></Button>
 			</div>
-			<h1><T.span text="Blocks"/> {this.state.block.name}</h1>
+			<h1><T.span text="Blocks"/> {this.state.block.name} <small>{this.state.block.description}</small></h1>
 		</div>;
 	}
 }
