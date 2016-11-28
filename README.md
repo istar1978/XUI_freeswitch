@@ -43,6 +43,10 @@ or if you are in China, see <https://npm.taobao.org/>
 
 ## Development
 
+init db:
+
+    cd db/schema && cat sqlite.sql init.sql | sqlite3 /usr/local/freeswitch/db/xui.db
+
 prepare:
 
     make setup
