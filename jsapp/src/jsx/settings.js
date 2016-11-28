@@ -45,8 +45,11 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/users" key="M_OVERVIEW">
 				<NavItem eventKey="M_USER"><T.span text="Users"/></NavItem>
 			</LinkContainer>
-			<LinkContainer to="/settings/routes" key="M_ROUTS">
-				<NavItem eventKey="M_CALLS"><T.span text="Routes"/></NavItem>
+			<LinkContainer to="/settings/routes" key="M_ROUTES">
+				<NavItem eventKey="M_ROUTES"><T.span text="Routes"/></NavItem>
+			</LinkContainer>
+			<LinkContainer to="/settings/gateways" key="M_GATEWAYS">
+				<NavItem eventKey="M_GATEWAYS"><T.span text="Gateways"/></NavItem>
 			</LinkContainer>
 		</Nav>
 	}

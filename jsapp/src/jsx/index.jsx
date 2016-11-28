@@ -52,6 +52,7 @@ import {UsersPage, UserPage} from './page_users';
 import Routes from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { Row, Col } from 'react-bootstrap';
+import {GatewaysPage, GatewayPage} from './page_gateways';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -144,6 +145,10 @@ const Home = React.createClass({
 					<Route path="users">
 						<IndexRoute components={{sidebar: Settings, main: UsersPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: UserPage}}/>
+					</Route>
+					<Route path="gateways">
+						<IndexRoute components={{sidebar: Settings, main: GatewaysPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: GatewayPage}}/>
 					</Route>
 					<Route path="routes" components={{sidebar: Settings, main: Routes}}/>
 				</Route>
