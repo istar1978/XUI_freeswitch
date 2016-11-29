@@ -1,7 +1,7 @@
 content_type("application/json")
 
 get('/', function(params)
-	routes = utils.get_model("routings")
+	routes = utils.get_model("routes")
 	if (routes)	then
 		return routes
 	else
@@ -10,7 +10,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	route = utils.get_model("routings", params.id)
+	route = utils.get_model("routes", params.id)
 	if route then
 		return route
 	else
@@ -21,7 +21,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = utils.create_model('routings', params.request)
+	ret = utils.create_model('routes', params.request)
 
 	if ret == 1 then
 		return 200, "{}"
@@ -36,7 +36,7 @@ put('/:id', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("routings", params.id);
+	ret = utils.delete_model("routes", params.id);
 
 	if ret == 1 then
 		return 200, "{}"
