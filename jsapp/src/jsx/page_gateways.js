@@ -172,14 +172,14 @@ class GatewayPage extends React.Component {
 		var gw = form2json('#newGatewayForm');
 		console.log("gw", gw);
 
-		if (!gw.real || !gw.name) {
+		if (!gw.realm || !gw.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/gateways/" + user.id,
+			url: "/api/gateways/" + gw.id,
 			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
@@ -211,9 +211,23 @@ class GatewayPage extends React.Component {
 		const gw = this.state.gw;
 		let save_btn = "";
 		let err_msg = "";
+		let register = gw.register == "true" ? "Yes" : "No";
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+
+			if (gw.register == "true") {
+				register = <span>
+					<Radio name="register" value="true" inline defaultChecked>Yes</Radio>
+					<Radio name="register" value="false" inline>No</Radio>
+				</span>
+			} else {
+				register = <span>
+					<Radio name="register" value="true" inline>Yes</Radio>
+					<Radio name="register" value="false" inline defaultChecked>No</Radio>
+				</span>
+			}
+
 			if (this.state.errmsg) {
 				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
 			}
@@ -256,8 +270,8 @@ class GatewayPage extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formRegister">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Register" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={gw.register}/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Register" /> ?</Col>
+					<Col sm={10}>{register}</Col>
 				</FormGroup>
 			</Form>
 		</div>

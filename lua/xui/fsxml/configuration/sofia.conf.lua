@@ -10,6 +10,7 @@ if gw_name then
 		local p = '<param name="realm"' .. ' value="' .. row.realm .. '"/>'
 		p = p .. '<param name="username"' .. ' value="' .. row.username .. '"/>'
 		p = p .. '<param name="password"' .. ' value="' .. row.password .. '"/>'
+		p = p .. '<param name="register"' .. ' value="' .. row.register .. '"/>'
 
 		local gw = '<gateway name="' .. row.name .. '">' .. p .. '</gateway>'
 
