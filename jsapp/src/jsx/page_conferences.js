@@ -217,18 +217,36 @@ var ConferencePage = React.createClass({
 		return <div>
 			<div id="conference-controls">
 			<ButtonGroup>
-				<Button><T.span onClick={this.handleControlClick} text= "Mute" /></Button>
-				<Button><T.span onClick={this.handleControlClick} text= "unMute" /></Button>
-				<Button><T.span onClick={this.handleControlClick} text= "Hangup" /></Button>
+				<Button>
+					<i className="fa fa-microphone-slash" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "Mute" />
+				</Button>
+				<Button>
+					<i className="fa fa-microphone" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "unMute" />
+				</Button>
+				<Button>
+					<i className="fa fa-power-off" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "Hangup" />
+				</Button>
 			</ButtonGroup>
 			&nbsp;&nbsp;
 			<ButtonGroup>
-				<Button><T.span onClick={this.handleControlClick} text= "Select" /></Button>
+				<Button>
+					<i className="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "Select" />
+				</Button>
 			</ButtonGroup>
 			&nbsp;&nbsp;
 			<ButtonGroup>
-				<Button><T.span onClick={this.handleControlClick} text= "Lock" /></Button>
-				<Button><T.span onClick={this.handleControlClick} text= "unLock" /></Button>
+				<Button>
+					<i className="fa fa-lock" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "Lock" />
+				</Button>
+				<Button>
+					<i className="fa fa-unlock-alt" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "unLock" />
+				</Button>
 			</ButtonGroup>
 			</div>
 			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
