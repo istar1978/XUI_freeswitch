@@ -220,7 +220,6 @@
 }
 .fa-power-off:before {
   content: "\f011";
-  color: red;
 }
 .fa-signal:before {
   content: "\f012";
