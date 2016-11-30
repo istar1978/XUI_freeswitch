@@ -121,14 +121,19 @@ class NewGateway extends React.Component {
 
 				<FormGroup>
 					<Col smOffset={2} sm={10}>
-						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}><T.span text="Save" /></Button>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
 						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
 					</Col>
 				</FormGroup>
 			</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={this.props.onHide}>Close</Button>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;Close
+				</Button>
 			</Modal.Footer>
 		</Modal>;
 	}
@@ -373,7 +378,10 @@ class GatewaysPage extends React.Component {
 
 		return <div>
 			<div className="controls">
-				<Button><T.span onClick={this.handleControlClick} data="new" text="New" /></Button>
+				<Button>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="new" text="New" />
+				</Button>
 			</div>
 
 			<h1><T.span text="Gateways"/></h1>

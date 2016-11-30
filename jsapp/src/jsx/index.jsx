@@ -53,6 +53,7 @@ import Routes from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { Row, Col } from 'react-bootstrap';
 import {GatewaysPage, GatewayPage} from './page_gateways';
+import { Button } from 'react-bootstrap';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -206,7 +207,7 @@ const LoginBox = React.createClass({
 			<h1><T.span text="Login with username and password"/></h1>
 			<p><input id='username' name='username' placeholder='username'/></p>
 			<p><input id='password' name='password' type='password' placeholder='password'/></p>
-			<T.button onClick={this.handleClick} text="Login"/>
+			<Button bsStyle="primary" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
 		</div>
 	}
 })
