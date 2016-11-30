@@ -2,7 +2,7 @@ actions = ""
 dest = params:getHeader("Hunt-Destination-Number")
 context = params:getHeader("Hunt-Context")
 actions_table = {}
-sql = "SELECT * FROM routings WHERE SUBSTR(prefix, 1, 1) = '" .. dest:sub(1,1) .. "' ORDER BY length(prefix) DESC"
+sql = "SELECT * FROM routes WHERE SUBSTR(prefix, 1, 1) = '" .. dest:sub(1,1) .. "' ORDER BY length(prefix) DESC"
 found = false
 
 if do_debug then print(sql) end
