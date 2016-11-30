@@ -86,14 +86,19 @@ class NewGateway extends React.Component {
 			</Modal.Header>
 			<Modal.Body>
 			<Form horizontal id="newGatewayForm">
-				<FormGroup controlId="formRealm">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="realm" placeholder="1000" /></Col>
-				</FormGroup>
-
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="route_to_beijing" /></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="gw1" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="realm" placeholder="example.com" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formUserame">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Userame" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="username" placeholder="username" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formPassword">
@@ -167,14 +172,14 @@ class GatewayPage extends React.Component {
 		var gw = form2json('#newGatewayForm');
 		console.log("gw", gw);
 
-		if (!gw.real || !gw.name) {
+		if (!gw.realm || !gw.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/gateways/" + user.id,
+			url: "/api/gateways/" + gw.id,
 			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
@@ -206,9 +211,23 @@ class GatewayPage extends React.Component {
 		const gw = this.state.gw;
 		let save_btn = "";
 		let err_msg = "";
+		let register = gw.register == "true" ? "Yes" : "No";
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+
+			if (gw.register == "true") {
+				register = <span>
+					<Radio name="register" value="true" inline defaultChecked>Yes</Radio>
+					<Radio name="register" value="false" inline>No</Radio>
+				</span>
+			} else {
+				register = <span>
+					<Radio name="register" value="true" inline>Yes</Radio>
+					<Radio name="register" value="false" inline defaultChecked>No</Radio>
+				</span>
+			}
+
 			if (this.state.errmsg) {
 				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
 			}
@@ -230,19 +249,29 @@ class GatewayPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={gw.name}/></Col>
 				</FormGroup>
 
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={gw.realm}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formUsername">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Userame" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="username" defaultValue={gw.username}/></Col>
+				</FormGroup>
+
 				<FormGroup controlId="formPassword">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Password" className="mandatory"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="password" defaultValue={gw.password} type="password"/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="description"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={gw.description}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formRegister">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Register" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={gw.register}/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Register" /> ?</Col>
+					<Col sm={10}>{register}</Col>
 				</FormGroup>
 			</Form>
 		</div>
@@ -334,8 +363,9 @@ class GatewaysPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td>{row.realm}</td>
 					<td><Link to={`/settings/gateways/${row.id}`}>{row.name}</Link></td>
+					<td>{row.realm}</td>
+					<td>{row.username}</td>
 					<td>{row.register}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
@@ -352,8 +382,9 @@ class GatewaysPage extends React.Component {
 				<tbody>
 				<tr>
 					<th><T.span text="ID"/></th>
-					<th><T.span text="Realm"/></th>
 					<th><T.span text="Name"/></th>
+					<th><T.span text="Realm"/></th>
+					<th><T.span text="Username"/></th>
 					<th><T.span text="Register"/></th>
 					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>

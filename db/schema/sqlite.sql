@@ -106,8 +106,9 @@ CREATE INDEX extn_group_e_g_id on user_group(user_id, group_id);
 
 CREATE TABLE gateways (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR,
 	name VARCHAR,
+	realm VARCHAR,
+	username VARCHAR,
 	password VARCHAR,
 	register BOOLEAN,
 	description VARCHAR,

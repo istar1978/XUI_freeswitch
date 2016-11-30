@@ -1,22 +1,18 @@
-gw_name = params:getHeader("gateway_name")
+gw_name = params:getHeader("gateway")
+
+-- freeswitch.consoleLog("ERR", "fetching gateway " .. gw_name .. "\n")
 
 if gw_name then
 	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
 		<profiles><profile name="external"><gateways>]]
 
 	xdb.find("gateways", {name = gw_name}, function(row)
-		name = row["name"]
-		data = row["data"]
-		-- print("data: " .. data)
+		local p = '<param name="realm"' .. ' value="' .. row.realm .. '"/>'
+		p = p .. '<param name="username"' .. ' value="' .. row.username .. '"/>'
+		p = p .. '<param name="password"' .. ' value="' .. row.password .. '"/>'
+		p = p .. '<param name="register"' .. ' value="' .. row.register .. '"/>'
 
-		tdata = utils.json_decode(data)
-		local p = ""
-
-		for k,v in pairs(tdata) do
-			p = p .. '<param name="' .. k .. '"' .. ' value="' .. v .. '"/>'
-		end
-
-		local gw = '<gateway name="' .. name .. '">' .. p .. '</gateway>'
+		local gw = '<gateway name="' .. row.name .. '">' .. p .. '</gateway>'
 
 		XML_STRING = XML_STRING .. gw
 	end)
