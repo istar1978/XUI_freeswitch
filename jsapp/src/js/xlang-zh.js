@@ -31,6 +31,7 @@ LANGUAGES["zh"] = {
 	New: "新建",
 	Delete: "删除",
 	Save: "保存",
+	Close: "关闭",
 	Submit: "提交",
 
 	"Create New Route": "新建路由",

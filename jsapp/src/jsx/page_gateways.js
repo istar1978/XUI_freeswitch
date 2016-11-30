@@ -132,7 +132,8 @@ class NewGateway extends React.Component {
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={this.props.onHide}>
-					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;Close
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
 				</Button>
 			</Modal.Footer>
 		</Modal>;
