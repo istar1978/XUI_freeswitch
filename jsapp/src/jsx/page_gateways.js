@@ -96,8 +96,8 @@ class NewGateway extends React.Component {
 					<Col sm={10}><FormControl type="input" name="realm" placeholder="example.com" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formUserame">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Userame" className="mandatory"/></Col>
+				<FormGroup controlId="formUsername">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Username" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="username" placeholder="username" /></Col>
 				</FormGroup>
 
