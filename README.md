@@ -45,7 +45,7 @@ or if you are in China, see <https://npm.taobao.org/>
 
 init db:
 
-    cd db/schema && cat sqlite.sql init.sql | sqlite3 /usr/local/freeswitch/db/xui.db
+    cd db/schema && cat sqlite.sql init*.sql | sqlite3 /usr/local/freeswitch/db/xui.db
 
 prepare:
 

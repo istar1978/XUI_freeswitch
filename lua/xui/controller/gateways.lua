@@ -1,6 +1,6 @@
 content_type("application/json")
 require 'xdb'
-xdb.dbh(xtra.dbh)
+xdb.bind(xtra.dbh)
 
 get('/', function(params)
 	gateways = utils.get_model("gateways")

@@ -122,10 +122,11 @@ CREATE INDEX gateways_deleted_epoch on gateways(deleted_epoch);
 
 CREATE TABLE params (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR,
+	realm VARCHAR, -- e.g. sip_profiles or gateways
 	k VARCHAR,
 	v VARCHAR,
-	ref_id INTEGER,
+	ref_id INTEGER,-- e.g. sip_profiles.id or gateway.id
+	disabled BOOLEAN,
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -134,6 +135,19 @@ CREATE TABLE params (
 CREATE INDEX params_realm on params(realm);
 CREATE INDEX params_rrk on params(realm, ref_id, k);
 CREATE INDEX params_deleted_epoch on params(deleted_epoch);
+
+CREATE TABLE sip_profiles (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR,
+	description VARCHAR,
+	disabled BOOLEAN,
+	created_epoch INTEGER,
+	updated_epoch INTEGER,
+	deleted_epoch INTEGER
+);
+
+CREATE UNIQUE INDEX sip_profiles_name on sip_profiles(name);
+CREATE INDEX sip_profiles_deleted_epoch on sip_profiles(deleted_epoch);
 
 
 -- END

@@ -8,7 +8,7 @@ function xdb.connect(dsn, user, pass)
 	assert(xdb.dbh:connected())
 end
 
-function xdb.dbh(dbh)
+function xdb.bind(dbh)
 	xdb.dbh = dbh
 end
 
@@ -57,21 +57,18 @@ end
 
 function xdb.create_return_id(t, kvp)
 	local keys, values = get_insert_string(kvp)
+	local ret_id = nil
+
 	sql = "INSERT INTO " .. t .. "(" .. keys .. ") VALUES(" .. values .. ")"
 	xdb.dbh:query(sql)
 
 	if dbh:affected_rows() == 1 then
-		dbh:query("SELECT LAST_INSERT_ID() as id", function(row)
-			local tab = {}
-			tab["result"] = "ok"
-			tab["code"] = "200"
-			subtab = {["id"] = row.id}
-			tab["data"] = subtab
+		dbh:query("SELECT LAST_INSERT_ROWID() as id", function(row)
+			ret_id = row.id
 		end)
-		return tab
-	else
-		return({"json", "error", 500, "create failure"})
 	end
+
+	return ret_id
 end
 
 function xdb.update(t, cond, kvp)
@@ -113,4 +110,13 @@ function xdb.update_model(t, m)
 	local id = m.id
 	m.id = nil
 	return xdb.update(t, {id = id}, m)
+end
+
+function xdb.execute(sql)
+	xdb.dbh:query(sql)
+	return xtra.dbh:affected_rows()
+end
+
+function xdb.affected_rows()
+	return xtra.dbh:affected_rows()
 end
