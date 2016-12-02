@@ -80,7 +80,15 @@ class NewSIPProfile extends React.Component {
 	render() {
 		console.log(this.props);
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		const props = Object.assign({}, this.props);
+		const profiles = props.profiles;
+		delete props.profiles;
+
+		const profiles_options = profiles.map(profile => {
+			return <option value={profile.id} key={profile.id}>Profile[{profile.name}]</option>
+		});
+
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New SIP Profile" /></Modal.Title>
 			</Modal.Header>
@@ -101,6 +109,7 @@ class NewSIPProfile extends React.Component {
 					<Col sm={10}>
 						<FormControl componentClass="select" name="template">
 							<option value="default">Default</option>
+							{profiles_options}
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -459,7 +468,9 @@ class SIPProfilesPage extends React.Component {
 				</table>
 			</div>
 
-			<NewSIPProfile show={this.state.formShow} onHide={formClose} data-handleNewSIPProfileAdded={this.handleSIPProfileAdded.bind(this)}/>
+			<NewSIPProfile show={this.state.formShow} onHide={formClose}
+				profiles = {this.state.rows}
+				data-handleNewSIPProfileAdded={this.handleSIPProfileAdded.bind(this)}/>
 		</div>
 	}
 }

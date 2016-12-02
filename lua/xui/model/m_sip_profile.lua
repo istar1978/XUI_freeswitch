@@ -10,15 +10,15 @@ function create(kvp)
 	if id then
 		local realm = 'SOFIA'
 		local ref_id = 0
-		if not template == "default" then
+		if not (template == "default") then
 			realm = 'sip_profile' -- the table name
-			ref_id = "(SELECT id FROM sip_profiles WHERE name = '" .. realm .. "')"
+			ref_id = template
 		end
 
 		local sql = "INSERT INTO params (realm, k, v, ref_id, disabled) SELECT 'sip_profile', k, v, " ..
-			id .. ", disabled From params WHERE realm = '" ..
-			realm .. "' AND ref_id = " .. ref_id
-		-- print(sql);
+			id .. ", disabled From params WHERE " ..
+			xdb.cond({realm = realm, ref_id = ref_id})
+		print(sql);
 		xdb.execute(sql)
 	end
 	return id

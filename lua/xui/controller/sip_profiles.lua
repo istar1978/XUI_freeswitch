@@ -54,7 +54,7 @@ end)
 post('/', function(params)
 	ret = m_sip_profile.create(params.request)
 
-	if ret == 1 then
+	if ret then
 		return 200, "{}"
 	else
 		return 500, "{}"
