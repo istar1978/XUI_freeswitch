@@ -62,9 +62,9 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("sip_profiles", params.id);
+	ret = m_sip_profile.delete(params.id)
 
-	if ret == 1 then
+	if ret >= 0 then
 		return 200, "{}"
 	else
 		return 500, "{}"

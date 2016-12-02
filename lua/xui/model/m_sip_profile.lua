@@ -1,6 +1,8 @@
 require 'xdb'
 xdb.bind(xtra.dbh)
 
+m_sip_profile = {}
+
 function create(kvp)
 	template = kvp.template
 	kvp.template = nil
@@ -54,7 +56,15 @@ function update_param(profile_id, param_id, kvp)
 	return nil;
 end
 
-m_sip_profile = {}
+m_sip_profile.delete = function(profile_id)
+	utils.delete_model("sip_profiles", profile_id);
+	if (xdb.affected_rows() == 1) then
+		local sql = "DELETE FROM params WHERE " .. xdb.cond({realm = 'sip_profile', ref_id = profile_id})
+		xdb.execute(sql)
+	end
+	return xdb.affected_rows()
+end
+
 m_sip_profile.create = create
 m_sip_profile.params = params
 m_sip_profile.toggle_param = toggle_param
