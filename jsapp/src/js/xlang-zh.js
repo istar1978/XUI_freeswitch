@@ -17,6 +17,7 @@ LANGUAGES["zh"] = {
 	Sofia: "Sofia",
 
 	Call: "呼叫",
+	DTMF: "拨号",
 
 	Conference: "会议",
 	Mute: "静音",

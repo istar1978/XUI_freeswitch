@@ -33,7 +33,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { NavItem } from 'react-bootstrap';
+import { NavItem,  Button } from 'react-bootstrap';
 
 
 var Phone = React.createClass({
@@ -139,20 +139,32 @@ var Phone = React.createClass({
 		var state;
 		var hangupButton = "";
 		var answerButton = "";
-		var toggleDTMF = <button onClick={this.handleDTMF}>DTMF</button>;
+		var toggleDTMF = <Button bsStyle="info" bsSize="xsmall">
+			<i className="fa fa-tty" aria-hidden="true"></i>&nbsp;
+			<T.span onClick={this.handleDTMF} text= "DTMF" /></Button>;
 		var DTMFs = <div style={{display: this.state.dtmfVisible ? "block" : "none"}}>
-			<button onClick={this.handleDTMF} data-dtmf="0">0</button>
-			<button onClick={this.handleDTMF} data-dtmf="1">1</button>
-			<button onClick={this.handleDTMF} data-dtmf="2">2</button>
-			<button onClick={this.handleDTMF} data-dtmf="3">3</button>
-			<button onClick={this.handleDTMF} data-dtmf="4">4</button>
-			<button onClick={this.handleDTMF} data-dtmf="5">5</button>
-			<button onClick={this.handleDTMF} data-dtmf="6">6</button>
-			<button onClick={this.handleDTMF} data-dtmf="7">7</button>
-			<button onClick={this.handleDTMF} data-dtmf="8">8</button>
-			<button onClick={this.handleDTMF} data-dtmf="9">9</button>
-			<button onClick={this.handleDTMF} data-dtmf="*">*</button>
-			<button onClick={this.handleDTMF} data-dtmf="#">#</button>
+		<div className="row">
+			<div className="col-xs-12">
+	            <button type="button" className="btn btn-default btn-circle">1</button>
+	            <button type="button" className="btn btn-default btn-circle">2</button>
+	            <button type="button" className="btn btn-default btn-circle">3</button>
+	        </div>
+	        <div className="col-xs-12">
+	            <button type="button" className="btn btn-default btn-circle">4</button>
+	            <button type="button" className="btn btn-default btn-circle">5</button>
+	            <button type="button" className="btn btn-default btn-circle">6</button>
+	        </div>
+	        <div className="col-xs-12">
+	            <button type="button" className="btn btn-default btn-circle">7</button>
+	            <button type="button" className="btn btn-default btn-circle">8</button>
+	            <button type="button" className="btn btn-default btn-circle">9</button>
+	        </div>
+	        <div className="col-xs-12">
+	            <button type="button" className="btn btn-default btn-circle">*</button>
+	            <button type="button" className="btn btn-default btn-circle">0</button>
+	            <button type="button" className="btn btn-default btn-circle">#</button>
+	        </div>
+	    </div>
 		</div>;
 
 		if (this.state.loginState) {
@@ -172,11 +184,13 @@ var Phone = React.createClass({
 
 		return 	<NavItem eventKey="phone"><T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
-				Phone....<br/>
-				<input id="dest_number" name="dest_number" defaultValue="demo"/>
-				<button onClick={this.handleCall}><T.span text={{ key: "Call"}} /></button>
+				<div id="zm-phone">Phone&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
+				<input id="dest_number" name="dest_number" placeholder="demo"/>
+				<Button bsStyle="success" bsSize="xsmall">
+					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleCall} text="Call" />
+				</Button>
 				<br/>
-				<span>{this.state.cidname} {this.state.callState}</span>
 				{hangupButton}
 				{answerButton}
 				{toggleDTMF}
