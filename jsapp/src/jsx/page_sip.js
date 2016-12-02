@@ -35,6 +35,7 @@ import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
+import { EditControl } from './xtools'
 
 class NewSIPProfile extends React.Component {
 	propTypes: {handleNewSIPProfileAdded: React.PropTypes.func}
@@ -135,24 +136,6 @@ class NewSIPProfile extends React.Component {
 	}
 }
 
-class EditControl extends FormControl {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const props = Object.assign({}, this.props);
-		delete props.edit;
-
-		if (this.props.edit) {
-			return <FormControl {...props} />
-		}
-
-		return <span>{props.defaultValue}</span>
-	}
-
-}
-
 class SIPProfilePage extends React.Component {
 	propTypes: {handleNewSIPProfileAdded: React.PropTypes.func}
 
@@ -188,6 +171,7 @@ class SIPProfilePage extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(profile),
 			success: function () {
+				profile.params = _this.state.profile.params;
 				_this.setState({profile: profile, errmsg: {key: "Saved at", time: Date()}})
 			},
 			error: function(msg) {
@@ -330,7 +314,6 @@ class SIPProfilePage extends React.Component {
 			</Form>
 
 			<ButtonGroup className="controls">
-				{err_msg} { save_btn }
 				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
 			</ButtonGroup>
 

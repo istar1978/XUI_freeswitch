@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { EditControl } from './xtools'
 
 class NewUser extends React.Component {
 	propTypes: {handleNewUserAdded: React.PropTypes.func}
@@ -140,24 +141,6 @@ class NewUser extends React.Component {
 			</Modal.Footer>
 		</Modal>;
 	}
-}
-
-class EditControl extends FormControl {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const props = Object.assign({}, this.props);
-		delete props.edit;
-
-		if (this.props.edit) {
-			return <FormControl {...props} />
-		}
-
-		return <span>{props.defaultValue}</span>
-	}
-
 }
 
 class UserPage extends React.Component {

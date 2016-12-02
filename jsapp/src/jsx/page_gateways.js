@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { EditControl } from './xtools'
 
 class NewGateway extends React.Component {
 	propTypes: {handleNewGatewayAdded: React.PropTypes.func}
@@ -138,24 +139,6 @@ class NewGateway extends React.Component {
 			</Modal.Footer>
 		</Modal>;
 	}
-}
-
-class EditControl extends FormControl {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const props = Object.assign({}, this.props);
-		delete props.edit;
-
-		if (this.props.edit) {
-			return <FormControl {...props} />
-		}
-
-		return <span>{props.defaultValue}</span>
-	}
-
 }
 
 class GatewayPage extends React.Component {
