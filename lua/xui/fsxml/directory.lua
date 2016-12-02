@@ -1,22 +1,27 @@
-user = params:getHeader("user")
-domain = params:getHeader("domain")
-vars = ""
-pars = ""
-found = false
+local user = params:getHeader("user")
+local domain = params:getHeader("domain")
+local purpose = params:getHeader("purpose")
+local vars = ""
+local pars = ""
+local found = false
 
-xdb.find("users", {extn = user}, function(row)
-	found = true
+-- freeswitch.consoleLog("INFO", "purpose" .. purpose)
 
-	cid_name = row.cid_name or row.name
-	cid_number = row.cid_number or row.extn
+if user then
+	xdb.find("users", {extn = user}, function(row)
+		found = true
 
-	pars= '<param name="password" value="' .. row.password .. '"/>' ..
-			'<param name="vm-password" value="' .. row.vm_password .. '"/>'
+		cid_name = row.cid_name or row.name
+		cid_number = row.cid_number or row.extn
 
-	vars =  '<variable name="user_context" value="' .. row.context .. '"/>' ..
-			'<variable name="effective_caller_id_name" value="' .. cid_name .. '"/>' ..
-			'<variable name="effective_caller_id_number" value="' .. cid_number .. '"/>'
-end)
+		pars= '<param name="password" value="' .. row.password .. '"/>' ..
+				'<param name="vm-password" value="' .. row.vm_password .. '"/>'
+
+		vars =  '<variable name="user_context" value="' .. row.context .. '"/>' ..
+				'<variable name="effective_caller_id_name" value="' .. cid_name .. '"/>' ..
+				'<variable name="effective_caller_id_number" value="' .. cid_number .. '"/>'
+	end)
+end
 
 if (found) then
 	XML_STRING = [[<domain name="]] .. domain .. [[">
