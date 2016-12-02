@@ -17,6 +17,7 @@ LANGUAGES["zh"] = {
 	Sofia: "Sofia",
 
 	Call: "呼叫",
+	DTMF: "拨号",
 
 	Conference: "会议",
 	Mute: "静音",
@@ -84,6 +85,8 @@ LANGUAGES["zh"] = {
 	Realm: "服务器",
 	Username: "用户名",
 	Register: "注册",
+
+	"Create New SIP Profile": "新建SIP Profile",
 
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"

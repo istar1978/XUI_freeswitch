@@ -1,6 +1,6 @@
 local prefix = "/tmp/blocks-"
 require 'xdb'
-xdb.dbh(xtra.dbh)
+xdb.bind(xtra.dbh)
 
 get('/', function(params)
 	blocks = utils.get_model("blocks")

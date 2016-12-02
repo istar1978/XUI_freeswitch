@@ -32,9 +32,12 @@
 'use strict';
 
 import React from 'react'
-import T from 'i18n-react';
-import Languages from "./languages";
 import ReactDOM from 'react-dom';
+import T from 'i18n-react';
+import { Row, Col, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-router'
+import Languages from "./languages";
 import MainMenu from './main-menu';
 import FSShow from "./fs_show";
 import AboutPage from "./page_about";
@@ -44,16 +47,15 @@ import ChannelsPage from "./page_channels";
 import CallsPage from "./page_calls";
 import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
-import { LinkContainer } from 'react-router-bootstrap';
-import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-router'
 import Conferences from './conferences';
 import Settings from './settings';
 import {UsersPage, UserPage} from './page_users';
 import Routes from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
-import { Row, Col } from 'react-bootstrap';
-import {GatewaysPage, GatewayPage} from './page_gateways';
-import { Button } from 'react-bootstrap';
+import { GatewaysPage, GatewayPage } from './page_gateways';
+import { SIPProfilesPage, SIPProfilePage } from './page_sip';
+import { Login, LoginBox } from './page_login';
+import Footer from './footer';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -70,17 +72,6 @@ const RMENUS = [
 	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />, data:"/profiles"},
 	{id: "MM_LOGOUT", description: <T.span text="Logout"/>, data: "/logout"}
 ];
-
-const Footer = React.createClass({
-	render() {
-		return <div id="footer">
-			<br/><br/><br/>
-			<Languages className="pull-ight"/>
-			&copy; <T.span text="Copyright"/>
-			<br/><br/>
-		</div>
-	}
-})
 
 const App = React.createClass({
 	render() {
@@ -151,6 +142,10 @@ const Home = React.createClass({
 						<IndexRoute components={{sidebar: Settings, main: GatewaysPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: GatewayPage}}/>
 					</Route>
+					<Route path="sip_profiles">
+						<IndexRoute components={{sidebar: Settings, main: SIPProfilesPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: SIPProfilePage}}/>
+					</Route>
 					<Route path="routes" components={{sidebar: Settings, main: Routes}}/>
 				</Route>
 			</Route>
@@ -158,74 +153,9 @@ const Home = React.createClass({
 	}
 })
 
-const LoginPage = React.createClass({
-	render() {
-		var menus = [{id: "MM_LOGIN", description: <T.span text={{ key: "Login"}} />, data: '/'}];
-		return <div><MainMenu menus = {menus} rmenus = {[]}/>
-			<div id='main'>{this.props.children}</div>
-			<Footer/>
-		</div>
-	}
-})
-
-const LoginBox = React.createClass({
-	getInitialState: function() {
-		return {login_err: false};
-	},
-
-	handleClick: function() {
-		let username = $('#username').val();
-		let password = $('#password').val();
-		localStorage.setItem('username', username);
-		localStorage.setItem('password', password);
-		verto.loginData(verto_params());
-		verto.login();
-	},
-
-	componentDidMount: function() {
-		window.addEventListener("verto-login", this.handleVertoLogin);
-		window.addEventListener("verto-login-error", this.handleVertoLoginError);
-	},
-
-	componentWillUnmount: function() {
-		window.removeEventListener("verto-login", this.handleVertoLogin);
-		window.removeEventListener("verto-login-error", this.handleVertoLoginError);
-	},
-
-	handleVertoLogin: function(e) {
-		ReactDOM.render(<Home/>, document.getElementById('body'))
-	},
-
-	handleVertoLoginError: function(e) {
-		this.setState({login_err: true});
-	},
-
-	render() {
-		var errmsg = this.state.login_err ? "Invalid username or password" : "";
-		return <div id='loginbox'>
-			<br/><T.span text={errmsg} className="danger"/>
-			<h1><T.span text="Login with username and password"/></h1>
-			<p><input id='username' name='username' placeholder='username'/></p>
-			<p><input id='password' name='password' type='password' placeholder='password'/></p>
-			<Button bsStyle="primary" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
-		</div>
-	}
-})
-
-const Login = React.createClass({
-	render() {
-		return <Router history={hashHistory}>
-			<Route path="/" component={LoginPage}>
-				<IndexRoute component={LoginBox}/>
-				<Redirect from="/logout" to="/"/>
-				<Route path="/:any" component={LoginBox}/>
-				<Route path="/:any/:more" component={LoginBox}/>
-				<Route path="/:any/:more/:more" component={LoginBox}/>
-			</Route>
-		</Router>
-	}
-})
 
 $(document).ready(function() {
 	ReactDOM.render(<Login/>, document.getElementById('body'));
 });
+
+export { Home };

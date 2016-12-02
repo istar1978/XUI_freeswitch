@@ -24,6 +24,7 @@ cur_dir = string.gsub(debug.getinfo(1).source, "^@(.+/)vendor/__xtra_init__.lua$
 package.path = package.path .. ";" .. cur_dir .. "?.lua"
 package.path = package.path .. ";" .. cur_dir .. "vendor/?.lua"
 package.path = package.path .. ";" .. cur_dir .. "controller/?.lua"
+package.path = package.path .. ";" .. cur_dir .. "model/?.lua"
 freeswitch.consoleLog("INFO", package.path);
 
 require 'xtra_config'

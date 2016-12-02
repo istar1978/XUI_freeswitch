@@ -7,12 +7,16 @@
 	padding:10px;
 	border:1px solid #000;
 	border-top: 0;
-	background-color:#ddd;
+	background-color:#e5e5e5;
 	color: #000;
 	/*display:none;*/
 	z-index:1000;
 }
 
+#zm-phone{
+	margin-bottom: 5px;
+	color: #626262;
+}
 /* Phone Login State */
 #phone-state.Trying { color:yellow !important; }
 #phone-state.Online { color:lime !important;}
@@ -21,6 +25,31 @@
 
 #conference-controls {
 	float:right;
+}
+
+.row {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.btn-success{
+	margin-left: 5px;
+}
+
+.btn-info{
+	margin-top: 5px;
+}
+
+.btn-circle {
+	margin-left: 6px;
+    margin-top: 3px;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 16px;
+    line-height: 1.8;
+    border-radius: 30px;
 }
 
 .controls {
