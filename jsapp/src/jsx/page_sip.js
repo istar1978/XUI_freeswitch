@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 
 class NewSIPProfile extends React.Component {
 	propTypes: {handleNewSIPProfileAdded: React.PropTypes.func}
@@ -155,6 +156,8 @@ class SIPProfilePage extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleToggleParam = this.handleToggleParam.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.toggleHighlight = this.toggleHighlight.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -215,6 +218,43 @@ class SIPProfilePage extends React.Component {
 		});
 	}
 
+	handleChange(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+
+		console.log("change", obj);
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/sip_profiles/" + this.state.profile.id + "/params/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({v: obj[id]}),
+			success: function (param) {
+				console.log("success!!!!", param);
+				_this.state.profile.params = _this.state.profile.params.map(function(p) {
+					if (p.id == id) {
+						return param;
+					}
+					return p;
+				});
+				_this.setState({profile: _this.state.profile});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
+				_this.setState({profile: _this.state.profile});
+			}
+		});
+	}
+
+	toggleHighlight() {
+		this.setState({highlight: !this.state.highlight});
+	}
+
+	isStringAcceptable() {
+		return true;
+	}
+
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
@@ -238,7 +278,13 @@ class SIPProfilePage extends React.Component {
 
 				return <tr key={param.id} className={disabled_class}>
 					<td>{param.k}</td>
-					<td>{param.v}</td>
+					<td><RIEInput value={param.v} change={_this.handleChange}
+						propName={param.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
 					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
 				</tr>
 			});
@@ -273,6 +319,11 @@ class SIPProfilePage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={profile.description}/></Col>
 				</FormGroup>
 			</Form>
+
+			<ButtonGroup className="controls">
+				{err_msg} { save_btn }
+				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+			</ButtonGroup>
 
 			<h2>Params</h2>
 			<table className="table">

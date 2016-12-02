@@ -36,8 +36,13 @@ end)
 
 put('/:id/params/:param_id', function(params)
 	print(serialize(params))
+	ret = nil;
 
-	ret = m_sip_profile.toggle_param(params.id, params.param_id)
+	if params.request.action and params.request.action == "toggle" then
+		ret = m_sip_profile.toggle_param(params.id, params.param_id)
+	else
+		ret = m_sip_profile.update_param(params.id, params.param_id, params.request)
+	end
 
 	if ret then
 		return ret

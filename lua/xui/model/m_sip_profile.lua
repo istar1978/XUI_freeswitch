@@ -43,10 +43,20 @@ function toggle_param(profile_id, param_id)
 	if xdb.affected_rows() == 1 then
 		return utils.get_model("params", param_id)
 	end
+	return nil
+end
+
+function update_param(profile_id, param_id, kvp)
+	xdb.update("params", {realm = 'sip_profile', ref_id = profile_id, id = param_id}, kvp)
+	if xdb.affected_rows() == 1 then
+		return utils.get_model("params", param_id)
+	end
+	return nil;
 end
 
 m_sip_profile = {}
 m_sip_profile.create = create
 m_sip_profile.params = params
 m_sip_profile.toggle_param = toggle_param
+m_sip_profile.update_param = update_param
 

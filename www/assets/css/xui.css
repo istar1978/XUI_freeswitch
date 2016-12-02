@@ -96,3 +96,7 @@ tr.disabled {
 #loginbox button {
 	font-size: 20pt;
 }
+
+.editable {
+	background-color: yellow;
+}

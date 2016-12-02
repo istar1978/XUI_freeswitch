@@ -97,6 +97,7 @@ More:
 * <https://github.com/ReactTraining/react-router>
 * <http://stackoverflow.com/questions/35687353/react-bootstrap-link-item-in-a-navitem>
 * <https://github.com/bradwestfall/CSS-Tricks-React-Series>
+* <https://github.com/kaivi/riek>
 
 ## The multiple ways of creating components
 
