@@ -154,6 +154,7 @@ class SIPProfilePage extends React.Component {
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleToggleParam = this.handleToggleParam.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -187,6 +188,33 @@ class SIPProfilePage extends React.Component {
 		this.setState({edit: !this.state.edit});
 	}
 
+	handleToggleParam(e) {
+		const _this = this;
+		const data = e.target.getAttribute("data");
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/sip_profiles/" + this.state.profile.id + "/params/" + data,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({action: "toggle"}),
+			success: function (param) {
+				// console.log("success!!!!", param);
+				const params = _this.state.profile.params.map(function(p) {
+					if (p.id == data) {
+						p.disabled = param.disabled;
+					}
+					return p;
+				});
+				_this.state.profile.params = params;
+				_this.setState({profile: _this.state.profile});
+			},
+			error: function(msg) {
+				console.error("toggle params", msg);
+			}
+		});
+	}
+
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
@@ -198,19 +226,20 @@ class SIPProfilePage extends React.Component {
 
 	render() {
 		const profile = this.state.profile;
+		const _this = this;
 		let save_btn = "";
 		let err_msg = "";
-		let params = "";
+		let params = <tr></tr>;
 
 		if (this.state.profile.params && Array.isArray(this.state.profile.params)) {
 			// console.log(this.state.profile.params)
 			params = this.state.profile.params.map(function(param) {
-				const disabled_class = param.disabled == "false" ? "" : "disabled";
+				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
 
 				return <tr key={param.id} className={disabled_class}>
 					<td>{param.k}</td>
 					<td>{param.v}</td>
-					<td>{param.disabled == "true" ? "False" : "True"}</td>
+					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
 				</tr>
 			});
 		}
@@ -348,7 +377,7 @@ class SIPProfilesPage extends React.Component {
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
-					<td>{row.disabled ? "True" : "False"}</td>
+					<td>{row.disabled ? "Yes" : "No"}</td>
 					<td></td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;

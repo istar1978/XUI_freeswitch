@@ -34,6 +34,18 @@ put('/:id', function(params)
 	end
 end)
 
+put('/:id/params/:param_id', function(params)
+	print(serialize(params))
+
+	ret = m_sip_profile.toggle_param(params.id, params.param_id)
+
+	if ret then
+		return ret
+	else
+		return 404
+	end
+end)
+
 post('/', function(params)
 	ret = m_sip_profile.create(params.request)
 

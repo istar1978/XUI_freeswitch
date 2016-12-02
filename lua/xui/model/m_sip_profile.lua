@@ -35,6 +35,18 @@ function params(profile_id)
 	return rows
 end
 
+function toggle_param(profile_id, param_id)
+	sql = "UPDATE params SET disabled = NOT disabled" ..
+		" WHERE " .. xdb.cond({realm = 'sip_profile', ref_id = profile_id, id = param_id})
+	print(sql)
+	xdb.execute(sql)
+	if xdb.affected_rows() == 1 then
+		return utils.get_model("params", param_id)
+	end
+end
+
 m_sip_profile = {}
 m_sip_profile.create = create
 m_sip_profile.params = params
+m_sip_profile.toggle_param = toggle_param
+

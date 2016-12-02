@@ -120,3 +120,5 @@ end
 function xdb.affected_rows()
 	return xtra.dbh:affected_rows()
 end
+
+xdb.cond = get_cond_string;

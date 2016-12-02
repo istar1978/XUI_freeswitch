@@ -279,3 +279,13 @@ function detect_language()
 
 	return lang_map;
 }
+
+function dbtrue(s)
+{
+	return s ? s : (s == "true" || s == "1");
+}
+
+function dbfalse(s)
+{
+	return s ? (s == "false" || s == "0") : true;
+}
