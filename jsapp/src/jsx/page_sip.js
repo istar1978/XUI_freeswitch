@@ -203,12 +203,14 @@ class SIPProfilePage extends React.Component {
 		let params = "";
 
 		if (this.state.profile.params && Array.isArray(this.state.profile.params)) {
-			console.log(this.state.profile.params)
+			// console.log(this.state.profile.params)
 			params = this.state.profile.params.map(function(param) {
-				return <tr key={param.id}>
+				const disabled_class = param.disabled == "false" ? "" : "disabled";
+
+				return <tr key={param.id} className={disabled_class}>
 					<td>{param.k}</td>
 					<td>{param.v}</td>
-					<td>{param.disabled ? "False" : "True"}</td>
+					<td>{param.disabled == "true" ? "False" : "True"}</td>
 				</tr>
 			});
 		}
@@ -333,14 +335,16 @@ class SIPProfilesPage extends React.Component {
 	}
 
 	render() {
-		let formClose = () => this.setState({ formShow: false });
-		let toggleDanger = () => this.setState({ danger: !this.state.danger });
-	    var danger = this.state.danger ? "danger" : "";
+		const formClose = () => this.setState({ formShow: false });
+		const toggleDanger = () => this.setState({ danger: !this.state.danger });
+	    const danger = this.state.danger ? "danger" : "";
 
-		var _this = this;
+		const _this = this;
 
-		var rows = this.state.rows.map(function(row) {
-			return <tr key={row.id}>
+		const rows = this.state.rows.map(function(row) {
+			const disabled_class = row.disabled == "false" ? "" : "disabled";
+
+			return <tr key={row.id} className={disabled_class}>
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>

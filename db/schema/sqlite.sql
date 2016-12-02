@@ -126,7 +126,7 @@ CREATE TABLE params (
 	k VARCHAR,
 	v VARCHAR,
 	ref_id INTEGER,-- e.g. sip_profiles.id or gateway.id
-	disabled BOOLEAN,
+	disabled BOOLEAN DEFAULT 'false',
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -140,7 +140,7 @@ CREATE TABLE sip_profiles (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR,
 	description VARCHAR,
-	disabled BOOLEAN,
+	disabled BOOLEAN DEFAULT 'false',
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
