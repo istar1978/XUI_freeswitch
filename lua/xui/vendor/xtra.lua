@@ -5,7 +5,7 @@
 -- Contributors:
 
 -- module('xtra', package.seeall)
-print(env:serialize())
+-- print(env:serialize())
 
 xtra = {}
 -- xtra.http_uri = env:getHeader("HTTP-URI")

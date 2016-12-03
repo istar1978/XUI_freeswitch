@@ -7,7 +7,7 @@
 -- stream The output stream to write to
 -- freeswitch The freeswitch object, e.g. you can use freeswitch.consoleLog()
 
-local xtra_debug = true
+local xtra_debug = false
 
 if xtra_debug then
 	http_uri = env:getHeader("HTTP-URI")
@@ -25,7 +25,7 @@ package.path = package.path .. ";" .. cur_dir .. "?.lua"
 package.path = package.path .. ";" .. cur_dir .. "vendor/?.lua"
 package.path = package.path .. ";" .. cur_dir .. "controller/?.lua"
 package.path = package.path .. ";" .. cur_dir .. "model/?.lua"
-freeswitch.consoleLog("INFO", package.path);
+-- freeswitch.consoleLog("INFO", package.path .. "\n");
 
 require 'xtra_config'
 require 'utils'
@@ -33,7 +33,7 @@ require 'xtra'
 
 -- Now run the actuall controller
 xtra.controller_path = string.gsub(xtra.controller_path, ".lua", "")
-freeswitch.consoleLog("INFO", xtra.controller_path);
+-- freeswitch.consoleLog("INFO", xtra.controller_path .. "\n");
 
 require(xtra.controller_path)
 
