@@ -127,6 +127,7 @@ var Phone = React.createClass({
 		window.addEventListener("verto-login", this.handleVertoLogin);
 		window.addEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.addEventListener("verto-dialog-state", this.handleVertoDialogState);
+		if (verto_loginState) this.handleVertoLogin();
 	},
 
 	componentWillUnmount: function() {
