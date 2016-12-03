@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+// http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './xtools'
 
