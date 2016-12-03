@@ -27,7 +27,7 @@
     "react-router": "^3.0.0",
     "react-router-bootstrap": "^0.23.1",
     "riek": "^1.0.7",
-    "webpack": "^1.13.3"
+    "webpack": "^2.1.0-beta.25"
   },
   "dependencies": {
     "react-bootstrap": "^0.30.6"
@@ -39,15 +39,20 @@
     "build:css": "cat src/css/*.css > ../www/assets/css/xui.css",
     "watch:css": "watch 'npm run build:css' src/css/",
     "build:js": "cat src/js/*.js > ../www/assets/js/xui.js",
+    "release:js": "cat src/js/*.js | uglifyjs -mc > ../www/assets/js/xui.js",
     "watch:js": "watch 'npm run build:js' src/js/",
     "build:jsx_index": "browserify -t [ babelify --presets [ es2015 react ] ] src/jsx/index.jsx > ../www/assets/js/jsx/index.js",
+    "release:jsx_index": "NODE_ENV=production browserify -t [ babelify --presets [ es2015 react ] ] src/jsx/index.jsx | uglifyjs -mc > ../www/assets/js/jsx/index.js",
     "watch:jsx_index": "watchify -v -t [ babelify --presets [ es2015 react ] ] src/jsx/index.jsx -o ../www/assets/js/jsx/index.js",
     "build:jsx_blocks": "browserify -t [ babelify --presets [ es2015 react ] ] src/jsx/blocks.jsx > ../www/assets/js/jsx/blocks.js",
+    "release:jsx_blocks": "NODE_ENV=production browserify -t [ babelify --presets [ es2015 react ] ] src/jsx/blocks.jsx | uglifyjs -mc > ../www/assets/js/jsx/blocks.js",
     "watch:jsx_blocks": "watchify -v -t [ babelify --presets [ es2015 react ] ] src/jsx/blocks.jsx -o ../www/assets/js/jsx/blocks.js",
-    "build:jsx": "npm run build:jsx_index && npm run build:jsx_blocks",
+    "build:jsx": "npm run build:jsx_index",
+    "release:jsx": "npm run release:jsx_index",
     "build:html": "echo ok",
     "watch:html": "echo ok",
     "build": "npm run build:css && npm run build:js && npm run build:jsx && npm run build:html",
-    "build:watch": "parallelshell 'npm run watch:js' 'npm run watch:jsx_index' 'npm run watch:jsx_blocks' 'npm run watch:css' 'npm run watch:html'"
+    "release": "npm run build:css && npm run release:js && npm run release:jsx && npm run build:html",
+    "build:watch": "parallelshell 'npm run watch:js' 'npm run watch:jsx_index' 'npm run watch:css' 'npm run watch:html'"
   }
 }
