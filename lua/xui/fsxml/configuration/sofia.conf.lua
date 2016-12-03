@@ -28,11 +28,9 @@ function expand(s)
 	return e
 end
 
-if gw_name then
-	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
-		<profiles><profile name="external"><gateways>]]
-
-	xdb.find("gateways", {name = gw_name}, function(row)
+function build_gateways(cond)
+	local gws = ""
+	xdb.find("gateways", cond, function(row)
 		local p = '<param name="realm"' .. ' value="' .. row.realm .. '"/>'
 		p = p .. '<param name="username"' .. ' value="' .. row.username .. '"/>'
 		p = p .. '<param name="password"' .. ' value="' .. row.password .. '"/>'
@@ -40,10 +38,17 @@ if gw_name then
 
 		local gw = '<gateway name="' .. row.name .. '">' .. p .. '</gateway>'
 
-		XML_STRING = XML_STRING .. gw
+		gws = gws .. gw
 	end)
+	return gws
+end
 
-	XML_STRING = XML_STRING .. "</gateways></profile></profiles></configuration>"
+if gw_name then
+	local gateways = build_gateways({name = gw_name})
+
+	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
+		<profiles><profile name="external"><gateways>]] .. gateways ..
+		"</gateways></profile></profiles></configuration>"
 
 elseif profile_name then
 	local profile = nil
@@ -53,17 +58,23 @@ elseif profile_name then
 	end)
 
 	if (profile) then
-		get_globals()
-
-		XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
-			<profiles><profile name="]] .. profile_name .. [["><settings>]]
-
 		local settings = ""
+		local gateways = ""
+
+		-- only works on external for now
+		if profile_name == "external" then gateways = build_gateways({}) end
+
+		get_globals() -- fetch global vars so we can expand them
 
 		xdb.find("params", {realm = 'sip_profile', ref_id = profile.id, disabled = 'false'}, function(row)
 			settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'
 		end)
 
-		XML_STRING = XML_STRING .. settings .. "</settings></profile></profiles></configuration>"
+		XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
+			<profiles><profile name="]] .. profile_name .. [["><gateways>]] ..
+			-- build_gateways({profile_id = profile.id}) ..
+			gateways ..
+			[[</gateways><settings>]] .. settings ..
+			"</settings></profile></profiles></configuration>"
 	end
 end
