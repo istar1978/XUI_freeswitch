@@ -141,7 +141,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled)
 INSERT INTO params (realm, k, v, ref_id, disabled)
 	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'external'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
 
-UPDATE params set v = '$${internal_sip_port}'
+UPDATE params set v = '$${external_sip_port}'
 	WHERE k = 'sip-ip' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'external');
 
 UPDATE params set v = 'false'
