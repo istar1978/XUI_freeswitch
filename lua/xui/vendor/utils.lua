@@ -65,3 +65,5 @@ function strsplit(delimiter, text)
   end
   return list
 end
+
+return utils

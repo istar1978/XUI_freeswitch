@@ -55,16 +55,21 @@ end
 
 -- generate condition string from table in kv pairs
 local function _cond_string(kvp)
-	str = ""
+	if not kvp then return nil end
 
-	if not kvp then return "" end
-
+	local str = ""
 	local and_str = ""
+
 	for k, v in pairs(kvp) do
 		str = str .. and_str .. escapek(k) .. "=" .. escapev(v)
 		and_str = " AND "
 	end
-	return str
+
+	if str:len() then
+		return " WHERE " .. str
+	else
+		return nil
+	end
 end
 
 -- create a model, return affected rows, usally 1 on success
@@ -103,7 +108,7 @@ end
 function xdb.update_by_cond(t, cond, kvp)
 	local ustr = _update_string(kvp)
 	local cstr = _cond_string(cond)
-	local sql = "UPDATE " .. t .. " SET " .. ustr .. " WHERE " .. cstr
+	local sql = "UPDATE " .. t .. " SET " .. ustr .. cstr
 	xdb.dbh:query(sql)
 	return xdb.dbh:affected_rows()
 end
@@ -113,18 +118,16 @@ function xdb.delete(t, what)
 	local cond
 
 	if (type(what) == 'number') then
-		cstr = "id = " .. what
+		cstr = "WHERE id = " .. what
 	elseif (type(what) == 'string') then
-		cstr = "id = " .. escape(what)
+		cstr = "WHERE id = " .. escape(what)
 	else
 		cstr = _cond_string(what)
 	end
 
-	if what then
-		cstr = " WHERE " .. cstr
-	end
+	local sql = "DELETE FROM " .. t
 
-	local sql = "DELETE FROM " .. t .. cstr
+	if cstr then sql = sql .. cstr end
 
 	xdb.dbh:query(sql)
 	return xdb.dbh:affected_rows()
@@ -169,7 +172,7 @@ function xdb.find_by_cond(t, cond, sort, cb)
 	local cstr = _cond_string(cond)
 	local sql = "SELECT * FROM " .. t
 
-	if cstr then sql = sql .. " WHERE " .. cstr end
+	if cstr then sql = sql .. cstr end
 	if sort then sql = sql .. " ORDER BY " .. sort end
 
 	return xdb.find_by_sql(sql, cb)
@@ -219,3 +222,5 @@ xdb.cond = _cond_string;
 function xdb.release()
 	xdb.dbh:release()
 end
+
+return xdb

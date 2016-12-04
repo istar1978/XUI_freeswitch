@@ -30,7 +30,7 @@ end
 
 function build_gateways(cond)
 	local gws = ""
-	xdb.find("gateways", cond, function(row)
+	xdb.find_by_cond("gateways", cond, "id", function(row)
 		local p = '<param name="realm"' .. ' value="' .. row.realm .. '"/>'
 		p = p .. '<param name="username"' .. ' value="' .. row.username .. '"/>'
 		p = p .. '<param name="password"' .. ' value="' .. row.password .. '"/>'
@@ -49,7 +49,7 @@ function build_profile(profile)
 	local gateways = ""
 
 	-- only works on external for now
-	if profile.name == "external" then gateways = build_gateways({}) end
+	if profile.name == "external" then gateways = build_gateways() end
 
 	xdb.find_by_cond("params", cond, 'id', function(row)
 		settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'

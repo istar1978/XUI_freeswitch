@@ -18,7 +18,7 @@ function create(kvp)
 		end
 
 		local sql = "INSERT INTO params (realm, k, v, ref_id, disabled) SELECT 'sip_profile', k, v, " ..
-			id .. ", disabled From params WHERE " ..
+			id .. ", disabled From params" ..
 			xdb.cond({realm = realm, ref_id = ref_id})
 
 		xdb.execute(sql)
@@ -39,7 +39,7 @@ end
 
 function toggle_param(profile_id, param_id)
 	sql = "UPDATE params SET disabled = NOT disabled" ..
-		" WHERE " .. xdb.cond({realm = 'sip_profile', ref_id = profile_id, id = param_id})
+		xdb.cond({realm = 'sip_profile', ref_id = profile_id, id = param_id})
 	print(sql)
 	xdb.execute(sql)
 	if xdb.affected_rows() == 1 then
@@ -70,3 +70,4 @@ m_sip_profile.params = params
 m_sip_profile.toggle_param = toggle_param
 m_sip_profile.update_param = update_param
 
+return m_sip_profile
