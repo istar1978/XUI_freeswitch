@@ -103,6 +103,7 @@ More:
 * <http://stackoverflow.com/questions/35687353/react-bootstrap-link-item-in-a-navitem>
 * <https://github.com/bradwestfall/CSS-Tricks-React-Series>
 * <https://github.com/kaivi/riek>
+* <http://tutorials.pluralsight.com/ruby-ruby-on-rails/building-a-crud-interface-with-react-and-ruby-on-rails>
 
 ## The multiple ways of creating components
 
