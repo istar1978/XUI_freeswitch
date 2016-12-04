@@ -10,7 +10,7 @@ function get_globals()
 
 	for line in ret:gmatch("[^\n]+") do
 		local k, v = line:match("([^=]+)=([^=]*)")
-		-- print("k: " .. k .. " v: " .. v)
+		-- print("================= k: " .. k .. " v: " .. v)
 		globals[k] = v
 	end
 end
@@ -43,6 +43,34 @@ function build_gateways(cond)
 	return gws
 end
 
+function build_profile(profile)
+	local settings = ""
+	local cond = {realm = 'sip_profile', disabled = 'false', ref_id = profile.id}
+	local gateways = ""
+
+	-- only works on external for now
+	if profile.name == "external" then gateways = build_gateways({}) end
+
+	xdb.find("params", cond, function(row)
+		settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'
+	end)
+
+	return [[<profile name="]] .. profile.name .. [["><gateways>]] ..
+			gateways ..
+			[[</gateways><settings>]] ..
+			settings ..
+			[[</settings></profile>]]
+end
+
+function build_profiles()
+	local profiles = ""
+	xdb.find("sip_profiles", {disabled = 'false'}, function(row)
+		profiles = profiles .. build_profile(row)
+	end)
+
+	return profiles
+end
+
 if gw_name then
 	local gateways = build_gateways({name = gw_name})
 
@@ -58,23 +86,15 @@ elseif profile_name then
 	end)
 
 	if (profile) then
-		local settings = ""
-		local gateways = ""
-
-		-- only works on external for now
-		if profile_name == "external" then gateways = build_gateways({}) end
-
 		get_globals() -- fetch global vars so we can expand them
 
-		xdb.find("params", {realm = 'sip_profile', ref_id = profile.id, disabled = 'false'}, function(row)
-			settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'
-		end)
-
 		XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
-			<profiles><profile name="]] .. profile_name .. [["><gateways>]] ..
-			-- build_gateways({profile_id = profile.id}) ..
-			gateways ..
-			[[</gateways><settings>]] .. settings ..
-			"</settings></profile></profiles></configuration>"
+			<profiles>]] .. build_profile(profile) ..
+			[[</profiles></configuration>]]
 	end
+else -- feed everything on module load
+	get_globals() -- fetch global vars so we can expand them
+
+	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
+		<profiles>]] .. build_profiles() .. [[</profiles></configuration>]]
 end
