@@ -291,3 +291,13 @@ function dbfalse(s)
 {
 	return s ? (s == "false" || s == "0") : true;
 }
+
+function notify(msg, level, timeout)
+{
+	m = {};
+	m.msg = msg;
+	if (level) m.level = level;
+	if (timeout) m.timeout = timeout;
+
+	fire_event('notification', m);
+}

@@ -142,7 +142,7 @@ class SIPProfilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', profile: {}, edit: false};
+		this.state = {profile: {}, edit: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -172,7 +172,8 @@ class SIPProfilePage extends React.Component {
 			data: JSON.stringify(profile),
 			success: function () {
 				profile.params = _this.state.profile.params;
-				_this.setState({profile: profile, errmsg: {key: "Saved at", time: Date()}})
+				_this.setState({profile: profile, edit: false});
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -285,15 +286,11 @@ class SIPProfilePage extends React.Component {
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
-
-			if (this.state.errmsg) {
-				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
-			}
 		}
 
 		return <div>
 			<ButtonGroup className="controls">
-				{err_msg} { save_btn }
+				{ save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 
