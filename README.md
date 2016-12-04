@@ -21,13 +21,18 @@ install npm tools first
     npm install -g wiredep-cli
     npm install -g usemin-cli
     npm install -g watchify
-    npm install --save-dev babel-cli
+    npm install -g babel-cli
+    npm install -g uglifyjs
 
     cd jsapp
     npm install
     bower install
 
-or if you are in China, see <https://npm.taobao.org/>
+or if you are in China, use taobao mirror
+
+    npm config set registry https://registry.npm.taobao.org
+
+or use cnpm see <https://npm.taobao.org/> for more info
 
     cnpm install -g jshint
     cnpm install -g browserify
