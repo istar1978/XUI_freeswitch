@@ -1,6 +1,6 @@
-gw_name = params:getHeader("gateway")
-profile_name = params:getHeader("profile")
-globals = {}
+local gw_name = params:getHeader("gateway")
+local profile_name = params:getHeader("profile")
+local globals = {}
 
 -- freeswitch.consoleLog("ERR", "fetching gateway " .. gw_name .. "\n")
 
@@ -51,7 +51,7 @@ function build_profile(profile)
 	-- only works on external for now
 	if profile.name == "external" then gateways = build_gateways({}) end
 
-	xdb.find("params", cond, function(row)
+	xdb.find_by_cond("params", cond, 'id', function(row)
 		settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'
 	end)
 
@@ -64,7 +64,7 @@ end
 
 function build_profiles()
 	local profiles = ""
-	xdb.find("sip_profiles", {disabled = 'false'}, function(row)
+	xdb.find_by_cond("sip_profiles", {disabled = 'false'}, 'id', function(row)
 		profiles = profiles .. build_profile(row)
 	end)
 
@@ -81,7 +81,7 @@ if gw_name then
 elseif profile_name then
 	local profile = nil
 
-	xdb.find("sip_profiles", {name = profile_name}, function(row)
+	xdb.find_by_cond("sip_profiles", {name = profile_name}, 'id', function(row)
 		profile = row
 	end)
 

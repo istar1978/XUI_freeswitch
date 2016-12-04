@@ -3,7 +3,7 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	users = utils.get_model("users")
+	n, users = xdb.find_all("users")
 
 	if (users) then
 		return users
@@ -13,7 +13,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	user = utils.get_model("users", params.id)
+	user = xdb.find("users", params.id)
 	if user then
 		return user
 	else
@@ -23,7 +23,7 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update_model("users", params.request)
+	ret = xdb.update("users", params.request)
 	if ret then
 		return 200, "{}"
 	else
@@ -34,7 +34,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = utils.create_model('users', params.request)
+	ret = xdb.create('users', params.request)
 
 	if ret == 1 then
 		return 200, "{}"
@@ -44,7 +44,7 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("users", params.id);
+	ret = xdb.delete("users", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

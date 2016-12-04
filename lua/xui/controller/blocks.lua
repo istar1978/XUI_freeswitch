@@ -3,7 +3,7 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	blocks = utils.get_model("blocks")
+	n, blocks = xdb.find_all("blocks")
 
 	if (blocks) then
 		return blocks
@@ -13,7 +13,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	user = utils.get_model("blocks", params.id)
+	user = xdb.find("blocks", params.id)
 	if user then
 		return user
 	else
@@ -35,7 +35,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = utils.create_model('blocks', params.request)
+	ret = xdb.create('blocks', params.request)
 
 	if ret == 1 then
 		return 200, "{}"
@@ -56,7 +56,7 @@ put('/:id', function(params)
 	local js = params.request.js;
 	local lua = params.request.lua;
 
-	local ret = xdb.update_model("blocks", params.request)
+	local ret = xdb.update("blocks", params.request)
 
 	local xml_file = prefix .. params.id .. ".xml"
 	local js_file  = prefix .. params.id .. ".js"
@@ -90,7 +90,7 @@ put('/:id', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("blocks", params.id);
+	ret = xdb.delete("blocks", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

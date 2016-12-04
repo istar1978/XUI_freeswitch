@@ -67,9 +67,8 @@ class NewGateway extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(gw),
-			success: function () {
-				_this.last_id++;
-				gw.id = "NEW" + _this.last_id;
+			success: function (obj) {
+				gw.id = obj.id;
 				_this.props["data-handleNewGatewayAdded"](gw);
 			},
 			error: function(msg) {

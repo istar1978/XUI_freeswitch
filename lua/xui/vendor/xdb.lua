@@ -2,68 +2,84 @@ xdb = {}
 require 'sqlescape'
 
 local escape = sqlescape.EscapeFunction()
+local escapek = function(k)
+	assert(string.find(k, "'") == nil)
+	return k
+end
+local escapev = function(v)
+	if (type(v) == 'number') then
+		v = tostring(v)
+	end
+	return escape(v)
+end
 
+-- escapek("aaaa")
+-- escapek("aaaa'")
+
+
+-- connect to database, dsn should be a valid FS dsn
 function xdb.connect(dsn, user, pass)
 	xdb.dbh = freeswitch.Dbh(dsn)
 	assert(xdb.dbh:connected())
 end
 
+-- bind db handle to an existing one
 function xdb.bind(dbh)
 	xdb.dbh = dbh
 end
 
-local function get_insert_string(kvp)
+-- generate insert string from table in kv pairs
+local function _insert_string(kvp)
 	local comma = ""
 	local keys = ""
 	local values = ""
 
 	for k, v in pairs(kvp) do
-		keys =  keys .. comma .. k
-		values = values .. comma .. "'" .. v .. "'"
+		keys =  keys .. comma .. escapek(k)
+		values = values .. comma .. escape(v)
 		comma = ","
 	end
 	return keys, values
 end
 
-local function get_update_string(kvp)
+-- generate update string from table in kv pairs
+local function _update_string(kvp)
 	local comma = ""
 	local str = ""
 	for k, v in pairs(kvp) do
-		str = str .. comma .. k .. "=" .. escape(v)
+		str = str .. comma .. escapek(k) .. "=" .. escape(v)
 		comma = ","
 	end
 	return str
 end
 
-local function get_cond_string(kvp)
+-- generate condition string from table in kv pairs
+local function _cond_string(kvp)
 	str = ""
 
 	if not kvp then return "" end
 
 	local and_str = ""
-	for key, value in pairs(kvp) do
-		str = str .. and_str .. key .. "='" .. value .. "'"
-		and_str = " and "
+	for k, v in pairs(kvp) do
+		str = str .. and_str .. escapek(k) .. "=" .. escapev(v)
+		and_str = " AND "
 	end
 	return str
 end
 
+-- create a model, return affected rows, usally 1 on success
 function xdb.create(t, kvp)
-	local keystring, valuesting = get_insert_string(kvp)
-	sql = "INSERT INTO " .. t .. "(" .. keystring .. ") VALUES(" .. valuesting .. ")"
+	local kstr, vstr = _insert_string(kvp)
+	sql = "INSERT INTO " .. t .. " (" .. kstr .. ") VALUES (" .. vstr .. ")"
 	xdb.dbh:query(sql)
 	return xdb.dbh:affected_rows()
 end
 
+-- create a model, return the last inserted id, or nil on error
 function xdb.create_return_id(t, kvp)
-	local keys, values = get_insert_string(kvp)
 	local ret_id = nil
-
-	sql = "INSERT INTO " .. t .. "(" .. keys .. ") VALUES(" .. values .. ")"
-	xdb.dbh:query(sql)
-
-	if dbh:affected_rows() == 1 then
-		dbh:query("SELECT LAST_INSERT_ROWID() as id", function(row)
+	if xdb.create(t, kvp) == 1 then
+		xdb.dbh:query("SELECT LAST_INSERT_ROWID() as id", function(row)
 			ret_id = row.id
 		end)
 	end
@@ -71,54 +87,135 @@ function xdb.create_return_id(t, kvp)
 	return ret_id
 end
 
-function xdb.update(t, cond, kvp)
-	local string = get_update_string(kvp)
-	local condstr = get_cond_string(cond)
-	sql = "UPDATE " .. t .. " SET " .. string .. " WHERE " .. condstr
+-- create a model, return the last inserted id, or nil on error
+function xdb.create_return_object(t, kvp)
+	local obj = nil
+	if xdb.create(t, kvp) == 1 then
+		xdb.dbh:query("SELECT * From " .. t .. " WHERE id = LAST_INSERT_ROWID()", function(row)
+			obj = row
+		end)
+	end
+
+	return obj
+end
+
+-- update with kv pairs according a condition table
+function xdb.update_by_cond(t, cond, kvp)
+	local ustr = _update_string(kvp)
+	local cstr = _cond_string(cond)
+	local sql = "UPDATE " .. t .. " SET " .. ustr .. " WHERE " .. cstr
 	xdb.dbh:query(sql)
 	return xdb.dbh:affected_rows()
 end
 
+-- delete and id or with a condition table
 function xdb.delete(t, what)
 	local cond
 
 	if (type(what) == 'number') then
-		cond = "id = '" .. id .. "'"
+		cstr = "id = " .. what
+	elseif (type(what) == 'string') then
+		cstr = "id = " .. escape(what)
 	else
-		cond = get_cond_string(what)
+		cstr = _cond_string(what)
 	end
 
-	local sql = "DELETE FROM " .. table .. " WHERE " .. cond
+	if what then
+		cstr = " WHERE " .. cstr
+	end
+
+	local sql = "DELETE FROM " .. t .. cstr
 
 	xdb.dbh:query(sql)
 	return xdb.dbh:affected_rows()
 end
 
-function xdb.find(t, cond, func)
-	local condstr = get_cond_string(cond)
-	if not (condstr == "") then condstr = " WHERE " .. condstr end
+-- find from table with id = id
+function xdb.find(t, id)
+	if not type(id) == number then
+		id = escape(id)
+	end
 
-	sql = "SELECT * FROM " .. t .. condstr
-	xdb.dbh:query(sql, func)
+	local sql = "SELECT * FROM " .. t .. " WHERE id = " .. id
+	local found = 0
+	local r = nil
+
+	xdb.dbh:query(sql, function(row)
+		r = row
+	end)
+
+	return r
 end
 
-function xdb.find_by_sql(sql, func)
-	xdb.dbh:query(sql, func)
+-- find from table
+-- if cb is nil, return count of rows and all rows
+-- if cb is a callback function, run cb(row) for each row
+-- if sort is not nil, ORDER BY sort string
+
+function xdb.find_all(t, sort, cb)
+	local sql = "SELECT * FROM " .. t
+
+	if sort then sql = sql .. " ORDER BY " .. sort end
+
+	return xdb.find_by_sql(sql, cb)
 end
 
-function xdb.update_model(t, m)
+-- find from table, with WHERE condition cond
+-- if cb is nil, return count of rows and all rows
+-- if cb is a callback function, run cb(row) for each row
+-- if sort is not nil, ORDER BY sort string
+
+function xdb.find_by_cond(t, cond, sort, cb)
+	local cstr = _cond_string(cond)
+	local sql = "SELECT * FROM " .. t
+
+	if cstr then sql = sql .. " WHERE " .. cstr end
+	if sort then sql = sql .. " ORDER BY " .. sort end
+
+	return xdb.find_by_sql(sql, cb)
+end
+
+-- find from table
+-- if cb is nil, return count of rows and all rows
+-- if cb is a callback function, run cb(row) for each row
+function xdb.find_by_sql(sql, cb)
+	if (cb) then
+		return xdb.dbh:query(sql, cb)
+	end
+
+	local rows = {}
+	local found = 0
+
+	local cb = function(row)
+		found = found + 1
+		table.insert(rows, row)
+	end
+
+	xdb.dbh:query(sql, cb)
+
+	return found, rows
+end
+
+-- update a model
+function xdb.update(t, m)
 	local id = m.id
 	m.id = nil
-	return xdb.update(t, {id = id}, m)
+	return xdb.update_by_cond(t, {id = id}, m)
 end
 
+-- execute sql and return affected rows
 function xdb.execute(sql)
 	xdb.dbh:query(sql)
 	return xtra.dbh:affected_rows()
 end
 
+-- return the last affacted rows
 function xdb.affected_rows()
 	return xtra.dbh:affected_rows()
 end
 
-xdb.cond = get_cond_string;
+xdb.cond = _cond_string;
+
+function xdb.release()
+	xdb.dbh:release()
+end

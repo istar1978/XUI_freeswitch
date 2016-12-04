@@ -1,9 +1,9 @@
-actions = ""
-dest = params:getHeader("Hunt-Destination-Number")
-context = params:getHeader("Hunt-Context")
-actions_table = {}
-sql = "SELECT * FROM routes WHERE SUBSTR(prefix, 1, 1) = '" .. dest:sub(1,1) .. "' ORDER BY length(prefix) DESC"
-found = false
+local actions = ""
+local dest = params:getHeader("Hunt-Destination-Number")
+local context = params:getHeader("Hunt-Context")
+local actions_table = {}
+local sql = "SELECT * FROM routes WHERE SUBSTR(prefix, 1, 1) = '" .. dest:sub(1,1) .. "' ORDER BY length(prefix) DESC"
+local found = false
 
 if do_debug then print(sql) end
 

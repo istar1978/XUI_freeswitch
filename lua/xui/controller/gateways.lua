@@ -3,9 +3,9 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	gateways = utils.get_model("gateways")
+	n, gateways = xdb.find_all("gateways")
 
-	if (gateways) then
+	if (n > 0) then
 		return gateways
 	else
 		return "[]"
@@ -13,7 +13,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	user = utils.get_model("gateways", params.id)
+	user = xdb.find("gateways", params.id)
 	if user then
 		return user
 	else
@@ -23,7 +23,7 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update_model("gateways", params.request)
+	ret = xdb.update("gateways", params.request)
 	if ret then
 		return 200, "{}"
 	else
@@ -34,17 +34,17 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = utils.create_model('gateways', params.request)
+	ret = xdb.create_return_id('gateways', params.request)
 
-	if ret == 1 then
-		return 200, "{}"
+	if ret then
+		return {id = ret}
 	else
 		return 500, "{}"
 	end
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("gateways", params.id);
+	ret = xdb.delete("gateways", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

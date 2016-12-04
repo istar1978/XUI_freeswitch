@@ -1,8 +1,10 @@
 content_type("application/json")
+require 'xdb'
+xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	routes = utils.get_model("routes")
-	if (routes)	then
+	n, routes = xdb.find_all("routes")
+	if (n > 0)	then
 		return routes
 	else
 		return "[]"
@@ -10,7 +12,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	route = utils.get_model("routes", params.id)
+	route = xdb.find("routes", params.id)
 	if route then
 		return route
 	else
@@ -21,10 +23,10 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = utils.create_model('routes', params.request)
+	ret = xdb.create_return_id('routes', params.request)
 
-	if ret == 1 then
-		return 200, "{}"
+	if ret then
+		return {id = ret}
 	else
 		return 500, "{}"
 	end
@@ -36,7 +38,7 @@ put('/:id', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = utils.delete_model("routes", params.id);
+	ret = xdb.delete("routes", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

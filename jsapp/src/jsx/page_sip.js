@@ -68,9 +68,8 @@ class NewSIPProfile extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(profile),
-			success: function () {
-				_this.last_id++;
-				profile.id = "NEW" + _this.last_id;
+			success: function (obj) {
+				profile.id = obj.id;
 				_this.props["data-handleNewSIPProfileAdded"](profile);
 			},
 			error: function(msg) {

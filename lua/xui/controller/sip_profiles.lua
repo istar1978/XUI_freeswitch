@@ -4,9 +4,9 @@ xdb.bind(xtra.dbh)
 require 'm_sip_profile'
 
 get('/', function(params)
-	sip_profiles = utils.get_model("sip_profiles")
+	n, sip_profiles = xdb.find_all("sip_profiles")
 
-	if (sip_profiles) then
+	if (n > 0) then
 		return sip_profiles
 	else
 		return "[]"
@@ -14,7 +14,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	profile = utils.get_model("sip_profiles", params.id)
+	profile = xdb.find("sip_profiles", params.id)
 	if profile then
 		p_params = m_sip_profile.params(params.id)
 		profile.params = p_params
@@ -26,7 +26,7 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update_model("sip_profiles", params.request)
+	ret = xdb.update("sip_profiles", params.request)
 	if ret then
 		return 200, "{}"
 	else
@@ -55,7 +55,7 @@ post('/', function(params)
 	ret = m_sip_profile.create(params.request)
 
 	if ret then
-		return 200, "{}"
+		return {id = ret}
 	else
 		return 500, "{}"
 	end

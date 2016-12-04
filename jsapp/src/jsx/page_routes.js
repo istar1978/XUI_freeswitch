@@ -65,9 +65,8 @@ class NewRoute extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(route),
-			success: function () {
-				_this.last_id++;
-				route.id = "NEW" + _this.last_id;
+			success: function (obj) {
+				route.id = obj.id;
 				_this.props["data-handleNewRouteAdded"](route);
 			},
 			error: function(msg) {

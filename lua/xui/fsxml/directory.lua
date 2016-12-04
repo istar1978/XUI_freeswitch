@@ -8,7 +8,7 @@ local found = false
 -- freeswitch.consoleLog("INFO", "purpose" .. purpose)
 
 if user then
-	xdb.find("users", {extn = user}, function(row)
+	xdb.find_by_cond("users", {extn = user}, nil, function(row)
 		found = true
 
 		cid_name = row.cid_name or row.name
