@@ -118,9 +118,9 @@ function xdb.delete(t, what)
 	local cond
 
 	if (type(what) == 'number') then
-		cstr = "WHERE id = " .. what
+		cstr = " WHERE id = " .. what
 	elseif (type(what) == 'string') then
-		cstr = "WHERE id = " .. escape(what)
+		cstr = " WHERE id = " .. escape(what)
 	else
 		cstr = _cond_string(what)
 	end
