@@ -42,21 +42,25 @@ var SofiaPage = React.createClass({
 	},
 
 	handleProfileStart: function(e) {
+		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " start");
 	},
 
 	handleProfileStop: function(e) {
+		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " stop");
 	},
 
 	handleProfileRestart: function(e) {
+		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " restart");
 	},
 
 	handleProfileRescan: function(e) {
+		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " rescan");
 	},
