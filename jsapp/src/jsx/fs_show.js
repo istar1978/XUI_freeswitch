@@ -44,7 +44,7 @@ class FSShow extends React.Component {
 	render() {
 		return <Tab.Container id="left-tabs-example" defaultActiveKey="M_SHOW_application" onSelect={this.handleSelect}>
 			<Row className="clearfix">
-				<Col sm={2} className="leftBar">
+				<Col sm={2}>
 					<Nav bsStyle="pills" stacked>
 						<br />
 						<NavItem eventKey="M_SHOW_application">Applications</NavItem>
@@ -66,7 +66,7 @@ class FSShow extends React.Component {
 						<NavItem eventKey="M_SHOW_limit">Limit</NavItem>
 					</Nav>
 				</Col>
-				<Col sm={10}>
+				<Col sm={10} className="leftBar">
 					<Tab.Content animation>
 						<Tab.Pane eventKey="M_SHOW_application" unmountOnExit><ShowFSPage what="application" title="Applications"/></Tab.Pane>
 						<Tab.Pane eventKey="M_SHOW_registrations" unmountOnExit><ShowFSPage what="registrations" title="Registrations"/></Tab.Pane>
