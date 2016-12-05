@@ -35,8 +35,10 @@
 var verto;
 var verto_loginState = false;
 var host = window.location.hostname;
-var domain = host;
+var domain = localStorage.getItem('domain');
 var LANGUAGES = {}
+
+if (!domain) domain = host;
 
 var callbacks = {
 
