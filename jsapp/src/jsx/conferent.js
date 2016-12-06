@@ -34,18 +34,14 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
-import HomesPage from "./page_homes";
-import CeshiPage from "./page_ceshi";
+import RomesPage from "./page_romes";
 import { LinkContainer } from 'react-router-bootstrap';
 
 class Conferent extends React.Component {
 	render() {
 		return <Nav bsStyle="pills" stacked>
-			<LinkContainer to="/conferent/homes" key="M_HOMES">
-				<NavItem eventKey="M_HOME"><T.span text="Homes"/></NavItem>
-			</LinkContainer>
-			<LinkContainer to="/conferent/ceshi" key="M_CESHI">
-				<NavItem eventKey="M_CESHI"><T.span text="Ceshi"/></NavItem>
+			<LinkContainer to="/conferent/romes" key="M_ROMES">
+				<NavItem eventKey="M_ROME"><T.span text="Romes"/></NavItem>
 			</LinkContainer>
 		</Nav>
 	}

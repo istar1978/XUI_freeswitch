@@ -8,7 +8,7 @@ LANGUAGES["zh"] = {
 	Phone: "电话",
 	Settings: "设置",
 	Conferent: "会议室",
-	Homes: "房间",
+	Romes: "房间",
 	Profiles: "Profiles",
 	Help: "帮助",
 	Play: "操作",
@@ -18,6 +18,7 @@ LANGUAGES["zh"] = {
 	Outcon: "未开始",
 	Ingcon: "进行中",
 	Endcon: "已结束",
+	"Add New Tel": "添加成员",
 
 	Overview: "概览",
 	Calls: "Calls",
@@ -63,6 +64,7 @@ LANGUAGES["zh"] = {
 	"Click me to toggle fast delete mode": "点击以切换快速删除模式",
 
 	"Create New User": "新建用户",
+	"Create New Room": "新建房间",
 	"CID Name": "主叫名称",
 	"CID Number": "主叫号码",
 	Number: "号码",

@@ -49,15 +49,13 @@ import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
 import Conferences from './conferences';
 import Settings from './settings';
-import Conferent from './conferent';
-import {HomesPage, HomePage} from './page_homes';
-import {TusersPage} from './page_tusers';
-import {CeshiPage} from './page_ceshi';
 import {UsersPage, UserPage} from './page_users';
 import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { GatewaysPage, GatewayPage } from './page_gateways';
 import { SIPProfilesPage, SIPProfilePage } from './page_sip';
+import Conferent from './conferent';
+import {RomesPage, RomePage} from './page_romes';
 import { Login, LoginBox } from './page_login';
 import Footer from './footer';
 
@@ -74,7 +72,7 @@ const MENUS = [
 const RMENUS = [
 	{id: "MM_SETTINGS", description: <T.span text="Settings" />, data: "/settings/users"},
 	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />, data:"/profiles"},
-	{id: "MM_CONFERENT", description: <T.span text="Conferent" />, data:"/conferent/homes"},
+	{id: "MM_CONFERENT", description: <T.span text="Conferent" />, data:"/conferent/romes"},
 	{id: "MM_LOGOUT", description: <T.span text="Logout"/>, data: "/logout"}
 ];
 
@@ -158,19 +156,13 @@ const Home = React.createClass({
 				</Route>
 				
 				<Route path="conferent">
-				    <IndexRoute components={{sidebar: Conferent, main: HomesPage}}/>
+				    <IndexRoute components={{sidebar: Conferent, main: RomesPage}}/>
 						
-						<Route path=":id" components={{sidebar: Conferent, main: HomesPage}}/>
-					
-					
-						<Route path="tusers">
-							<IndexRoute components={{sidebar: Conferent, main: TusersPage}}/>
-							<Route path=":id" components={{sidebar: Conferent, main: TusersPage}}/>
+						<Route path="romes">
+							<IndexRoute components={{sidebar: Conferent, main: RomesPage}}/>
+							<Route path=":id" components={{sidebar: Conferent, main: RomePage}}/>
 						</Route>
 						
-						<Route path=":id" components={{sidebar: Conferent, main: CeshiPage}}/>
-				
-					
 				</Route>
 				
 			</Route>
