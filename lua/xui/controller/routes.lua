@@ -33,8 +33,12 @@ post('/', function(params)
 end)
 
 put('/:id', function(params)
-	print(serialize(params))
-	return params
+	ret = xdb.update("routes", params.request)
+	if ret then
+		return 200, "{}"
+	else
+		return 500
+	end
 end)
 
 delete('/:id', function(params)
