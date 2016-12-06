@@ -66,4 +66,44 @@ function strsplit(delimiter, text)
   return list
 end
 
+utils.apply_dnc = function(number, dnc)
+	if not dnc then return end
+
+	if dnc:sub(1,1) == '/' then -- regexp
+		local api=freeswitch.API()
+		return api:execute("regex", "m:/" .. number .. dnc)
+	end
+
+	if dnc:sub(1,1) == 'r' then
+		local n = tonumber(dnc:sub(2,2))
+		local r = dnc:sub(3)
+		return r .. number:sub(n + 1)
+	end
+
+	if dnc:sub(1,1) == 'R' then
+		local n = tonumber(dnc:sub(2,2))
+		local r = dnc:sub(3)
+		if number:len() < n then
+			return r
+		else
+			return number:sub(1, number:len() - n) .. r
+		end
+	end
+
+	dnc:gsub("([+-][^+-]+)", function(prefix)
+		-- print(prefix)
+		if prefix:sub(1,1) == '-' then
+			local pos = 2
+			local s, e = string.find(number, prefix)
+			if (s == 1) then
+				pos = pos + e
+			end
+			number = number:sub(pos)
+		elseif prefix:sub(1,1) == '+' then
+			number = prefix:sub(2) .. number
+		end
+	end)
+	return number
+end
+
 return utils
