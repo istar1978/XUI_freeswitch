@@ -32,7 +32,9 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Link } from 'react-router';
+import { EditControl } from './xtools'
 
 class NewRoute extends React.Component {
 	propTypes: {handleNewRouteAdded: React.PropTypes.func}
@@ -55,7 +57,7 @@ class NewRoute extends React.Component {
 		console.log("route", route);
 
 		if (!route.name || !route.prefix) {
-			this.setState({errmsg: "Mandatory fields left blank"});
+			notify(<T.span text="Mandatory fields left blank"/>);
 			return;
 		}
 
@@ -99,21 +101,6 @@ class NewRoute extends React.Component {
 					<Col sm={10}><FormControl type="input" name="prefix" placeholder="010" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formLength">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="length" /></Col>
-					<Col sm={10}><FormControl type="input" name="length" placeholder="11" /></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formDNC">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="DNC" /></Col>
-					<Col sm={10}><FormControl type="input" name="dnc" placeholder="" /></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formSDNC">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="SDNC" /></Col>
-					<Col sm={10}><FormControl type="input" name="sdnc" placeholder="" /></Col>
-				</FormGroup>
-
 				<FormGroup controlId="formContext">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"  className="mandatory"/></Col>
 					<Col sm={10}>
@@ -137,10 +124,12 @@ class NewRoute extends React.Component {
 					</Col>
 				</FormGroup>
 
+{/*
 				<FormGroup controlId="formDestUUID">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest UUID" /></Col>
 					<Col sm={10}><FormControl type="input" name="dest_uuid" placeholder="UUID" /></Col>
 				</FormGroup>
+*/}
 
 				<FormGroup controlId="formBody">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Body" /></Col>
@@ -165,6 +154,166 @@ class NewRoute extends React.Component {
 				</Button>
 			</Modal.Footer>
 		</Modal>;
+	}
+}
+
+class RoutePage extends React.Component {
+	propTypes: {handleNewRouteAdded: React.PropTypes.func}
+
+	constructor(props) {
+		super(props);
+
+		this.state = {route: {}, edit: false};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var route = form2json('#editRouteForm');
+
+		if (!route.name || !route.prefix) {
+			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			return;
+		}
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/routes/" + route.id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(route),
+			success: function () {
+				_this.setState({route: route, edit: false})
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+			},
+			error: function(msg) {
+				console.error("route", msg);
+			}
+		});
+	}
+
+	handleControlClick(e) {
+		this.setState({edit: !this.state.edit});
+	}
+
+	componentDidMount() {
+		var _this = this;
+		$.getJSON("/api/routes/" + this.props.params.id, "", function(data) {
+			_this.setState({route: data});
+		}, function(e) {
+			console.log("get gw ERR");
+		});
+	}
+
+	render() {
+		const route = this.state.route;
+		let save_btn = "";
+		let err_msg = "";
+
+		if (this.state.edit) {
+			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+
+			if (this.state.errmsg) {
+				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
+			}
+		}
+
+		const contexts = [
+			{name:'default'},
+			{name:'public'}
+		];
+
+		const context_options = contexts.map(function(row) {
+			if (row.name == route.context) {
+				return <option value={row.name} key={row.name} selected>{row.name}</option>
+			} else {
+				return <option value={row.name} key={row.name}>{row.name}</option>
+			}
+		});
+
+		const dest_types = [
+			{name:'Local User', value:'LOCAL'},
+			{name:'Gateway', value:'GATEWAY'},
+			{name:'IP', value:'IP'},
+			{name:'System', value:'SYSTEM'},
+			{name:'Ivr Block', value:'IVRBLOCK'}
+		];
+
+		const dest_type_options = dest_types.map(function(row) {
+			if (row.value == route.dest_type) {
+				return <option value={row.value} key={row.value} selected>{row.name}</option>
+			} else {
+				return <option value={row.value} key={row.value}>{row.name}</option>
+			}
+		});
+
+		return <div>
+			<ButtonGroup className="controls">
+				{ save_btn }
+				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+			</ButtonGroup>
+
+			<h1>{route.name} <small>{route.extn}</small></h1>
+			<hr/>
+
+			<Form horizontal id='editRouteForm'>
+				<input type="hidden" name="id" defaultValue={route.id}/>
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={route.name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={route.description}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="fromPrefix">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="prefix" defaultValue={route.prefix}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formLength">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="length" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="length" defaultValue={route.length}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDNC">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="DNC" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="dnc" defaultValue={route.dnc}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSDNC">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="SDNC" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="sdnc" defaultValue={route.sdnc}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formContext">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"  className="mandatory"/></Col>
+					<Col sm={10}>
+						<EditControl edit={this.state.edit} componentClass="select" name="context" options={context_options} defaultValue={route.context}/>
+					</Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDestType">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
+					<Col sm={10}>
+						<EditControl edit={this.state.edit} componentClass="select" name="dest_type" options={dest_type_options} defaultValue={route.dest_type}/>
+					</Col>
+				</FormGroup>
+
+				<FormGroup controlId="formBody">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Body" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} componentClass="textarea" name="body" defaultValue={route.body} /></Col>
+				</FormGroup>
+
+			</Form>
+		</div>
 	}
 }
 
@@ -252,8 +401,9 @@ class RoutesPage extends React.Component {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
 					<td>{row.context}</td>
-					<td>{row.name}</td>
 					<td>{row.prefix}</td>
+					<td><Link to={`/settings/routes/${row.id}`}>{row.name}</Link></td>
+					<td>{row.description}</td>
 					<td>{row.dest_type}</td>
 					<td>{row.dest}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
@@ -276,8 +426,9 @@ class RoutesPage extends React.Component {
 				<tr>
 					<th>ID</th>
 					<th><T.span text="Context" /></th>
-					<th><T.span text="Name" /></th>
 					<th><T.span text="Prefix" /></th>
+					<th><T.span text="Name" /></th>
+					<th><T.span text="Description" /></th>
 					<th><T.span text="Dest Type" /></th>
 					<th><T.span text="Dest" /></th>
 					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
@@ -292,4 +443,4 @@ class RoutesPage extends React.Component {
 	}
 }
 
-export default RoutesPage;
+export { RoutesPage, RoutePage };

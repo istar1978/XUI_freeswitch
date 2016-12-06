@@ -54,7 +54,7 @@ import {HomesPage, HomePage} from './page_homes';
 import {TusersPage} from './page_tusers';
 import {CeshiPage} from './page_ceshi';
 import {UsersPage, UserPage} from './page_users';
-import Routes from './page_routes';
+import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { GatewaysPage, GatewayPage } from './page_gateways';
 import { SIPProfilesPage, SIPProfilePage } from './page_sip';
@@ -151,7 +151,10 @@ const Home = React.createClass({
 						<IndexRoute components={{sidebar: Settings, main: SIPProfilesPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: SIPProfilePage}}/>
 					</Route>
-					<Route path="routes" components={{sidebar: Settings, main: Routes}}/>
+					<Route path="routes">
+						<IndexRoute components={{sidebar: Settings, main: RoutesPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: RoutePage}}/>
+					</Route>
 				</Route>
 				
 				<Route path="conferent">

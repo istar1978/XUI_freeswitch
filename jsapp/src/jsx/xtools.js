@@ -43,7 +43,15 @@ class EditControl extends FormControl {
 		delete props.edit;
 
 		if (this.props.edit) {
-			return <FormControl {...props} />
+			if (this.props.componentClass == "select") {
+				const options = props.options;
+				delete props.options;
+				delete props.defaultValue;
+				console.log('options', options);
+				return <FormControl {...props}>{options}</FormControl>
+			} else {
+				return <FormControl {...props} />
+			}
 		}
 
 		return <span>{props.defaultValue}</span>
