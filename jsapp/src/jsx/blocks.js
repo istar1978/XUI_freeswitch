@@ -328,8 +328,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 				}
 			}
 
-		    download("test.lua", toLua());
-
+		    download("block-" + this.state.block.id + ".lua", toLua());
 		}
 	}
 
