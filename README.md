@@ -104,6 +104,7 @@ More:
 * <https://github.com/bradwestfall/CSS-Tricks-React-Series>
 * <https://github.com/kaivi/riek>
 * <http://tutorials.pluralsight.com/ruby-ruby-on-rails/building-a-crud-interface-with-react-and-ruby-on-rails>
+* <https://github.com/okonet/react-dropzone>
 
 ## The multiple ways of creating components
 

@@ -66,4 +66,18 @@ function strsplit(delimiter, text)
   return list
 end
 
+utils.absname = function(filename, dir)
+	if not dir then dir = config.upload_path end
+	return dir .. "/" .. filename
+end
+
+utils.tmpname = function(prefix)
+	if not prefix then prefix = '' end
+
+	local api = freeswitch.API()
+	local uuid = api:execute("create_uuid")
+	filename = prefix .. os.date("%Y%m%d") .. "-" .. uuid
+	return utils.absname(filename)
+end
+
 return utils

@@ -104,3 +104,11 @@ tr.disabled {
 #notification {padding-right: 40px;padding-left: 40px;padding-top:10px;padding-bottom:10px;}
 #notification.info  {color:lime !important;border:1px solid #FFF;}
 #notification.error {color:#FFF !important;background-color: #F00;border:1px solid #FFF;}
+
+.dropzone {
+	border: none;
+}
+
+.dropzone_active {
+	border: dashed; 2px grey;
+}
