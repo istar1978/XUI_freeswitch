@@ -56,7 +56,7 @@ LANGUAGES["zh"] = {
 	DNC: "被叫号码变换",
 	SDNC: "主叫号码变换",
 	Context: "呼叫源",
-	Dest: "目的地",
+	Dest: "目的地类型",
 	"Dest Type": "目的地类型",
 	"Dest UUID": "目的地UUID",
 	Body: "文本",

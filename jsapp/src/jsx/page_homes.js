@@ -36,8 +36,8 @@ import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel,
 import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
-class NewRome extends React.Component {
-	propTypes: {handleNewRomeAdded: React.PropTypes.func}
+class NewHome extends React.Component {
+	propTypes: {handleNewHomeAdded: React.PropTypes.func}
 
 	constructor(props) {
 		super(props);
@@ -53,25 +53,25 @@ class NewRome extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var rome = form2json('#newRomeForm');
-		console.log("rome", rome);
+		var home = form2json('#newHomeForm');
+		console.log("home", home);
 
-		if (!rome.name) {
+		if (!home.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/romes",
+			url: "/api/homes",
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(rome),
+			data: JSON.stringify(home),
 			success: function (obj) {
-				_this.props["data-handleNewRomeAdded"](obj);
+				_this.props["data-handleNewHomeAdded"](obj);
 			},
 			error: function(msg) {
-				console.error("rome", msg);
+				console.error("home", msg);
 			}
 		});
 	}
@@ -81,10 +81,10 @@ class NewRome extends React.Component {
 
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Room" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New User" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-			<Form horizontal id="newRomeForm">
+			<Form horizontal id="newHomeForm">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="name" /></Col>
@@ -121,44 +121,40 @@ class NewRome extends React.Component {
 	}
 }
 
-class RomePage extends React.Component {
-	propTypes: {handleNewRomeAdded: React.PropTypes.func}
+class HomePage extends React.Component {
+	propTypes: {handleNewHomeAdded: React.PropTypes.func}
 
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', rome: {}, edit: false};
+		this.state = {errmsg: '', user: {}, edit: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
 	}
-	
-	telControlClick(e) {
-		alert(3)
-	}
-	
+
 	handleSubmit(e) {
 		var _this = this;
 
 		console.log("submit...");
-		var rome = form2json('#newRomeForm');
-		console.log("rome", rome);
+		var user = form2json('#newHomeForm');
+		console.log("user", user);
 
-		if (!rome.extn || !rome.name) {
+		if (!user.extn || !user.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/romes/" + rome.id,
+			url: "/api/users/" + user.id,
 			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(rome),
+			data: JSON.stringify(user),
 			success: function () {
-				_this.setState({rome: rome, errmsg: {key: "Saved at", time: Date()}})
+				_this.setState({user: user, errmsg: {key: "Saved at", time: Date()}})
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -172,70 +168,77 @@ class RomePage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/romes/" + this.props.params.id, "", function(data) {
-			console.log("rome", data);
-			_this.setState({rome: data});
+		$.getJSON("/api/users/" + this.props.params.id, "", function(data) {
+			console.log("user", data);
+			_this.setState({user: data});
 		}, function(e) {
-			console.log("get romes ERR");
+			console.log("get users ERR");
 		});
 	}
 
 	render() {
-		const rome = this.state.rome;
+		const user = this.state.user;
 		let save_btn = "";
 		let err_msg = "";
+
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
 			if (this.state.errmsg) {
-				err_msg = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
+				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
 			}
 		}
-		var tstate;
-		if(rome.state == 'out'){
-			tstate = <T.span text="Outcon"/>
-		}
-		if(rome.state == 'ing'){
-			tstate = <T.span text="Ingcon"/>
-		}
-		if(rome.state == 'end'){
-			tstate = <T.span text="Endcon"/>
-		}
+
 		return <div>
 			<ButtonGroup className="controls">
 				{err_msg} { save_btn }
-				<Button>
-				
-				<T.span onClick={this.telControlClick} data="newtel" text="Add New Tel"/>
-				
-				</Button>
-					
+				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
-			<h1>{rome.name}</h1>
+
+			<h1>{user.name} &lt;{user.extn}&gt;</h1>
 			<hr/>
-				<Form horizontal>
-				<input type="hidden" name="id" defaultValue={rome.id}/>
-				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name"/></Col>
-					<Col sm={10}><EditControl defaultValue={rome.name}/></Col>
+
+			<Form horizontal id="newUserForm">
+				<input type="hidden" name="id" defaultValue={user.id}/>
+				<FormGroup controlId="formExtn">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="extn" defaultValue={user.extn}/></Col>
 				</FormGroup>
-				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="State"/></Col>
-					<Col sm={10}><EditControl defaultValue={rome.state}/></Col>
+
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={user.name}/></Col>
 				</FormGroup>
-				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Starttime"/></Col>
-					<Col sm={10}><EditControl defaultValue={rome.starttime}/></Col>
+
+				<FormGroup controlId="formPassword">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Password" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="password" defaultValue={user.password} type="password"/></Col>
 				</FormGroup>
-				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Endtime"/></Col>
-					<Col sm={10}><EditControl defaultValue={rome.endtime}/></Col>
+
+				<FormGroup controlId="formVMPassword">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="vm_password" defaultValue={user.vm_password} type="password" /></Col>
 				</FormGroup>
-				</Form>
+
+				<FormGroup controlId="formContext">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={user.context}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formCidName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="cid_name" defaultValue={user.cid_name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formLength">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="cid_number" defaultValue={user.cid_number}/></Col>
+				</FormGroup>
+			</Form>
 		</div>
 	}
 }
 
-class RomesPage extends React.Component {
+class HomesPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { formShow: false, rows: [], danger: false};
@@ -267,7 +270,7 @@ class RomesPage extends React.Component {
 
 		$.ajax({
 			type: "DELETE",
-			url: "/api/romes/" + id,
+			url: "/api/homes/" + id,
 			success: function () {
 				console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {
@@ -293,18 +296,18 @@ class RomesPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/romes", "", function(data) {
-			console.log("romes", data)
+		$.getJSON("/api/homes", "", function(data) {
+			console.log("homes", data)
 			_this.setState({rows: data});
 		}, function(e) {
-			console.log("get romes ERR");
+			console.log("get homes ERR");
 		});
 	}
 
 	handleFSEvent(v, e) {
 	}
 
-	handleRomeAdded(route) {
+	handleHomeAdded(route) {
 		var rows = this.state.rows;
 		rows.push(route);
 		this.setState({rows: rows, formShow: false});
@@ -319,17 +322,17 @@ class RomesPage extends React.Component {
 		var tstate;
 		var rows = this.state.rows.map(function(row) {
 			if(row.state == 'out'){
-				tstate = <T.span text="Outcon"/>
+				tstate = <T.a text="Outcon"/>
 			}
 			if(row.state == 'ing'){
-				tstate = <T.span text="Ingcon"/>
+				tstate = <T.a text="Ingcon"/>
 			}
 			if(row.state == 'end'){
-				tstate = <T.span text="Endcon"/>
+				tstate = <T.a text="Endcon"/>
 			}
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/conferent/romes/${row.id}`}>{row.name}</Link></td>
+					<td><Link to={`/conferent/homes/${row.id}`}>{row.name}</Link></td>
 					<td>{tstate}</td>
 					<td>{row.starttime}</td>
 					<td>{row.endtime}</td>
@@ -347,7 +350,7 @@ class RomesPage extends React.Component {
 				</Button>
 			</div>
 
-			<h1><T.span text="Romes"/></h1>
+			<h1><T.span text="Homes"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
@@ -364,9 +367,9 @@ class RomesPage extends React.Component {
 				</table>
 			</div>
 
-			<NewRome show={this.state.formShow} onHide={formClose} data-handleNewRomeAdded={this.handleRomeAdded.bind(this)}/>
+			<NewHome show={this.state.formShow} onHide={formClose} data-handleNewHomeAdded={this.handleHomeAdded.bind(this)}/>
 		</div>
 	}
 }
 
-export {RomesPage, RomePage};
+export {HomesPage, HomePage};

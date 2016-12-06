@@ -3,16 +3,16 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	n, routes = xdb.find_all("routes")
+	n, conferent = xdb.find_all("conferent")
 	if (n > 0)	then
-		return routes
+		return conferent
 	else
 		return "[]"
 	end
 end)
 
 get('/:id', function(params)
-	route = xdb.find("routes", params.id)
+	route = xdb.find("conferent", params.id)
 	if route then
 		return route
 	else
@@ -23,10 +23,10 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = xdb.create_return_id('routes', params.request)
+	ret = xdb.create_return_object('conferent', params.request)
 
 	if ret then
-		return {id = ret}
+		return ret
 	else
 		return 500, "{}"
 	end
@@ -38,7 +38,7 @@ put('/:id', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("routes", params.id);
+	ret = xdb.delete("conferent", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

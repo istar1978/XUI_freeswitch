@@ -163,8 +163,9 @@ class SIPProfilePage extends React.Component {
 		}
 
 		$.ajax({
-			type: "PUT",
+			type: "POST",
 			url: "/api/sip_profiles/" + profile.id,
+			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(profile),

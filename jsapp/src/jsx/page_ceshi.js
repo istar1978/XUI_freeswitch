@@ -31,24 +31,17 @@
 'use strict';
 
 import React from 'react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 
-class EditControl extends FormControl {
-	constructor(props) {
-		super(props);
+var CeshiPage = React.createClass({
+
+	render: function() {
+		return <div>
+			<h1>About XUI</h1>
+			<p>XUI is a FreeSWITCH UI framework and implementation.</p>
+			<p>Author: Seven Du</p>
+			<p>See <a href="https://github.com/seven1240/xui" target="_blank">XUI Github page</a> for more info.</p>
+		</div>;
 	}
+});
 
-	render() {
-		const props = Object.assign({}, this.props);
-		delete props.edit;
-
-		if (this.props.edit) {
-			return <FormControl {...props} />
-		}
-
-		return <span>{props.defaultValue}</span>
-	}
-
-}
-
-export {EditControl};
+export default CeshiPage;
