@@ -52,6 +52,11 @@ LANGUAGES["zh"] = {
 	Body: "文本",
 	"Confirm to Delete ?": "确认删除？",
 	"Click me to toggle fast delete mode": "点击以切换快速删除模式",
+	"Local User": "本地用户",
+	System: "系统",
+	"IVR Block": "IVR积木",
+	default: "默认",
+	public: "公开",
 
 	FS_DEST_USER: "本地用户",
 	FS_DEST_GATEWAY: "网关",
@@ -86,18 +91,34 @@ LANGUAGES["zh"] = {
 	"IVR Block": "IVR积木",
 	"Blocks": "积木",
 	"Block": "积木",
-	Description: "描述",
 
 	Gateways: "网关",
 	Gateway: "网关",
-	Realm: "服务器",
+
 	Username: "用户名",
 	Register: "注册",
+
+	Realm: "服务器",
+	Key: "键值",
+	Value: "值",
+	Description: "描述",
+	Order: "排序",
+
+	SYSTEM: "系统",
+	LOCAL: "本地用户",
+	IVRBLOCK: "IVR积木",
+	GATEWAY: "网关",
+
 
 	"Create New SIP Profile": "新建SIP Profile",
 
 	"Media Files": "媒体文件",
 	"Drag and drop files here to upload": "将文件拖到此处上传",
+	"Create New Dict": "新建字典",
+	"Dicts": "字典",
+	"Create New Gateway": "新建网关",
+	Control: "控制",
+	Template: "模板",
 
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
