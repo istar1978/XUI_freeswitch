@@ -49,7 +49,7 @@ function toggle_param(profile_id, param_id)
 end
 
 function update_param(profile_id, param_id, kvp)
-	xdb.update("params", {realm = 'sip_profile', ref_id = profile_id, id = param_id}, kvp)
+	xdb.update_by_cond("params", {realm = 'sip_profile', ref_id = profile_id, id = param_id}, kvp)
 	if xdb.affected_rows() == 1 then
 		return xdb.find("params", param_id)
 	end
