@@ -49,6 +49,10 @@ import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
 import Conferences from './conferences';
 import Settings from './settings';
+import Conferent from './conferent';
+import {HomesPage, HomePage} from './page_homes';
+import {TusersPage} from './page_tusers';
+import {CeshiPage} from './page_ceshi';
 import {UsersPage, UserPage} from './page_users';
 import Routes from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
@@ -70,6 +74,7 @@ const MENUS = [
 const RMENUS = [
 	{id: "MM_SETTINGS", description: <T.span text="Settings" />, data: "/settings/users"},
 	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />, data:"/profiles"},
+	{id: "MM_CONFERENT", description: <T.span text="Conferent" />, data:"/conferent/homes"},
 	{id: "MM_LOGOUT", description: <T.span text="Logout"/>, data: "/logout"}
 ];
 
@@ -148,6 +153,23 @@ const Home = React.createClass({
 					</Route>
 					<Route path="routes" components={{sidebar: Settings, main: Routes}}/>
 				</Route>
+				
+				<Route path="conferent">
+				    <IndexRoute components={{sidebar: Conferent, main: HomesPage}}/>
+						
+						<Route path=":id" components={{sidebar: Conferent, main: HomesPage}}/>
+					
+					
+						<Route path="tusers">
+							<IndexRoute components={{sidebar: Conferent, main: TusersPage}}/>
+							<Route path=":id" components={{sidebar: Conferent, main: TusersPage}}/>
+						</Route>
+						
+						<Route path=":id" components={{sidebar: Conferent, main: CeshiPage}}/>
+				
+					
+				</Route>
+				
 			</Route>
 		</Router>
 	}
