@@ -19,30 +19,45 @@ end
 
 function build_actions(t)
 	for k,v in pairs(t) do
-		actions = actions .. '<action application="' .. v.app .. '" data="' .. v.args .. '"/>'
+		actions = actions .. '<action application="' .. v.app .. '" data="' .. v.data .. '"/>'
 	end
 end
 
 xdb.find_by_sql(sql, function(row)
 	found = true
+
+	if row.dnc and not (row.dnc == '') then
+		dest = utils.apply_dnc(dest, row.dnc)
+		table.insert(actions_table, {app = "set", data = "dnc=" .. row.dnc})
+		table.insert(actions_table, {app = "set", data = "dnc_number=" .. dest})
+	end
+
+	if row.sdnc and not (row.sdnc == '') then
+		local cid_number = params:getHeader("Caller-Caller-ID-Number")
+		local sdnc_number = utils.apply_dnc(cid_number, row.sdnc)
+		table.insert(actions_table, {app = "set", data = "srnc=" .. row.sdnc})
+		table.insert(actions_table, {app = "set", data = "srnc_number=" .. sdnc_number})
+		table.insert(actions_table, {app = "set", data = "effective_caller_id_number=" .. sdnc_number})
+	end
+
 	if (row.dest_type == 'SYSTEM') then
 		lines = csplit(row.body, "\n")
 		for k, v in pairs(lines) do
 			local t = csplit(v, ' ')
 			local app = table.remove(t, 1)
-			local args = table.concat(t, ' ')
+			local data = table.concat(t, ' ')
 			if app and (not (app == '')) then
-				table.insert(actions_table, {app = app,  args = args})
+				table.insert(actions_table, {app = app,  data = data})
 			end
 		end
 	elseif (row.dest_type == 'LOCAL') then
-		table.insert(actions_table, {app = "bridge", args = "user/" .. dest})
+		table.insert(actions_table, {app = "bridge", data = "user/" .. dest})
 	elseif (row.dest_type == 'GATEWAY') then
-		table.insert(actions_table, {app = "bridge", args = "sofia/gateway/" .. row.body .. "/" .. dest})
+		table.insert(actions_table, {app = "bridge", data = "sofia/gateway/" .. row.body .. "/" .. dest})
 	elseif (row.dest_type == 'IP') then
-		table.insert(actions_table, {app = "bridge", args = "sofia/internal/" .. dest .. "@" .. row.body})
+		table.insert(actions_table, {app = "bridge", data = "sofia/internal/" .. dest .. "@" .. row.body})
 	elseif (row.dest_type == 'IVRBLOCK') then
-		table.insert(actions_table, {app = "lua", args = "/tmp/blocks-" .. row.body .. ".lua"})
+		table.insert(actions_table, {app = "lua", data = "/tmp/blocks-" .. row.body .. ".lua"})
 	end
 end)
 
@@ -50,9 +65,7 @@ if found then
 	build_actions(actions_table)
 	XML_STRING = [[<context name="default">
 		<extension name="LUA Dialplan">
-			<condition>
-				]] .. actions .. [[
-			</condition>
+			<condition>]] .. actions .. [[</condition>
 		</extension>
 	</context>]]
 end
