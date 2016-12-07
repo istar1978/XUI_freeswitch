@@ -6,6 +6,8 @@ print(env:serialize())
 	local ctype = xtra.url_decode(env:getHeader("content-type"))
 	local content_length = tonumber(env:getHeader("content-length"))
 
+	print("ctype: "..ctype.." content_length: "..content_length.."\n");
+
 	if content_length == 0 or content_length > 10 * 1024 * 1024 then
 		return 500
 	end
@@ -21,7 +23,8 @@ print(env:serialize())
 	local uploaded_files = {}
 	local found = 0
 
-	print(filename)
+	print(multipart)
+	print(file)
 	print(ctype)
 	print(content_length)
 
@@ -29,16 +32,32 @@ print(env:serialize())
 
 	if expect and expect:match("100%-continue") then
 		-- response_100_continue()
+		print("run");
 		stream:write("HTTP/1.1 100 Continue\r\n")
 		stream:write("X-IM-FileID: " .. filename .. "\r\n\r\n")
 	end
 
-	if multipart then
-		boundary=string.gsub(ctype, "^.*boundary=([^;]+).*$", "%1")
-		print("boundary: " .. boundary)
-	else
+	-- if multipart then
+	-- 	boundary=string.gsub(ctype, "^.*boundary=([^;]+).*$", "%1")
+	-- 	print("boundary: " .. boundary)
+	-- else
+	-- 	filename = utils.tmpname('upload-')
+	-- 	file = assert(io.open(filename, "w"))
+
+	-- 	print("filename=" .. filename ..  "\n");
+	-- end
+
+	-- Temporarily, all of requests is assumed as the post request.
+	-- So, the var named multipart is true surely.
+	boundary=string.gsub(ctype, "^.*boundary=([^;]+).*$", "%1")
+	print("boundary: " .. boundary)
+
+
+	if not file then
 		filename = utils.tmpname('upload-')
-		file = assert(io.open(abs_filename, "w"))
+		file = assert(io.open(filename, "w"))
+
+		print("filename=" .. filename ..  "\n");
 	end
 
 	while received < size do
@@ -47,8 +66,26 @@ print(env:serialize())
 		received = received + len
 		print("received: " .. len .. " total: " .. received .. " size: " .. size)
 
-		if len == 0 then -- read eof
+		-- if (multipart) then
+		-- 	if not parser then parser = multipart_parser(boundary) end
+
+		-- 	ret = parser:parse(x)
+
+		-- 	print("---------file write---------\n" .. x .. "-------------------------")
+		-- 	file:write(x)
+
+		-- 	if (not ret == 0) then break end
+		-- else
+		-- 	print("---------file write---------\n" .. x .. "-------------------------")
+		-- 	file:write(x)
+		-- end
+
+		if not parser then parser = multipart_parser(boundary) end
+		ret = parser:parse(x)
+
+		if received == size then -- read eof
 			print("EOF")
+			
 			if parser and parser.parts then
 				-- todo fix parser
 				local media_file = xdb.create_return_object('media_files', {
@@ -62,17 +99,9 @@ print(env:serialize())
 				end
 			end
 
+			-- save buffer to file
+			file:write(parser.buffer);
 			break
-		end
-
-		if (multipart) then
-			if not parser then parser = multipart_parser(boundary) end
-
-			ret = parser:parse(x)
-
-			if (not ret == 0) then break end
-		else
-			file:write(x)
 		end
 
 		-- freeswitch.msleep(1000) -- emulate slow network upload
