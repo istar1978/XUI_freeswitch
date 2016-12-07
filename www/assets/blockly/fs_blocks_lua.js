@@ -83,6 +83,12 @@ Blockly.Lua.fsSessionGet = function(block) {
   return [code, Blockly.Lua.ORDER_NONE];
 };
 
+Blockly.Lua.fsFilePath = function(block) {
+  var dropdown_name = block.getFieldValue('NAME');
+  var code = '"' + dropdown_name + '"';
+  return [code, Blockly.Lua.ORDER_NONE];
+};
+
 Blockly.Lua.fsSessionSet = function(block) {
   var text_var = block.getFieldValue('var');
   var text_val = Blockly.Lua.valueToCode(block, 'args',
