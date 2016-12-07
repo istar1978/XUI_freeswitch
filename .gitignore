@@ -5,3 +5,5 @@ jsapp/src/js/jsx/*.js
 www/assets/js/jsx/*
 npm-debug.log*
 
+bower_components/
+node_modules/
