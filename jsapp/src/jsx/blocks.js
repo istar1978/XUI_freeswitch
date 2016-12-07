@@ -39,6 +39,7 @@ class BlockPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.workspace = null;
+		this.fs_file_path_dropdown_data = null;
 		this.state = {block: {name: "Loading ..."}};
 	}
 
@@ -267,38 +268,40 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 		} else {
 			$.get('/api/examples', function(obj) {
 				console.log("data", obj);
-				var data = obj.map(function(row) {
+				_this.fs_file_path_dropdown_data = obj.map(function(row) {
 					return [row.name, row.id + ""];
 				});
+			});
 
-				console.log(data);
+			let get_fs_file_path_drowndown_data = function() {
+				return _this.fs_file_path_dropdown_data;
+			}
 
-				Blockly.Blocks['fsFilePath'] = {
-					init: function() {
-						this.appendDummyInput()
-						.appendField("File")
-						.appendField(new Blockly.FieldDropdown(data), "NAME");
+			Blockly.Blocks['fsFilePath'] = {
+				init: function() {
+					this.appendDummyInput()
+					.appendField("File")
+					.appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
 
-						this.setInputsInline(true);
-						this.setOutput(true, "String");
-						this.setTooltip('');
-						this.setHelpUrl('http://www.example.com/');
-					}
-				};
+					this.setInputsInline(true);
+					this.setOutput(true, "String");
+					this.setTooltip('');
+					this.setHelpUrl('http://www.example.com/');
+				}
+			};
 
-				load_toolbox();
-				_this.workspace = init_blockly();
-				onresize();
-				window.addEventListener('resize', onresize, false);
+			load_toolbox();
+			_this.workspace = init_blockly();
+			onresize();
+			window.addEventListener('resize', onresize, false);
 
 
-				$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
-					_this.setState({block, block});
+			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
+				_this.setState({block, block});
 
-					if (block && block.xml && block.xml.length > 0) {
-						Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
-					}
-				});
+				if (block && block.xml && block.xml.length > 0) {
+					Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
+				}
 			});
 		}
 	}
