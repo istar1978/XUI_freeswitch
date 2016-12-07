@@ -357,7 +357,6 @@ class NewBlock extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.last_id = 0;
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
@@ -382,9 +381,8 @@ class NewBlock extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(block),
-			success: function () {
-				_this.last_id++;
-				block.id = "NEW" + _this.last_id;
+			success: function (obj) {
+				block.id = obj.id;
 				_this.props["data-handleNewBlockAdded"](block);
 			},
 			error: function(msg) {
