@@ -265,19 +265,42 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			window.addEventListener('resize', onresize, false);
 			onresize();
 		} else {
-			load_toolbox();
-			this.workspace = init_blockly();
-			onresize();
-			window.addEventListener('resize', onresize, false);
+			$.get('/api/examples', function(obj) {
+				console.log("data", obj);
+				var data = obj.map(function(row) {
+					return [row.name, row.id + ""];
+				});
+
+				console.log(data);
+
+				Blockly.Blocks['fsFilePath'] = {
+					init: function() {
+						this.appendDummyInput()
+						.appendField("File")
+						.appendField(new Blockly.FieldDropdown(data), "NAME");
+
+						this.setInputsInline(true);
+						this.setOutput(true, "String");
+						this.setTooltip('');
+						this.setHelpUrl('http://www.example.com/');
+					}
+				};
+
+				load_toolbox();
+				_this.workspace = init_blockly();
+				onresize();
+				window.addEventListener('resize', onresize, false);
+
+
+				$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
+					_this.setState({block, block});
+
+					if (block && block.xml && block.xml.length > 0) {
+						Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
+					}
+				});
+			});
 		}
-
-		$.getJSON("/api/blocks/" + this.props.params.id, function(block) {
-			_this.setState({block, block});
-
-			if (block && block.xml && block.xml.length > 0) {
-				Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
-			}
-		});
 	}
 
 	handleControlClick(e) {

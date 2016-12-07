@@ -2,14 +2,14 @@ content_type("application/json")
 
 get('/', function(params)
 	local tabs = {}
-	local tab = {id= 1, name = 'name'}
+	local tab = {id= 1, name = 'name1'}
 
 	table.insert(tabs, tab)
 
-	tab = {id= 2, name = 'name'}
+	tab = {id= 2, name = 'name2'}
 	table.insert(tabs, tab)
 
-	tab = {id= 3, name = 'name'}
+	tab = {id= 3, name = 'name3'}
 	table.insert(tabs, tab)
 
 	return tabs
