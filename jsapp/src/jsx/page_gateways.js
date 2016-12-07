@@ -42,7 +42,6 @@ class NewGateway extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.last_id = 0;
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
