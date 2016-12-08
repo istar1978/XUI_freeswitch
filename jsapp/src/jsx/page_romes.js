@@ -36,7 +36,7 @@ import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel,
 import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
-var cid;
+var local_array = [];
 class NewRome extends React.Component {
 	propTypes: {handleNewRomeAdded: React.PropTypes.func}
 
@@ -140,6 +140,9 @@ class NewTel extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(tel),
 			success: function(data) {
+				var call_num = data.num;
+				var cname = local_array.cname;
+				fsAPI("conference", cname + " dial user/" + call_num);
 				_this.props["data-handleNewTelAdded"](data);
 			},
 			error: function(msg) {
@@ -169,7 +172,7 @@ class NewTel extends React.Component {
 			</Modal.Header>
 			<Modal.Body>
 			<Form horizontal id="newTelForm">
-			<input type="hidden" name="cid" defaultValue={cid}/>
+			<input type="hidden" name="cid" defaultValue={local_array.cid}/>
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Tel" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="num" /></Col>
@@ -255,14 +258,16 @@ class RomePage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		cid = _this.props.params.id;
-		$.getJSON("/api/romes/" + cid, "", function(data) {
+		var c_id = _this.props.params.id;
+		$.getJSON("/api/romes/" + c_id, "", function(data) {
+			local_array.cid = data.id;
+			local_array.cname = data.name;
 			_this.setState({rome: data});
 		}, function(e) {
 			console.log("get romes ERR");
 		});
 		
-		$.getJSON("/api/tels/" + cid, "", function(data) {
+		$.getJSON("/api/tels/" + c_id, "", function(data) {
 			// console.log("romes", data)
 			_this.setState({rows: data});
 		}, function(e) {
@@ -291,17 +296,36 @@ class RomePage extends React.Component {
 		if(rome.state == 'end'){
 			tstate = <T.span text="Endcon"/>
 		}
+		
 		var rows = this.state.rows.map(function(row) {
-			return <p>{row.id}--{row.num}</p>;
+			return <tr key={row.id}>
+					<td>{row.num}</td>
+					<td>挂断/静音</td>
+			</tr>;
 		})
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		return <div>
 			<ButtonGroup className="controls">
 				<Button>
-				
-				<T.span onClick={this.telControlClick} data="newtel" text="Add New Tel"/>
-				
+					<T.span onClick={this.telControlClick} data="newtel" text="Add New Tel"/>
 				</Button>
-					
 			</ButtonGroup>
 			<h1>{rome.name}</h1>
 			<hr/>
@@ -324,7 +348,16 @@ class RomePage extends React.Component {
 				</FormGroup>
 				</Form>
 				<NewTel show={this.state.formShow} onHide={formClose} data-handleNewTelAdded={this.handleTelAdded.bind(this)}/>
-					{rows}
+					
+					<table className="table">
+					<tbody>
+					<tr>
+						<th><T.span text="Tnum"/></th>
+						<th><T.span text="Play"/></th>
+					</tr>
+						{rows}
+					</tbody>
+					</table>
 		</div>
 	}
 }
@@ -432,7 +465,6 @@ class RomesPage extends React.Component {
 					</td>
 			</tr>;
 		})
-
 		return <div>
 			<div className="controls">
 				<Button>
@@ -457,7 +489,6 @@ class RomesPage extends React.Component {
 				</tbody>
 				</table>
 			</div>
-
 			<NewRome show={this.state.formShow} onHide={formClose} data-handleNewRomeAdded={this.handleRomeAdded.bind(this)}/>
 		</div>
 	}

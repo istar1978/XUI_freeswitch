@@ -3,8 +3,8 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/:id', function(params)
-	local were = " where cid = " .. params.id
-	n, tel = xdb.find_by_cond("tels", were)
+	local cond = {cid = params.id}
+	n, tel = xdb.find_by_cond("tels", cond, "id")
 	if (n > 0)	then
 		return tel
 	else
@@ -12,12 +12,12 @@ get('/:id', function(params)
 	end
 end)
 
-function xdb.find_by_cond(t, cond, sort, cb)
-	local cstr = _cond_string(cond)
-	local sql = "SELECT * FROM " .. t
-
-	if cstr then sql = sql .. cstr end
-	if sort then sql = sql .. " ORDER BY " .. sort end
-
-	return xdb.find_by_sql(sql, cb)
-end
+post('/', function(params)
+	print(serialize(params))
+	ret = xdb.create_return_object('tels', params.request)
+	if ret then
+		return ret
+	else
+		return 500, "{}"
+	end
+end)
