@@ -232,19 +232,19 @@ var SofiaPage = React.createClass({
 			});
 
 			msg.find("alias").each(function() {
-				var profile = this;
+				var alias = this;
 				var row = {
-					"name": $(profile).find("name").text(),
-					"type": $(profile).find("type").text(),
-					"data": $(profile).find("data").text(),
-					"state": $(profile).find("state").text(),
+					"name": $(alias).find("name").text(),
+					"type": $(alias).find("type").text(),
+					"data": $(alias).find("data").text(),
+					"state": $(alias).find("state").text(),
 					"actions": []
 				};
 				rows.push(row);
 			});
 
 			msg.find("gateway").each(function() {
-				var profile = this;
+				var gw = this;
 				var actions = [
 					{"action": "Reg",   onClick: _this.handleGatewayReg},
 					{"action": "UnReg", onClick: _this.handleGatewayUnreg},
@@ -252,10 +252,10 @@ var SofiaPage = React.createClass({
 					{"action": "More",  onClick: _this.handleGatewayDetail}
 				];
 				var row = {
-					"name": $(profile).find("name").text(),
-					"type": $(profile).find("type").text(),
-					"data": $(profile).find("data").text(),
-					"state": $(profile).find("state").text(),
+					"name": $(gw).find("name").text(),
+					"type": $(gw).find("type").text(),
+					"data": $(gw).find("data").text(),
+					"state": $(gw).find("state").text(),
 					"actions": actions
 				};
 				rows.push(row);
