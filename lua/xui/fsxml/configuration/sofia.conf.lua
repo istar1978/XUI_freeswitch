@@ -72,7 +72,13 @@ function build_profiles()
 end
 
 if gw_name then
-	local gateways = build_gateways({name = gw_name})
+	local gateways
+
+	if gw_name == '_all_' then
+		gateways = build_gateways()
+	else
+		gateways = build_gateways({name = gw_name})
+	end
 
 	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
 		<profiles><profile name="external"><gateways>]] .. gateways ..
