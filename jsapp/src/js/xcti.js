@@ -114,6 +114,7 @@ function verto_params() {
 		deviceParams: {
 			useMic: 'any',
 			useSpeak: 'any',
+			useCamera: 'any'
 		},
 	}
 }

@@ -45,7 +45,8 @@ var Phone = React.createClass({
 			curCall: null,
 			cidName: "Anonymouse",
 			cidNum: "000000",
-			dtmfVisible: false
+			dtmfVisible: false,
+			useVideo: false
 		};
 	},
 
@@ -96,12 +97,13 @@ var Phone = React.createClass({
 	},
 
 	handleCall: function() {
+		let useVideo = this.state.useVideo;
 		verto.newCall({
 			destination_number: $('#dest_number').val(),
 			caller_id_name: '0000',
 			caller_id_number: '0000',
-			useVideo: false,
-			useStereo: false
+			useVideo: useVideo,
+			useStereo: true
 		});
 	},
 
@@ -121,6 +123,10 @@ var Phone = React.createClass({
 		} else {
 			this.state.curCall.dtmf(dtmf);
 		}
+	},
+
+	toggleVideo:function() {
+		this.setState({useVideo: !this.state.useVideo});
 	},
 
 	componentDidMount: function() {
@@ -187,7 +193,7 @@ var Phone = React.createClass({
 
 		return 	<NavItem eventKey="phone"><T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
-				<div id="zm-phone">Phone&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
+				<div id="zm-phone">{verto.options.login}&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
 				<input id="dest_number" name="dest_number" placeholder="demo"/>
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
@@ -198,8 +204,8 @@ var Phone = React.createClass({
 				{toggleDTMF}
 				{DTMFs}
 				{hangupButton}
+				<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/>
 			</div>
-			<video id="webcam" style={{display: "none"}}/>
 		</NavItem>;
 	}
 

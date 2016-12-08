@@ -117,6 +117,7 @@ class MainMenu extends React.Component {
 				<Nav pullRight>{ phone }</Nav>
 				<Nav pullRight><Notice/></Nav>
 			</Navbar.Collapse>
+			<video id="webcam" className="webcam"/>
 		</Navbar>;
 	}
 }

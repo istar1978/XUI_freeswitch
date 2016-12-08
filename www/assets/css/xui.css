@@ -117,3 +117,10 @@ tr.NOREG {color: black !important;}
 tr.TRYING{color: yellow !important;}
 tr.FAIL_WAIT{color: #770 !important;}
 tr.FAILED{color: red !important;}
+
+.webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: inherit;
+  display: none;
+}
