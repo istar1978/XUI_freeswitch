@@ -421,7 +421,10 @@ class MediaFilesPage extends React.Component {
 		console.log('Rejected files: ', rejectedFiles);
 
 		let data = new FormData()
-		data.append('file', acceptedFiles[0])
+
+		for (var i = 0; i < acceptedFiles.length; i++) {
+			data.append('file', acceptedFiles[i])
+		}
 
 		fetch('/api/upload', {
 			method: 'POST',
