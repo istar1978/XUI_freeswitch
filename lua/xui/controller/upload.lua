@@ -37,28 +37,16 @@ print(env:serialize())
 		stream:write("X-IM-FileID: " .. filename .. "\r\n\r\n")
 	end
 
-	-- if multipart then
-	-- 	boundary=string.gsub(ctype, "^.*boundary=([^;]+).*$", "%1")
-	-- 	print("boundary: " .. boundary)
-	-- else
-	-- 	filename = utils.tmpname('upload-')
-	-- 	file = assert(io.open(filename, "w"))
-
-	-- 	print("filename=" .. filename ..  "\n");
-	-- end
-
 	-- Temporarily, all of requests is assumed as the post request.
 	-- So, the var named multipart is true surely.
 	boundary=string.gsub(ctype, "^.*boundary=([^;]+).*$", "%1")
 	print("boundary: " .. boundary)
 
 
-	if not file then
-		filename = utils.tmpname('upload-')
-		file = assert(io.open(filename, "w"))
-
-		print("filename=" .. filename ..  "\n");
-	end
+	-- if not file then
+	-- 	filename = utils.tmpname('upload-')
+	-- 	file = assert(io.open(filename, "w"))
+	-- end
 
 	while received < size do
 		local x = stream:read()
@@ -66,48 +54,34 @@ print(env:serialize())
 		received = received + len
 		print("received: " .. len .. " total: " .. received .. " size: " .. size)
 
-		-- if (multipart) then
-		-- 	if not parser then parser = multipart_parser(boundary) end
-
-		-- 	ret = parser:parse(x)
-
-		-- 	print("---------file write---------\n" .. x .. "-------------------------")
-		-- 	file:write(x)
-
-		-- 	if (not ret == 0) then break end
-		-- else
-		-- 	print("---------file write---------\n" .. x .. "-------------------------")
-		-- 	file:write(x)
-		-- end
 
 		if not parser then parser = multipart_parser(boundary) end
 		ret = parser:parse(x)
 
-		if received == size then -- read eof
+		if len == 0 then -- read eof
 			print("EOF")
+
+			-- utils.print_r(parser.parts)
 			
 			if parser and parser.parts then
 				-- todo fix parser
-				local media_file = xdb.create_return_object('media_files', {
-					name = boundary,
-					description = boundary
-				})
+				-- local media_file = xdb.create_return_object('media_files', {
+				-- 	name = boundary,
+				-- 	description = boundary
+				-- })
 
-				if media_file then
-					table.insert(uploaded_files, media_file)
-					found = found + 1
-				end
+				-- if media_file then
+				-- 	table.insert(uploaded_files, media_file)
+				-- 	found = found + 1
+				-- end
 			end
-
-			-- save buffer to file
-			file:write(parser.buffer);
 			break
 		end
 
 		-- freeswitch.msleep(1000) -- emulate slow network upload
 	end
 
-	if file then file:close() end
+	-- if file then file:close() end
 
 	if found then
 		return uploaded_files
