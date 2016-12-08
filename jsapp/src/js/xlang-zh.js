@@ -18,6 +18,7 @@ LANGUAGES["zh"] = {
 	Outcon: "未开始",
 	Ingcon: "进行中",
 	Endcon: "已结束",
+	Tel :"电话",
 	"Add New Tel": "添加成员",
 
 	Overview: "概览",

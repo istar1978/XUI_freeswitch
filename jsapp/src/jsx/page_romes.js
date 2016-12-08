@@ -36,13 +36,12 @@ import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel,
 import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
+var cid;
 class NewRome extends React.Component {
 	propTypes: {handleNewRomeAdded: React.PropTypes.func}
 
 	constructor(props) {
 		super(props);
-
-		this.last_id = 0;
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
@@ -52,9 +51,9 @@ class NewRome extends React.Component {
 	handleSubmit(e) {
 		var _this = this;
 
-		console.log("submit...");
+		// console.log("submit...");
 		var rome = form2json('#newRomeForm');
-		console.log("rome", rome);
+		// console.log("rome", rome);
 
 		if (!rome.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
@@ -77,7 +76,7 @@ class NewRome extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
+		// console.log(this.props);
 
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -122,36 +121,62 @@ class NewRome extends React.Component {
 }
 
 class NewTel extends React.Component {
+	propTypes: {handleNewTelAdded: React.PropTypes.func}
 	constructor(props) {
 		super(props);
+		this.telSubmit = this.telSubmit.bind(this);
 	}
+	telSubmit(e) {
+		var _this = this;
+		var tel = form2json('#newTelForm');
+		if (!tel.num) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+		$.ajax({
+			type: "POST",
+			url: "api/tels",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(tel),
+			success: function(data) {
+				_this.props["data-handleNewTelAdded"](data);
+			},
+			error: function(msg) {
+				console.error("tel", msg);
+			}
+		});
+		
+		// $.ajax({
+			// type: "POST",
+			// url: "/api/romes",
+			// dataType: "json",
+			// contentType: "application/json",
+			// data: JSON.stringify(rome),
+			// success: function (obj) {
+				// _this.props["data-handleNewRomeAdded"](obj);
+			// },
+			// error: function(msg) {
+				// console.error("rome", msg);
+			// }
+		// });
+	}
+	
 	render() {
-		console.log(this.props);
-
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Room" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Tel" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-			<Form horizontal id="newRomeForm">
+			<Form horizontal id="newTelForm">
+			<input type="hidden" name="cid" defaultValue={cid}/>
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Tel" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="num" /></Col>
 				</FormGroup>
-
-				<FormGroup controlId="formStarttime">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Starttime" /></Col>
-					<Col sm={10}><FormControl type="datetime-local" name="starttime" /></Col>
-				</FormGroup>
-				
-				<FormGroup controlId="formEndtime">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Endtime" /></Col>
-					<Col sm={10}><FormControl type="datetime-local" name="endtime" /></Col>
-				</FormGroup>
-				
 				<FormGroup>
 					<Col smOffset={2} sm={10}>
-						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+						<Button type="button" bsStyle="primary" onClick={this.telSubmit}>
 							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
 							<T.span text="Save" />
 						</Button>
@@ -175,7 +200,7 @@ class RomePage extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.state = {errmsg: '', rome: {}, formShow: false};
+		this.state = {errmsg: '', rome: {}, rows: [], formShow: false};
 
 	    // This binding is necessary to make `this` work in the callback
 	    this.telControlClick = this.telControlClick.bind(this);
@@ -184,17 +209,10 @@ class RomePage extends React.Component {
 	
 	
 	telControlClick(e) {
-		
-		
 		var data = e.target.getAttribute("data");
-		console.log("newtel", data);
-
 		if (data == "newtel") {
 			this.setState({ formShow: true});
-			
 		}
-		
-	
 	}
 	
 	// handleTelAdded(route) {
@@ -237,22 +255,31 @@ class RomePage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/romes/" + _this.props.params.id, "", function(data) {
-			console.log("rome", data);
+		cid = _this.props.params.id;
+		$.getJSON("/api/romes/" + cid, "", function(data) {
 			_this.setState({rome: data});
+		}, function(e) {
+			console.log("get romes ERR");
+		});
+		
+		$.getJSON("/api/tels/" + cid, "", function(data) {
+			// console.log("romes", data)
+			_this.setState({rows: data});
 		}, function(e) {
 			console.log("get romes ERR");
 		});
 	}
 	
-	handleTelAdded() {
-		this.setState({formShow: false});
+	//----------------------------------------
+	handleTelAdded(route) {
+		var rows = this.state.rows;
+		rows.push(route);
+		this.setState({rows: rows, formShow: false});
 	}
 	
 	
-	
-		render() {
-	let formClose = () => this.setState({ formShow: false });
+	render() {
+		let formClose = () => this.setState({ formShow: false });
 		const rome = this.state.rome;
 		var tstate;
 		if(rome.state == 'out'){
@@ -264,6 +291,9 @@ class RomePage extends React.Component {
 		if(rome.state == 'end'){
 			tstate = <T.span text="Endcon"/>
 		}
+		var rows = this.state.rows.map(function(row) {
+			return <p>{row.id}--{row.num}</p>;
+		})
 		return <div>
 			<ButtonGroup className="controls">
 				<Button>
@@ -276,7 +306,6 @@ class RomePage extends React.Component {
 			<h1>{rome.name}</h1>
 			<hr/>
 				<Form horizontal>
-				<input type="hidden" name="id" defaultValue={rome.id}/>
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name"/></Col>
 					<Col sm={10}><EditControl defaultValue={rome.name}/></Col>
@@ -295,6 +324,7 @@ class RomePage extends React.Component {
 				</FormGroup>
 				</Form>
 				<NewTel show={this.state.formShow} onHide={formClose} data-handleNewTelAdded={this.handleTelAdded.bind(this)}/>
+					{rows}
 		</div>
 	}
 }
@@ -311,7 +341,7 @@ class RomesPage extends React.Component {
 
 	handleControlClick(e) {
 		var data = e.target.getAttribute("data");
-		console.log("data", data);
+		// console.log("data", data);
 
 		if (data == "new") {
 			this.setState({ formShow: true});
@@ -320,7 +350,7 @@ class RomesPage extends React.Component {
 
 	handleDelete(e) {
 		var id = e.target.getAttribute("data-id");
-		console.log("deleting id", id);
+		// console.log("deleting id", id);
 		var _this = this;
 
 		if (!this.state.danger) {
@@ -333,7 +363,7 @@ class RomesPage extends React.Component {
 			type: "DELETE",
 			url: "/api/romes/" + id,
 			success: function () {
-				console.log("deleted")
+				// console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {
 					return row.id != id;
 				});
@@ -358,10 +388,10 @@ class RomesPage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/romes", "", function(data) {
-			console.log("romes", data)
+			// console.log("romes", data)
 			_this.setState({rows: data});
 		}, function(e) {
-			console.log("get romes ERR");
+			// console.log("get romes ERR");
 		});
 	}
 
