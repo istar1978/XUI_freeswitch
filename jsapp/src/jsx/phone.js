@@ -175,7 +175,9 @@ var Phone = React.createClass({
 		}
 
 		if (this.state.callState != "Idle") {
-			hangupButton = <button onClick={this.handleHangup}>Hangup</button>
+			hangupButton = <Button bsStyle="danger" bsSize="xsmall">
+				<i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;
+				<T.span onClick={this.handleHangup} text="Hangup" /></Button>
 		}
 
 		if (this.state.callState == "Ringing" && this.state.cidNum != "1000") {
@@ -192,10 +194,10 @@ var Phone = React.createClass({
 					<T.span onClick={this.handleCall} text="Call" />
 				</Button>
 				<br/>
-				{hangupButton}
 				{answerButton}
 				{toggleDTMF}
 				{DTMFs}
+				{hangupButton}
 			</div>
 			<video id="webcam" style={{display: "none"}}/>
 		</NavItem>;

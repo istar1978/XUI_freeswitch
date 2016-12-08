@@ -18,6 +18,7 @@ LANGUAGES["zh"] = {
 
 	Call: "呼叫",
 	DTMF: "拨号",
+	Hangup: "挂断",
 
 	Conference: "会议",
 	Mute: "静音",
