@@ -187,7 +187,7 @@ class GatewayPage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/gateways/" + this.props.params.id, "", function(data) {
-			console.log("gw", data);
+			// console.log("gw", data);
 			_this.setState({gw: data});
 		}, function(e) {
 			console.log("get gw ERR");
@@ -268,11 +268,13 @@ class GatewayPage extends React.Component {
 class GatewaysPage extends React.Component {
 	constructor(props) {
 		super(props);
+		this.gwstatus = {};
 		this.state = { formShow: false, rows: [], danger: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.handleFSEvent = this.handleFSEvent.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -319,19 +321,96 @@ class GatewaysPage extends React.Component {
 	}
 
 	componentWillUnmount() {
+		verto.unsubscribe("FSevent.custom::sofia::gateway_delete");
+		verto.unsubscribe("FSevent.custom::sofia::gateway_add");
+		verto.unsubscribe("FSevent.custom::sofia::gateway_state");
 	}
 
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/gateways", "", function(data) {
-			console.log("gw", data)
-			_this.setState({rows: data});
+			_this.setState({rows: data.map(function(row) {
+				row.class_name = _this.gwstatus[row.name] ? _this.gwstatus[row.name] : 'NONE';
+				return row;
+			})});
 		}, function(e) {
 			console.log("get gateways ERR");
 		});
+
+		verto.subscribe("FSevent.custom::sofia::gateway_delete", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.custom::sofia::gateway_add", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.custom::sofia::gateway_state", {handler: this.handleFSEvent});
+
+		fsAPI("sofia", "xmlstatus", function(data) {
+			let msg = $(data.message);
+
+			msg.find("gateway").each(function() {
+				let gw = this;
+				_this.gwstatus[$(gw).find("name").text()] = $(gw).find("state").text();
+			});
+
+			let rows = _this.state.rows.map(function(row) {
+				row.class_name = _this.gwstatus[row.name];
+				console.log('class_name', class_name);
+				return row;
+			});
+
+			_this.setState({rows: rows});
+		});
+
 	}
 
 	handleFSEvent(v, e) {
+		console.log('FSevent', e);
+		let class_name = "";
+
+		if (e.eventChannel == "FSevent.custom::sofia::gateway_add") {
+			console.log("gateway_add", e.data.Gateway);
+			class_name = "NOREG"
+		} else if (e.eventChannel == "FSevent.custom::sofia::gateway_delete") {
+			console.log("gateway_delete", e.data.Gateway);
+			class_name = "NONE"
+		} else if (e.eventChannel == "FSevent.custom::sofia::gateway_state") {
+			class_name = e.data.State;
+		}
+
+		let rows = this.state.rows.map(function(row) {
+			if (row.name == e.data.Gateway) {
+				row.class_name = class_name;
+			}
+			return row;
+		});
+
+		this.setState({rows: rows});
+	}
+
+	handleReg(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile external register " + name);
+	}
+
+	handleUnreg(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile external unregister " + name);
+	}
+
+	handleStart(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile external startgw " + name);
+		fsAPI("sofia", "profile external rescan");
+	}
+
+	handleStop(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile external killgw " + name);
 	}
 
 	handleGatewayAdded(route) {
@@ -348,12 +427,19 @@ class GatewaysPage extends React.Component {
 		var _this = this;
 
 		var rows = this.state.rows.map(function(row) {
-			return <tr key={row.id}>
+			return <tr key={row.id} className={row.class_name}>
 					<td>{row.id}</td>
 					<td><Link to={`/settings/gateways/${row.id}`}>{row.name}</Link></td>
 					<td>{row.realm}</td>
 					<td>{row.username}</td>
 					<td>{row.register}</td>
+					<td>
+						<T.a onClick={_this.handleReg} data-name={row.name} text="Reg" href='#'/> |
+						<T.a onClick={_this.handleUnreg} data-name={row.name} text="Unreg" href='#'/> |
+						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |
+						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |
+						<span>{row.class_name}</span>
+					</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
@@ -376,6 +462,7 @@ class GatewaysPage extends React.Component {
 					<th><T.span text="Realm"/></th>
 					<th><T.span text="Username"/></th>
 					<th><T.span text="Register"/></th>
+					<th><T.span text="Control"/></th>
 					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}

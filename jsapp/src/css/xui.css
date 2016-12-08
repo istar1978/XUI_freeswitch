@@ -109,3 +109,11 @@ tr.disabled {
 #notification {padding-right: 40px;padding-left: 40px;padding-top:10px;padding-bottom:10px;}
 #notification.info  {color:lime !important;border:1px solid #FFF;}
 #notification.error {color:#FFF !important;background-color: #F00;border:1px solid #FFF;}
+
+
+tr.NONE {color: #DDD !important;}
+tr.REGED {color: green !important;}
+tr.NOREG {color: black !important;}
+tr.TRYING{color: yellow !important;}
+tr.FAIL_WAIT{color: #770 !important;}
+tr.FAILED{color: red !important;}
