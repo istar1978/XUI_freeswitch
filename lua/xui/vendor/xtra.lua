@@ -462,6 +462,10 @@ function serialize(o)
 	return s
 end
 
+xtra.serialize = serialize
+xtra.url_decode = url_decode
+xtra.url_encode = url_encode
+
 function xtra.start_session()
 	print "start session"
 	cookie = env:getHeader("Cookie")

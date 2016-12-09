@@ -6,3 +6,5 @@ www/assets/js/jsx/*
 www/assets/css/xui.css
 npm-debug.log*
 
+bower_components/
+node_modules/

@@ -54,6 +54,7 @@ import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { GatewaysPage, GatewayPage } from './page_gateways';
 import { SIPProfilesPage, SIPProfilePage } from './page_sip';
+import { MediaFilesPage, MediaFilePage } from './page_media_files';
 import { Login, LoginBox } from './page_login';
 import Footer from './footer';
 
@@ -149,6 +150,10 @@ const Home = React.createClass({
 					<Route path="routes">
 						<IndexRoute components={{sidebar: Settings, main: RoutesPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: RoutePage}}/>
+					</Route>
+					<Route path="media_files">
+						<IndexRoute components={{sidebar: Settings, main: MediaFilesPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: MediaFilePage}}/>
 					</Route>
 				</Route>
 			</Route>
