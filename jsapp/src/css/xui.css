@@ -7,7 +7,7 @@
 	padding:10px;
 	border:1px solid #000;
 	border-top: 0;
-	background-color:#e5e5e5;
+	background-color:#f1f1f1;
 	color: #000;
 	/*display:none;*/
 	z-index:1000;
@@ -41,6 +41,16 @@
 }
 
 .btn-danger{
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+.btn-warning {
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+.btn-primary{
 	margin-top: 5px;
 	margin-left: 5px;
 }

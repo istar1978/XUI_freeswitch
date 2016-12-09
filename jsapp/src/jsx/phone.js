@@ -202,9 +202,12 @@ var Phone = React.createClass({
 				<br/>
 				{answerButton}
 				{toggleDTMF}
-				{DTMFs}
 				{hangupButton}
-				<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/>
+				<Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
+					<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
+					<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/>
+				</Button>
+				{DTMFs}
 			</div>
 		</NavItem>;
 	}
