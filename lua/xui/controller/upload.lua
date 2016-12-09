@@ -1,4 +1,5 @@
 require 'multipart_parser'
+require 'xdb'
 
 post('/', function(params)
 print(env:serialize())
@@ -34,7 +35,7 @@ print(env:serialize())
 		-- response_100_continue()
 		print("run");
 		stream:write("HTTP/1.1 100 Continue\r\n")
-		stream:write("X-IM-FileID: " .. filename .. "\r\n\r\n")
+		-- stream:write("X-IM-FileID: " .. filename .. "\r\n\r\n")
 	end
 
 	-- Temporarily, all of requests is assumed as the post request.
@@ -48,6 +49,12 @@ print(env:serialize())
 	-- 	file = assert(io.open(filename, "w"))
 	-- end
 
+	if (not multipart) then
+		filename = utils.tmpname('upload-')
+		file = assert(io.open(filename, "w"))
+	end
+
+
 	while received < size do
 		local x = stream:read()
 		local len = x:len()
@@ -56,32 +63,69 @@ print(env:serialize())
 
 
 		if not parser then parser = multipart_parser(boundary) end
-		ret = parser:parse(x)
 
-		if len == 0 then -- read eof
+		if (not multipart) then
+			file:write(x)
+		else
+			ret = parser:parse(x)
+		end
+
+		if (len == 0 or received == size) then -- read eof
 			print("EOF")
-
-			-- utils.print_r(parser.parts)
 			
 			if parser and parser.parts then
 				-- todo fix parser
-				-- local media_file = xdb.create_return_object('media_files', {
-				-- 	name = boundary,
-				-- 	description = boundary
-				-- })
+				xdb.bind(xtra.dbh)
 
-				-- if media_file then
-				-- 	table.insert(uploaded_files, media_file)
-				-- 	found = found + 1
-				-- end
+				for k, v in pairs(parser.parts) do
+					local record = {}
+					record.name = v.filename
+					record.ext = v.ext
+					record.type = v.content_type
+					record.description = boundary
+					record.abs_path = v.abs_filename
+					record.dir_path = config.upload_path
+					record.rel_path = string.sub(record.abs_path, string.len(record.dir_path) + 2)
+					record.file_size = "" .. v.file_size .. ""
+
+					record.channel_uuid = env:getHeader("Core-UUID")
+					record.created_epoch = "" .. os.time() .. ""
+					record.updated_epoch = record.created_epoch
+
+					local media_file = xdb.create_return_object('media_files', record)
+
+					if media_file then
+						table.insert(uploaded_files, media_file)
+					end
+				end
 			end
+
+			if (not multipart) then
+				local record = {}
+				record.description = boundary
+				record.abs_path = filename
+				record.dir_path = config.upload_path
+				record.rel_path = string.sub(record.abs_path, string.len(record.dir_path) + 2)
+				record.file_size = "" .. size .. ""
+				record.channel_uuid = env:getHeader("Core-UUID")
+				record.created_epoch = "" .. os.time() .. ""
+				record.updated_epoch = record.created_epoch
+
+				table.insert(files, record)
+
+				local media_file = xdb.create_return_object('media_files', record)
+
+				if media_file then
+					table.insert(uploaded_files, media_file)
+				end
+			end
+
 			break
 		end
-
 		-- freeswitch.msleep(1000) -- emulate slow network upload
 	end
 
-	-- if file then file:close() end
+	if file then file:close() end
 
 	if found then
 		return uploaded_files

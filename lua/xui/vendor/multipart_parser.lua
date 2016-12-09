@@ -123,6 +123,7 @@ multipart_parser = function(boundary, callback)
 		file:write(parser.buffer)
 		file:close()
 
+		parser.part.file_size = string.len(parser.buffer)
 		-- clear buffer
 		parser.buffer = ''
 
@@ -138,6 +139,8 @@ multipart_parser = function(boundary, callback)
 
 	parser.parse_header = function(parser, headers)
 		local part = {}
+		part.headers = headers
+
 		string.gsub(headers, '(.-)\r\n', function(line)
 			-- print(line)
 			string.gsub(line, '(%S+):%s*(.*)', function(k, v)
@@ -145,16 +148,12 @@ multipart_parser = function(boundary, callback)
 					part.content_type = v
 				elseif (k == "Content-Disposition") then
 					part.filename = string.gsub(v, '.*filename="(.-)"', "%1")
-					-- part.ext = string.gsub(v, filename, "%.[^.]+$")
+					part.ext = string.gsub(part.filename, ".+%.(%w+)$", "%1")
 				end
 			end)
 		end)
 
 		parser.part = part
-
-		print(parser.part.filename)
-		print(parser.part.content_type)
-		print(parser.part.ext)
 	end
 
 	-- parser.parse_body = function(parser)
