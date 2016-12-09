@@ -241,8 +241,8 @@ function clueconstatus()
 
 // translate conference member
 function translateMember(member) {
-	let status;
-	let email;
+	var status;
+	var email;
 	if (typeof(member[1][4]) == "string") { // old
 		status = {};
 		status.audio = {};
