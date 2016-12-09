@@ -2,9 +2,10 @@ require 'multipart_parser'
 require 'xdb'
 
 post('/', function(params)
+	print(env:serialize())
 	local api = freeswitch.API()
-	local ctype = xtra.url_decode(env:getHeader("content-type"))
-	local content_length = tonumber(env:getHeader("content-length"))
+	local ctype = xtra.url_decode(env:getHeader("Content-Type"))
+	local content_length = tonumber(env:getHeader("Content-Length"))
 
 	print("ctype: "..ctype.." content_length: "..content_length.."\n");
 
@@ -69,6 +70,7 @@ post('/', function(params)
 					local record = {}
 					record.name = v.filename
 					record.ext = v.ext
+					record.original_file_name = v.filename
 					record.mime = v.content_type
 					record.description = 'UPLOAD'
 					record.abs_path = v.abs_filename
@@ -90,7 +92,7 @@ post('/', function(params)
 
 			if (not multipart) then
 				local record = {}
-				record.mime = content_type
+				record.mime = ctype
 				record.description = boundary
 				record.abs_path = filename
 				record.dir_path = config.upload_path

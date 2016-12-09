@@ -111,12 +111,15 @@ utils.absname = function(filename, dir)
 	return dir .. "/" .. filename
 end
 
-utils.tmpname = function(prefix)
+utils.tmpname = function(prefix, ext)
 	if not prefix then prefix = '' end
 
 	local api = freeswitch.API()
 	local uuid = api:execute("create_uuid")
 	filename = prefix .. os.date("%Y%m%d") .. "-" .. uuid
+	if ext then
+		filename = filename .. "." .. ext
+	end
 	return utils.absname(filename)
 end
 

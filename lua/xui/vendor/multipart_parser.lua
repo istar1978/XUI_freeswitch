@@ -117,7 +117,7 @@ multipart_parser = function(boundary, callback)
 		end
 
 		-- save file
-		local filename = utils.tmpname('upload-')
+		local filename = utils.tmpname('upload-', parser.part.ext)
 		local file = assert(io.open(filename, "w"))
 
 		file:write(parser.buffer)
