@@ -46,7 +46,7 @@ class NewMediaFile extends React.Component {
 		super(props);
 
 		this.last_id = 0;
-		this.state = {errmsg: ''};
+		this.state = {errmsg: '', mfile: {}};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -56,25 +56,25 @@ class NewMediaFile extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var profile = form2json('#newMediaFileForm');
+		var mfile = form2json('#newMediaFileForm');
 
-		if (!profile.name) {
+		if (!mfile.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/sip_profiles",
+			url: "/api/media_files",
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(profile),
+			data: JSON.stringify(mfile),
 			success: function (obj) {
-				profile.id = obj.id;
-				_this.props["data-handleNewMediaFileAdded"](profile);
+				mfile.id = obj.id;
+				_this.props["data-handleNewMediaFileAdded"](mfile);
 			},
 			error: function(msg) {
-				console.error("sip_profile", msg);
+				console.error("media_file", msg);
 			}
 		});
 	}
@@ -99,11 +99,11 @@ class NewMediaFile extends React.Component {
 		console.log(this.props);
 
 		const props = Object.assign({}, this.props);
-		const profiles = props.profiles;
-		delete props.profiles;
+		const mfiles = props.mfiles;
+		delete props.mfiles;
 
-		const profiles_options = profiles.map(profile => {
-			return <option value={profile.id} key={profile.id}>Profile[{profile.name}]</option>
+		const mfiles_options = mfiles.map(mfile => {
+			return <option value={mfile.id} key={mfile.id}>Profile[{mfile.name}]</option>
 		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
@@ -114,7 +114,7 @@ class NewMediaFile extends React.Component {
 			<Form horizontal id="newMediaFileForm">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="profile1" /></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="mfile1" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
@@ -158,7 +158,7 @@ class MediaFilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {profile: {}, edit: false};
+		this.state = {mfile: {}, edit: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -172,22 +172,22 @@ class MediaFilePage extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var file = form2json('#newMediaFileForm');
+		var mfile = form2json('#newMediaFileForm');
 
-		if (!file.name) {
+		if (!mfile.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/media_files/" + file.id,
+			url: "/api/media_files/" + mfile.id,
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(profile),
+			data: JSON.stringify(mfile),
 			success: function () {
-				profile.params = _this.state.profile.params;
-				_this.setState({profile: profile, edit: false});
+				mfile.params = _this.state.mfile.params;
+				_this.setState({mfile: mfile, edit: false});
 				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 			},
 			error: function(msg) {
@@ -206,20 +206,20 @@ class MediaFilePage extends React.Component {
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/media_files/" + this.state.profile.id + "/params/" + data,
+			url: "/api/media_files/" + this.state.mfile.id + "/params/" + data,
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify({action: "toggle"}),
 			success: function (param) {
 				// console.log("success!!!!", param);
-				const params = _this.state.profile.params.map(function(p) {
+				const params = _this.state.mfile.params.map(function(p) {
 					if (p.id == data) {
 						p.disabled = param.disabled;
 					}
 					return p;
 				});
-				_this.state.profile.params = params;
-				_this.setState({profile: _this.state.profile});
+				_this.state.mfile.params = params;
+				_this.setState({mfile: _this.state.mfile});
 			},
 			error: function(msg) {
 				console.error("toggle params", msg);
@@ -235,23 +235,23 @@ class MediaFilePage extends React.Component {
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/media_files/" + this.state.profile.id + "/params/" + id,
+			url: "/api/media_files/" + this.state.mfile.id + "/params/" + id,
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify({v: obj[id]}),
 			success: function (param) {
 				console.log("success!!!!", param);
-				_this.state.profile.params = _this.state.profile.params.map(function(p) {
+				_this.state.mfile.params = _this.state.mfile.params.map(function(p) {
 					if (p.id == id) {
 						return param;
 					}
 					return p;
 				});
-				_this.setState({profile: _this.state.profile});
+				_this.setState({mfile: _this.state.mfile});
 			},
 			error: function(msg) {
 				console.error("update params", msg);
-				_this.setState({profile: _this.state.profile});
+				_this.setState({mfile: _this.state.mfile});
 			}
 		});
 	}
@@ -267,22 +267,22 @@ class MediaFilePage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/media_files/" + this.props.params.id, "", function(data) {
-			_this.setState({profile: data});
+			_this.setState({mfile: data});
 		}, function(e) {
-			console.log("get profile ERR");
+			console.log("get media files ERR");
 		});
 	}
 
 	render() {
-		const profile = this.state.profile;
+		const mfile = this.state.mfile;
 		const _this = this;
 		let save_btn = "";
 		let err_msg = "";
 		let params = <tr></tr>;
 
-		if (this.state.profile.params && Array.isArray(this.state.profile.params)) {
-			// console.log(this.state.profile.params)
-			params = this.state.profile.params.map(function(param) {
+		if (this.state.mfile.params && Array.isArray(this.state.mfile.params)) {
+			// console.log(this.state.mfile.params)
+			params = this.state.mfile.params.map(function(param) {
 				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
 
 				return <tr key={param.id} className={disabled_class}>
@@ -309,37 +309,22 @@ class MediaFilePage extends React.Component {
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 
-			<h1>{profile.name} <small>{profile.extn}</small></h1>
+			<h1>{mfile.name} <small>{mfile.extn}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newMediaFileForm">
-				<input type="hidden" name="id" defaultValue={profile.id}/>
+				<input type="hidden" name="id" defaultValue={mfile.id}/>
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={profile.name}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={mfile.name}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={profile.description}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={mfile.description}/></Col>
 				</FormGroup>
 			</Form>
 
-			<ButtonGroup className="controls">
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
-			</ButtonGroup>
-
-			<h2>Params</h2>
-			<table className="table">
-				<tbody>
-				<tr>
-					<th>Name</th>
-					<th>Value</th>
-					<th>Enabled</th>
-				</tr>
-				{params}
-				</tbody>
-			</table>
 		</div>
 	}
 }
@@ -377,7 +362,7 @@ class MediaFilesPage extends React.Component {
 
 		$.ajax({
 			type: "DELETE",
-			url: "/api/sip_profiles/" + id,
+			url: "/api/media_files/" + id,
 			success: function () {
 				console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {
@@ -445,7 +430,7 @@ class MediaFilesPage extends React.Component {
 		const rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
+					<td><Link to={`/settings/media_files/${row.id}`}>{row.name}</Link></td>
 					<td>{row.mime}</td>
 					<td>{row.description}</td>
 					<td>{row.file_size}</td>
@@ -479,7 +464,7 @@ class MediaFilesPage extends React.Component {
 			</div>
 
 			<NewMediaFile show={this.state.formShow} onHide={formClose}
-				profiles = {this.state.rows}
+				mfiles = {this.state.rows}
 				data-handleNewMediaFileAdded={this.handleMediaFileAdded.bind(this)}/>
 		</div></Dropzone>
 	}
