@@ -178,9 +178,11 @@ local function method_handler(method, path, func)
 			xtra.response(output)
 		elseif output_type == 'number' then
 			response_start(output)
-			if text then
+			if type(text) == 'table' then
+				xtra.response(utils.json_encode(text))
+			elseif type(text) == 'string' then
 				xtra.response(text)
-			else 
+			else
 				xtra.response("")
 			end
 		elseif output_type == 'table' then

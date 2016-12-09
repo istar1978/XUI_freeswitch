@@ -8,8 +8,11 @@ post('/', function(params)
 
 	print("ctype: "..ctype.." content_length: "..content_length.."\n");
 
-	if content_length == 0 or content_length > 10 * 1024 * 1024 then
-		return 500
+	local max_body_size = 100 * 1024 * 1024
+
+	if content_length == 0 or content_length > max_body_size then
+		print("Max body size " .. max_body_size)
+		return 413, {error = "Max body size " .. max_body_size}
 	end
 
 	local multipart = string.find(ctype, "multipart")
