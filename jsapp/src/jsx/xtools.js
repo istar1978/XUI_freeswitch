@@ -54,7 +54,7 @@ class EditControl extends FormControl {
 			}
 		}
 
-		return <span>{props.defaultValue}</span>
+		return <FormControl.Static>{props.defaultValue}</FormControl.Static>
 	}
 
 }
