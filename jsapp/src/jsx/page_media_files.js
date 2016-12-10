@@ -337,6 +337,7 @@ class MediaFilesPage extends React.Component {
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.onDrop = this.onDrop.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -405,6 +406,7 @@ class MediaFilesPage extends React.Component {
 	}
 
 	onDrop (acceptedFiles, rejectedFiles) {
+		const _this = this;
 		console.log('Accepted files: ', acceptedFiles);
 		console.log('Rejected files: ', rejectedFiles);
 
@@ -417,7 +419,15 @@ class MediaFilesPage extends React.Component {
 		fetch('/api/upload', {
 			method: 'POST',
 			body: data
-		})
+		}).then(function(response) {
+			if (response.status == 200) {
+				return response.json().then(function(mfiles) {
+					_this.setState({rows: mfiles.concat(_this.state.rows)});
+				});
+			} else {
+				console.error(response);
+			}
+		});
 	}
 
 	render() {
