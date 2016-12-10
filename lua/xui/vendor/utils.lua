@@ -116,7 +116,7 @@ utils.tmpname = function(prefix, ext)
 
 	local api = freeswitch.API()
 	local uuid = api:execute("create_uuid")
-	filename = prefix .. os.date("%Y%m%d") .. "-" .. uuid
+	filename = prefix .. os.date("%Y%m%d%H%M%S") .. "-" .. uuid
 	if ext then
 		filename = filename .. "." .. ext
 	end
