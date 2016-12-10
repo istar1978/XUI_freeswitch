@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
+import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col, ProgressBar } from 'react-bootstrap';
 import { Link } from 'react-router';
 // http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
@@ -332,7 +332,7 @@ class MediaFilePage extends React.Component {
 class MediaFilesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false};
+		this.state = { formShow: false, rows: [], danger: false, progress: -1};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -410,12 +410,16 @@ class MediaFilesPage extends React.Component {
 		console.log('Accepted files: ', acceptedFiles);
 		console.log('Rejected files: ', rejectedFiles);
 
+		const formdataSupported = !!window.FormData;
+
 		let data = new FormData()
 
 		for (var i = 0; i < acceptedFiles.length; i++) {
 			data.append('file', acceptedFiles[i])
 		}
 
+/*
+		// fetch is promise based so hard to track upload progress
 		fetch('/api/upload', {
 			method: 'POST',
 			body: data
@@ -428,6 +432,44 @@ class MediaFilesPage extends React.Component {
 				console.error(response);
 			}
 		});
+*/
+
+		let xhr = new XMLHttpRequest();
+		const progressSupported = "upload" in xhr;
+
+		xhr.onload = function(e) {
+			_this.setState({progress: 100});
+			_this.setState({progress: -1});
+		};
+
+		if (progressSupported) {
+			xhr.upload.onprogress = function (e) {
+				// console.log("event", e);
+				if (event.lengthComputable) {
+					let progress = (event.loaded / event.total * 100 | 0);
+					// console.log("complete", progress);
+					_this.setState({progress: progress});
+				}
+			}
+		} else {
+			console.log("XHR upload progress is not supported in your browswer!");
+		}
+
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4) {
+				if (xhr.status == 200) {
+					// console.log('response=',xhr.responseText);
+					let mfiles = $.parseJSON(xhr.responseText);
+					console.log(mfiles);
+					_this.setState({rows: mfiles.concat(_this.state.rows)});
+				} else {
+					// console.error("upload err");
+				}
+			}
+		}
+
+		xhr.open('POST', '/api/upload');
+		xhr.send(data);
 	}
 
 	render() {
@@ -436,6 +478,8 @@ class MediaFilesPage extends React.Component {
 	    const danger = this.state.danger ? "danger" : "";
 
 		const _this = this;
+
+		const progress_bar = this.state.progress < 0 ? null : <ProgressBar now={this.state.progress} />
 
 		const rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
@@ -457,6 +501,9 @@ class MediaFilesPage extends React.Component {
 			</div>
 
 			<h1><T.span text="Media Files"/> <small><T.span text="Drag and drop files here to upload"/></small></h1>
+
+			{progress_bar}
+
 			<div>
 				<table className="table">
 				<tbody>
