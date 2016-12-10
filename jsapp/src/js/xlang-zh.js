@@ -89,6 +89,9 @@ LANGUAGES["zh"] = {
 
 	"Create New SIP Profile": "新建SIP Profile",
 
+	"Media Files": "媒体文件",
+	"Drag and drop files here to upload": "将文件拖到此处上传",
+
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
 };
