@@ -54,22 +54,22 @@ class NewRoute extends React.Component {
 
 		console.log(e.target);
 		switch(e.target.value) {
-			case 'LOCAL':
+			case 'FS_DEST_USER':
 				_this.setState({dest_uuid: null, route_body: null});
 				break;
-			case 'SYSTEM':
+			case 'FS_DEST_SYSTEM':
 				_this.setState({dest_uuid: null, route_body: <FormGroup controlId="formBody">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Body" /></Col>
 					<Col sm={10}> <FormControl componentClass="textarea" name="body" placeholder={"log ERR line1\nlog ERR line2"} /></Col>
 				</FormGroup>});
 				break;
-			case 'IP':
+			case 'FS_DEST_IP':
 				_this.setState({dest_uuid: null, route_body: <FormGroup controlId="formBody">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="IP" /></Col>
 					<Col sm={10}> <FormControl name="body" placeholder="192.168.0.x" /></Col>
 				</FormGroup>});
 				break;
-			case 'GATEWAY':
+			case 'FS_DEST_GATEWAY':
 				$.getJSON("/api/gateways", function(gateways) {
 					const dest_options = gateways.map(function(gateway) {
 						return <option key={gateway.id} value={gateway.id}>{gateway.name} [{gateway.realm} {gateway.username}]</option>;
@@ -83,7 +83,7 @@ class NewRoute extends React.Component {
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
 				break;
-			case 'IVRBLOCK':
+			case 'FS_DEST_IVRBLOCK':
 				$.getJSON("/api/blocks", function(blocks) {
 					const dest_options = blocks.map(function(block) {
 						return <option key={block.id} value={block.id}>{block.name} [{block.description}]</option>;
@@ -168,11 +168,11 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="dest_type" onChange={this.handleDestTypeChange}>
-							<option value="LOCAL">Local User</option>
-							<option value="GATEWAY">Gateway</option>
-							<option value="IP">IP</option>
-							<option value="IVRBLOCK">IVR Block</option>
-							<option value="SYSTEM">System</option>
+							<option value="FS_DEST_USER">Local User</option>
+							<option value="FS_DEST_GATEWAY">Gateway</option>
+							<option value="FS_DEST_IP">IP</option>
+							<option value="FS_DEST_IVRBLOCK">IVR Block</option>
+							<option value="FS_DEST_SYSTEM">System</option>
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -221,22 +221,22 @@ class RoutePage extends React.Component {
 
 		console.log(e.target);
 		switch(e.target.value) {
-			case 'LOCAL':
+			case 'FS_DEST_USER':
 				_this.setState({dest_uuid: null, route_body: null});
 				break;
-			case 'SYSTEM':
+			case 'FS_DEST_SYSTEM':
 				_this.setState({dest_uuid: null, route_body: <FormGroup controlId="formBody">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Body" /></Col>
 					<Col sm={10}> <EditControl edit={_this.state.edit} componentClass="textarea" name="body" defaultValue={this.state.route.body} /></Col>
 				</FormGroup>});
 				break;
-			case 'IP':
+			case 'FS_DEST_IP':
 				_this.setState({dest_uuid: null, route_body: <FormGroup controlId="formBody">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="IP" /></Col>
 					<Col sm={10}> <EditControl edit={_this.state.edit} name="body" defaultValue={this.state.route.body} /></Col>
 				</FormGroup>});
 				break;
-			case 'GATEWAY':
+			case 'FS_DEST_GATEWAY':
 				$.getJSON("/api/gateways", function(gateways) {
 					let current_gateway = null
 					const dest_options = gateways.map(function(gateway) {
@@ -257,7 +257,7 @@ class RoutePage extends React.Component {
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
 				break;
-			case 'IVRBLOCK':
+			case 'FS_DEST_IVRBLOCK':
 				$.getJSON("/api/blocks", function(blocks) {
 					let current_block = null
 					const dest_options = blocks.map(function(block) {
@@ -354,11 +354,11 @@ class RoutePage extends React.Component {
 		});
 
 		const dest_types = [
-			{name:'Local User', value:'LOCAL'},
-			{name:'Gateway', value:'GATEWAY'},
-			{name:'IP', value:'IP'},
-			{name:'System', value:'SYSTEM'},
-			{name:'IVR Block', value:'IVRBLOCK'}
+			{name:'Local User', value:'FS_DEST_USER'},
+			{name:'Gateway', value:'FS_DEST_GATEWAY'},
+			{name:'IP', value:'FS_DEST_IP'},
+			{name:'System', value:'FS_DEST_SYSTEM'},
+			{name:'IVR Block', value:'FS_DEST_IVRBLOCK'}
 		];
 
 		const dest_type_options = dest_types.map(function(row) {
@@ -420,7 +420,7 @@ class RoutePage extends React.Component {
 				<FormGroup controlId="formDestType">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
 					<Col sm={10}>
-						<EditControl edit={this.state.edit} componentClass="select" name="dest_type" options={dest_type_options} defaultValue={route.dest_type} onChange={this.handleDestTypeChange}/>
+						<EditControl edit={this.state.edit} componentClass="select" name="dest_type" options={dest_type_options} text={T.translate(route.dest_type)} defaultValue={route.dest_type} onChange={this.handleDestTypeChange}/>
 					</Col>
 				</FormGroup>
 
@@ -514,9 +514,9 @@ class RoutesPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			let dest = row.body;
 			switch(row.dest_type) {
-				case 'SYSTEM': dest = null; break;
-				case 'GATEWAY': dest = <Link to={`/settings/gateways/${row.dest_uuid}`}>{row.body}</Link>;break;
-				case 'IVRBLOCK': dest = <Link to={`/blocks/${row.dest_uuid}`}>{row.body}</Link>; break;
+				case 'FS_DEST_SYSTEM': dest = null; break;
+				case 'FS_DEST_GATEWAY': dest = <Link to={`/settings/gateways/${row.dest_uuid}`}>{row.body}</Link>;break;
+				case 'FS_DEST_IVRBLOCK': dest = <Link to={`/blocks/${row.dest_uuid}`}>{row.body}</Link>; break;
 				default: break;
 			}
 
@@ -526,7 +526,7 @@ class RoutesPage extends React.Component {
 					<td>{row.prefix}</td>
 					<td><Link to={`/settings/routes/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
-					<td>{row.dest_type}</td>
+					<td><T.span text={row.dest_type}/></td>
 					<td>{dest}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;

@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 
 class EditControl extends FormControl {
@@ -40,7 +41,9 @@ class EditControl extends FormControl {
 
 	render() {
 		const props = Object.assign({}, this.props);
+		const text = props.text;
 		delete props.edit;
+		delete props.text;
 
 		if (this.props.edit) {
 			if (this.props.componentClass == "select") {
@@ -54,7 +57,7 @@ class EditControl extends FormControl {
 			}
 		}
 
-		return <FormControl.Static>{props.defaultValue}</FormControl.Static>
+		return <FormControl.Static>{text ? text : props.defaultValue}</FormControl.Static>
 	}
 
 }

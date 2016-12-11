@@ -53,6 +53,12 @@ LANGUAGES["zh"] = {
 	"Confirm to Delete ?": "确认删除？",
 	"Click me to toggle fast delete mode": "点击以切换快速删除模式",
 
+	FS_DEST_USER: "本地用户",
+	FS_DEST_GATEWAY: "网关",
+	FS_DEST_SYSTEM: "系统",
+	FS_DEST_IP: "IP地址",
+	FS_DEST_IVRBLOCK: "积木",
+
 	"Create New User": "新建用户",
 	"CID Name": "主叫名称",
 	"CID Number": "主叫号码",
@@ -77,6 +83,7 @@ LANGUAGES["zh"] = {
 
 	"Create New Block": "创建新积木",
 	"IVR Blocks": "IVR积木",
+	"IVR Block": "IVR积木",
 	"Blocks": "积木",
 	"Block": "积木",
 	Description: "描述",
