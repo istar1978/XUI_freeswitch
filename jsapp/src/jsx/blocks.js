@@ -266,7 +266,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			window.addEventListener('resize', onresize, false);
 			onresize();
 		} else {
-			$.get('/api/examples', function(obj) {
+			$.get('/api/media_files', function(obj) {
 				console.log("data", obj);
 				_this.fs_file_path_dropdown_data = obj.map(function(row) {
 					return [row.name, row.id + ""];

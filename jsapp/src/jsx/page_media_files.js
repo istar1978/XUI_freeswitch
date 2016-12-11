@@ -334,6 +334,8 @@ class MediaFilesPage extends React.Component {
 		super(props);
 		this.state = { formShow: false, rows: [], danger: false, progress: -1};
 
+		console.log("location", this.props.location.query)
+
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
