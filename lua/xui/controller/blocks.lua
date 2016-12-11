@@ -37,7 +37,7 @@ xdb.bind(xtra.dbh)
 get('/', function(params)
 	n, blocks = xdb.find_all("blocks")
 
-	if (blocks) then
+	if (n > 0) then
 		return blocks
 	else
 		return "[]"

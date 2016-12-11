@@ -37,7 +37,7 @@ xdb.bind(xtra.dbh)
 get('/', function(params)
 	n, mfiles = xdb.find_all("media_files")
 
-	if (mfiles) then
+	if (n > 0) then
 		return mfiles
 	else
 		return "[]"
