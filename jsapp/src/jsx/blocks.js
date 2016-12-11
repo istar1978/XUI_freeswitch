@@ -295,7 +295,6 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			onresize();
 			window.addEventListener('resize', onresize, false);
 
-
 			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
 				_this.setState({block, block});
 
@@ -355,6 +354,43 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			}
 
 		    download("block-" + this.state.block.id + ".lua", toLua());
+		} else if (data == "exportSVG") {
+			const renderSimple = function (workspace) {
+				var aleph = workspace.svgBlockCanvas_.cloneNode(true);
+				aleph.removeAttribute("width");
+				aleph.removeAttribute("height");
+				if (aleph.children[0] !== undefined) {
+					aleph.removeAttribute("transform");
+					aleph.children[0].removeAttribute("transform");
+					aleph.children[0].children[0].removeAttribute("transform");
+					var linkElm = document.createElementNS("http://www.w3.org/1999/xhtml", "style");
+					linkElm.textContent = Blockly.Css.CONTENT.join('') + '\n\n';
+					aleph.insertBefore(linkElm, aleph.firstChild);
+					//$(aleph).find('rect').remove();
+					var bbox = document.getElementsByClassName("blocklyBlockCanvas")[0].getBBox();
+					var xml = new XMLSerializer().serializeToString(aleph);
+					xml = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="'+bbox.width+'" height="'+bbox.height+'" viewBox="0 0 '+bbox.width+' '+bbox.height+'"><rect width="100%" height="100%" fill="white"></rect>'+xml+'</svg>';
+					var data = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(xml)));
+					// var img  = document.createElement("img");
+					// console.log(xml);
+					// img.setAttribute('src', data);
+					// document.body.appendChild(img);
+
+					var pom = document.createElement('a');
+					pom.setAttribute('href', data);
+					pom.setAttribute('download', "block-" + _this.state.block.id + ".svg");
+
+					if (document.createEvent) {
+						var event = document.createEvent('MouseEvents');
+						event.initEvent('click', true, true);
+						pom.dispatchEvent(event);
+					} else {
+						pom.click();
+					}
+				}
+			}
+
+			renderSimple(_this.workspace);
 		}
 	}
 
@@ -369,7 +405,8 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 	render() {
 		return <div id='blocks'>
 			<div className="controls">
-				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export" /></Button>
+				<Button><T.span onClick={this.handleControlClick.bind(this)} data="exportSVG" text="Export SVG" /></Button>
+				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export Lua" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="save" text="Save" /></Button>
 			</div>
 			<h1><T.span text="Blocks"/> {this.state.block.name} <small>{this.state.block.description}</small></h1>
