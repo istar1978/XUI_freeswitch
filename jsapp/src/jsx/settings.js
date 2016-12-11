@@ -25,7 +25,6 @@
  *
  * Seven Du <dujinfang@x-y-t.cn>
  *
- * blocks.jsx - Blocks Page
  *
  */
 
