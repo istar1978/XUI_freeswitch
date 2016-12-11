@@ -14,7 +14,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'watchdog-eve
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'log-auth-failures', 'false', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'forward-unsolicited-mwi-notify', 'false', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'rfc2833-pt', '101', 0, 'false');
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'sip-port', '$${internal_sip_port}', 0, 'false');
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'sip-port', '5060', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'dtmf-duration', '2000', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'inbound-codec-prefs', '$${global_codec_prefs},H263,H264', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'outbound-codec-prefs', '$${global_codec_prefs},H263,H264', 0, 'false');
@@ -132,17 +132,17 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T4', '
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auto-jitterbuffer-msec', '60', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'renegotiate-codec-on-hold', 'true', 0, 'true');
 
-INSERT INTO sip_profiles (name) VALUES ('internal');
-INSERT INTO sip_profiles (name) VALUES ('external');
+INSERT INTO sip_profiles (name) VALUES ('default');
+INSERT INTO sip_profiles (name) VALUES ('public');
 
 INSERT INTO params (realm, k, v, ref_id, disabled)
-	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'internal'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
+	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'default'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
 
 INSERT INTO params (realm, k, v, ref_id, disabled)
-	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'external'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
+	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'public'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
 
-UPDATE params set v = '$${external_sip_port}'
-	WHERE k = 'sip-port' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'external');
+UPDATE params set v = '5080'
+	WHERE k = 'sip-port' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'public');
 
 UPDATE params set v = 'false'
-	WHERE k = 'auth-calls' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'external');
+	WHERE k = 'auth-calls' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'public');

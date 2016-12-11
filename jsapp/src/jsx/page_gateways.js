@@ -388,29 +388,29 @@ class GatewaysPage extends React.Component {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile external register " + name);
+		fsAPI("sofia", "profile public register " + name);
 	}
 
 	handleUnreg(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile external unregister " + name);
+		fsAPI("sofia", "profile public unregister " + name);
 	}
 
 	handleStart(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile external startgw " + name);
-		fsAPI("sofia", "profile external rescan");
+		fsAPI("sofia", "profile public startgw " + name);
+		fsAPI("sofia", "profile public rescan");
 	}
 
 	handleStop(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile external killgw " + name);
+		fsAPI("sofia", "profile public killgw " + name);
 	}
 
 	handleGatewayAdded(route) {

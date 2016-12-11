@@ -80,8 +80,8 @@ function build_profile(profile)
 	local cond = {realm = 'sip_profile', disabled = 'false', ref_id = profile.id}
 	local gateways = ""
 
-	-- only works on external for now
-	if profile.name == "external" then gateways = build_gateways() end
+	-- only works on public for now
+	if profile.name == "public" then gateways = build_gateways() end
 
 	xdb.find_by_cond("params", cond, 'id', function(row)
 		settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'
