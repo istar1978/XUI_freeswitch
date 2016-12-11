@@ -5,9 +5,9 @@
     <!-- seconds to wait before hanging up a disconnected channel -->
     <!-- <param name="detach-timeout-sec" value="120"/> -->
     <!-- enable broadcasting all FreeSWITCH events in Verto -->
-    <!-- <param name="enable-fs-events" value="false"/> -->
+    <param name="enable-fs-events" value="true"/>
     <!-- enable broadcasting FreeSWITCH presence events in Verto -->
-    <!-- <param name="enable-presence" value="true"/> -->
+    <param name="enable-presence" value="true"/>
   </settings>
 
   <profiles>
@@ -33,7 +33,25 @@
       <param name="apply-candidate-acl" value="rfc1918.auto"/>
       <param name="apply-candidate-acl" value="any_v4.auto"/>
       <param name="timer-name" value="soft"/>
-      
+
+      <vhosts>
+        <vhost domain="localhost">
+          <param name="alias" value="seven.local freeswitch.org"/>
+          <param name="root" value="$${base_dir}/xui/www"/>
+          <param name="script-root" value="$${base_dir}/xui/lua/xui/vendor"/>
+
+          <param name="index" value="index.html"/>
+<!--
+          <param name="auth-realm" value="FreeSWITCH"/>
+          <param name="auth-user" value="freeswitch"/>
+          <param name="auth-pass" value="rocks"/>
+-->
+          <rewrites>
+            <rule expression="^/api" value="/__xtra_init__.lua"/>
+          </rewrites>
+        </vhost>
+
+      </vhosts>
     </profile>
 
     <profile name="default-v6">

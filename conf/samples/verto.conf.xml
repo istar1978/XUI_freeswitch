@@ -26,8 +26,8 @@
       <vhosts>
         <vhost domain="localhost">
           <param name="alias" value="seven.local freeswitch.org"/>
-          <param name="root" value="/Users/dujinfang/workspace/freeswitch/xui/www"/>
-          <param name="script-root" value="/Users/dujinfang/workspace/freeswitch/xui/lua/xui/vendor"/>
+          <param name="root" value="$${base_dir}/xui/www"/>
+          <param name="script-root" value="$${base_dir}/xui/lua/xui/vendor"/>
           <param name="index" value="index.html"/>
 <!--
           <param name="auth-realm" value="FreeSWITCH"/>
