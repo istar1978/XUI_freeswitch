@@ -5,7 +5,18 @@ local vars = ""
 local pars = ""
 local found = false
 
--- freeswitch.consoleLog("INFO", "purpose" .. purpose)
+if purpose then freeswitch.consoleLog("INFO", "purpose:" .. purpose) end
+
+if purpose == "network-list" then
+	XML_STRING = [[<domain name="]] .. domain .. [[">]]
+
+	xdb.find_by_cond("users", "user_cidr IS NOT NULL AND user_cidr <> ''", nil, function(row)
+		XML_STRING = XML_STRING .. [[<user id="]] .. row.extn .. [[" cidr="]] .. row.user_cidr .. [["/>]]
+	end)
+
+	XML_STRING = XML_STRING .. [[</domain>]]
+	return XML_STRING
+end
 
 if user then
 	xdb.find_by_cond("users", {extn = user}, nil, function(row)

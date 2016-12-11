@@ -56,6 +56,7 @@ end
 -- generate condition string from table in kv pairs
 local function _cond_string(kvp)
 	if not kvp then return nil end
+	if (type(kvp) == "string") then return " WHERE " .. kvp end
 
 	local str = ""
 	local and_str = ""

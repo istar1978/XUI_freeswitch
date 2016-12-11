@@ -117,7 +117,7 @@ class NewUser extends React.Component {
 					<Col sm={10}><FormControl type="input" name="cid_name" placeholder="1000" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formLength">
+				<FormGroup controlId="formCidNumber">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" /></Col>
 					<Col sm={10}><FormControl type="input" name="cid_number" placeholder="11" /></Col>
 				</FormGroup>
@@ -251,9 +251,14 @@ class UserPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="cid_name" defaultValue={user.cid_name}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formLength">
+				<FormGroup controlId="formCidNumber">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="cid_number" defaultValue={user.cid_number}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formCIDR">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CIDR" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="user_cidr" defaultValue={user.user_cidr}/></Col>
 				</FormGroup>
 			</Form>
 		</div>

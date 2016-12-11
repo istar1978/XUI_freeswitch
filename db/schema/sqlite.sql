@@ -29,6 +29,7 @@ CREATE TABLE users (
 	domain VARCHAR,
 	password VARCHAR,
 	vm_password VARCHAR,
+	user_cidr VARCHAR,
 	type VARCHAR,
 	disabled VARCHAR,
 	created_epoch INTEGER,
