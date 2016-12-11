@@ -17,9 +17,15 @@ local function csplit(str, sep)
 	return ret
 end
 
+function nilstr(s)
+	print(s)
+	if not s then return '' end
+	return s
+end
+
 function build_actions(t)
 	for k,v in pairs(t) do
-		actions = actions .. '<action application="' .. v.app .. '" data="' .. v.data .. '"/>'
+		actions = actions .. '<action application="' .. v.app .. '" data="' .. nilstr(v.data) .. '"/>'
 	end
 end
 
@@ -40,7 +46,7 @@ xdb.find_by_sql(sql, function(row)
 		table.insert(actions_table, {app = "set", data = "effective_caller_id_number=" .. sdnc_number})
 	end
 
-	if (row.dest_type == 'SYSTEM') then
+	if (row.dest_type == 'FS_DEST_SYSTEM') then
 		lines = csplit(row.body, "\n")
 		for k, v in pairs(lines) do
 			local t = csplit(v, ' ')
@@ -50,15 +56,15 @@ xdb.find_by_sql(sql, function(row)
 				table.insert(actions_table, {app = app,  data = data})
 			end
 		end
-	elseif (row.dest_type == 'LOCAL') then
+	elseif (row.dest_type == 'FS_DEST_USER') then
 		table.insert(actions_table, {app = "bridge", data = "user/" .. dest})
-	elseif (row.dest_type == 'GATEWAY') then
+	elseif (row.dest_type == 'FS_DEST_GATEWAY') then
 		table.insert(actions_table, {app = "bridge", data = "sofia/gateway/" .. row.body .. "/" .. dest})
-	elseif (row.dest_type == 'IP') then
+	elseif (row.dest_type == 'FS_DEST_IP') then
 		table.insert(actions_table, {app = "bridge", data = "sofia/internal/" .. dest .. "@" .. row.body})
-	elseif (row.dest_type == 'IVRBLOCK') then
+	elseif (row.dest_type == 'FS_DEST_IVRBLOCK') then
 		local block_prefix = config.block_path .. "/blocks-"
-		table.insert(actions_table, {app = "lua", block_prefix .. row.dest_uuid .. ".lua"})
+		table.insert(actions_table, {app = "lua", data = block_prefix .. row.dest_uuid .. ".lua"})
 	end
 end)
 

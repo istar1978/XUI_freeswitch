@@ -269,7 +269,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			$.get('/api/media_files', function(obj) {
 				console.log("data", obj);
 				_this.fs_file_path_dropdown_data = obj.map(function(row) {
-					return [row.name, row.id + ""];
+					return [row.name, row.abs_path];
 				});
 			});
 
