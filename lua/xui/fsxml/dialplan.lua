@@ -35,8 +35,8 @@ xdb.find_by_sql(sql, function(row)
 	if row.sdnc and not (row.sdnc == '') then
 		local cid_number = params:getHeader("Caller-Caller-ID-Number")
 		local sdnc_number = utils.apply_dnc(cid_number, row.sdnc)
-		table.insert(actions_table, {app = "set", data = "srnc=" .. row.sdnc})
-		table.insert(actions_table, {app = "set", data = "srnc_number=" .. sdnc_number})
+		table.insert(actions_table, {app = "set", data = "sdnc=" .. row.sdnc})
+		table.insert(actions_table, {app = "set", data = "sdnc_number=" .. sdnc_number})
 		table.insert(actions_table, {app = "set", data = "effective_caller_id_number=" .. sdnc_number})
 	end
 
@@ -57,7 +57,8 @@ xdb.find_by_sql(sql, function(row)
 	elseif (row.dest_type == 'IP') then
 		table.insert(actions_table, {app = "bridge", data = "sofia/internal/" .. dest .. "@" .. row.body})
 	elseif (row.dest_type == 'IVRBLOCK') then
-		table.insert(actions_table, {app = "lua", data = "/tmp/blocks-" .. row.body .. ".lua"})
+		local block_prefix = config.block_path .. "/blocks-"
+		table.insert(actions_table, {app = "lua", block_prefix .. row.dest_uuid .. ".lua"})
 	end
 end)
 

@@ -2,6 +2,8 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 
+local block_prefix = config.block_path .. "/blocks-"
+
 get('/', function(params)
 	n, routes = xdb.find_all("routes")
 	if (n > 0)	then
@@ -23,6 +25,14 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
+	if params.request.dest_type == 'GATEWAY' then
+		gw = xdb.find("gateways", params.request.dest_uuid)
+		params.request.body = gw.name
+	elseif params.request.dest_type == 'IVRBLOCK' then
+		block = xdb.find("blocks", params.request.dest_uuid)
+		params.request.body = block.name
+	end
+
 	ret = xdb.create_return_id('routes', params.request)
 
 	if ret then
@@ -33,6 +43,14 @@ post('/', function(params)
 end)
 
 put('/:id', function(params)
+	if params.request.dest_type == 'GATEWAY' then
+		gw = xdb.find("gateways", params.request.dest_uuid)
+		params.request.body = gw.name
+	elseif params.request.dest_type == 'IVRBLOCK' then
+		block = xdb.find("blocks", params.request.dest_uuid)
+		params.request.body = block.name
+	end
+
 	ret = xdb.update("routes", params.request)
 	if ret then
 		return 200, "{}"

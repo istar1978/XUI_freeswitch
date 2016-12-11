@@ -1,4 +1,4 @@
-local prefix = "/tmp/blocks-"
+local prefix = config.block_path .. "/blocks-"
 require 'xdb'
 xdb.bind(xtra.dbh)
 
