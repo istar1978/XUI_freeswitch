@@ -1,0 +1,5 @@
+<configuration name="modules.conf" description="Modules">
+  <modules>
+    <X-PRE-PROCESS cmd="include" data="../modules/*.xml"/>
+  </modules>
+</configuration>
