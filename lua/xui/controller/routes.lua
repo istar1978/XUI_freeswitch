@@ -57,7 +57,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	if params.request.dest_type == 'GATEWAY' then
+	if params.request.dest_type == 'FS_DEST_GATEWAY' then
 		gw = xdb.find("gateways", params.request.dest_uuid)
 		params.request.body = gw.name
 	elseif params.request.dest_type == 'IVRBLOCK' then
@@ -75,7 +75,7 @@ post('/', function(params)
 end)
 
 put('/:id', function(params)
-	if params.request.dest_type == 'GATEWAY' then
+	if params.request.dest_type == 'FS_DEST_GATEWAY' then
 		gw = xdb.find("gateways", params.request.dest_uuid)
 		params.request.body = gw.name
 	elseif params.request.dest_type == 'IVRBLOCK' then
