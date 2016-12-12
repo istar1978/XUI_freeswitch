@@ -3,23 +3,22 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	local tabs = {}
-	local tab = {id= 1, realm = 'name',key = 'key1'}
+	n, dicts = xdb.find_all("dicts")
 
-	table.insert(tabs, tab)
-
-	tab = {id= 2,realm = 'name2', key = 'name'}
-	table.insert(tabs, tab)
-
-	tab = {id= 3, value = 'name'}
-	table.insert(tabs, tab)
-
-	return tabs
+	if (n > 0) then
+		return dicts
+	else
+		return "[]"
+	end
 end)
 
 get('/:id', function(params)
-	local tab = {id= params.id}
-	return tab
+	dict = xdb.find("dicts", params.id)
+	if dict then
+		return dict
+	else
+		return 404
+	end
 end)
 
 put('/:id', function(params)
@@ -37,10 +36,10 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = xdb.create('dicts', params.request)
+	ret = xdb.create_return_id('dicts', params.request)
 
-	if ret == 1 then
-		return 200, "{}"
+	if ret then
+		return {id = ret}
 	else
 		return 500, "{}"
 	end

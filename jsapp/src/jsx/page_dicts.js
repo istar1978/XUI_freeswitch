@@ -56,7 +56,7 @@ class NewDict extends React.Component {
 		var dt = form2json('#newDictForm');
 		console.log("dt", dt);
 
-		if (!dt.realm || !dt.key) {
+		if (!dt.realm || !dt.k) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
@@ -93,22 +93,22 @@ class NewDict extends React.Component {
 
 				<FormGroup controlId="formKey">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Key" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="key" placeholder="key" /></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="key" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formValue">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Value"/></Col>
-					<Col sm={10}><FormControl type="input" name="value" placeholder="value" /></Col>
+					<Col sm={10}><FormControl type="input" name="v" placeholder="value" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
-					<Col sm={10}><FormControl type="input" name="description" placeholder="description" /></Col>
+					<Col sm={10}><FormControl type="input" name="d" placeholder="description" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formOrder">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Order"/></Col>
-					<Col sm={10}><FormControl type="input" name="order" placeholder="order" /></Col>
+					<Col sm={10}><FormControl type="input" name="o" defaultValue="0" /></Col>
 				</FormGroup>
 
 
@@ -153,7 +153,7 @@ class DictPage extends React.Component {
 		var dt = form2json('#newDictForm');
 		console.log("dt", dt);
 
-		if (!dt.realm || !dt.key) {
+		if (!dt.realm || !dt.k) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
@@ -169,7 +169,7 @@ class DictPage extends React.Component {
 				_this.setState({dt: dt, errmsg: {key: "Saved at", time: Date()}})
 			},
 			error: function(msg) {
-				console.error("route", msg);
+				console.error("dict", msg);
 			}
 		});
 	}
@@ -220,7 +220,7 @@ class DictPage extends React.Component {
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 
-			<h1>{dt.realm} <small>{dt.extn}</small></h1>
+			<h1>{dt.realm} <small>{dt.k}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newDictForm">
@@ -232,12 +232,12 @@ class DictPage extends React.Component {
 
 				<FormGroup controlId="formKey">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Key" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="key" defaultValue={dt.key}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="k" defaultValue={dt.k}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formValue">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Value"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="value" defaultValue={dt.value}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="v" defaultValue={dt.v}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
@@ -247,9 +247,8 @@ class DictPage extends React.Component {
 
 				<FormGroup controlId="formOrder">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Order"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="order" defaultValue={dt.order}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="o" defaultValue={dt.o}/></Col>
 				</FormGroup>
-
 
 			</Form>
 		</div>
@@ -341,11 +340,11 @@ class DictsPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/settings/dicts/${row.id}`}>{row.realm}</Link></td>
-					<td>{row.key}</td>
-					<td>{row.value}</td>
-					<td>{row.description}</td>
-					<td>{row.order}</td>
+					<td>{row.realm}</td>
+					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
+					<td>{row.v}</td>
+					<td>{row.d}</td>
+					<td>{row.o}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})

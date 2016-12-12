@@ -94,12 +94,12 @@ LANGUAGES["zh"] = {
 
 	Gateways: "网关",
 	Gateway: "网关",
-
+	Server: "服务器",
 	Username: "用户名",
 	Register: "注册",
 
-	Realm: "服务器",
-	Key: "键值",
+	Realm: "域",
+	Key: "键",
 	Value: "值",
 	Description: "描述",
 	Order: "排序",
@@ -115,7 +115,7 @@ LANGUAGES["zh"] = {
 	"Media Files": "媒体文件",
 	"Drag and drop files here to upload": "将文件拖到此处上传",
 	"Create New Dict": "新建字典",
-	"Dicts": "字典",
+	"Dicts": "数据字典",
 	"Create New Gateway": "新建网关",
 	Control: "控制",
 	Template: "模板",
