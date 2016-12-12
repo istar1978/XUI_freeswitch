@@ -88,7 +88,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="fsConsoleLog">
 	      <value name="args">
           <shadow type="text">
-            <field name="blah">xx</field>
+            <field name="TEXT"></field>
           </shadow>
         </value>
 	</block>

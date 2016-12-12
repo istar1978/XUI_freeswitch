@@ -224,7 +224,7 @@ Blockly.Blocks['fsConsoleLog'] = {
     init: function() {
         this.appendValueInput("args")
             .setCheck(["String", "Number"])
-            .appendField("Log")
+            .appendField(Blockly.Msg.FS_BLOCK_LOG)
             .appendField(new Blockly.FieldDropdown([
                 ["7-Debug", "debug"],
                 ["6-Info", "info"],
@@ -234,7 +234,7 @@ Blockly.Blocks['fsConsoleLog'] = {
                 ["2-Critical", "crit"],
                 ["1-Alert", "alert"],
                 ["0-Console", "console"]]), "Level")
-            .appendField("Text");
+            .appendField(Blockly.Msg.FS_BLOCK_LOG_TEXT);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
