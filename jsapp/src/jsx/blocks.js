@@ -48,25 +48,50 @@ class BlockPage extends React.Component {
 		var _this = this;
 
 		var onresize = function() {
-			var div = $('#main');
+			var blocklyDiv = $('#blocks');
+			var blocklyArea = $('#main');
 
-			if (div && div.offset()) {
-				div.height(window.innerHeight - div.offset().top);
-				div.width(window.innerWidth - 100);
+			// Position blocklyDiv over blocklyArea.
+			if (blocklyDiv.style) {
+				var element = blocklyArea;
+				var x = 0;
+				var y = 0;
+				do {
+					x += element.offsetLeft;
+					y += element.offsetTop;
+					element = element.offsetParent;
+				} while (element);
+
+				blocklyDiv.style.left = x + 'px';
+				blocklyDiv.style.top = y + 'px';
+				blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+				blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+			} else if (blocklyDiv.offset) {
+				console.log('offset');
+				console.log("offset", blocklyArea.offsetWidth);
+				console.log("offset", blocklyArea.offsetHeight);
+				blocklyDiv.width(window.innerWidth - 40);
+				blocklyDiv.height(window.innerHeight - blocklyDiv.offset().top - 100);
 			}
 		};
 
 		var load_toolbox = function() {
 
-var toolbox = `<xml id='toolbox' style='display:none'/>
-<category name="IVR">
+var toolbox = `<xml id="toolbox" style="display: none">
+<category name="IVR" colour="0">
 	<block type="fsStart"></block>
 	<block type="IVR"></block>
 	<block type="IVREntry"></block>
 </category>
 
-<category name="FreeSWITCH">
-	<block type="fsConsoleLog"></block>
+<category name="FreeSWITCH" colour="10">
+	<block type="fsConsoleLog">
+	      <value name="args">
+          <shadow type="text">
+            <field name="blah">xx</field>
+          </shadow>
+        </value>
+	</block>
 	<block type="fsSetTTS"></block>
 	<block type="fsFilePath"></block>
 	<block type="fsSessionAnswer"></block>
@@ -78,7 +103,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 	<block type="fsSessionExecute"></block>
 </category>
 
-<category name="FSDB">
+<category name="FSDB" colour="20">
 	<block type="fsDBH"></block>
 	<block type="fsDBHQuery"></block>
 	<block type="fsDBHRow"></block>
@@ -86,141 +111,304 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 
 <sep></sep>
 
-<category name="Logic">
-	<category name="If">
-		<block type="controls_if"></block>
-		<block type="controls_if">
-		<mutation else="1"></mutation>
-	</block>
-	<block type="controls_if">
-		<mutation elseif="1" else="1"></mutation>
-	</block>
-	</category>
-
-	<category name="Boolean">
-		<block type="logic_compare"></block>
-		<block type="logic_operation"></block>
-		<block type="logic_negate"></block>
-		<block type="logic_boolean"></block>
-		<block type="logic_null"></block>
-		<block type="logic_ternary"></block>
-	</category>
+<category name="Logic" colour="210">
+	<block type="controls_if"></block>
+	<block type="logic_compare"></block>
+	<block type="logic_operation"></block>
+	<block type="logic_negate"></block>
+	<block type="logic_boolean"></block>
+	<block type="logic_null"></block>
+	<block type="logic_ternary"></block>
 </category>
 
-<category name="Loops">
+<category name="Loops" colour="120">
 	<block type="controls_repeat_ext">
 		<value name="TIMES">
-			<block type="math_number">
-				<field name="NUM">10</field>
-			</block>
+		<shadow type="math_number">
+			<field name="NUM">10</field>
+		</shadow>
 		</value>
 	</block>
 	<block type="controls_whileUntil"></block>
 	<block type="controls_for">
-		<field name="VAR">i</field>
-			<value name="FROM">
-				<block type="math_number">
-					<field name="NUM">1</field>
-				</block>
-			</value>
-			<value name="TO">
-				<block type="math_number">
-					<field name="NUM">10</field>
-				</block>
-			</value>
-			<value name="BY">
-			<block type="math_number">
+		<value name="FROM">
+			<shadow type="math_number">
 				<field name="NUM">1</field>
-			</block>
+			</shadow>
+		</value>
+		<value name="TO">
+			<shadow type="math_number">
+				<field name="NUM">10</field>
+			</shadow>
+		</value>
+		<value name="BY">
+			<shadow type="math_number">
+				<field name="NUM">1</field>
+			</shadow>
 		</value>
 	</block>
 	<block type="controls_forEach"></block>
 	<block type="controls_flow_statements"></block>
 </category>
 
-<category name="Math">
+<category name="Math" colour="230">
 	<block type="math_number"></block>
-	<block type="math_arithmetic"></block>
-	<block type="math_single"></block>
-	<block type="math_trig"></block>
-	<block type="math_constant"></block>
-	<block type="math_number_property"></block>
-	<block type="math_change">
-		<value name="DELTA">
-			<block type="math_number">
+	<block type="math_arithmetic">
+		<value name="A">
+			<shadow type="math_number">
 				<field name="NUM">1</field>
-			</block>
+			</shadow>
+		</value>
+		<value name="B">
+			<shadow type="math_number">
+				<field name="NUM">1</field>
+			</shadow>
 		</value>
 	</block>
-	<block type="math_round"></block>
-	<block type="math_on_list"></block>
-	<block type="math_modulo"></block>
+	<block type="math_single">
+		<value name="NUM">
+			<shadow type="math_number">
+				<field name="NUM">9</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="math_trig">
+		<value name="NUM">
+			<shadow type="math_number">
+				<field name="NUM">45</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="math_constant"></block>
+	<block type="math_number_property">
+		<value name="NUMBER_TO_CHECK">
+			<shadow type="math_number">
+				<field name="NUM">0</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="math_round">
+		<value name="NUM">
+			<shadow type="math_number">
+				<field name="NUM">3.1</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="math_on_list">	</block>
+	<block type="math_modulo">
+		<value name="DIVIDEND">
+			<shadow type="math_number">
+				<field name="NUM">64</field>
+			</shadow>
+		</value>
+		<value name="DIVISOR">
+			<shadow type="math_number">
+				<field name="NUM">10</field>
+			</shadow>
+		</value>
+	</block>
 	<block type="math_constrain">
+		<value name="VALUE">
+			<shadow type="math_number">
+				<field name="NUM">50</field>
+			</shadow>
+		</value>
 		<value name="LOW">
-			<block type="math_number">
+			<shadow type="math_number">
 				<field name="NUM">1</field>
-			</block>
+			</shadow>
 		</value>
 		<value name="HIGH">
-			<block type="math_number">
+			<shadow type="math_number">
 				<field name="NUM">100</field>
-			</block>
+			</shadow>
 		</value>
 	</block>
 	<block type="math_random_int">
 		<value name="FROM">
-			<block type="math_number">
+			<shadow type="math_number">
 				<field name="NUM">1</field>
-			</block>
+			</shadow>
 		</value>
 		<value name="TO">
-			<block type="math_number">
+			<shadow type="math_number">
 				<field name="NUM">100</field>
-			</block>
+			</shadow>
 		</value>
 	</block>
-	<block type="math_random_float"></block>
+	<block type="math_random_float">	</block>
 </category>
-
-<category name="Lists">
-		<block type="lists_create_empty"></block>
-		<block type="lists_create_with"></block>
-		<block type="lists_repeat">
-			<value name="NUM">
-				<block type="math_number">
-					<field name="NUM">5</field>
-				</block>
-			</value>
-		</block>
-		<block type="lists_length"></block>
-		<block type="lists_isEmpty"></block>
-		<block type="lists_indexOf"></block>
-		<block type="lists_getIndex"></block>
-		<block type="lists_setIndex"></block>
+<category name="Text" colour="160">
+	<block type="text">	</block>
+	<block type="text_join">	</block>
+	<block type="text_append">
+		<value name="TEXT">
+			<shadow type="text">			</shadow>
+		</value>
+	</block>
+	<block type="text_length">
+		<value name="VALUE">
+			<shadow type="text">
+				<field name="TEXT">abc</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="text_isEmpty">
+		<value name="VALUE">
+			<shadow type="text">
+				<field name="TEXT"></field>
+			</shadow>
+		</value>
+	</block>
+	<block type="text_indexOf">
+		<value name="VALUE">
+	<block type="variables_get">
+				<field name="VAR">{textVariable}</field>
+	</block>
+		</value>
+		<value name="FIND">
+			<shadow type="text">
+				<field name="TEXT">abc</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="text_charAt">
+		<value name="VALUE">
+	<block type="variables_get">
+				<field name="VAR">{textVariable}</field>
+	</block>
+		</value>
+	</block>
+	<block type="text_getSubstring">
+		<value name="STRING">
+	<block type="variables_get">
+				<field name="VAR">{textVariable}</field>
+	</block>
+		</value>
+	</block>
+	<block type="text_changeCase">
+		<value name="TEXT">
+			<shadow type="text">
+				<field name="TEXT">abc</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="text_trim">
+		<value name="TEXT">
+			<shadow type="text">
+				<field name="TEXT">abc</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="text_print">
+		<value name="TEXT">
+			<shadow type="text">
+				<field name="TEXT">abc</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="text_prompt_ext">
+		<value name="TEXT">
+			<shadow type="text">
+				<field name="TEXT">abc</field>
+			</shadow>
+		</value>
+	</block>
 </category>
-
-<category name="Variables" custom="VARIABLE"></category>
-
-<category name="Functions" custom="PROCEDURE"></category>
-
-<category name="Text">
-	<block type="text"></block>
-	<block type="text_join"></block>
-	<block type="text_create_join_container"></block>
-	<block type="text_create_join_item"></block>
-	<block type="text_append"></block>
-	<block type="text_length"></block>
-	<block type="text_isEmpty"></block>
-	<block type="text_indexOf"></block>
-	<block type="text_charAt"></block>
-	<block type="text_getSubstring"></block>
-	<block type="text_changeCase"></block>
-	<block type="text_trim"></block>
-	<block type="text_print"></block>
-	<block type="text_prompt_ext"></block>
-	<block type="text_prompt"></block>
+<category name="Lists" colour="260">
+	<block type="lists_create_with">
+<mutation items="0"></mutation>
+	</block>
+	<block type="lists_create_with">	</block>
+	<block type="lists_repeat">
+		<value name="NUM">
+			<shadow type="math_number">
+				<field name="NUM">5</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="lists_length">	</block>
+	<block type="lists_isEmpty">	</block>
+	<block type="lists_indexOf">
+		<value name="VALUE">
+	<block type="variables_get">
+				<field name="VAR">{listVariable}</field>
+	</block>
+		</value>
+	</block>
+	<block type="lists_getIndex">
+		<value name="VALUE">
+	<block type="variables_get">
+				<field name="VAR">{listVariable}</field>
+	</block>
+		</value>
+	</block>
+	<block type="lists_setIndex">
+		<value name="LIST">
+	<block type="variables_get">
+				<field name="VAR">{listVariable}</field>
+	</block>
+		</value>
+	</block>
+	<block type="lists_getSublist">
+		<value name="LIST">
+	<block type="variables_get">
+				<field name="VAR">{listVariable}</field>
+	</block>
+		</value>
+	</block>
+	<block type="lists_split">
+		<value name="DELIM">
+			<shadow type="text">
+				<field name="TEXT">,</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="lists_sort">	</block>
 </category>
-</xml>`
+<category name="Colour" colour="20">
+	<block type="colour_picker">	</block>
+	<block type="colour_random">	</block>
+	<block type="colour_rgb">
+		<value name="RED">
+			<shadow type="math_number">
+				<field name="NUM">100</field>
+			</shadow>
+		</value>
+		<value name="GREEN">
+			<shadow type="math_number">
+				<field name="NUM">50</field>
+			</shadow>
+		</value>
+		<value name="BLUE">
+			<shadow type="math_number">
+				<field name="NUM">0</field>
+			</shadow>
+		</value>
+	</block>
+	<block type="colour_blend">
+		<value name="COLOUR1">
+			<shadow type="colour_picker">
+				<field name="COLOUR">#ff0000</field>
+			</shadow>
+		</value>
+		<value name="COLOUR2">
+			<shadow type="colour_picker">
+				<field name="COLOUR">#3333ff</field>
+			</shadow>
+		</value>
+		<value name="RATIO">
+			<shadow type="math_number">
+				<field name="NUM">0.5</field>
+			</shadow>
+		</value>
+	</block>
+</category>
+<sep></sep>
+<category name="Variables" colour="330" custom="VARIABLE"></category>
+<category name="Functions" colour="290" custom="PROCEDURE"></category>
+</xml>
+`
 
 			var xml = document.createElement('div');
 			xml.innerHTML = toolbox;
@@ -265,6 +453,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			setTimeout(init_blockly, 1000);
 			window.addEventListener('resize', onresize, false);
 			onresize();
+			// Blockly.svgResize(workspace);
 		} else {
 			$.get('/api/media_files', function(obj) {
 				console.log("data", obj);
@@ -286,6 +475,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 					this.setInputsInline(true);
 					this.setOutput(true, "String");
 					this.setTooltip('');
+					this.setColour(0);
 					this.setHelpUrl('http://www.example.com/');
 				}
 			};
@@ -294,6 +484,7 @@ var toolbox = `<xml id='toolbox' style='display:none'/>
 			_this.workspace = init_blockly();
 			onresize();
 			window.addEventListener('resize', onresize, false);
+			Blockly.svgResize(_this.workspace);
 
 			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
 				_this.setState({block, block});
