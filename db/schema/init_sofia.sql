@@ -90,7 +90,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'disable-tran
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'disable-register', 'true', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'NDLB-broken-auth-hash', 'true', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'NDLB-received-in-nat-reg-contact', 'true', 0, 'true');
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auth-calls', '$${internal_auth_calls}', 0, 'false');
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auth-calls', 'true', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'inbound-reg-force-matching-username', 'true', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auth-all-packets', 'false', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'ext-rtp-ip', 'auto-nat', 0, 'false');
