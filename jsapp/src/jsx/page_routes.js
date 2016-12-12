@@ -500,7 +500,7 @@ class RoutesPage extends React.Component {
 
 	handleRouteAdded(route) {
 		var rows = this.state.rows;
-		rows.push(route);
+		rows.unshift(route);
 		this.setState({rows: rows, formShow: false});
     }
 

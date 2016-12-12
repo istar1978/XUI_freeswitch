@@ -66,10 +66,10 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = xdb.create('users', params.request)
+	ret = xdb.create_return_id('users', params.request)
 
-	if ret == 1 then
-		return 200, "{}"
+	if ret then
+		return {id = ret}
 	else
 		return 500, "{}"
 	end

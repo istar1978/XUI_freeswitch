@@ -42,7 +42,6 @@ class NewUser extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.last_id = 0;
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
@@ -67,9 +66,8 @@ class NewUser extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(user),
-			success: function () {
-				_this.last_id++;
-				user.id = "NEW" + _this.last_id;
+			success: function (obj) {
+				user.id = obj.id;
 				_this.props["data-handleNewUserAdded"](user);
 			},
 			error: function(msg) {
@@ -334,9 +332,9 @@ class UsersPage extends React.Component {
 	handleFSEvent(v, e) {
 	}
 
-	handleUserAdded(route) {
+	handleUserAdded(user) {
 		var rows = this.state.rows;
-		rows.push(route);
+		rows.unshift(user);
 		this.setState({rows: rows, formShow: false});
 	}
 
