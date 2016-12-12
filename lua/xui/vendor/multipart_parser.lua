@@ -49,9 +49,8 @@ multipart_parser = function(boundary, callback)
 			if (not bend) then
 				-- waiting for boundary
 
-				parser.buffer = parser.buffer .. buffer
+				parser.write_file(parser, buffer)
 				print("get 1 state=" .. parser.state)
-				print(string.len(parser.buffer))
 				return 0
 			end
 
@@ -77,14 +76,15 @@ multipart_parser = function(boundary, callback)
 				local headers = string.sub(buffer, header_pos, hend)
 				local part = parser.parse_header(parser, headers)
 
+				parser.create_file(parser)
+
 				header_pos = hend + 1
 
 				bstart, bend = string.find(buffer, boundary, header_pos)
 
 				if (not bend) then
 					print("get 4 state=" .. parser.state);
-					parser.buffer = string.sub(buffer, header_pos)
-					break
+					parser.write_file(parser, string.sub(buffer, header_pos))
 				else
 					-- The data will be saved in next loop, so do nothing here.
 					bstart, bend = string.find(buffer, boundary, header_pos)
@@ -92,10 +92,8 @@ multipart_parser = function(boundary, callback)
 			elseif parser.state == 1 then
 				parser.state = 0
 
-				local data = string.sub(buffer, header_pos, bstart - 1)
-				parser.buffer = parser.buffer .. data
-
-				print(string.len(parser.buffer))
+				-- local data = string.sub(buffer, header_pos, bstart - 1)
+				parser.write_file(parser, string.sub(buffer, header_pos, bstart - 1))
 
 				parser.finish_parse(parser)
 			end
@@ -143,34 +141,49 @@ multipart_parser = function(boundary, callback)
 		-- return 2
 	end
 
+	parser.create_file = function (parser)
+		local abs_filename = utils.tmpname('upload-', parser.part.ext)
+		parser.file = assert(io.open(abs_filename, "w"))
+
+		parser.part.abs_filename = abs_filename
+
+		print("file_name=" .. parser.part.abs_filename)
+		size = 0
+	end
+
+	parser.write_file = function (parser, buffer)
+		local file = parser.file
+		file:write(buffer)
+		size = size + string.len(buffer)
+	end
+
+
 	parser.finish_parse = function (parser)
-		if (parser.buffer == '') then
-			return
-		end
-
-		-- save file
-		local filename = utils.tmpname('upload-', parser.part.ext)
-		local file = assert(io.open(filename, "w"))
-
-		file:write(parser.buffer)
+		local file = parser.file
+				
 		file:close()
 
-		parser.part.file_size = string.len(parser.buffer)
-		-- clear buffer
-		parser.buffer = ''
+		parser.part.file_size = size
 
 		-- update table
-		parser.part.abs_filename = filename
-		table.insert(parser.parts, parser.part)
 
-		parser.file = file
+		local part = {}
+
+		part.filename = parser.part.filename
+		part.abs_filename = parser.part.abs_filename
+		part.file_size = parser.part.file_size
+		part.content_type = parser.part.content_type
+		part.ext = parser.part.ext
+		part.headers = parser.part.headers
+
+		table.insert(parser.parts, part)
 		table.insert(parser.files, parser.file)
 
-		print("filename=" .. filename)
+		utils.print_r(parser.parts)
 	end
 
 	parser.parse_header = function(parser, headers)
-		local part = {}
+		local part = parser.part
 		part.headers = headers
 
 		string.gsub(headers, '(.-)\r\n', function(line)
@@ -186,6 +199,7 @@ multipart_parser = function(boundary, callback)
 		end)
 
 		parser.part = part
+		print("filename="..part.filename);
 	end
 
 	-- parser.parse_body = function(parser)
@@ -206,6 +220,9 @@ multipart_parser = function(boundary, callback)
 		-- 	print("run in parse: 2");
 		-- 	parser.state, buffer = parser:parse_body()
 		-- end
+		if (data == '') then
+			return 0
+		end
 		parser:parse_header0(data)
 
 		return 0 -- success

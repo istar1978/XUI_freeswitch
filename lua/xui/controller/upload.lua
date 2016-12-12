@@ -78,22 +78,46 @@ post('/', function(params)
 		file = assert(io.open(filename, "w"))
 	end
 
+	local boundary_len = string.len(boundary)
+	local buf = ''
 	while received < size do
 		local x = stream:read()
 		local len = x:len()
 		received = received + len
 		-- print("received: " .. len .. " total: " .. received .. " size: " .. size)
+		local has_boundary = string.find(x, boundary)
+
+		local first_buf = ''
+		local second_buf = ''
+
+		if has_boundary then
+			first_buf = x
+			second_buf = ''
+		else
+			first_buf = string.sub(x, 1, len - boundary_len)
+			second_buf = string.sub(x, len - boundary_len + 1)
+		end
+
+		local new_x = buf .. first_buf
+		buf = second_buf
 
 		if not parser then parser = multipart_parser(boundary) end
 
-		if (not multipart) then
-			file:write(x)
+		if multipart then
+			ret = parser:parse(new_x)
 		else
-			ret = parser:parse(x)
+			file:write(new_x)
 		end
 
 		if (len == 0 or received == size) then -- read eof
 			print("EOF")
+			-- print("second_buf="..second_buf);
+
+			if (multipart) then
+				ret = parser:parse(second_buf)
+			else
+				file:write(second_buf)
+			end
 
 			if parser and parser.parts then
 				xdb.bind(xtra.dbh)
