@@ -319,15 +319,11 @@ Blockly.Blocks['fsSessionSet'] = {
 Blockly.Blocks['fsSessionRead'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Read DTMF");
-        this.appendDummyInput()
+            .appendField("Read DTMF")
             .appendField("Min")
             .appendField(new Blockly.FieldTextInput("4"), "min")
             .appendField("Max")
             .appendField(new Blockly.FieldTextInput("11"), "max");
-        this.appendDummyInput()
-            .appendField("Sound")
-            .appendField(new Blockly.FieldTextInput("tone_stream://%(10000,0,350,440)"), "sound");
         this.appendDummyInput()
             .appendField("Var")
             .appendField(new Blockly.FieldVariable("digits"), "digits")
@@ -335,7 +331,10 @@ Blockly.Blocks['fsSessionRead'] = {
             .appendField(new Blockly.FieldTextInput("5000"), "timeout")
             .appendField("Terminator")
             .appendField(new Blockly.FieldTextInput("#"), "terminator");
-        // this.setInputsInline(true);
+        this.appendValueInput("sound")
+            .setCheck("String")
+            .appendField("Sound")
+        this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setColour(20);
@@ -365,7 +364,8 @@ Blockly.Blocks['IVR'] = {
     init: function() {
         this.appendDummyInput()
             .appendField("IVR")
-            .appendField(new Blockly.FieldTextInput("tone_stream://%(10000,0,350,440)"), "sound");
+        this.appendValueInput("sound")
+            .appendField("Sound")
         this.appendDummyInput()
             .appendField("Max")
             .appendField(new Blockly.FieldTextInput("1"), "max");
