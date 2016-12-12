@@ -138,8 +138,20 @@ utils.apply_dnc = function(number, dnc)
 	return number
 end
 
+function check_dir_exit(dir)
+	-- body
+	local file, err = io.open(dir, "r")
+	
+	if err then
+		os.execute("mkdir -p " .. dir)
+	end
+end
+
 utils.absname = function(filename, dir)
 	if not dir then dir = config.upload_path end
+
+	check_dir_exit(dir)
+
 	return dir .. "/" .. filename
 end
 
