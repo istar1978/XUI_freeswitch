@@ -46,7 +46,8 @@ var Phone = React.createClass({
 			cidName: "Anonymouse",
 			cidNum: "000000",
 			dtmfVisible: false,
-			useVideo: false
+			useVideo: false,
+			destNumber: ''
 		};
 	},
 
@@ -97,6 +98,13 @@ var Phone = React.createClass({
 	},
 
 	handleCall: function() {
+		var number = $('#dest_number').val();
+		if (number == '') {
+			$('#dest_number').val(localStorage["destNumber"]);
+
+			return;
+		}
+
 		let useVideo = this.state.useVideo;
 		verto.newCall({
 			destination_number: $('#dest_number').val(),
@@ -105,6 +113,7 @@ var Phone = React.createClass({
 			useVideo: useVideo,
 			useStereo: true
 		});
+		localStorage["destNumber"] = $('#dest_number').val();
 	},
 
 	handleHangup: function() {
@@ -121,7 +130,17 @@ var Phone = React.createClass({
 		if (!dtmf) {
 			this.setState({dtmfVisible: !this.state.dtmfVisible});
 		} else {
-			this.state.curCall.dtmf(dtmf);
+			if (this.state.curCall) {
+				this.state.curCall.dtmf(dtmf);
+			} else {
+				var obj = document.getElementById("dest_number");
+				var text = obj.value + "" + dtmf;
+				obj.value = text;
+				// what's the hell?
+				// const destNumber = this.state.destNumber + dtmf;
+				// console.log("destNumber", destNumber);
+				// this.setState({destNumber: destNumber});
+			}
 		}
 	},
 
@@ -149,27 +168,28 @@ var Phone = React.createClass({
 		var toggleDTMF = <Button bsStyle="info" bsSize="xsmall">
 			<i className="fa fa-tty" aria-hidden="true"></i>&nbsp;
 			<T.span onClick={this.handleDTMF} text= "DTMF" /></Button>;
+		var AudioAndVideo = "";
 		var DTMFs = <div style={{display: this.state.dtmfVisible ? "block" : "none"}}>
 		<div className="row">
 			<div className="col-xs-12">
-	            <button type="button" className="btn btn-default btn-circle">1</button>
-	            <button type="button" className="btn btn-default btn-circle">2</button>
-	            <button type="button" className="btn btn-default btn-circle">3</button>
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="1" text="1" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="2" text="2" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="3" text="3" />
 	        </div>
 	        <div className="col-xs-12">
-	            <button type="button" className="btn btn-default btn-circle">4</button>
-	            <button type="button" className="btn btn-default btn-circle">5</button>
-	            <button type="button" className="btn btn-default btn-circle">6</button>
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="4" text="4" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="5" text="5" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="6" text="6" />
 	        </div>
 	        <div className="col-xs-12">
-	            <button type="button" className="btn btn-default btn-circle">7</button>
-	            <button type="button" className="btn btn-default btn-circle">8</button>
-	            <button type="button" className="btn btn-default btn-circle">9</button>
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="7" text="7" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="8" text="8" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="9" text="9" />
 	        </div>
 	        <div className="col-xs-12">
-	            <button type="button" className="btn btn-default btn-circle">*</button>
-	            <button type="button" className="btn btn-default btn-circle">0</button>
-	            <button type="button" className="btn btn-default btn-circle">#</button>
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="*" text="*" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="0" text="0" />
+	            <T.span className="btn btn-default btn-circle" onClick={this.handleDTMF} data-dtmf="#" text="#" />
 	        </div>
 	    </div>
 		</div>;
@@ -186,6 +206,12 @@ var Phone = React.createClass({
 				<T.span onClick={this.handleHangup} text="Hangup" /></Button>
 		}
 
+		if (this.state.callState != "Active") {
+			AudioAndVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
+			<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
+			<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/></Button>
+		}
+
 		if (this.state.callState == "Ringing" && this.state.cidNum != "1000") {
 			$('#web-phone').css('display', 'block');
 			answerButton = <button onClick={this.handleAnswer}>Answer</button>
@@ -194,7 +220,7 @@ var Phone = React.createClass({
 		return 	<NavItem eventKey="phone"><T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
-				<input id="dest_number" name="dest_number" placeholder="demo"/>
+				<input id="dest_number" name="dest_number" defaultValue={this.state.destNumber}/>
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleCall} text="Call" />
@@ -203,10 +229,7 @@ var Phone = React.createClass({
 				{answerButton}
 				{toggleDTMF}
 				{hangupButton}
-				<Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
-					<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
-					<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/>
-				</Button>
+				{AudioAndVideo}
 				{DTMFs}
 			</div>
 		</NavItem>;
