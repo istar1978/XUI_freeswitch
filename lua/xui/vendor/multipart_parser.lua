@@ -45,25 +45,22 @@ multipart_parser = function(boundary, callback)
 
 	parser.parse_header0 = function(parser, buffer)
 		local header_pos = 1
-		-- if (parser.state == 0) then
-			local bstart, bend = string.find(buffer, boundary)
-			if (not bend) then
+
+		local bstart, bend = string.find(buffer, boundary)
+		if (not bend) then
 				-- waiting for boundary
 
-				parser.write_file(parser, buffer)
-				print("get 1 state=" .. parser.state)
-				return 0
-			end
+			parser.write_file(parser, buffer)
+			return 0
+		end
 
 			-- parser.state = 1 -- parse header
 		if (parser.state == 0) then
 			header_pos = bend + 1
 		end
-		-- end
 
 		while bend do
 			if (parser.state == 0 or parser.state == 1) then
-				print("get 2 state=" .. parser.state);
 
 				parser.state = 1
 				parser.buffer = ''
@@ -108,47 +105,6 @@ multipart_parser = function(boundary, callback)
 				parser.finish_parse(parser)
 			end
 		end
-
-
-		-- -- check for headers
-		-- local hstart, hend = string.find(buffer, '\r\n\r\n', header_pos)
-		-- local body = '';
-		-- if (hend and hend > header_pos) then -- exit headers
-		-- 	print("get 2")
-		-- 	-- parser.state = 2 -- header parsed
-		-- 	-- clear data
-		-- 	parser.buffer = ''
-
-		-- 	-- parse headers
-		-- 	local headers = string.sub(buffer, header_pos, hend)
-		-- 	local part = parser.parse_header(parser, headers)
-
-		-- 	-- save data
-		-- 	body = string.sub(buffer, hend)
-		-- else
-		-- 	body = buffer
-		-- end
-
-		-- -- check for end
-		-- local hstart2, hend2 = string.find(body, boundary)
-		-- if hend2 then -- exit boundary at end
-		-- 	print("get 3")
-		-- 	print(buffer)
-		-- 	body = string.sub(body, 1, hstart2 - 1)
-		-- 	parser.buffer = parser.buffer .. body
-
-		-- 	parser.finish_parse(parser);
-
-		-- 	return 1
-		-- end
-
-		-- if body == '' then
-		-- 	print("body is nil");
-		-- end
-
-		-- parser.buffer = parser.buffer .. body
-		-- print("get 4")
-		-- return 2
 	end
 
 	parser.create_file = function (parser)
@@ -156,18 +112,15 @@ multipart_parser = function(boundary, callback)
 			return 0
 		end
 
-		print("create_file")
 		local abs_filename = utils.tmpname('upload-', parser.part.ext)
 		parser.file = assert(io.open(abs_filename, "w"))
 
 		parser.part.abs_filename = abs_filename
 
-		print("file_name=" .. parser.part.abs_filename)
 		size = 0
 	end
 
 	parser.write_file = function (parser, buffer)
-	print("state="..parser.state)
 		local file = parser.file
 		if file then 
 			file:write(buffer)
@@ -176,8 +129,6 @@ multipart_parser = function(boundary, callback)
 	end
 
 	parser.finish_parse = function (parser)
-		print("close_file")
-
 		local file = parser.file
 		
 		if file then		
@@ -221,29 +172,10 @@ multipart_parser = function(boundary, callback)
 		if (parser.state == 2) then
 			parser.part = part
 		end
-		-- print("filename="..part.filename);
-		-- utils.print_r(part)
 	end
 
-	-- parser.parse_body = function(parser)
-	-- 	file:write(parser.buffer)
-	-- 	parser.buffer = ''
-	-- end
 
 	parser.parse = function(parser, data)
-		-- parser.buffer = parser.buffer .. data
-
-		-- if parser.state == 0 then
-		-- 	print("run in parse: 0");
-		-- 	parser.state, data = parser:parse_header0(data)
-		-- elseif parser.state == 1 then
-		-- 	print("run in parse: 1");
-		-- 	parser.state, buffer = parser:parse_header()
-		-- elseif parser.state == 2 then
-		-- 	print("run in parse: 2");
-		-- 	parser.state, buffer = parser:parse_body()
-		-- end
-
 		if (data == '') then
 			return 0
 		end

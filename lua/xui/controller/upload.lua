@@ -84,15 +84,15 @@ post('/', function(params)
 		local len = x:len()
 		received = received + len
 
+		print("received= " .. len .. " total= " .. received .. " size= " .. size)
+		
 		if not parser then parser = multipart_parser(boundary) end
 
-		if (not multipart) then
-			file:write(x)
-		else
+		if multipart then
 			ret = parser:parse(x)
+		else
+			file:write(x)
 		end
-
-		print("4received= " .. len .. " total= " .. received .. " size= " .. size)
 
 		if (len == 0) then
 			times = times + 1
