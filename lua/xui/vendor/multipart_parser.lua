@@ -106,8 +106,6 @@ multipart_parser = function(boundary, callback)
 				local part = parser.parse_header(parser, headers)
 
 				if (parser.state == 1) then
-					print(header_pos)
-					print(hend)
 					parser.write_file(parser, string.sub(buffer, header_pos, hend))
 					header_pos = hend + 1
 
@@ -234,15 +232,9 @@ multipart_parser = function(boundary, callback)
 			min_len = string.len(parser.boundary) + 1
 		end
 
-		print(parser.boundary)
-		print(len)
-		print(min_len)
-		print("string.len(parser.buffer)=" .. parser.buffer_len)
-
 		-- if (parser.buffer) then len = len + string.len(parser.boundary) end
 		if (len + parser.buffer_len <=  min_len) then
 			save_data(old_data)
-			print("total_len=" .. (len + parser.buffer_len))
 			return 0
 		-- else
 		-- 	clean_data()
@@ -259,7 +251,6 @@ multipart_parser = function(boundary, callback)
 			local has_header = string.find(data, '\r\n\r\n', bstart)
 
 			if (parser.state == 0 and (not has_header)) then
-				print("1111111, state = " .. parser.state .. " has_header=" .. " " .. parser.buffer)
 				save_data(old_data)
 				return 0
 			end
@@ -272,8 +263,6 @@ multipart_parser = function(boundary, callback)
 			local boundary_len = string.len(parser.boundary)
 			first_buf = string.sub(data, 1, len - boundary_len)
 			second_buf = string.sub(data, len - boundary_len + 1)
-			print("second_buf_len=" .. string.len(second_buf))
-			-- print("second_buf_len :" .. second_buf)
 			parser.buffer_len = boundary_len
 		end
 
