@@ -457,6 +457,9 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		} else {
 			$.get('/api/media_files', function(obj) {
 				console.log("data", obj);
+				if (obj.length == 0) {
+					obj.push({name:"Error: No file, Please upload some media files", abs_path:"/tmp/File-Not-Found-Error.wav"});
+				}
 				_this.fs_file_path_dropdown_data = obj.map(function(row) {
 					return [row.name, row.abs_path];
 				});
