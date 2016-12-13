@@ -3,7 +3,14 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	n, dicts = xdb.find_all("dicts")
+
+	realm = env:getHeader('realm')
+
+	if realm then
+		n, dicts = xdb.find_by_cond("dicts", {realm = realm})
+	else
+		n, dicts = xdb.find_all("dicts")
+	end
 
 	if (n > 0) then
 		return dicts

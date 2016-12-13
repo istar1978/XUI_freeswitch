@@ -320,6 +320,16 @@ class DictsPage extends React.Component {
 		}, function(e) {
 			console.log("get dicts ERR");
 		});
+
+		var realm = this.props.location.query.realm;
+		console.log(realm);
+		console.log("klsdjfasfd==================", this.props.location.query)
+        $.getJSON("/api/dicts" + "?realm=" + realm, "", function(data) {
+			console.log("dt", data)
+			_this.setState({rows: data});
+		}, function(e) {
+			console.log("get dicts ERR");
+		});
 	}
 
 	handleFSEvent(v, e) {
