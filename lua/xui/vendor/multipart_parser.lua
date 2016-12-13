@@ -48,10 +48,10 @@ multipart_parser = function(boundary, callback)
 		-- body
 		if parser.data then
 			parser.data = parser.data .. data
-			print("test 1: " .. parser.data)
+			-- print("test 1: " .. parser.data)
 		else
 			parser.data = data
-			print("test 2: " .. parser.data)
+			-- print("test 2: " .. parser.data)
 		end
 	end
 
@@ -97,6 +97,8 @@ multipart_parser = function(boundary, callback)
 				local hstart, hend = string.find(buffer, '\r\n\r\n', header_pos)
 
 				if (not hend) then
+					local left_buf = string.sub(buffer, header_pos)
+					save_data(left_buf)
 					break
 				end
 
@@ -132,6 +134,9 @@ multipart_parser = function(boundary, callback)
 				header_pos = bstart
 
 				parser.finish_parse(parser)
+
+				local left_buf = string.sub(buffer, header_pos)
+				save_data(left_buf)
 			end
 		end
 	end
@@ -239,15 +244,26 @@ multipart_parser = function(boundary, callback)
 			save_data(old_data)
 			print("total_len=" .. (len + parser.buffer_len))
 			return 0
-		else
-			clean_data()
+		-- else
+		-- 	clean_data()
 		end
+
+
 
 
 		data = parser.buffer .. data
 		local has_boundary = string.find(data, parser.boundary)
 
 		if has_boundary then
+			local bstart, bend = string.find(data, parser.boundary)
+			local has_header = string.find(data, '\r\n\r\n', bstart)
+
+			if (parser.state == 0 and (not has_header)) then
+				print("1111111, state = " .. parser.state .. " has_header=" .. " " .. parser.buffer)
+				save_data(old_data)
+				return 0
+			end
+
 			first_buf = data
 			second_buf = ''
 			parser.buffer_len = 0
@@ -257,9 +273,11 @@ multipart_parser = function(boundary, callback)
 			first_buf = string.sub(data, 1, len - boundary_len)
 			second_buf = string.sub(data, len - boundary_len + 1)
 			print("second_buf_len=" .. string.len(second_buf))
-			print("second_buf_len :" .. second_buf)
+			-- print("second_buf_len :" .. second_buf)
 			parser.buffer_len = boundary_len
 		end
+
+		clean_data()
 
 		local new_data = first_buf
 		parser:parse_header0(new_data)
