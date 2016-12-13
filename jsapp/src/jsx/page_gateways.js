@@ -91,7 +91,7 @@ class NewGateway extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formRealm">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Server" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="realm" placeholder="example.com" /></Col>
 				</FormGroup>
 
@@ -459,7 +459,7 @@ class GatewaysPage extends React.Component {
 				<tr>
 					<th><T.span text="ID"/></th>
 					<th><T.span text="Name"/></th>
-					<th><T.span text="Realm"/></th>
+					<th><T.span text="Server"/></th>
 					<th><T.span text="Username"/></th>
 					<th><T.span text="Register"/></th>
 					<th><T.span text="Control"/></th>

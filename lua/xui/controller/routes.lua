@@ -65,10 +65,10 @@ post('/', function(params)
 		params.request.body = block.name
 	end
 
-	ret = xdb.create_return_id('routes', params.request)
+	route = xdb.create_return_object('routes', params.request)
 
-	if ret then
-		return {id = ret}
+	if route then
+		return route
 	else
 		return 500, "{}"
 	end
