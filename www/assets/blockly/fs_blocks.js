@@ -211,7 +211,7 @@ Blockly.Blocks['fsStart'] = {
 Blockly.Blocks['fsSessionAnswer'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Answer");
+        .appendField(Blockly.Msg.FS_BLOCK_ANSWER);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
@@ -247,9 +247,9 @@ Blockly.Blocks['fsConsoleLog'] = {
 Blockly.Blocks['fsSetTTS'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("TTS Engine")
+        .appendField(Blockly.Msg.FS_BLOCK_TTSENGINE)
         .appendField(new Blockly.FieldTextInput("tts_commandline"), "engine")
-        .appendField("Voice")
+        .appendField(Blockly.Msg.FS_BLOCK_VOICE)
         .appendField(new Blockly.FieldTextInput("Ting-Ting"), "voice");
     this.setInputsInline(true);
     this.setPreviousStatement(true);
@@ -263,7 +263,7 @@ Blockly.Blocks['fsSetTTS'] = {
 Blockly.Blocks['fsSessionPlay'] = {
     init: function() {
         this.appendValueInput("args")
-            .appendField("Play");
+            .appendField(Blockly.Msg.FS_BLOCK_PLAY);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -276,7 +276,7 @@ Blockly.Blocks['fsSessionPlay'] = {
 Blockly.Blocks['fsSessionSpeak'] = {
     init: function() {
         this.appendValueInput("args")
-            .appendField("Speak");
+            .appendField(Blockly.Msg.FS_BLOCK_SPEAK);
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -289,7 +289,7 @@ Blockly.Blocks['fsSessionSpeak'] = {
 Blockly.Blocks['fsSessionGet'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Get")
+        .appendField(Blockly.Msg.FS_BLOCK_GET)
         .appendField(new Blockly.FieldDropdown([
             ["Caller ID Number", "caller_id_number"],
             ["Caller ID Name", "caller_id_name"],
@@ -304,7 +304,7 @@ Blockly.Blocks['fsSessionGet'] = {
 Blockly.Blocks['fsSessionSet'] = {
     init: function() {
         this.appendValueInput("args")
-            .appendField("Set")
+            .appendField(Blockly.Msg.FS_BLOCK_SET)
             .appendField(new Blockly.FieldTextInput("var"), "var")
             .appendField("=");
         this.setInputsInline(true);
@@ -319,21 +319,21 @@ Blockly.Blocks['fsSessionSet'] = {
 Blockly.Blocks['fsSessionRead'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Read DTMF")
-            .appendField("Min")
+            .appendField(Blockly.Msg.FS_BLOCK_READDTMF)
+            .appendField(Blockly.Msg.FS_BLOCK_MIN)
             .appendField(new Blockly.FieldTextInput("4"), "min")
-            .appendField("Max")
+            .appendField(Blockly.Msg.FS_BLOCK_MAX)
             .appendField(new Blockly.FieldTextInput("11"), "max");
         this.appendDummyInput()
-            .appendField("Var")
+            .appendField(Blockly.Msg.FS_BLOCK_VAR)
             .appendField(new Blockly.FieldVariable("digits"), "digits")
-            .appendField("Timeout")
+            .appendField(Blockly.Msg.FS_BLOCK_TIMEOUT)
             .appendField(new Blockly.FieldTextInput("5000"), "timeout")
-            .appendField("Terminator")
+            .appendField(Blockly.Msg.FS_BLOCK_TERMINATOR)
             .appendField(new Blockly.FieldTextInput("#"), "terminator");
         this.appendValueInput("sound")
             .setCheck("String")
-            .appendField("Sound")
+            .appendField(Blockly.Msg.FS_BLOCK_SOUND)
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -350,7 +350,7 @@ Blockly.Blocks['fsSessionExecute'] = {
             drops.push([app, app]);
         });
         this.appendValueInput("args")
-            .appendField("Execute")
+            .appendField(Blockly.Msg.FS_BLOCK_EXECUTE)
             .appendField(new Blockly.FieldDropdown(drops), "execute");
         this.setPreviousStatement(true);
         this.setNextStatement(true);

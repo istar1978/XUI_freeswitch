@@ -97,8 +97,20 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="fsSessionAnswer"></block>
 	<block type="fsSessionGet"></block>
 	<block type="fsSessionSet"></block>
-	<block type="fsSessionPlay"></block>
-	<block type="fsSessionSpeak"></block>
+	<block type="fsSessionPlay">
+          <value name="args">
+            <shadow type="text">
+             <field name="PLAY"></field>
+           </shadow>
+         </value>
+        </block>
+	<block type="fsSessionSpeak">
+          <value name="args">
+           <shadow type="text">
+            <field name="SPEAK"></field>
+           </shadow>
+         </value>
+        </block>
 	<block type="fsSessionRead"></block>
 	<block type="fsSessionExecute"></block>
 </category>
@@ -472,7 +484,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			Blockly.Blocks['fsFilePath'] = {
 				init: function() {
 					this.appendDummyInput()
-					.appendField("File")
+					.appendField(Blockly.Msg.FS_BLOCK_FILE)
 					.appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
 
 					this.setInputsInline(true);
