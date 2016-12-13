@@ -81,6 +81,12 @@ xdb.find_by_sql(sql, function(row)
 	if (row.dest_type == 'FS_DEST_SYSTEM') then
 		lines = csplit(row.body, "\n")
 		for k, v in pairs(lines) do
+			local r = string.find(v, "\r")
+
+			if (r) then
+				v = v:sub(1, r - 1)
+			end
+
 			local t = csplit(v, ' ')
 			local app = table.remove(t, 1)
 			local data = table.concat(t, ' ')

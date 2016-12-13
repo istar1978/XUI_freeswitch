@@ -121,8 +121,7 @@ class NewRoute extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(route),
 			success: function (obj) {
-				route.id = obj.id;
-				_this.props["data-handleNewRouteAdded"](route);
+				_this.props["data-handleNewRouteAdded"](obj);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -158,8 +157,8 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"  className="mandatory"/></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="context" placeholder="select">
-							<option value="default">default</option>
-							<option value="public">public</option>
+							<option value="default"><T.span text="default" /></option>
+							<option value="public"><T.span text="public" /></option>
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -168,11 +167,11 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="dest_type" onChange={this.handleDestTypeChange}>
-							<option value="FS_DEST_USER">Local User</option>
-							<option value="FS_DEST_GATEWAY">Gateway</option>
-							<option value="FS_DEST_IP">IP</option>
-							<option value="FS_DEST_IVRBLOCK">IVR Block</option>
-							<option value="FS_DEST_SYSTEM">System</option>
+							<option value="FS_DEST_USER"><T.span text="Local User" /></option>
+							<option value="FS_DEST_GATEWAY"><T.span text="Gateway" /></option>
+							<option value="FS_DEST_IP"><T.span text="IP" /></option>
+							<option value="FS_DEST_IVRBLOCK"><T.span text="IVR Block" /></option>
+							<option value="FS_DEST_SYSTEM"><T.span text="System" /></option>
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -501,7 +500,7 @@ class RoutesPage extends React.Component {
 
 	handleRouteAdded(route) {
 		var rows = this.state.rows;
-		rows.push(route);
+		rows.unshift(route);
 		this.setState({rows: rows, formShow: false});
     }
 

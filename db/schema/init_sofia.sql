@@ -16,8 +16,8 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'forward-unso
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'rfc2833-pt', '101', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'sip-port', '5060', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'dtmf-duration', '2000', 0, 'false');
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'inbound-codec-prefs', '$${global_codec_prefs},H263,H264', 0, 'false');
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'outbound-codec-prefs', '$${global_codec_prefs},H263,H264', 0, 'false');
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'inbound-codec-prefs', '$${inbound_codec_prefs},H263,H264', 0, 'false');
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'outbound-codec-prefs', '$${outbound_codec_prefs},H263,H264', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'rtp-timer-name', 'soft', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'rtp-ip', '$${local_ip_v4}', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'sip-ip', '$${local_ip_v4}', 0, 'false');
@@ -90,7 +90,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'disable-tran
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'disable-register', 'true', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'NDLB-broken-auth-hash', 'true', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'NDLB-received-in-nat-reg-contact', 'true', 0, 'true');
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auth-calls', '$${internal_auth_calls}', 0, 'false');
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auth-calls', 'true', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'inbound-reg-force-matching-username', 'true', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auth-all-packets', 'false', 0, 'false');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'ext-rtp-ip', 'auto-nat', 0, 'false');
@@ -131,6 +131,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T2', '
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T4', '4000', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auto-jitterbuffer-msec', '60', 0, 'true');
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'renegotiate-codec-on-hold', 'true', 0, 'true');
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'context', 'public', 0, 'true');
 
 INSERT INTO sip_profiles (name) VALUES ('default');
 INSERT INTO sip_profiles (name) VALUES ('public');

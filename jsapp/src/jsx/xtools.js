@@ -57,6 +57,10 @@ class EditControl extends FormControl {
 			}
 		}
 
+		if (this.props.componentClass == "textarea") {
+			return <pre>{props.defaultValue}</pre>
+		}
+
 		return <FormControl.Static>{text ? text : props.defaultValue}</FormControl.Static>
 	}
 

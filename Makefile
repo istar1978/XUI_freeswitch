@@ -12,8 +12,8 @@ grunt:
 
 setup:
 	cd jsapp && \
-	npm install && \
-	bower install
+	npm install #&& \
+#	bower install
 
 csetup:
 	cd jsapp && \

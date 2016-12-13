@@ -32,16 +32,17 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
-class NewUser extends React.Component {
-	propTypes: {handleNewUserAdded: React.PropTypes.func}
+class NewDict extends React.Component {
+	propTypes: {handleNewDictAdded: React.PropTypes.func}
 
 	constructor(props) {
 		super(props);
 
+		this.last_id = 0;
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
@@ -52,26 +53,26 @@ class NewUser extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var user = form2json('#newUserForm');
-		console.log("user", user);
+		var dt = form2json('#newDictForm');
+		console.log("dt", dt);
 
-		if (!user.extn || !user.name) {
+		if (!dt.realm || !dt.k) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/users",
+			url: "/api/dicts",
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(user),
+			data: JSON.stringify(dt),
 			success: function (obj) {
-				user.id = obj.id;
-				_this.props["data-handleNewUserAdded"](user);
+				dt.id = obj.id;
+				_this.props["data-handleNewDictAdded"](dt);
 			},
 			error: function(msg) {
-				console.error("route", msg);
+				console.error("dict", msg);
 			}
 		});
 	}
@@ -81,44 +82,35 @@ class NewUser extends React.Component {
 
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New User" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Dict" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-			<Form horizontal id="newUserForm">
-				<FormGroup controlId="formExtn">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="extn" placeholder="1000" /></Col>
+			<Form horizontal id="newDictForm">
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="realm" placeholder="realm1" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="route_to_beijing" /></Col>
+				<FormGroup controlId="formKey">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Key" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="key" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formPassword">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Password" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="password" name="password" placeholder="a$veryComplicated-Passw0rd" /></Col>
+				<FormGroup controlId="formValue">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Value"/></Col>
+					<Col sm={10}><FormControl type="input" name="v" placeholder="value" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formVMPassword">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
-					<Col sm={10}><FormControl type="password" name="vm_password" placeholder="12345678900" /></Col>
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
+					<Col sm={10}><FormControl type="input" name="d" placeholder="description" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formContext">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
-					<Col sm={10}><FormControl type="input" name="context" defaultValue="default"/></Col>
+				<FormGroup controlId="formOrder">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Order"/></Col>
+					<Col sm={10}><FormControl type="input" name="o" defaultValue="0" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formCidName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
-					<Col sm={10}><FormControl type="input" name="cid_name" placeholder="1000" /></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formCidNumber">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" /></Col>
-					<Col sm={10}><FormControl type="input" name="cid_number" placeholder="11" /></Col>
-				</FormGroup>
 
 				<FormGroup>
 					<Col smOffset={2} sm={10}>
@@ -141,13 +133,13 @@ class NewUser extends React.Component {
 	}
 }
 
-class UserPage extends React.Component {
-	propTypes: {handleNewUserAdded: React.PropTypes.func}
+class DictPage extends React.Component {
+	propTypes: {handleNewDictAdded: React.PropTypes.func}
 
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', user: {}, edit: false};
+		this.state = {errmsg: '', dt: {}, edit: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -158,26 +150,26 @@ class UserPage extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var user = form2json('#newUserForm');
-		console.log("user", user);
+		var dt = form2json('#newDictForm');
+		console.log("dt", dt);
 
-		if (!user.extn || !user.name) {
+		if (!dt.realm || !dt.k) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/users/" + user.id,
+			url: "/api/dicts/" + dt.id,
 			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify(user),
+			data: JSON.stringify(dt),
 			success: function () {
-				_this.setState({user: user, errmsg: {key: "Saved at", time: Date()}})
+				_this.setState({dt: dt, errmsg: {key: "Saved at", time: Date()}})
 			},
 			error: function(msg) {
-				console.error("route", msg);
+				console.error("dict", msg);
 			}
 		});
 	}
@@ -188,21 +180,35 @@ class UserPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/users/" + this.props.params.id, "", function(data) {
-			console.log("user", data);
-			_this.setState({user: data});
+		$.getJSON("/api/dicts/" + this.props.params.id, "", function(data) {
+			console.log("dt", data);
+			_this.setState({dt: data});
 		}, function(e) {
-			console.log("get users ERR");
+			console.log("get dt ERR");
 		});
 	}
 
 	render() {
-		const user = this.state.user;
+		const dt = this.state.dt;
 		let save_btn = "";
 		let err_msg = "";
+		let register = dt.register == "true" ? "Yes" : "No";
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+
+			if (dt.register == "true") {
+				register = <span>
+					<Radio name="register" value="true" inline defaultChecked>Yes</Radio>
+					<Radio name="register" value="false" inline>No</Radio>
+				</span>
+			} else {
+				register = <span>
+					<Radio name="register" value="true" inline>Yes</Radio>
+					<Radio name="register" value="false" inline defaultChecked>No</Radio>
+				</span>
+			}
+
 			if (this.state.errmsg) {
 				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
 			}
@@ -214,56 +220,42 @@ class UserPage extends React.Component {
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 
-			<h1>{user.name} &lt;{user.extn}&gt;</h1>
+			<h1>{dt.realm} <small>{dt.k}</small></h1>
 			<hr/>
 
-			<Form horizontal id="newUserForm">
-				<input type="hidden" name="id" defaultValue={user.id}/>
-				<FormGroup controlId="formExtn">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="extn" defaultValue={user.extn}/></Col>
+			<Form horizontal id="newDictForm">
+				<input type="hidden" name="id" defaultValue={dt.id}/>
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={dt.realm}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={user.name}/></Col>
+				<FormGroup controlId="formKey">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Key" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="k" defaultValue={dt.k}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formPassword">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Password" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="password" defaultValue={user.password} type="password"/></Col>
+				<FormGroup controlId="formValue">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Value"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="v" defaultValue={dt.v}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formVMPassword">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="VM Password"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="vm_password" defaultValue={user.vm_password} type="password" /></Col>
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={dt.description}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formContext">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Context" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={user.context}/></Col>
+				<FormGroup controlId="formOrder">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Order"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="o" defaultValue={dt.o}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formCidName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="cid_name" defaultValue={user.cid_name}/></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formCidNumber">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="cid_number" defaultValue={user.cid_number}/></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formCIDR">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CIDR" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="user_cidr" defaultValue={user.user_cidr}/></Col>
-				</FormGroup>
 			</Form>
 		</div>
 	}
 }
 
-class UsersPage extends React.Component {
+class DictsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { formShow: false, rows: [], danger: false};
@@ -295,7 +287,7 @@ class UsersPage extends React.Component {
 
 		$.ajax({
 			type: "DELETE",
-			url: "/api/users/" + id,
+			url: "/api/dicts/" + id,
 			success: function () {
 				console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {
@@ -321,20 +313,20 @@ class UsersPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/users", "", function(data) {
-			console.log("users", data)
+		$.getJSON("/api/dicts", "", function(data) {
+			console.log("dt", data)
 			_this.setState({rows: data});
 		}, function(e) {
-			console.log("get users ERR");
+			console.log("get dicts ERR");
 		});
 	}
 
 	handleFSEvent(v, e) {
 	}
 
-	handleUserAdded(user) {
+	handleDictAdded(route) {
 		var rows = this.state.rows;
-		rows.unshift(user);
+		rows.push(route);
 		this.setState({rows: rows, formShow: false});
 	}
 
@@ -348,13 +340,11 @@ class UsersPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/settings/users/${row.id}`}>{row.extn}</Link></td>
-					<td>{row.name}</td>
-					<td>{row.context}</td>
-					<td>{row.domain}</td>
-					<td>{row.type}</td>
-					<td>{row.cid_name}</td>
-					<td>{row.cid_number}</td>
+					<td>{row.realm}</td>
+					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
+					<td>{row.v}</td>
+					<td>{row.d}</td>
+					<td>{row.o}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
@@ -367,19 +357,17 @@ class UsersPage extends React.Component {
 				</Button>
 			</div>
 
-			<h1><T.span text="Users"/></h1>
+			<h1><T.span text="Dicts"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
 					<th><T.span text="ID"/></th>
-					<th><T.span text="Number"/></th>
-					<th><T.span text="Name"/></th>
-					<th><T.span text="Context"/></th>
-					<th><T.span text="Domain"/></th>
-					<th><T.span text="Type"/></th>
-					<th><T.span text="CID Name"/></th>
-					<th><T.span text="CID Number"/></th>
+					<th><T.span text="Realm"/></th>
+					<th><T.span text="Key"/></th>
+					<th><T.span text="Value"/></th>
+					<th><T.span text="Description"/></th>
+					<th><T.span text="Order"/></th>
 					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
@@ -387,9 +375,9 @@ class UsersPage extends React.Component {
 				</table>
 			</div>
 
-			<NewUser show={this.state.formShow} onHide={formClose} data-handleNewUserAdded={this.handleUserAdded.bind(this)}/>
+			<NewDict show={this.state.formShow} onHide={formClose} data-handleNewDictAdded={this.handleDictAdded.bind(this)}/>
 		</div>
 	}
 }
 
-export {UsersPage, UserPage};
+export {DictsPage, DictPage};

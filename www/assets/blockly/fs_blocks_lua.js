@@ -48,10 +48,9 @@ Blockly.Lua.fsSessionAnswer = function(block) {
 
 Blockly.Lua.fsConsoleLog = function(block) {
   var level = block.getFieldValue('Level');
-  var text = Blockly.Lua.valueToCode(block, 'args',
-             Blockly.Lua.ORDER_ATOMIC) || '""';
-      text = text + '.. \\n"';
-  var code = 'session:consoleLog("' + level + '", " + text + ")\n';
+  var text = Blockly.Lua.valueToCode(block, 'args', Blockly.Lua.ORDER_ATOMIC) || '""';
+      text = text + ' .. "\\n"';
+  var code = 'session:consoleLog("' + level + '", ' + text + ')\n';
   return code;
 };
 
@@ -100,7 +99,7 @@ Blockly.Lua.fsSessionSet = function(block) {
 Blockly.Lua.fsSessionRead = function(block) {
   var text_min = block.getFieldValue('min');
   var text_max = block.getFieldValue('max');
-  var text_sound = block.getFieldValue('sound');
+  var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
   var variable_digits = Blockly.Lua.variableDB_.getName(block.getFieldValue('digits'), Blockly.Variables.NAME_TYPE);
   var text_timeout = block.getFieldValue('timeout');
   var text_terminator = block.getFieldValue('terminator');
@@ -111,7 +110,7 @@ Blockly.Lua.fsSessionRead = function(block) {
 
   var code = variable_digits + ' = session:read(' + text_min + ', ' +
     text_max + ', ' +
-    '"' + text_sound + '", ' +
+    text_sound + ', ' +
     text_timeout + ', "' +
     text_terminator + '");\n';
   return code;
@@ -125,7 +124,7 @@ Blockly.Lua.fsSessionExecute = function(block) {
 };
 
 Blockly.Lua.IVR = function(block) {
-  var text_sound = block.getFieldValue('sound');
+  var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
   var text_max = block.getFieldValue('max');
   var statements_entries = Blockly.Lua.statementToCode(block, 'entries');
   var statements_default = Blockly.Lua.statementToCode(block, 'default');
@@ -136,7 +135,7 @@ Blockly.Lua.IVR = function(block) {
   }
 
   var code = 'digits = session:read(1, ' + text_max + ', ' +
-    '"' + text_sound + '", ' +
+    text_sound + ', ' +
     timeout + ', "#")\n\n'
   code = code + statements_entries;
   code = code + '  else\n  ' + statements_default + '  end\n';

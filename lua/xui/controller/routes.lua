@@ -57,7 +57,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	if params.request.dest_type == 'GATEWAY' then
+	if params.request.dest_type == 'FS_DEST_GATEWAY' then
 		gw = xdb.find("gateways", params.request.dest_uuid)
 		params.request.body = gw.name
 	elseif params.request.dest_type == 'IVRBLOCK' then
@@ -65,17 +65,17 @@ post('/', function(params)
 		params.request.body = block.name
 	end
 
-	ret = xdb.create_return_id('routes', params.request)
+	route = xdb.create_return_object('routes', params.request)
 
-	if ret then
-		return {id = ret}
+	if route then
+		return route
 	else
 		return 500, "{}"
 	end
 end)
 
 put('/:id', function(params)
-	if params.request.dest_type == 'GATEWAY' then
+	if params.request.dest_type == 'FS_DEST_GATEWAY' then
 		gw = xdb.find("gateways", params.request.dest_uuid)
 		params.request.body = gw.name
 	elseif params.request.dest_type == 'IVRBLOCK' then
