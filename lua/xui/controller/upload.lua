@@ -41,7 +41,7 @@ post('/', function(params)
 
 	print("ctype: "..ctype.." content_length: "..content_length.."\n");
 
-	local max_body_size = 100 * 1024 * 1024
+	local max_body_size = 50 * 1024 * 1024
 
 	if content_length == 0 or content_length > max_body_size then
 		print("Max body size " .. max_body_size)
@@ -58,6 +58,7 @@ post('/', function(params)
 	local parser
 	local uploaded_files = {}
 	local found = 0
+	local times = 10
 
 	-- print(multipart)
 
@@ -78,46 +79,30 @@ post('/', function(params)
 		file = assert(io.open(filename, "w"))
 	end
 
-	local boundary_len = string.len(boundary)
-	local buf = ''
 	while received < size do
 		local x = stream:read()
 		local len = x:len()
 		received = received + len
-		-- print("received: " .. len .. " total: " .. received .. " size: " .. size)
-		local has_boundary = string.find(x, boundary)
-
-		local first_buf = ''
-		local second_buf = ''
-
-		if has_boundary then
-			first_buf = x
-			second_buf = ''
-		else
-			first_buf = string.sub(x, 1, len - boundary_len)
-			second_buf = string.sub(x, len - boundary_len + 1)
-		end
-
-		local new_x = buf .. first_buf
-		buf = second_buf
 
 		if not parser then parser = multipart_parser(boundary) end
 
-		if multipart then
-			ret = parser:parse(new_x)
+		if (not multipart) then
+			file:write(x)
 		else
-			file:write(new_x)
+			ret = parser:parse(x)
 		end
 
-		if (len == 0 or received == size) then -- read eof
-			print("EOF")
-			-- print("second_buf="..second_buf);
+		print("4received= " .. len .. " total= " .. received .. " size= " .. size)
 
-			if (multipart) then
-				ret = parser:parse(second_buf)
-			else
-				file:write(second_buf)
-			end
+		if (len == 0) then
+			times = times + 1
+			os.execute("sleep " .. 1)
+		else
+			times = 0
+		end
+
+		if ((len == 0 and times > 10) or received == size) then -- read eof
+			print("EOF")
 
 			if parser and parser.parts then
 				xdb.bind(xtra.dbh)

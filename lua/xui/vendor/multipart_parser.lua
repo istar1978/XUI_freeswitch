@@ -41,6 +41,7 @@ multipart_parser = function(boundary, callback)
 	parser.file = {}
 	parser.files = {}
 	parser.state = 0
+	parser.buffer = ''
 
 	parser.parse_header0 = function(parser, buffer)
 		local header_pos = 1
@@ -61,7 +62,7 @@ multipart_parser = function(boundary, callback)
 		-- end
 
 		while bend do
-			if parser.state == 0 then
+			if (parser.state == 0 or parser.state == 1) then
 				print("get 2 state=" .. parser.state);
 
 				parser.state = 1
@@ -76,24 +77,33 @@ multipart_parser = function(boundary, callback)
 				local headers = string.sub(buffer, header_pos, hend)
 				local part = parser.parse_header(parser, headers)
 
-				parser.create_file(parser)
+				if (parser.state == 1) then
+					print(header_pos)
+					print(hend)
+					parser.write_file(parser, string.sub(buffer, header_pos, hend))
+					header_pos = hend + 1
 
-				header_pos = hend + 1
-
-				bstart, bend = string.find(buffer, boundary, header_pos)
-
-				if (not bend) then
-					print("get 4 state=" .. parser.state);
-					parser.write_file(parser, string.sub(buffer, header_pos))
-				else
-					-- The data will be saved in next loop, so do nothing here.
 					bstart, bend = string.find(buffer, boundary, header_pos)
+				elseif (parser.state == 2) then 
+					parser.create_file(parser)
+
+					header_pos = hend + 1
+
+					bstart, bend = string.find(buffer, boundary, header_pos)
+
+					if bend then
+						-- The data will be saved in next loop, so do nothing here.
+						bstart, bend = string.find(buffer, boundary, header_pos)
+					else
+						parser.write_file(parser, string.sub(buffer, header_pos))
+					end
 				end
-			elseif parser.state == 1 then
+			elseif (parser.state == 2) then
 				parser.state = 0
 
 				-- local data = string.sub(buffer, header_pos, bstart - 1)
 				parser.write_file(parser, string.sub(buffer, header_pos, bstart - 1))
+				header_pos = bstart
 
 				parser.finish_parse(parser)
 			end
@@ -142,6 +152,11 @@ multipart_parser = function(boundary, callback)
 	end
 
 	parser.create_file = function (parser)
+		if not (parser.state == 2) then
+			return 0
+		end
+
+		print("create_file")
 		local abs_filename = utils.tmpname('upload-', parser.part.ext)
 		parser.file = assert(io.open(abs_filename, "w"))
 
@@ -152,16 +167,22 @@ multipart_parser = function(boundary, callback)
 	end
 
 	parser.write_file = function (parser, buffer)
+	print("state="..parser.state)
 		local file = parser.file
-		file:write(buffer)
-		size = size + string.len(buffer)
+		if file then 
+			file:write(buffer)
+			size = size + string.len(buffer)
+		end
 	end
 
-
 	parser.finish_parse = function (parser)
+		print("close_file")
+
 		local file = parser.file
-				
-		file:close()
+		
+		if file then		
+			file:close()
+		end
 
 		parser.part.file_size = size
 
@@ -178,8 +199,6 @@ multipart_parser = function(boundary, callback)
 
 		table.insert(parser.parts, part)
 		table.insert(parser.files, parser.file)
-
-		utils.print_r(parser.parts)
 	end
 
 	parser.parse_header = function(parser, headers)
@@ -189,6 +208,7 @@ multipart_parser = function(boundary, callback)
 		string.gsub(headers, '(.-)\r\n', function(line)
 			-- print(line)
 			string.gsub(line, '(%S+):%s*(.*)', function(k, v)
+				parser.state = 2
 				if (k == "Content-Type") then
 					part.content_type = v
 				elseif (k == "Content-Disposition") then
@@ -198,8 +218,11 @@ multipart_parser = function(boundary, callback)
 			end)
 		end)
 
-		parser.part = part
-		print("filename="..part.filename);
+		if (parser.state == 2) then
+			parser.part = part
+		end
+		-- print("filename="..part.filename);
+		-- utils.print_r(part)
 	end
 
 	-- parser.parse_body = function(parser)
@@ -220,10 +243,28 @@ multipart_parser = function(boundary, callback)
 		-- 	print("run in parse: 2");
 		-- 	parser.state, buffer = parser:parse_body()
 		-- end
+
 		if (data == '') then
 			return 0
 		end
-		parser:parse_header0(data)
+
+		local has_boundary = string.find(data, boundary)
+
+		if has_boundary then
+			first_buf = data
+			second_buf = ''
+		else
+			local len = string.len(data)
+			local boundary_len = string.len(boundary)
+			first_buf = string.sub(data, 1, len - boundary_len)
+			second_buf = string.sub(data, len - boundary_len + 1)
+		end
+
+		local new_data = parser.buffer .. data
+
+		parser:parse_header0(new_data)
+
+		parser.buf = second_buf
 
 		return 0 -- success
 	end
