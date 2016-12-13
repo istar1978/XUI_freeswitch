@@ -165,7 +165,8 @@ class DictPage extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(dt),
-			success: function () {
+			success: function (data) {
+				console.log(data.ress);
 				_this.setState({dt: dt, errmsg: {key: "Saved at", time: Date()}})
 			},
 			error: function(msg) {
@@ -242,7 +243,7 @@ class DictPage extends React.Component {
 
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={dt.description}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="d" defaultValue={dt.d}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formOrder">
