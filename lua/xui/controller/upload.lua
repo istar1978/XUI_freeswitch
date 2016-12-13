@@ -72,7 +72,7 @@ post('/', function(params)
 	end
 
 	boundary=string.gsub(ctype, "^.*boundary=([^;]+).*$", "%1")
-	-- print("boundary: " .. boundary)
+	print("boundary: " .. boundary)
 
 	if (not multipart) then
 		filename = utils.tmpname('upload-')
@@ -106,7 +106,7 @@ post('/', function(params)
 
 			if parser and parser.parts then
 				xdb.bind(xtra.dbh)
-
+				utils.print_r(parser.parts)
 				for k, v in pairs(parser.parts) do
 					local record = {}
 					record.name = v.filename
