@@ -314,17 +314,14 @@ class DictsPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/dicts", "", function(data) {
-			console.log("dt", data)
-			_this.setState({rows: data});
-		}, function(e) {
-			console.log("get dicts ERR");
-		});
 
 		var realm = this.props.location.query.realm;
 		console.log(realm);
-		console.log("klsdjfasfd==================", this.props.location.query)
-        $.getJSON("/api/dicts" + "?realm=" + realm, "", function(data) {
+		let url = "/api/dicts";
+
+		if (realm) url = url + "?realm=" + realm;
+
+        $.getJSON(url, "", function(data) {
 			console.log("dt", data)
 			_this.setState({rows: data});
 		}, function(e) {
@@ -332,7 +329,22 @@ class DictsPage extends React.Component {
 		});
 	}
 
-	handleFSEvent(v, e) {
+	handleRealmClick(e) {
+		const _this = this;
+		console.log("realm clicked", e.target);
+		var realm = e.target.getAttribute("data");
+
+		console.log(realm);
+		let url = "/api/dicts";
+
+		if (realm) url = url + "?realm=" + realm;
+
+        $.getJSON(url, "", function(data) {
+			console.log("dt", data)
+			_this.setState({rows: data});
+		}, function(e) {
+			console.log("get dicts ERR");
+		});
 	}
 
 	handleDictAdded(route) {
@@ -351,7 +363,7 @@ class DictsPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td>{row.realm}</td>
+					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={_this.handleRealmClick.bind(_this)} data={row.realm}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
 					<td>{row.v}</td>
 					<td>{row.d}</td>
