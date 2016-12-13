@@ -40,7 +40,7 @@ multipart_parser = function(boundary, callback)
 	parser.part = {}
 	parser.parts = {}
 	parser.file = {}
-	parser.files = {}
+	-- parser.files = {}
 	parser.state = 0
 	parser.data = ''
 
@@ -187,7 +187,7 @@ multipart_parser = function(boundary, callback)
 		part.headers = parser.part.headers
 
 		table.insert(parser.parts, part)
-		table.insert(parser.files, parser.file)
+		-- table.insert(parser.files, parser.file)
 
 		-- parser.boundary = nil
 		parser.file = nil
