@@ -36,21 +36,50 @@ multipart_parser = function(boundary, callback)
 	parser.callback = callback
 	-- parser.state = 0
 	parser.buffer = ''
+	parser.buffer_len = 0
 	parser.part = {}
 	parser.parts = {}
 	parser.file = {}
-	parser.files = {}
+	-- parser.files = {}
 	parser.state = 0
-	parser.buffer = ''
+	parser.data = ''
+
+	function save_data(data)
+		-- body
+		if parser.data then
+			parser.data = parser.data .. data
+			-- print("test 1: " .. parser.data)
+		else
+			parser.data = data
+			-- print("test 2: " .. parser.data)
+		end
+	end
+
+	function get_data(data)
+		if parser.data then
+			return (parser.data .. data)
+		else
+			return data
+		end
+	end
+
+	function clean_data()
+		-- body
+		parser.data = nil
+	end
 
 	parser.parse_header0 = function(parser, buffer)
 		local header_pos = 1
 
-		local bstart, bend = string.find(buffer, boundary)
+		local bstart, bend = string.find(buffer, parser.boundary)
 		if (not bend) then
 				-- waiting for boundary
+			if parser.state == 0 then
+				save_data(buffer)
+			else
+				parser.write_file(parser, buffer)
+			end
 
-			parser.write_file(parser, buffer)
 			return 0
 		end
 
@@ -63,11 +92,13 @@ multipart_parser = function(boundary, callback)
 			if (parser.state == 0 or parser.state == 1) then
 
 				parser.state = 1
-				parser.buffer = ''
+				-- parser.buffer = ''
 
 				local hstart, hend = string.find(buffer, '\r\n\r\n', header_pos)
 
 				if (not hend) then
+					local left_buf = string.sub(buffer, header_pos)
+					save_data(left_buf)
 					break
 				end
 
@@ -75,22 +106,20 @@ multipart_parser = function(boundary, callback)
 				local part = parser.parse_header(parser, headers)
 
 				if (parser.state == 1) then
-					print(header_pos)
-					print(hend)
 					parser.write_file(parser, string.sub(buffer, header_pos, hend))
 					header_pos = hend + 1
 
-					bstart, bend = string.find(buffer, boundary, header_pos)
+					bstart, bend = string.find(buffer, parser.boundary, header_pos)
 				elseif (parser.state == 2) then 
 					parser.create_file(parser)
 
 					header_pos = hend + 1
 
-					bstart, bend = string.find(buffer, boundary, header_pos)
+					bstart, bend = string.find(buffer, parser.boundary, header_pos)
 
 					if bend then
 						-- The data will be saved in next loop, so do nothing here.
-						bstart, bend = string.find(buffer, boundary, header_pos)
+						bstart, bend = string.find(buffer, parser.boundary, header_pos)
 					else
 						parser.write_file(parser, string.sub(buffer, header_pos))
 					end
@@ -103,6 +132,9 @@ multipart_parser = function(boundary, callback)
 				header_pos = bstart
 
 				parser.finish_parse(parser)
+
+				local left_buf = string.sub(buffer, header_pos)
+				save_data(left_buf)
 			end
 		end
 	end
@@ -122,13 +154,19 @@ multipart_parser = function(boundary, callback)
 
 	parser.write_file = function (parser, buffer)
 		local file = parser.file
-		if file then 
+		if file and (not buffer or string.len(buffer) > 0) then 
+			local len = string.len(buffer)
+			if (len <= 1) then
+				return 0
+			end
 			file:write(buffer)
 			size = size + string.len(buffer)
 		end
 	end
 
 	parser.finish_parse = function (parser)
+		print("finish_parse")
+
 		local file = parser.file
 		
 		if file then		
@@ -149,7 +187,11 @@ multipart_parser = function(boundary, callback)
 		part.headers = parser.part.headers
 
 		table.insert(parser.parts, part)
-		table.insert(parser.files, parser.file)
+		-- table.insert(parser.files, parser.file)
+
+		-- parser.boundary = nil
+		parser.file = nil
+		parser.part.file_size = 0
 	end
 
 	parser.parse_header = function(parser, headers)
@@ -180,23 +222,56 @@ multipart_parser = function(boundary, callback)
 			return 0
 		end
 
-		local has_boundary = string.find(data, boundary)
+		local old_data = data
 
-		if has_boundary then
-			first_buf = data
-			second_buf = ''
-		else
-			local len = string.len(data)
-			local boundary_len = string.len(boundary)
-			first_buf = string.sub(data, 1, len - boundary_len)
-			second_buf = string.sub(data, len - boundary_len + 1)
+		data = get_data(data)
+		local len = string.len(data)
+		local min_len = 60
+
+		if parser.boundary then
+			min_len = string.len(parser.boundary) + 1
 		end
 
-		local new_data = parser.buffer .. data
+		-- if (parser.buffer) then len = len + string.len(parser.boundary) end
+		if (len + parser.buffer_len <=  min_len) then
+			save_data(old_data)
+			return 0
+		-- else
+		-- 	clean_data()
+		end
 
+
+
+
+		data = parser.buffer .. data
+		local has_boundary = string.find(data, parser.boundary)
+
+		if has_boundary then
+			local bstart, bend = string.find(data, parser.boundary)
+			local has_header = string.find(data, '\r\n\r\n', bstart)
+
+			if (parser.state == 0 and (not has_header)) then
+				save_data(old_data)
+				return 0
+			end
+
+			first_buf = data
+			second_buf = ''
+			parser.buffer_len = 0
+		else
+			local len = string.len(data)
+			local boundary_len = string.len(parser.boundary)
+			first_buf = string.sub(data, 1, len - boundary_len)
+			second_buf = string.sub(data, len - boundary_len + 1)
+			parser.buffer_len = boundary_len
+		end
+
+		clean_data()
+
+		local new_data = first_buf
 		parser:parse_header0(new_data)
 
-		parser.buf = second_buf
+		parser.buffer = second_buf
 
 		return 0 -- success
 	end
