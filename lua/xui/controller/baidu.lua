@@ -52,5 +52,33 @@ utils.print_r(obj)
 
 	print(url)
 
-	return obj
+	local api = freeswitch.API()
+	local ret = api:execute("curl", url .. " timeout 3")
+	print(ret)
+
+	local response = utils.json_decode(ret)
+
+	utils.print_r(response)
+
+	dict = {}
+	dict.v = response.access_token
+
+	ret = xdb.update_by_cond("dicts", {realm = 'BAIDU', k = 'ACCTOKEN'}, dict)
+
+	if ret == 1 then
+		dict.k = "ACCTOKEN"
+		return dict
+	else
+		return 500
+	end
+end)
+
+
+put("tts", function(params)
+	url = "..."
+
+	local api = freeswitch.API()
+	local ret = api:execute("curl", url .. " timeout 3")
+	print(ret)
+
 end)

@@ -45,6 +45,7 @@ class SystemPage extends React.Component {
 	}
 
 	fetchACCKEY() {
+		const _this = this;
 		$.ajax({
 			type: "PUT",
 			url: "/api/baidu/acckey",
@@ -52,7 +53,17 @@ class SystemPage extends React.Component {
 			contentType: "application/json",
 			data: null,
 			success: function (obj) {
-				console.log('obj');
+				console.log(obj);
+				const rows = _this.state.rows.map(function(row) {
+					if (row.k == obj.k) {
+						row.v = obj.v;
+						return row;
+					} else {
+						return row;
+					}
+				});
+
+				_this.setState({rows: rows});
 			},
 			error: function(msg) {
 				console.error("sip_profile", msg);
@@ -89,7 +100,7 @@ class SystemPage extends React.Component {
 						classLoading="loading"
 						classInvalid="invalid"/>
 
-					{row.k == "ACCKEY" ? <Button onClick={_this.fetchACCKEY.bind(_this)}><T.span text="Fetch"/></Button> : null}
+					{row.k == "ACCTOKEN" ? <Button onClick={_this.fetchACCKEY.bind(_this)}><T.span text="Fetch"/></Button> : null}
 				</Col>
 			</Row>
 		});
