@@ -56,6 +56,9 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/media_files" key="M_MEDIA_FILES">
 				<NavItem eventKey="M_MEDIA_FILES"><T.span text="Media Files"/></NavItem>
 			</LinkContainer>
+			<LinkContainer to="/settings/system" key="M_SYSTEM">
+				<NavItem eventKey="M_SYSTEM"><T.span text="System"/></NavItem>
+			</LinkContainer>
 			<LinkContainer to="/settings/dicts" key="M_DICTS">
 				<NavItem eventKey="M_DICTS"><T.span text="Dicts"/></NavItem>
 			</LinkContainer>

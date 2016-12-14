@@ -165,7 +165,8 @@ class DictPage extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(dt),
-			success: function () {
+			success: function (data) {
+				console.log(data.ress);
 				_this.setState({dt: dt, errmsg: {key: "Saved at", time: Date()}})
 			},
 			error: function(msg) {
@@ -242,7 +243,7 @@ class DictPage extends React.Component {
 
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={dt.description}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="d" defaultValue={dt.d}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formOrder">
@@ -313,7 +314,14 @@ class DictsPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/dicts", "", function(data) {
+
+		var realm = this.props.location.query.realm;
+		console.log(realm);
+		let url = "/api/dicts";
+
+		if (realm) url = url + "?realm=" + realm;
+
+        $.getJSON(url, "", function(data) {
 			console.log("dt", data)
 			_this.setState({rows: data});
 		}, function(e) {
@@ -321,7 +329,22 @@ class DictsPage extends React.Component {
 		});
 	}
 
-	handleFSEvent(v, e) {
+	handleRealmClick(e) {
+		const _this = this;
+		console.log("realm clicked", e.target);
+		var realm = e.target.getAttribute("data");
+
+		console.log(realm);
+		let url = "/api/dicts";
+
+		if (realm) url = url + "?realm=" + realm;
+
+        $.getJSON(url, "", function(data) {
+			console.log("dt", data)
+			_this.setState({rows: data});
+		}, function(e) {
+			console.log("get dicts ERR");
+		});
 	}
 
 	handleDictAdded(route) {
@@ -340,7 +363,7 @@ class DictsPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td>{row.realm}</td>
+					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={_this.handleRealmClick.bind(_this)} data={row.realm}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
 					<td>{row.v}</td>
 					<td>{row.d}</td>
