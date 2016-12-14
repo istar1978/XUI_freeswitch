@@ -48,8 +48,9 @@ import CallsPage from "./page_calls";
 import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
 import Conferences from './conferences';
+import SystemPage from './page_system';
 import Settings from './settings';
-import {UsersPage, UserPage} from './page_users';
+import { UsersPage, UserPage } from './page_users';
 import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { GatewaysPage, GatewayPage } from './page_gateways';
@@ -160,6 +161,7 @@ const Home = React.createClass({
 						<IndexRoute components={{sidebar: Settings, main: MediaFilesPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: MediaFilePage}}/>
 					</Route>
+					<Route path="system" components={{sidebar: Settings, main: SystemPage}}/>
 				</Route>
 			</Route>
 		</Router>
