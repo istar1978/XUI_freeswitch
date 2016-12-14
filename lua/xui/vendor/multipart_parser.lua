@@ -39,12 +39,7 @@ multipart_parser = function(boundary, callback)
 	parser.buffer_len = 0
 	parser.part = {}
 	parser.parts = {}
-<<<<<<< HEAD
-	parser.file = {}
-	-- parser.files = {}
-=======
 	parser.file = nil
->>>>>>> 268b17b80758cf023e5dcff8d2990c9cf17a3d4c
 	parser.state = 0
 	parser.data = ''
 
@@ -113,13 +108,8 @@ multipart_parser = function(boundary, callback)
 					parser.write_file(parser, string.sub(buffer, header_pos, hend))
 					header_pos = hend + 1
 
-<<<<<<< HEAD
 					bstart, bend = string.find(buffer, parser.boundary, header_pos)
 				elseif (parser.state == 2) then 
-=======
-					bstart, bend = string.find(buffer, boundary, header_pos)
-				elseif (parser.state == 2) then
->>>>>>> 268b17b80758cf023e5dcff8d2990c9cf17a3d4c
 					parser.create_file(parser)
 
 					header_pos = hend + 1
@@ -163,7 +153,7 @@ multipart_parser = function(boundary, callback)
 
 	parser.write_file = function (parser, buffer)
 		local file = parser.file
-		if file and (not buffer or string.len(buffer) > 0) then 
+		if file and (buffer or string.len(buffer) > 0) then
 			file:write(buffer)
 			size = size + string.len(buffer)
 		end
