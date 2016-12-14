@@ -44,8 +44,6 @@ put("/acckey", function(params)
 		end
 	end
 
-utils.print_r(obj)
-
 	local url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&" ..
 		"&client_id=" .. obj.APPKEY ..
 		"&client_secret=" .. obj.SECKEY
@@ -99,7 +97,7 @@ post("/tts", function(params)
 
         local response = utils.json_decode(ret)
 	local dest = response.access_token
-	
+
 	local url = "http://tsn.baidu.com/text2audio?tex=" .. params.request.input ..
                 "&lan=" .. "zh" ..
                 "&cuid=" .. "78-0C-B8-C7-52-F9" ..
@@ -110,7 +108,7 @@ post("/tts", function(params)
 	freeswitch.consoleLog("err",url..config.upload_path)
 	--os.execute("curl -q '"  .. url .. "' > /usr/local/freeswitch/xui/upload/ivr.mp3")
 
-        os.execute("curl -q '" .. url .. "'> "..filename..".mp3")
+    os.execute("curl -q '" .. url .. "'> "..filename..".mp3")
 
 	print(filename)
 
@@ -125,9 +123,7 @@ post("/tts", function(params)
         record.dir_path = config.upload_path
         record.channel_uuid = env:getHeader("Core-UUID")
 	record.created_epoch = "" .. os.time()
-                                        
         local media_file = xdb.create_return_object('media_files', record)
 	return media_file
 
 end)
-

@@ -46,8 +46,8 @@ class NewMediaFile extends React.Component {
 		super(props);
 
 		this.last_id = 0;
-		this.state = {errmsg: '', mfile: {}};
-
+		this.state = {errmsg: '', mfile: {},formShow: false, rows: []};
+		// this.state = { formShow: false, rows: [], danger: false};
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -57,41 +57,27 @@ class NewMediaFile extends React.Component {
 
 		console.log("submit...");
 		var mfile = form2json('#newMediaFileForm');
+		console.log(mfile.input);
 
-		if (!mfile.name) {
+		if (!mfile.input) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
 
 		$.ajax({
 			type: "POST",
-			url: "/api/media_files",
+			url: "/api/baidu/tts",
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(mfile),
 			success: function (obj) {
-				mfile.id = obj.id;
-				_this.props["data-handleNewMediaFileAdded"](mfile);
+				_this.props["data-handleNewMediaFileAdded"](obj);
+				var rows = _this.state.rows;
+				_this.setState({rows:rows, formShow: false});
 			},
 			error: function(msg) {
-				console.error("media_file", msg);
+				console.error("route", msg);
 			}
-		});
-	}
-
-	onDrop (acceptedFiles, rejectedFiles) {
-		console.log('Accepted files: ', acceptedFiles);
-		console.log('Rejected files: ', rejectedFiles);
-
-		let data = new FormData()
-		data.append('file', acceptedFiles[0])
-
-		fetch('/api/upload', {
-			method: 'POST',
-			body: data
-		}).then(function(json) {
-			console.log("blah");
-			console.log("xxxx", json);
 		});
 	}
 
@@ -108,34 +94,20 @@ class NewMediaFile extends React.Component {
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Media File" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="百度TTS" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 			<Form horizontal id="newMediaFileForm">
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="mfile1" /></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formDescription">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
-					<Col sm={10}><FormControl type="input" name="description" placeholder="Description ..." /></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formFile">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="File"/></Col>
-					<Col sm={10}>
-						<Dropzone onDrop={this.onDrop}>
-							<div>Try dropping some files here, or click to select files to upload.</div>
-						</Dropzone>
-					</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="TTS文本" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="input" placeholder="input" /></Col>
 				</FormGroup>
 
 				<FormGroup>
 					<Col smOffset={2} sm={10}>
 						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
 							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
-							<T.span text="Save" />
+							<T.span text="生成" />
 						</Button>
 						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
 					</Col>
@@ -172,7 +144,7 @@ class MediaFilePage extends React.Component {
 		var _this = this;
 
 		console.log("submit...");
-		var mfile = form2json('#newMediaFileForm');
+		var mfile = form2json('#newMediaFilesForm');
 
 		if (!mfile.name) {
 			this.setState({errmsg: "Mandatory fields left blank"});
@@ -312,7 +284,7 @@ class MediaFilePage extends React.Component {
 			<h1>{mfile.name} <small>{mfile.extn}</small></h1>
 			<hr/>
 
-			<Form horizontal id="newMediaFileForm">
+			<Form horizontal id="newMediaFilesForm">
 				<input type="hidden" name="id" defaultValue={mfile.id}/>
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
@@ -322,6 +294,11 @@ class MediaFilePage extends React.Component {
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={mfile.description}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="路径"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="abs_path" defaultValue={mfile.abs_path}/></Col>
 				</FormGroup>
 			</Form>
 
@@ -350,6 +327,10 @@ class MediaFilesPage extends React.Component {
 			// this.setState({ formShow: true});
 			this.dropzone.open();
 		}
+
+		if (data == "ivr") {
+			this.setState({ formShow: true});
+		};
 	}
 
 	handleDelete(e) {
@@ -401,9 +382,9 @@ class MediaFilesPage extends React.Component {
 	handleFSEvent(v, e) {
 	}
 
-	handleMediaFileAdded(row) {
+	handleMediaFileAdded(roww) {
 		var rows = this.state.rows;
-		rows.push(row);
+		rows.push(roww);
 		this.setState({rows: rows, formShow: false});
 	}
 
@@ -498,7 +479,14 @@ class MediaFilesPage extends React.Component {
 			<div className="controls">
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="new" text="New" />
+					<T.span onClick={this.handleControlClick} data="new" text="Upload" />
+				</Button>
+			</div>
+
+			<div className="controls">
+				<Button>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="ivr" text="TTS" />
 				</Button>
 			</div>
 

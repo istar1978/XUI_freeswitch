@@ -303,6 +303,36 @@ class DictsPage extends React.Component {
 		});
 	}
 
+	handleSortClick(e) {
+		var data = e.target.getAttribute("data");
+		console.log("data", data);
+		var rows = this.state.rows;
+
+		if (data == "realm") {
+			rows.sort(function(a,b){
+				return (a.realm[0].toLowerCase().charCodeAt() - b.realm[0].toLowerCase().charCodeAt());
+			})
+
+			this.setState({rows: rows});
+		}
+
+		if (data == "key") {
+			rows.sort(function(a,b){
+				return (a.k[0].toLowerCase().charCodeAt() - b.k[0].toLowerCase().charCodeAt());
+			})
+
+			this.setState({rows: rows});
+		}
+
+		if (data == "order") {
+			rows.sort(function(a,b){
+				return parseInt(b.o) - parseInt(a.o);
+			})
+
+			this.setState({rows: rows});
+		};
+	}
+
 	handleClick(x) {
 	}
 
@@ -386,11 +416,11 @@ class DictsPage extends React.Component {
 				<tbody>
 				<tr>
 					<th><T.span text="ID"/></th>
-					<th><T.span text="Realm"/></th>
-					<th><T.span text="Key"/></th>
+					<th><T.span text="Realm" onClick={this.handleSortClick.bind(this)} data="realm" /></th>
+					<th><T.span text="Key" onClick={this.handleSortClick.bind(this)} data="key" /></th>
 					<th><T.span text="Value"/></th>
 					<th><T.span text="Description"/></th>
-					<th><T.span text="Order"/></th>
+					<th><T.span text="Order" onClick={this.handleSortClick.bind(this)} data="order" /></th>
 					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
