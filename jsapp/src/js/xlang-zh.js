@@ -43,6 +43,8 @@ LANGUAGES["zh"] = {
 
 	New: "新建",
 	Delete: "删除",
+	"Export SVG": "导出 SVG",
+	"Export Lua": "导出 Lua",
 	Save: "保存",
 	Close: "关闭",
 	Submit: "提交",
