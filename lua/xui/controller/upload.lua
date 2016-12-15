@@ -41,7 +41,7 @@ post('/', function(params)
 
 	print("ctype: "..ctype.." content_length: "..content_length.."\n");
 
-	local max_body_size = 50 * 1024 * 1024
+	local max_body_size = 100 * 1024 * 1024
 
 	if content_length == 0 or content_length > max_body_size then
 		print("Max body size " .. max_body_size)
@@ -80,7 +80,7 @@ post('/', function(params)
 	end
 
 	while received < size do
-		local x = stream:read()
+		local x = stream_read()
 		local len = x:len()
 		received = received + len
 
