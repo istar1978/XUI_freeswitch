@@ -30,6 +30,11 @@
  */
 ]]
 
+function stream_read()
+	collectgarbage("collect")
+	return stream:read()
+end
+
 multipart_parser = function(boundary, callback)
 	local parser = {}
 	parser.boundary = boundary
@@ -133,8 +138,8 @@ multipart_parser = function(boundary, callback)
 
 				parser.finish_parse(parser)
 
-				local left_buf = string.sub(buffer, header_pos)
-				save_data(left_buf)
+				-- local left_buf = string.sub(buffer, header_pos)
+				-- save_data(left_buf)
 			end
 		end
 	end
@@ -154,12 +159,11 @@ multipart_parser = function(boundary, callback)
 
 	parser.write_file = function (parser, buffer)
 		local file = parser.file
-		if file and (not buffer or string.len(buffer) > 0) then 
-			local len = string.len(buffer)
-			if (len <= 1) then
-				return 0
-			end
+		if file and (buffer or string.len(buffer) > 0) then
+			print("1 write")
+			collectgarbage("collect")
 			file:write(buffer)
+			print("2 write")
 			size = size + string.len(buffer)
 		end
 	end
@@ -239,9 +243,6 @@ multipart_parser = function(boundary, callback)
 		-- else
 		-- 	clean_data()
 		end
-
-
-
 
 		data = parser.buffer .. data
 		local has_boundary = string.find(data, parser.boundary)
