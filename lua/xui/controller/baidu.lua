@@ -73,7 +73,7 @@ utils.print_r(obj)
 	end
 end)
 
-put("/tts", function(params)
+post("/tts", function(params)
 	print(serialize(params))
 	n, dicts = xdb.find_by_cond("dicts", {realm = 'BAIDU'});
         local obj = {}
