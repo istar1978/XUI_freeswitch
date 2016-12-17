@@ -1,7 +1,7 @@
 <configuration name="verto.conf" description="HTML5 Verto Endpoint">
 
   <settings>
-    <param name="debug" value="10"/>
+    <param name="debug" value="0"/>
     <param name="enable-fs-events" value="true"/>
     <!-- <param name="enable-presence" value="true"/> -->
   </settings>
