@@ -100,14 +100,14 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="fsSessionPlay">
           <value name="args">
             <shadow type="text">
-             <field name="PLAY"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
         </block>
 	<block type="fsSessionSpeak">
           <value name="args">
            <shadow type="text">
-            <field name="SPEAK"></field>
+            <field name="TEXT"></field>
            </shadow>
          </value>
         </block>
