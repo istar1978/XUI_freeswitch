@@ -1,9 +1,9 @@
 <configuration name="cdr_sqlite.conf" description="SQLite CDR">
   <settings>
     <!-- SQLite database name (.db suffix will be automatically appended) -->
-    <!-- <param name="db-name" value="cdr"/> -->
+    <param name="db-name" value="xui"/>
     <!-- CDR table name -->
-    <!-- <param name="db-table" value="cdr"/> -->
+    <param name="db-table" value="cdrs"/>
     <!-- Log a-leg (a), b-leg (b) or both (ab) -->
     <param name="legs" value="a"/>
     <!-- Default template to use when inserting records -->

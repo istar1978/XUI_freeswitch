@@ -4,6 +4,8 @@ LANGUAGES["zh"] = {
 	Show: "Show",
 	Blocks: "Blocks",
 	Conferences: "会议",
+	CDRs: "话单",
+	CDR: "话单",
 	About: "关于",
 	Phone: "电话",
 	Settings: "设置",

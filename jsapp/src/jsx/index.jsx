@@ -40,6 +40,7 @@ import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-ro
 import Languages from "./languages";
 import MainMenu from './main-menu';
 import FSShow from "./fs_show";
+import CDRsPage from "./page_cdrs";
 import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
 import OverViewPage from "./page_overview";
@@ -67,6 +68,7 @@ const MENUS = [
 	{id: "MM_SHOW", description: <T.span text={{ key: "Show"}} />, data: '/show'},
 	{id: "MM_BLOCKS", description: <T.span text={{ key: "Blocks"}} />, data: '/blocks'},
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: '/conferences'},
+	{id: "MM_CDRS", description: <T.span text={{ key: "CDR"}} />, data: '/cdrs'},
 	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: '/about'}
 ];
 
@@ -124,6 +126,7 @@ const Home = React.createClass({
 				<Route path="sofia" components = {{sidebar: DashBoard, main: SofiaPage}}/>
 
 				<Route path="show" component={FSShow} />
+				<Route path="cdrs" component={CDRsPage} />
 
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>
