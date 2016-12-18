@@ -77,7 +77,7 @@ end
 
 function build_profile(profile)
 	local settings = ""
-	local cond = {realm = 'sip_profile', disabled = 'false', ref_id = profile.id}
+	local cond = {realm = 'sip_profile', disabled = 0, ref_id = profile.id}
 	local gateways = ""
 
 	-- only works on public for now
