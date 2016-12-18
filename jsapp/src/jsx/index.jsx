@@ -65,8 +65,6 @@ const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
 
 const MENUS = [
-	{id: "MM_SHOW", description: <T.span text={{ key: "Show"}} />, data: '/show'},
-	{id: "MM_BLOCKS", description: <T.span text={{ key: "Blocks"}} />, data: '/blocks'},
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: '/conferences'},
 	{id: "MM_CDRS", description: <T.span text={{ key: "CDR"}} />, data: '/cdrs'},
 	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: '/about'}
@@ -131,11 +129,6 @@ const Home = React.createClass({
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>
 
-				<Route path="blocks">
-					<IndexRoute component={BlocksPage}/>
-					<Route path=":id" component={BlockPage}/>
-				</Route>
-
 				<Route path="conferences" component={Conferences} />
 
 				<Route path="settings">
@@ -159,6 +152,10 @@ const Home = React.createClass({
 					<Route path="routes">
 						<IndexRoute components={{sidebar: Settings, main: RoutesPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: RoutePage}}/>
+					</Route>
+					<Route path="blocks">
+						<IndexRoute components={{sidebar: Settings, main: BlocksPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: BlockPage}}/>
 					</Route>
 					<Route path="media_files">
 						<IndexRoute components={{sidebar: Settings, main: MediaFilesPage}}/>

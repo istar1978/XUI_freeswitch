@@ -64,13 +64,13 @@ class BlockPage extends React.Component {
 
 				blocklyDiv.style.left = x + 'px';
 				blocklyDiv.style.top = y + 'px';
-				blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+				// blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
 				blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
 			} else if (blocklyDiv.offset) {
 				console.log('offset');
 				console.log("offset", blocklyArea.offsetWidth);
 				console.log("offset", blocklyArea.offsetHeight);
-				blocklyDiv.width(window.innerWidth - 40);
+				// blocklyDiv.width(window.innerWidth - 40);
 				blocklyDiv.height(window.innerHeight - blocklyDiv.offset().top - 100);
 			}
 		};
@@ -765,7 +765,7 @@ class BlocksPage extends React.Component {
 		let rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/blocks/${row.id}`}>{row.name}</Link></td>
+					<td><Link to={`/settings/blocks/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.created_at}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
