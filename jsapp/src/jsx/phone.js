@@ -283,7 +283,7 @@ var Phone = React.createClass({
 			{xtopDisplay}
 			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
-				<div id="zm-phone">{verto.options.login}&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
+				<div id="zm-phone">{verto.options.login}&nbsp;{this.state.cidname} <T.span text={this.state.callState}/></div>
 				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;

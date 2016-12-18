@@ -23,6 +23,13 @@ LANGUAGES["zh"] = {
 	Hangup: "挂断",
 	Audio: "音频",
 	Video: "视频",
+	Idle: "空闲",
+	Trying: "呼叫...",
+	Ringing: "振铃...",
+	Active: "通话中",
+	Busy: "通话中",
+	Held: "保持",
+
 
 	Conference: "会议",
 	Mute: "静音",
