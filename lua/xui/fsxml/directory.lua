@@ -30,6 +30,23 @@
  */
 ]]
 
+if not params then
+	XML_STRING = [[<domain name="]] .. '$${domain}' .. [[">]]
+
+	xdb.find_all("users", nil, function(row)
+		XML_STRING = XML_STRING .. [[<users><user id="]] .. row.extn .. [[">]] ..
+		[[<variables>]] ..
+		[[<variable name="user_context" value="default"/>]] ..
+		[[<variable name="effective_caller_id_name" value="]] .. row.extn .. [["/>]] ..
+		[[<variable name="effective_caller_id_number" value="]] .. row.extn .. [["/>]] ..
+		[[</variables>]] ..
+		[[</user></users>]]
+	end)
+
+	XML_STRING = XML_STRING .. [[</domain>]]
+	return XML_STRING
+end
+
 local user = params:getHeader("user")
 local domain = params:getHeader("domain")
 local purpose = params:getHeader("purpose")
