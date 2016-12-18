@@ -39,6 +39,7 @@ class BlockPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.workspace = null;
+		this.onresize = null;
 		this.fs_file_path_dropdown_data = null;
 		this.state = {block: {name: "Loading ..."}};
 	}
@@ -47,7 +48,7 @@ class BlockPage extends React.Component {
 		console.log("did mount", this.props);
 		var _this = this;
 
-		var onresize = function() {
+		this.onresize = function() {
 			var blocklyDiv = $('#blocks');
 			var blocklyArea = $('#main');
 
@@ -463,8 +464,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			body.appendChild(script);
 
 			setTimeout(init_blockly, 1000);
-			window.addEventListener('resize', onresize, false);
-			onresize();
+			window.addEventListener('resize', this.onresize, false);
+			this.onresize();
 			// Blockly.svgResize(workspace);
 		} else {
 			$.get('/api/media_files', function(obj) {
@@ -497,8 +498,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 
 			load_toolbox();
 			_this.workspace = init_blockly();
-			onresize();
-			window.addEventListener('resize', onresize, false);
+			this.onresize();
+			window.addEventListener('resize', this.onresize, false);
 			Blockly.svgResize(_this.workspace);
 
 			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
@@ -605,6 +606,10 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		if (this.workspace) {
 			this.workspace.dispose();
 			this.workspace = null;
+		}
+
+		if (this.onresize) {
+			window.removeEventListener('resize', this.onresize);
 		}
 	}
 
