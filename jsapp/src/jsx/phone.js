@@ -99,16 +99,14 @@ var Phone = React.createClass({
 		}
 	},
 
-	handleTopCall: function() {
-		console.log("blah")
-		$('#dest_number').val($('#top_dest_number').val());
-		this.handleCall();
+	handleDestNumberChange: function(e) {
+		this.setState({destNumber: e.target.value});
 	},
 
 	handleCall: function() {
-		var number = $('#dest_number').val();
-		if (number == '') {
-			$('#dest_number').val(localStorage["phone.destNumber"]);
+		var number = this.state.destNumber;
+		if (!number) {
+			this.setState({destNumber: localStorage.getItem("phone.destNumber")});
 			return;
 		}
 
@@ -148,13 +146,9 @@ var Phone = React.createClass({
 			if (this.state.curCall) {
 				this.state.curCall.dtmf(dtmf);
 			} else {
-				var obj = document.getElementById("dest_number");
-				var text = obj.value + "" + dtmf;
-				obj.value = text;
-				// what's the hell?
-				// const destNumber = this.state.destNumber + dtmf;
-				// console.log("destNumber", destNumber);
-				// this.setState({destNumber: destNumber});
+				const destNumber = this.state.destNumber + dtmf;
+				console.log("destNumber", destNumber);
+				this.setState({destNumber: destNumber});
 			}
 		}
 	},
@@ -167,10 +161,13 @@ var Phone = React.createClass({
 		window.addEventListener("verto-login", this.handleVertoLogin);
 		window.addEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.addEventListener("verto-dialog-state", this.handleVertoDialogState);
+
 		if (verto_loginState) this.handleVertoLogin();
 
-		this.state.displayStyle = localStorage.getItem('phone.displayStyle');
-		this.setState({displayStyle: this.state.displayStyle});
+		this.setState({
+			displayStyle: localStorage.getItem('phone.displayStyle'),
+			destNumber: localStorage.getItem('phone.destNumber')
+		});
 	},
 
 	componentWillUnmount: function() {
@@ -242,11 +239,12 @@ var Phone = React.createClass({
 		if (this.state.displayStyle == "xtop") {
 			xtopDisplay = <span>
 				{audioOrVideo}
-				<input id='top_dest_number' style={{color: "#FFF", border: 0, backgroundColor: "#333", width: "80pt", textAlign: "right"}}/>
+				<input id='top_dest_number' value={this.state.destNumber} onChange={this.handleDestNumberChange}
+					style={{color: "#FFF", border: 0, backgroundColor: "#333", width: "80pt", textAlign: "right"}}/>
 				&nbsp;&nbsp;
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleTopCall} text="Call" />
+					<T.span onClick={this.handleCall} text="Call" />
 				</Button>
 				&nbsp;&nbsp;
 				{hangupButton}
@@ -259,7 +257,7 @@ var Phone = React.createClass({
 			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
-				<input id="dest_number" name="dest_number" defaultValue={this.state.destNumber}/>
+				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleCall} text="Call" />
