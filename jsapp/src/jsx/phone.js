@@ -144,7 +144,12 @@ var Phone = React.createClass({
 			caller_id_name: '0000',
 			caller_id_number: '0000',
 			useVideo: useVideo,
-			useStereo: true
+			useStereo: true,
+			deviceParams: {
+				useMic: 'any',
+				useSpeak: 'any',
+				useVideo: 'any'
+			}
 		});
 	},
 

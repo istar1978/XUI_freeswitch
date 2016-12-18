@@ -111,13 +111,7 @@ function verto_params() {
 		},
 		iceServers: [
 		// { url: 'stun:[YOUR_STUN_SERVER]',}
-		],
-		// These can be set per-call as well as per-login.
-		deviceParams: {
-			useMic: 'any',
-			useSpeak: 'any',
-			useCamera: 'any'
-		},
+		]
 	}
 }
 
