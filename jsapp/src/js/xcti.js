@@ -35,7 +35,7 @@
 var verto;
 var verto_loginState = false;
 var host = window.location.hostname;
-var domain = localStorage.getItem('domain');
+var domain = localStorage.getItem('xui.domain');
 var LANGUAGES = {}
 
 if (!domain) domain = host;
@@ -99,8 +99,8 @@ var callbacks = {
 
 function verto_params() {
 	var protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
-	var username = localStorage.getItem('username');
-	var password = localStorage.getItem('password');
+	var username = localStorage.getItem('xui.username');
+	var password = localStorage.getItem('xui.password');
 
 	return {
 		login: username + "@" + host,
@@ -282,7 +282,7 @@ function form2json (selector) {
 
 function current_lang()
 {
-	var lang = localStorage.getItem("lang");
+	var lang = localStorage.getItem("xui.lang");
 	if (!lang) lang = window.navigator.userLanguage || window.navigator.language;
 	if (!lang) lang = "en"
 	return lang;

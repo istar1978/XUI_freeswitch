@@ -53,7 +53,7 @@ class Languages extends React.Component {
 
 		console.log("lang", lang);
 		this.setState({lang : lang});
-		localStorage.setItem("lang", lang);
+		localStorage.setItem("xui.lang", lang);
 		location.reload();
 	}
 

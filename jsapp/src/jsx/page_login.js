@@ -56,8 +56,8 @@ const LoginBox = React.createClass({
 	handleClick: function() {
 		let username = $('#username').val();
 		let password = $('#password').val();
-		localStorage.setItem('username', username);
-		localStorage.setItem('password', password);
+		localStorage.setItem('xui.username', username);
+		localStorage.setItem('xui.password', password);
 		verto.loginData(verto_params());
 		verto.login();
 	},
