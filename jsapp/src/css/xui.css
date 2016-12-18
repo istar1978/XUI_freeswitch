@@ -20,7 +20,11 @@
 /* Phone Login State */
 #phone-state.Trying { color:yellow !important; }
 #phone-state.Online { color:lime !important;}
-#phone-state.Busy { color:red !important; }
+#phone-state.Early { color:yellow !important; }
+#phone-state.Ringing { color:yellow !important; }
+#phone-state.Held { color:#ea8619 !important; }
+#phone-state.Active { color:#FFF !important; background-color: #F00;}
+#phone-state.Busy { color:#FFF !important; background-color: #F00;}
 #phone-state.Offline { color:grey !important;}
 
 #conference-controls {

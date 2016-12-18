@@ -68,30 +68,46 @@ var Phone = React.createClass({
 	handleVertoDialogState: function(e) {
 		var d = e.detail;
 
-		this.setState({curCall: d});
-
 		switch (d.state) {
 		case $.verto.enum.state.ringing:
-			this.setState({callState: "Ringing"});
-			this.setState({cidNum: d.params.caller_id_number});
+			this.setState({
+				curCall: d,
+				callState: "Ringing",
+				cidNum: d.params.caller_id_number
+			});
 			break;
 		case $.verto.enum.state.trying:
-			this.setState({callState: "Trying"});
+			this.setState({
+				curCall: d,
+				callState: "Trying"
+			});
 			break;
 		case $.verto.enum.state.early:
-			this.setState({callState: "Early"});
+			this.setState({
+				curCall: d,
+				callState: "Early"
+			});
 			break;
 		case $.verto.enum.state.active:
-			this.setState({callState: "Active"});
-			this.setState({cidName: d.cidString()});
+			this.setState({
+				curCall: d,
+				callState: "Active",
+				cidName: d.cidString()
+			});
 			break;
 		case $.verto.enum.state.hangup:
-			this.setState({callState: "Idle"});
-			this.setState({hangupCause: d.cause});
+			this.setState({
+				curCall: d,
+				callState: "Idle",
+				hangupCause: d.cause
+			});
 			break;
 		case $.verto.enum.state.destroy:
-			this.setState({hangupCause: null});
-			this.setState({curCall: null});
+			this.setState({
+				curCall: null,
+				callState: "Idle",
+				hangupCause: null
+			});
 			break;
 		case $.verto.enum.state.held:
 			break;
@@ -119,7 +135,10 @@ var Phone = React.createClass({
 
 		localStorage.setItem("phone.destNumber", $('#dest_number').val());
 
+		this.setState({callState: "Trying"});
+
 		let useVideo = this.state.useVideo;
+
 		verto.newCall({
 			destination_number: $('#dest_number').val(),
 			caller_id_name: '0000',
@@ -217,21 +236,30 @@ var Phone = React.createClass({
 			state = "Offline"
 		}
 
-		if (this.state.callState != "Idle") {
+		switch(this.state.callState) {
+		case "Trying":
+		case "Active":
+		case "Early":
+		case "Ringing":
+			state = this.state.callState;
+			break;
+		default:
+			break;
+		}
+
+		if (this.state.curCall) {
 			hangupButton = <Button bsStyle="danger" bsSize="xsmall">
 				<i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;
 				<T.span onClick={this.handleHangup} text="Hangup" />
 			</Button>
 		}
 
-		if (this.state.callState != "Active") {
-			audioOrVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
-				<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
-				<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/>
-			</Button>
-		}
+		audioOrVideo = <Button bsStyle={this.state.curCall ? 'disabled' : this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
+			<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
+			<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.state.curCall ? null: this.toggleVideo}/>
+		</Button>
 
-		if (this.state.callState == "Ringing" && this.state.cidNum != "1000") {
+		if (this.state.callState == "Ringing") {
 			$('#web-phone').css('display', 'block');
 			answerButton = <button onClick={this.handleAnswer}>Answer</button>
 		}
@@ -265,8 +293,8 @@ var Phone = React.createClass({
 				<br/>
 				{answerButton}
 				{toggleDTMF}
-				{hangupButton}
 				{audioOrVideo}
+				{hangupButton}
 				{DTMFs}
 			</div>
 		</NavItem>
