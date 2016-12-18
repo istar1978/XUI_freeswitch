@@ -70,6 +70,8 @@ var callbacks = {
 			return;
 		}
 
+		document.cookie = "freeswitch_xtra_session_id=" + v.sessid;
+
 		verto.subscribe("presence", {
 			handler: function(v, e) {
 				console.log("PRESENCE:", e);
@@ -319,4 +321,27 @@ function notify(msg, level, timeout)
 	if (timeout) m.timeout = timeout;
 
 	fire_event('notification', m);
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function setCookie(cname, cvalue, seconds) {
+	if (!seconds) seconds = '8 * 60 * 60';
+    var d = new Date();
+    d.setTime(d.getTime() + (seconds * 1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
