@@ -131,6 +131,10 @@ tr.TRYING{color: yellow !important;}
 tr.FAIL_WAIT{color: #770 !important;}
 tr.FAILED{color: red !important;}
 
+tr.RINGING {color: yellow !important;}
+tr.ACTIVE {color: red !important;}
+tr.HELD {color: #ea8619 !important;}
+
 .webcam {
   width: 100%;
   height: 100%;

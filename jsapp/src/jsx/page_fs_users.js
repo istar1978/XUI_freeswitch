@@ -44,6 +44,7 @@ var FSUsersPage = React.createClass({
 	},
 
 	componentWillUnmount: function() {
+		verto.unsubscribe("presense", {handler: this.handleFSEvent});
 	},
 
 	componentDidMount: function() {
@@ -75,15 +76,30 @@ var FSUsersPage = React.createClass({
 		}, function(e) {
 			console.log("list_users ERR");
 		});
+
+		verto.subscribe("presence", {handler: this.handleFSEvent});
 	},
 
 	handleFSEvent: function(v, e) {
+		console.log('presense', e);
+
+		if (e.data.callerUserName) {
+			const rows = this.state.rows.map(function(row) {
+				if (row.userid == e.data.callerUserName) {
+					row.channelCallState = e.data.channelCallState;
+				}
+
+				return row;
+			});
+
+			this.setState({rows: rows});
+		}
 	},
 
 	render: function() {
 		var rows = [];
 		this.state.rows.forEach(function(row) {
-			rows.push(<tr key={row.index}>
+			rows.push(<tr key={row.index} className={row.channelCallState}>
 					<td>{row.userid}</td>
 					<td>{row.context}</td>
 					<td>{row.domain}</td>

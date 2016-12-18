@@ -72,11 +72,11 @@ var callbacks = {
 
 		document.cookie = "freeswitch_xtra_session_id=" + v.sessid;
 
-		verto.subscribe("presence", {
-			handler: function(v, e) {
-				console.log("PRESENCE:", e);
-			}
-		});
+		// verto.subscribe("presence", {
+		// 	handler: function(v, e) {
+		// 		console.log("PRESENCE:", e);
+		// 	}
+		// });
 
 		fire_event("verto-login", v);
 
