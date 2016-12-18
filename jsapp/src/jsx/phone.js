@@ -190,7 +190,7 @@ var Phone = React.createClass({
 
 		this.setState({
 			displayStyle: localStorage.getItem('phone.displayStyle'),
-			destNumber: localStorage.getItem('phone.destNumber')
+			destNumber: localStorage.getItem('phone.destNumber') || ''
 		});
 	},
 
