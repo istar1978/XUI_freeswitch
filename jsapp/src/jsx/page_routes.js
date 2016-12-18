@@ -345,11 +345,7 @@ class RoutePage extends React.Component {
 		];
 
 		const context_options = contexts.map(function(row) {
-			if (row.name == route.context) {
-				return <option value={row.name} key={row.name} selected>{row.name}</option>
-			} else {
-				return <option value={row.name} key={row.name}>{row.name}</option>
-			}
+			return <option value={row.name} key={row.name} selected={row.name == route.context}>{row.name}</option>
 		});
 
 		const dest_types = [
@@ -361,11 +357,7 @@ class RoutePage extends React.Component {
 		];
 
 		const dest_type_options = dest_types.map(function(row) {
-			if (row.value == route.dest_type) {
-				return <option value={row.value} key={row.value} selected>{row.name}</option>
-			} else {
-				return <option value={row.value} key={row.value}>{row.name}</option>
-			}
+			return <option value={row.value} key={row.value} selected={row.value == route.dest_type}>{row.name}</option>
 		});
 
 		return <div>
