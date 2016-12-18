@@ -266,7 +266,6 @@ var Phone = React.createClass({
 
 		if (this.state.displayStyle == "xtop") {
 			xtopDisplay = <span>
-				{audioOrVideo}
 				<input id='top_dest_number' value={this.state.destNumber} onChange={this.handleDestNumberChange}
 					style={{color: "#FFF", border: 0, backgroundColor: "#333", width: "80pt", textAlign: "right"}}/>
 				&nbsp;&nbsp;
