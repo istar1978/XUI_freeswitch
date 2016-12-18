@@ -104,10 +104,10 @@ var FSUsersPage = React.createClass({
 					<td>{row.context}</td>
 					<td>{row.domain}</td>
 					<td>{row.group}</td>
-					<td>{row.constact}</td>
 					<td>{row.callgroup}</td>
 					<td>{row.cidname}</td>
 					<td>{row.cidnumber}</td>
+					<td>{row.constact}</td>
 			</tr>);
 		})
 
@@ -121,10 +121,10 @@ var FSUsersPage = React.createClass({
 					<th>Context</th>
 					<th>Domain</th>
 					<th>Group</th>
-					<th>Contact</th>
 					<th>Callgroup</th>
 					<th>CidName</th>
 					<th>CidNumber</th>
+					<th>Contact</th>
 				</tr>
 				{rows}
 				</tbody>
