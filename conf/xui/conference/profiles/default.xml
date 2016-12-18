@@ -92,7 +92,7 @@
        manage-inbound-video-bitrate
        video-muxing-personal-canvas
   -->
-  <!-- <param name="conference-flags" value="audio-always"/> -->
+  <param name="conference-flags" value="livearray-sync"/>
 
   <!-- Directory to drop CDR's
        'auto' means $PREFIX/logs/conference_cdr/<confernece_uuid>.cdr.xml
