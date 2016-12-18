@@ -47,7 +47,9 @@ var Phone = React.createClass({
 			cidNum: "000000",
 			dtmfVisible: false,
 			useVideo: false,
-			destNumber: ''
+			destNumber: '',
+
+			displayStyle: null
 		};
 	},
 
@@ -97,13 +99,27 @@ var Phone = React.createClass({
 		}
 	},
 
+	handleTopCall: function() {
+		console.log("blah")
+		$('#dest_number').val($('#top_dest_number').val());
+		this.handleCall();
+	},
+
 	handleCall: function() {
 		var number = $('#dest_number').val();
 		if (number == '') {
-			$('#dest_number').val(localStorage["destNumber"]);
-
+			$('#dest_number').val(localStorage["phone.destNumber"]);
 			return;
 		}
+
+		if (number == 'xtop') {
+			const displayStyle = this.state.displayStyle == 'xtop' ? null : 'xtop';
+			localStorage.setItem('phone.displayStyle', displayStyle);
+			this.setState({displayStyle: displayStyle});
+			return;
+		}
+
+		localStorage.setItem("phone.destNumber", $('#dest_number').val());
 
 		let useVideo = this.state.useVideo;
 		verto.newCall({
@@ -113,7 +129,6 @@ var Phone = React.createClass({
 			useVideo: useVideo,
 			useStereo: true
 		});
-		localStorage["destNumber"] = $('#dest_number').val();
 	},
 
 	handleHangup: function() {
@@ -153,6 +168,9 @@ var Phone = React.createClass({
 		window.addEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.addEventListener("verto-dialog-state", this.handleVertoDialogState);
 		if (verto_loginState) this.handleVertoLogin();
+
+		this.state.displayStyle = localStorage.getItem('phone.displayStyle');
+		this.setState({displayStyle: this.state.displayStyle});
 	},
 
 	componentWillUnmount: function() {
@@ -163,12 +181,14 @@ var Phone = React.createClass({
 
 	render: function() {
 		var state;
-		var hangupButton = "";
-		var answerButton = "";
+		var hangupButton = null;
+		var answerButton = null;
 		var toggleDTMF = <Button bsStyle="info" bsSize="xsmall">
 			<i className="fa fa-tty" aria-hidden="true"></i>&nbsp;
 			<T.span onClick={this.handleDTMF} text= "DTMF" /></Button>;
-		var AudioAndVideo = "";
+		var audioOrVideo = null;
+		var xtopDisplay = null;
+
 		var DTMFs = <div style={{display: this.state.dtmfVisible ? "block" : "none"}}>
 		<div className="row">
 			<div className="col-xs-12">
@@ -203,13 +223,15 @@ var Phone = React.createClass({
 		if (this.state.callState != "Idle") {
 			hangupButton = <Button bsStyle="danger" bsSize="xsmall">
 				<i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;
-				<T.span onClick={this.handleHangup} text="Hangup" /></Button>
+				<T.span onClick={this.handleHangup} text="Hangup" />
+			</Button>
 		}
 
 		if (this.state.callState != "Active") {
-			AudioAndVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
-			<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
-			<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/></Button>
+			audioOrVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
+				<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
+				<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.toggleVideo}/>
+			</Button>
 		}
 
 		if (this.state.callState == "Ringing" && this.state.cidNum != "1000") {
@@ -217,7 +239,24 @@ var Phone = React.createClass({
 			answerButton = <button onClick={this.handleAnswer}>Answer</button>
 		}
 
-		return 	<NavItem eventKey="phone"><T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
+		if (this.state.displayStyle == "xtop") {
+			xtopDisplay = <span>
+				{audioOrVideo}
+				<input id='top_dest_number' style={{color: "#FFF", border: 0, backgroundColor: "#333", width: "80pt", textAlign: "right"}}/>
+				&nbsp;&nbsp;
+				<Button bsStyle="success" bsSize="xsmall">
+					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleTopCall} text="Call" />
+				</Button>
+				&nbsp;&nbsp;
+				{hangupButton}
+				&nbsp;&nbsp;
+			</span>
+		}
+
+		return 	<NavItem eventKey="phone">
+			{xtopDisplay}
+			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;(<span>{this.state.cidname} {this.state.callState}</span>&nbsp;)</div>
 				<input id="dest_number" name="dest_number" defaultValue={this.state.destNumber}/>
@@ -229,10 +268,10 @@ var Phone = React.createClass({
 				{answerButton}
 				{toggleDTMF}
 				{hangupButton}
-				{AudioAndVideo}
+				{audioOrVideo}
 				{DTMFs}
 			</div>
-		</NavItem>;
+		</NavItem>
 	}
 
 });

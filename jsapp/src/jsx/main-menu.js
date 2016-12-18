@@ -97,7 +97,7 @@ class MainMenu extends React.Component {
 			</LinkContainer>
 		});
 
-		const phone = this.props.rmenus.length > 0 ? <Phone /> : "";
+		const phone = this.props.rmenus.length > 0 ? <Phone /> : null;
 
 		return <Navbar inverse fixedTop staticTop>
 			<Navbar.Header>
