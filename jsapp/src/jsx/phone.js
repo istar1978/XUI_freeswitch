@@ -262,7 +262,7 @@ var Phone = React.createClass({
 			</Button>
 		}
 
-		audioOrVideo = <Button bsStyle={this.state.curCall ? 'disabled' : this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall">
+		audioOrVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall" disabled={this.state.curCall ? true : false}>
 			<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
 			<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.state.curCall ? null: this.toggleVideo}/>
 		</Button>
