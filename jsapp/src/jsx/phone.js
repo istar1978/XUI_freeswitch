@@ -192,6 +192,9 @@ var Phone = React.createClass({
 			displayStyle: localStorage.getItem('phone.displayStyle'),
 			destNumber: localStorage.getItem('phone.destNumber') || ''
 		});
+
+		// hack ringer
+		verto.ringer = $('#webcam');
 	},
 
 	componentWillUnmount: function() {

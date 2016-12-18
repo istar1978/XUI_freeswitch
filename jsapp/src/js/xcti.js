@@ -107,18 +107,21 @@ function verto_params() {
 		passwd: password,
 		socketUrl: protocol + host + ":" + window.location.port,
 		tag: "webcam",
+		ringFile: "/assets/sounds/bell_ring2.mp3",
 		audioParams: {
 		},
 		iceServers: [
 		// { url: 'stun:[YOUR_STUN_SERVER]',}
-		]
+		],
+		deviceParams: {
+			useMic: 'any',
+			useSpeak: 'any'
+		}
 	}
 }
 
-var verto = null;
-
 $(document).ready(function(){
-	verto = new $.verto(verto_params(), callbacks);
+	window.verto = new $.verto(verto_params(), callbacks);
 });
 
 $('#ocean_callButton').click(function() {
