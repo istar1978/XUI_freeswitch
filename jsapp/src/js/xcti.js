@@ -246,7 +246,7 @@ function clueconstatus()
 function translateMember(member) {
 	let status;
 	let email;
-	if (typeof(member[1][4]) == "string") { // old
+	if (member[1][4].indexOf("audio") < 0) { // old 1.4
 		status = {};
 		status.audio = {};
 		status.audio.talking = false;
