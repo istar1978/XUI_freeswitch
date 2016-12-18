@@ -2,7 +2,7 @@
 
 CREATE TABLE routes (
 	id INTEGER PRIMARY KEY,
-	name VARCHAR,
+	name VARCHAR NOT NULL,
 	description VARCHAR,
 	prefix VARCHAR,
 	length, INTEGER,
@@ -22,7 +22,7 @@ CREATE INDEX routes_deleted_epoch ON routes(deleted_epoch);
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY,
 	extn VARCHAR,
-	name VARCHAR,
+	name VARCHAR NOT NULL,
 	cid_number VARCHAR,
 	cid_name VARCHAR,
 	context VARCHAR,
@@ -42,8 +42,9 @@ CREATE INDEX users_deleted_epoch ON users(deleted_epoch);
 
 CREATE TABLE blocks (
 	id INTEGER PRIMARY KEY,
-	name VARCHAR,
+	name VARCHAR NOT NULL,
 	description VARCHAR,
+	ver TEXT,
 	xml TEXT,
 	js TEXT,
 	lua TEXT,
@@ -56,8 +57,8 @@ CREATE INDEX blocks_deleted_epoch ON blocks(deleted_epoch);
 
 CREATE TABLE dicts (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR,
-	k VARCHAR, -- key
+	realm VARCHAR NOT NULL,
+	k VARCHAR NOT NULL, -- key
 	v VARCHAR, -- value
 	d VARCHAR, -- description
 	o INTEGER, -- order
@@ -72,8 +73,8 @@ CREATE UNIQUE INDEX dicts_realm_k ON dicts(realm, k);
 
 CREATE TABLE groups (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR,           -- a key in dicts
-	name VARCHAR,
+	realm VARCHAR NOT NULL,           -- a key in dicts
+	name VARCHAR NOT NULL,
 	description VARCHAR,
 	group_id INTEGER,        -- nested groups
 	created_epoch INTEGER,
@@ -85,8 +86,8 @@ CREATE INDEX groups_deleted_epoch ON groups(deleted_epoch);
 
 CREATE TABLE user_group (
 	id INTEGER PRIMARY KEY,
-	user_id INTEGER,
-	group_id INTEGER,
+	user_id INTEGER NOT NULL,
+	group_id INTEGER NOT NULL,
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -96,8 +97,8 @@ CREATE INDEX user_group_u_g_id ON user_group(user_id, group_id);
 
 CREATE TABLE extn_group (
 	id INTEGER PRIMARY KEY,
-	user_id INTEGER,
-	group_id INTEGER,
+	user_id INTEGER NOT NULL,
+	group_id INTEGER NOT NULL,
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -107,11 +108,11 @@ CREATE INDEX extn_group_e_g_id ON user_group(user_id, group_id);
 
 CREATE TABLE gateways (
 	id INTEGER PRIMARY KEY,
-	name VARCHAR,
-	realm VARCHAR,
+	name VARCHAR NOT NULL,
+	realm VARCHAR NOT NULL,
 	username VARCHAR,
 	password VARCHAR,
-	register BOOLEAN,
+	register VARCHAR NOT NULL DEFAULT 'true',
 	description VARCHAR,
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
@@ -123,11 +124,11 @@ CREATE INDEX gateways_deleted_epoch ON gateways(deleted_epoch);
 
 CREATE TABLE params (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR, -- e.g. sip_profiles or gateways
-	k VARCHAR,
+	realm VARCHAR NOT NULL, -- e.g. sip_profiles or gateways
+	k VARCHAR NOT NULL,
 	v VARCHAR,
 	ref_id INTEGER,-- e.g. sip_profiles.id or gateway.id
-	disabled BOOLEAN DEFAULT 'false',
+	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -139,9 +140,9 @@ CREATE INDEX params_deleted_epoch ON params(deleted_epoch);
 
 CREATE TABLE sip_profiles (
 	id INTEGER PRIMARY KEY,
-	name VARCHAR,
+	name VARCHAR NOT NULL,
 	description VARCHAR,
-	disabled BOOLEAN DEFAULT 'false',
+	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -154,7 +155,7 @@ CREATE INDEX sip_profiles_deleted_epoch ON sip_profiles(deleted_epoch);
 CREATE TABLE media_files(
 	id INTEGER PRIMARY KEY,
 	type VARCHAR,          -- FAX, PDF, AUDIO, VIDEO, AUDIO-CONF, VIDEO-CONF
-	name VARCHAR,
+	name VARCHAR NOT NULL,
 	description VARCHAR,
 	file_name VARCHAR,
 	ext VARCHAR,
