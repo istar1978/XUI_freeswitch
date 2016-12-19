@@ -415,7 +415,7 @@ class GatewaysPage extends React.Component {
 
 	handleGatewayAdded(route) {
 		var rows = this.state.rows;
-		rows.push(route);
+		rows.unshift(route);
 		this.setState({rows: rows, formShow: false});
 	}
 
