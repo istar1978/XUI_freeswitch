@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './xtools'
 
 class NewGateway extends React.Component {
@@ -145,11 +146,12 @@ class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false};
+		this.state = {errmsg: '', gw: {}, edit: false,params:[]};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleSort = this.handleSort.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -194,11 +196,39 @@ class GatewayPage extends React.Component {
 		});
 	}
 
+	handleSort(e){
+		var _this = this;
+		const gw =_this.state.gw;
+		var params = _this.state.gw.params;
+		alert(params[0].id);
+	}
+
 	render() {
 		const gw = this.state.gw;
+		const _this = this;
+		let params = <tr></tr>;
 		let save_btn = "";
 		let err_msg = "";
 		let register = gw.register == "true" ? "Yes" : "No";
+
+		if (this.state.gw.params && Array.isArray(this.state.gw.params)) {
+			// console.log(this.state.profile.params)
+			params = this.state.gw.params.map(function(param) {
+				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
+
+				return <tr key={param.id} className={disabled_class}>
+					<td>{param.k}</td>
+					<td><RIEInput value={param.v} change={_this.handleChange}
+						propName={param.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
+					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
+				</tr>
+			});
+		}
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
@@ -261,6 +291,22 @@ class GatewayPage extends React.Component {
 					<Col sm={10}>{register}</Col>
 				</FormGroup>
 			</Form>
+
+			<ButtonGroup className="controls">
+				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+			</ButtonGroup>
+
+			<h2>Params</h2>
+			<table className="table">
+				<tbody>
+				<tr>
+					<th>Name</th>
+					<th>Value</th>
+					<th onClick={this.handleSort.bind(this)}>Enabled</th>
+				</tr>
+				{params}
+				</tbody>
+			</table>
 		</div>
 	}
 }

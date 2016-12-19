@@ -107,7 +107,7 @@ class NewMediaFile extends React.Component {
 					<Col smOffset={2} sm={10}>
 						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
 							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
-							<T.span text="生成" />
+							<T.span text="TTS" />
 						</Button>
 						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
 					</Col>

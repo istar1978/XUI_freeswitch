@@ -141,7 +141,7 @@ class SIPProfilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {profile: {}, edit: false};
+		this.state = {profile: {}, edit: false, params:[]};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -149,6 +149,7 @@ class SIPProfilePage extends React.Component {
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.toggleHighlight = this.toggleHighlight.bind(this);
+		this.handleSort = this.handleSort.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -256,6 +257,23 @@ class SIPProfilePage extends React.Component {
 		});
 	}
 
+	handleSort(e){
+		var _this = this;
+		const profile = _this.state.profile;
+		var params = _this.state.profile.params;
+		if (params[0].disabled == 0) {
+			params.sort(function(b,a){
+			return a.disabled - b.disabled;
+			})
+		} else{
+			params.sort(function(a,b){
+			return a.disabled - b.disabled;
+			})
+		};
+		
+		_this.setState({profile: profile, edit: false});
+	}
+
 	render() {
 		const profile = this.state.profile;
 		const _this = this;
@@ -318,7 +336,7 @@ class SIPProfilePage extends React.Component {
 				<tr>
 					<th>Name</th>
 					<th>Value</th>
-					<th>Enabled</th>
+					<th onClick={this.handleSort.bind(this)}>Enabled</th>
 				</tr>
 				{params}
 				</tbody>
@@ -401,6 +419,34 @@ class SIPProfilesPage extends React.Component {
 		this.setState({rows: rows, formShow: false});
 	}
 
+	handleStart(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " start");
+	}
+
+	handleStop(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " stop");
+	}
+
+	handleRestart(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " restart");
+	}
+
+	handleRescan(e) {
+		e.preventDefault();
+
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " rescan");
+	}
+
 	render() {
 		const formClose = () => this.setState({ formShow: false });
 		const toggleDanger = () => this.setState({ danger: !this.state.danger });
@@ -416,7 +462,12 @@ class SIPProfilesPage extends React.Component {
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.disabled ? "Yes" : "No"}</td>
-					<td></td>
+					<td>
+						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |
+						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |
+						<T.a onClick={_this.handleRestart} data-name={row.name} text="Restart" href='#'/> |
+						<T.a onClick={_this.handleRescan} data-name={row.name} text="Rescan" href='#'/> |
+					</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
