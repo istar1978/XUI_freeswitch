@@ -118,10 +118,10 @@ post("/tts", function(params)
 	local size = assert(f:seek("end"))
 	local record = {}
 	record.name = params.request.input
-	record.mime = "mp3"
+	record.mime = "audio/mp3"
 	record.abs_path = filename
 	record.file_size = "" .. size        
-	record.description = 'ivr'
+	record.description = 'TTS'
 	record.dir_path = config.upload_path
 	record.channel_uuid = env:getHeader("Core-UUID")
 	record.created_epoch = "" .. os.time()
