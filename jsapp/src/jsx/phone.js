@@ -206,6 +206,7 @@ var Phone = React.createClass({
 	render: function() {
 		var state;
 		var hangupButton = null;
+		var transferButton = null;
 		var answerButton = null;
 		var toggleDTMF = <Button bsStyle="info" bsSize="xsmall">
 			<i className="fa fa-tty" aria-hidden="true"></i>&nbsp;
@@ -262,6 +263,13 @@ var Phone = React.createClass({
 			</Button>
 		}
 
+		if (this.state.curCall) {
+			transferButton = <Button bsStyle="warning" bsSize="xsmall">
+				<i className="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;
+				<T.span onClick={this.handleTransfer} text="Transfer" />
+			</Button>
+		}
+
 		audioOrVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall" disabled={this.state.curCall ? true : false}>
 			<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
 			<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.state.curCall ? null: this.toggleVideo}/>
@@ -275,19 +283,22 @@ var Phone = React.createClass({
 		if (this.state.displayStyle == "xtop") {
 			xtopDisplay = <span>
 				<input id='top_dest_number' value={this.state.destNumber} onChange={this.handleDestNumberChange}
-					style={{color: "#FFF", border: 0, backgroundColor: "#333", width: "80pt", textAlign: "right"}}/>
+					style={{color: "#776969", border: 0, backgroundColor: "#FFF", width: "80pt", textAlign: "right"}}/>
 				&nbsp;&nbsp;
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleCall} text="Call" />
 				</Button>
-				&nbsp;&nbsp;
+				&nbsp;
 				{hangupButton}
+				&nbsp;
+				{transferButton}
 				&nbsp;&nbsp;
 			</span>
 		}
 
 		return 	<NavItem eventKey="phone">
+			<div className="hgt">
 			{xtopDisplay}
 			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
@@ -302,7 +313,9 @@ var Phone = React.createClass({
 				{toggleDTMF}
 				{audioOrVideo}
 				{hangupButton}
+				{transferButton}
 				{DTMFs}
+			</div>
 			</div>
 		</NavItem>
 	}

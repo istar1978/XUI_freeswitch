@@ -31,31 +31,32 @@
 	float:right;
 }
 
+#dest_number{
+	margin-bottom: 5px;
+}
+
 .row {
 	margin-top: 10px;
 	margin-left: 10px;
+}
+
+.hgt{
+	height: 16px;
 }
 
 .btn-success{
 	margin-left: 5px;
 }
 
-.btn-info{
-	margin-top: 5px;
-}
-
 .btn-danger{
-	margin-top: 5px;
 	margin-left: 5px;
 }
 
 .btn-warning {
-	margin-top: 5px;
 	margin-left: 5px;
 }
 
 .btn-primary{
-	margin-top: 5px;
 	margin-left: 5px;
 }
 
