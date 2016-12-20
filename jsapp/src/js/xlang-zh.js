@@ -22,6 +22,8 @@ LANGUAGES["zh"] = {
 	DTMF: "拨号",
 	Hangup: "挂断",
 	Transfer: "转接",
+	Answer: "接听",
+	Reject: "拒接",
 	Audio: "音频",
 	Video: "视频",
 	Idle: "空闲",

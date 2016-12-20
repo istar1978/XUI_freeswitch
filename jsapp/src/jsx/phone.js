@@ -133,6 +133,14 @@ var Phone = React.createClass({
 			return;
 		}
 
+		if (number == 'text') {
+			const displayStyle = this.state.displayStyle == 'text' ? null : 'text';
+			localStorage.
+			setItem('phone.displayStyle', displayStyle);
+			this.setState({displayStyle: displayStyle});
+			return;
+		}
+
 		localStorage.setItem("phone.destNumber", $('#dest_number').val());
 
 		this.setState({callState: "Trying"});
@@ -213,6 +221,7 @@ var Phone = React.createClass({
 			<T.span onClick={this.handleDTMF} text= "DTMF" /></Button>;
 		var audioOrVideo = null;
 		var xtopDisplay = null;
+		var textDisplay = null;
 
 		var DTMFs = <div style={{display: this.state.dtmfVisible ? "block" : "none"}}>
 		<div className="row">
@@ -289,10 +298,28 @@ var Phone = React.createClass({
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleCall} text="Call" />
 				</Button>
-				&nbsp;
 				{hangupButton}
-				&nbsp;
 				{transferButton}
+				&nbsp;&nbsp;
+			</span>
+		}
+
+		if (this.state.displayStyle == "text") {
+			textDisplay = <span>
+				<span>188-6666-8888</span>
+				&nbsp;&nbsp;
+				<Button bsStyle="link" bsSize="xsmall">
+					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleCall} text="Answer" />
+				</Button>
+				<Button bsStyle="link" bsSize="xsmall">
+					<i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleCall} text="Reject" />
+				</Button>
+				<Button bsStyle="link" bsSize="xsmall">
+					<i className="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleCall} text="Transfer" />
+				</Button>
 				&nbsp;&nbsp;
 			</span>
 		}
@@ -300,6 +327,7 @@ var Phone = React.createClass({
 		return 	<NavItem eventKey="phone">
 			<div className="hgt">
 			{xtopDisplay}
+			{textDisplay}
 			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;{this.state.cidname} <T.span text={this.state.callState}/></div>
