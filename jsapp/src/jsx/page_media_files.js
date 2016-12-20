@@ -100,7 +100,7 @@ class NewMediaFile extends React.Component {
 			<Form horizontal id="newMediaFileForm">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="TTS文本" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="input" placeholder="input" /></Col>
+					<Col sm={10}><FormControl type="input" name="input" placeholder="text" /></Col>
 				</FormGroup>
 
 				<FormGroup>
