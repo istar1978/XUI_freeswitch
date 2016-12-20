@@ -152,6 +152,9 @@ class GatewayPage extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleSort = this.handleSort.bind(this);
+		this.toggleHighlight = this.toggleHighlight.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleToggleParam = this.handleToggleParam.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -200,19 +203,83 @@ class GatewayPage extends React.Component {
 		var _this = this;
 		const gw =_this.state.gw;
 		var params = _this.state.gw.params;
-		alert(params[0].id);
+		alert(params[0].k);
+	}
+
+	toggleHighlight() {
+		this.setState({highlight: !this.state.highlight});
+	}
+
+	isStringAcceptable() {
+		return true;
+	}
+
+	handleChange(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+
+		console.log("change", obj);
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/gateways/" + this.state.gw.id + "/params/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({v: obj[id]}),
+			success: function (param) {
+				console.log("success!!!!", param);
+				_this.state.gw.params = _this.state.gw.params.map(function(p) {
+					if (p.id == id) {
+						return param;
+					}
+					return p;
+				});
+				_this.setState({gw: _this.state.gw});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
+				_this.setState({gw: _this.state.gw});
+			}
+		});
+	}
+
+	handleToggleParam(e) {
+		const _this = this;
+		const data = e.target.getAttribute("data");
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/gateways/" + this.state.gw.id + "/params/" + data,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({action: "toggle"}),
+			success: function (param) {
+				// console.log("success!!!!", param);
+				const params = _this.state.gw.params.map(function(p) {
+					if (p.id == data) {
+						p.disabled = param.disabled;
+					}
+					return p;
+				});
+				_this.state.gw.params = params;
+				_this.setState({gw: _this.state.gw});
+			},
+			error: function(msg) {
+				console.error("toggle params", msg);
+			}
+		});
 	}
 
 	render() {
 		const gw = this.state.gw;
-		const _this = this;
+		const _this = this; 
 		let params = <tr></tr>;
 		let save_btn = "";
 		let err_msg = "";
 		let register = gw.register == "true" ? "Yes" : "No";
 
 		if (this.state.gw.params && Array.isArray(this.state.gw.params)) {
-			// console.log(this.state.profile.params)
+			console.log(this.state.profile.params)
 			params = this.state.gw.params.map(function(param) {
 				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
 
