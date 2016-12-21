@@ -166,6 +166,12 @@ function xdb.delete(t, what)
 	return xdb.dbh:affected_rows()
 end
 
+function xdb.find_realm(t,realm,cb)
+	local sql = "SELECT * from ".. t .. " WHERE realm = " .. realm
+	
+	return xdb.find_by_sql(sql, cb)
+end
+
 -- find from table with id = id
 function xdb.find(t, id)
 	if not type(id) == number then
