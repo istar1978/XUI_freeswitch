@@ -84,19 +84,19 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="IVR">
          <value name="sound">
             <shadow type="text">
-             <field name="Sound"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
          <value name="MAX">
-            <shadow type="text">
-             <field name="Max"></field>
+            <shadow type="math_number">
+             <field name="NUM">1</field>
            </shadow>
          </value>
         </block>
 	<block type="IVREntry">
          <value name="case">
             <shadow type="text">
-             <field name="Case"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
        </block>
@@ -113,12 +113,12 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="fsSetTTS">
          <value name="TTSENGINE">
             <shadow type="text">
-             <field name="TTSENGINE"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
          <value name="VOICE">
             <shadow type="text">
-             <field name="VOICE"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
         </block>
@@ -128,7 +128,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="fsSessionSet">
          <value name="args">
             <shadow type="text">
-             <field name="SET"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
         </block>
@@ -148,23 +148,23 @@ var toolbox = `<xml id="toolbox" style="display: none">
         </block>
 	<block type="fsSessionRead">
           <value name="MIN">
-            <shadow type="text">
-             <field name="MIN"></field>
+            <shadow type="math_number">
+             <field name="NUM">4</field>
            </shadow>
          </value>
          <value name="MAX">
-            <shadow type="text">
-             <field name="MAX"></field>
+            <shadow type="math_number">
+             <field name="NUM">11</field>
            </shadow>
          </value>
          <value name="TIMEOUT">
             <shadow type="text">
-             <field name="TIMEOUT"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
         <value name="sound">
             <shadow type="text">
-             <field name="SOUND"></field>
+             <field name="TEXT"></field>
            </shadow>
          </value>
         </block>
