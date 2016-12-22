@@ -33,6 +33,7 @@
 content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
+require 'm_gateway'
 
 get('/', function(params)
 	n, gateways = xdb.find_all("gateways")
@@ -61,6 +62,23 @@ put('/:id', function(params)
 	else
 		return 500
 	end
+end)
+
+put('/:id/params/:param_id', function(params)
+        print(serialize(params))
+        ret = nil;
+
+        if params.request.action and params.request.action == "toggle" then
+                ret = m_gateway.toggle_param(params.id, params.param_id)
+        else
+                ret = m_gateway.update_param(params.id, params.param_id, params.request)
+        end
+
+        if ret then
+                return ret
+        else
+                return 404
+        end
 end)
 
 post('/', function(params)
