@@ -297,8 +297,8 @@ var Phone = React.createClass({
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleCall} text="Call" />
-				</Button>
-				{hangupButton}
+				</Button>&nbsp;
+				{hangupButton}&nbsp;
 				{transferButton}
 				&nbsp;&nbsp;
 			</span>
@@ -331,16 +331,16 @@ var Phone = React.createClass({
 			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;{this.state.cidname} <T.span text={this.state.callState}/></div>
-				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>
+				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>&nbsp;&nbsp;
 				<Button bsStyle="success" bsSize="xsmall">
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleCall} text="Call" />
 				</Button>
 				<br/>
 				{answerButton}
-				{toggleDTMF}
-				{audioOrVideo}
-				{hangupButton}
+				{toggleDTMF}&nbsp;
+				{audioOrVideo}&nbsp;
+				{hangupButton}&nbsp;
 				{transferButton}
 				{DTMFs}
 			</div>
