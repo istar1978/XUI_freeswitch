@@ -36,7 +36,7 @@ xdb.bind(xtra.dbh)
 require 'm_modules'
 
 get('/', function(params)
-	n, modules = xdb.find_realm("params","modules")
+	n, modules = m_modules.find_all()
 
 	if (n > 0) then
 		return modules
