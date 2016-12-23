@@ -141,8 +141,102 @@ class NewUser extends React.Component {
 	}
 }
 
+class ImportUser extends React.Component {
+	propTypes: {handleNewUserAdded1: React.PropTypes.func}
+
+	constructor(props) {
+		super(props);
+
+		this.state = {errmsg: ''};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var info = form2json('#importUserForm');
+		console.log("info", info);
+
+		if (!info.info) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+		var inputInfo = info.info.split("\r\n");
+
+		for (var i = 0; i < inputInfo.length; i++) {
+
+			var inputInfoI = inputInfo[i];
+
+			inputInfoI = inputInfoI.split("\t");
+
+			var user = {};
+			user.extn = inputInfoI[0];
+			user.name = inputInfoI[1];
+			user.password = inputInfoI[2];
+			user.vm_password = inputInfoI[3];
+			user.context = inputInfoI[4];
+			user.cid_name = inputInfoI[5];
+			user.cid_number = inputInfoI[6];
+
+			$.ajax({
+				type: "POST",
+				url: "/api/users",
+				dataType: "json",
+				async: false,
+				contentType: "application/json",
+				data: JSON.stringify(user),
+				success: function (obj) {
+					user.id = obj.id;
+					_this.props["data-handleNewUserAdded1"](user);
+				},
+				error: function(msg) {
+					console.error("route", msg);
+				}
+			});
+		}
+	}
+
+	render() {
+		console.log(this.props);
+
+		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Import New Users" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="importUserForm">
+				<FormGroup controlId="formExtn">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="users" className="mandatory"/></Col>
+					<Col sm={10}><FormControl componentClass="textarea" name="info" placeholder={"new users"} /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
 class UserPage extends React.Component {
-	propTypes: {handleNewUserAdded: React.PropTypes.func}
+	propTypes: {handleNewUserAdded: React.PropTypes.func,
+				handleNewUserAdded1: React.PropTypes.func}
 
 	constructor(props) {
 		super(props);
@@ -266,7 +360,7 @@ class UserPage extends React.Component {
 class UsersPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false};
+		this.state = { formShow: false, rows: [], danger: false, formShow1: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -279,7 +373,9 @@ class UsersPage extends React.Component {
 
 		if (data == "new") {
 			this.setState({ formShow: true});
-		}
+		} else if (data == "import") {
+			this.setState({ formShow1: true});
+		};
 	}
 
 	handleDelete(e) {
@@ -338,8 +434,15 @@ class UsersPage extends React.Component {
 		this.setState({rows: rows, formShow: false});
 	}
 
+	handleUserAdded1(user) {
+		var rows = this.state.rows;
+		rows.unshift(user);
+		this.setState({rows: rows, formShow1: false});
+	}
+
 	render() {
 		let formClose = () => this.setState({ formShow: false });
+		let formClose1 = () => this.setState({ formShow1: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    var danger = this.state.danger ? "danger" : "";
 
@@ -365,6 +468,11 @@ class UsersPage extends React.Component {
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
+
+				<Button>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="import" text="Import" />
+				</Button>
 			</div>
 
 			<h1><T.span text="Users"/></h1>
@@ -388,6 +496,7 @@ class UsersPage extends React.Component {
 			</div>
 
 			<NewUser show={this.state.formShow} onHide={formClose} data-handleNewUserAdded={this.handleUserAdded.bind(this)}/>
+			<ImportUser show={this.state.formShow1} onHide={formClose1} data-handleNewUserAdded1={this.handleUserAdded1.bind(this)}/>
 		</div>
 	}
 }
