@@ -65,6 +65,9 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/dicts" key="M_DICTS">
 				<NavItem eventKey="M_DICTS"><T.span text="Dicts"/></NavItem>
 			</LinkContainer>
+			<LinkContainer to="/settings/module" key="M_MODULE">
+				<NavItem eventKey="M_MODULE"><T.span text="Module"/></NavItem>
+			</LinkContainer>
 		</Nav>
 	}
 }

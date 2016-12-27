@@ -56,6 +56,7 @@ import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { GatewaysPage, GatewayPage } from './page_gateways';
 import { DictsPage, DictPage } from './page_dicts';
+import { ModulePage } from './page_module';
 import { SIPProfilesPage, SIPProfilePage } from './page_sip';
 import { MediaFilesPage, MediaFilePage } from './page_media_files';
 import { Login, LoginBox } from './page_login';
@@ -144,6 +145,9 @@ const Home = React.createClass({
 					<Route path="dicts">
 						<IndexRoute components={{sidebar: Settings, main: DictsPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: DictPage}}/>
+					</Route>
+					<Route path="module">
+						<IndexRoute components={{sidebar: Settings, main: ModulePage}}/>
 					</Route>
 					<Route path="sip_profiles">
 						<IndexRoute components={{sidebar: Settings, main: SIPProfilesPage}}/>
