@@ -132,10 +132,39 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T4', '
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auto-jitterbuffer-msec', '60', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'renegotiate-codec-on-hold', 'true', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'context', 'public', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register', 'false', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'scheme', 'Digest', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'realm', 'example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'username', 'example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'extension-in-contact', 'true', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'auth-username', 'cluecon', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'password', '1234', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'caller-id-in-from', 'false', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'extension', 'cluecon', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'proxy', 'example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'context', 'default', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'expire-seconds', '600', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', '908-retry-seconds', '90', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'retry-seconds', '30', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'timeout-seconds', '30', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'from-user', 'cluecon', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'from-domain', 'example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'contact-host', 'example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register-proxy', 'example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'outbound-proxy', 'sip:example.com', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'distinct-to', '?', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'destination-prefix', '?', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'rfc-5626', '?', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'reg-id', '?', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'contact-params', '?', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register-transport', 'tcp', 0, 1);
 
+INSERT INTO gateways (name) VALUES ('example');
 INSERT INTO sip_profiles (name) VALUES ('default');
 INSERT INTO sip_profiles (name) VALUES ('public');
 
+INSERT INTO params (realm, k, v, ref_id, disabled)
+	SELECT 'gateway', k, v, (SELECT id FROM gateways WHERE name = 'example'), disabled From params WHERE realm = 'gateway' and ref_id = 0;
 INSERT INTO params (realm, k, v, ref_id, disabled)
 	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'default'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
 
