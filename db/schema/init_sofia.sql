@@ -159,7 +159,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'reg-id', '
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'contact-params', '?', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register-transport', 'tcp', 0, 1);
 
-INSERT INTO gateways (name,realm,register) VALUES ('example','example.com','false');
+INSERT INTO gateways (name, realm, register) VALUES ('example','example.com','false');
 INSERT INTO sip_profiles (name) VALUES ('default');
 INSERT INTO sip_profiles (name) VALUES ('public');
 
