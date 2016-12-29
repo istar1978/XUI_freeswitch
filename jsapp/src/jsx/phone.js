@@ -153,6 +153,21 @@ var Phone = React.createClass({
 			caller_id_number: '0000',
 			useVideo: useVideo,
 			useStereo: true,
+			audioParams: {
+				googAutoGainControl: false,
+				googNoiseSuppression: false,
+				googHighpassFilter: false
+			},
+			videoParams: {
+				"minWidth": vid_width,
+				"minHeight": vid_height,
+				"maxWidth": vid_width,
+				"maxHeight": vid_height,
+				"minFrameRate": 15,
+				"vertoBestFrameRate": 30
+			},
+			outgoingBandwidth: 'default',
+			incomingBandwidth: 'default',
 			deviceParams: {
 				useMic: 'any',
 				useSpeak: 'any',
