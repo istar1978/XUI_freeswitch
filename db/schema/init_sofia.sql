@@ -164,7 +164,7 @@ INSERT INTO sip_profiles (name) VALUES ('default');
 INSERT INTO sip_profiles (name) VALUES ('public');
 
 INSERT INTO params (realm, k, v, ref_id, disabled)
-	SELECT 'gateways', k, v, (SELECT id FROM gateways WHERE name = 'example'), disabled From params WHERE realm = 'gateway' and ref_id = 0;
+	SELECT 'gateway', k, v, (SELECT id FROM gateways WHERE name = 'example'), disabled From params WHERE realm = 'gateway' and ref_id = 0;
 
 INSERT INTO params (realm, k, v, ref_id, disabled)
 	SELECT 'sip_profile', k, v, (SELECT id FROM sip_profiles WHERE name = 'default'), disabled From params WHERE realm = 'SOFIA' and ref_id = 0;
