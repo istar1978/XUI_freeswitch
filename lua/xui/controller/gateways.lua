@@ -84,9 +84,7 @@ put('/:id/params/:param_id', function(params)
 end)
 
 post('/', function(params)
-	print(serialize(params))
-
-	ret = xdb.create_return_id('gateways', params.request)
+	ret = m_gateway.create(params.request)
 
 	if ret then
 		return {id = ret}

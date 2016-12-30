@@ -42,3 +42,13 @@ get('/', function(params)
 		return "[]"
 	end
 end)
+
+get('/:num', function(params)
+	n, cdrs = xdb.find_by_time("cdrs",num)
+
+	if (n > 0) then
+		return cdrs
+	else
+		return "[]"
+	end
+end)

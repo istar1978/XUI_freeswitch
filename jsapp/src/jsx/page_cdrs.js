@@ -60,6 +60,15 @@ var CDRsPage = React.createClass({
 		})
 	},
 
+	cdrsQuery: function(){
+		const _this = this;
+
+		$.getJSON("/api/cdrs/" + num, function(cdrs) {
+			_this.setState({rows: cdrs});
+		})
+
+	},
+
 	render: function() {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.uuid}>

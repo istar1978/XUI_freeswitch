@@ -245,6 +245,16 @@ function xdb.execute(sql)
 	return xtra.dbh:affected_rows()
 end
 
+--query cdrs
+function  xdb.find_by_time(t, time)
+	-- body
+	local theTime = "SELECT strftime('%s',datetime())"
+	local theTargetTime = theTime - tonumber(time)*24*60*60
+	local sql = "SELECT * FROM " .. t .. "WHERE strftime('%s', start_stamp) > theTargetTime"
+
+	return xdb.find_by_sql(sql, cb)
+end
+
 -- return the last affacted rows
 function xdb.affected_rows()
 	return xtra.dbh:affected_rows()

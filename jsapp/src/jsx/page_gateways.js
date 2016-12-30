@@ -80,6 +80,14 @@ class NewGateway extends React.Component {
 	render() {
 		console.log(this.props);
 
+		const props = Object.assign({}, this.props);
+		const gateways = props.gateways;
+		delete props.gateways;
+
+		const gateways_options = gateways.map(gw => {
+			return <option value={gw.id} key={gw.id}>Gateway[{gw.name}]</option>
+		});
+
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Gateway" /></Modal.Title>
@@ -109,6 +117,16 @@ class NewGateway extends React.Component {
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
 					<Col sm={10}><FormControl type="input" name="description" placeholder="Description ..." /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formTemplate">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Template"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="template">
+							<option value="default">Default</option>
+							{gateways_options}
+						</FormControl>
+					</Col>
 				</FormGroup>
 
 				<FormGroup controlId="formRegister">
@@ -279,7 +297,7 @@ class GatewayPage extends React.Component {
 		let register = gw.register == "true" ? "Yes" : "No";
 
 		if (this.state.gw.params && Array.isArray(this.state.gw.params)) {
-			console.log(this.state.profile.params)
+			console.log(this.state.gw.params)
 			params = this.state.gw.params.map(function(param) {
 				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
 
@@ -583,7 +601,7 @@ class GatewaysPage extends React.Component {
 				</table>
 			</div>
 
-			<NewGateway show={this.state.formShow} onHide={formClose} data-handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
+			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} data-handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
 		</div>
 	}
 }

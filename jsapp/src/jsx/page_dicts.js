@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './xtools'
 
 class NewDict extends React.Component {
@@ -264,6 +265,7 @@ class DictsPage extends React.Component {
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.toggleHighlight = this.toggleHighlight.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -383,6 +385,46 @@ class DictsPage extends React.Component {
 		this.setState({rows: rows, formShow: false});
 	}
 
+	toggleHighlight() {
+		this.setState({highlight: !this.state.highlight});
+	}
+
+	handleChange(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+		const value = Object.values(obj)[0];
+		console.log("change", obj);
+
+		alert(id);
+		alert(value);
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/dicts/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({v: obj[id]}),
+			success: function (row) {
+				console.log("success!!!!", row);
+				_this.state.rows = _this.state.rows.map(function(p) {
+					if (p.id == id) {
+						return row;
+					}
+					return p;
+				});
+				_this.setState({row: _this.state.row});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
+				_this.setState({row: _this.state.row});
+			}
+		});
+	}
+
+	isStringAcceptable() {
+		return true;
+	}
+
 	render() {
 		let formClose = () => this.setState({ formShow: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
@@ -395,7 +437,14 @@ class DictsPage extends React.Component {
 					<td>{row.id}</td>
 					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={_this.handleRealmClick.bind(_this)} data={row.realm}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
-					<td>{row.v}</td>
+					<td>
+						<RIEInput value={row.v} change={_this.handleChange}
+						propName={row.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
 					<td>{row.d}</td>
 					<td>{row.o}</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
@@ -409,6 +458,10 @@ class DictsPage extends React.Component {
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
 			</div>
+
+			<ButtonGroup className="controls">
+				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+			</ButtonGroup>
 
 			<h1><T.span text="Dicts"/></h1>
 			<div>
