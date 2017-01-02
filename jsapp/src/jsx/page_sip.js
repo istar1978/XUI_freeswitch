@@ -295,7 +295,7 @@ class SIPProfilePage extends React.Component {
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
-					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
+					<td style={{textAlign: "right", paddingRight: 0}}><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
 				</tr>
 			});
 		}
@@ -336,7 +336,7 @@ class SIPProfilePage extends React.Component {
 				<tr>
 					<th>Name</th>
 					<th>Value</th>
-					<th onClick={this.handleSort.bind(this)}>Enabled</th>
+					<th style={{textAlign: "right", paddingRight: 0}} onClick={this.handleSort.bind(this)}>Enabled</th>
 				</tr>
 				{params}
 				</tbody>
