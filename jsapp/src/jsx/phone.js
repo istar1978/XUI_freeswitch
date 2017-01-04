@@ -237,6 +237,13 @@ var Phone = React.createClass({
 		var audioOrVideo = null;
 		var xtopDisplay = null;
 		var textDisplay = null;
+		var ishttps = 'https:' == document.location.protocol ? true: false;
+
+		if (!ishttps) {
+			return <NavItem eventKey="phone">
+				<T.span id="phone-static" className={state} text={{ key: "Socket Already Connected"}} onClick={this.handleMenuClick} />
+			</NavItem>
+		}
 
 		var DTMFs = <div style={{display: this.state.dtmfVisible ? "block" : "none"}}>
 		<div className="row">
