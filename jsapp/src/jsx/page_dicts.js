@@ -398,23 +398,25 @@ class DictsPage extends React.Component {
 		var rows = _this.state.rows;
 
 		var row = {};
-		row.realm = rows[id].realm;
-		row.k = rows[id].k;		
+
+		row.id = id;
+		row.realm = rows[id - 1].realm;
+		row.k = rows[(id - 1)].k;
 		row.v = value;		
-		row.d = rows[id].d;		
-		row.o = rows[id].o;	
+		row.d = rows[(id - 1)].d;
+		row.o = rows[(id - 1)].o;
 
 		console.log("row", row);
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/dicts/" + row.id,
+			url: "/api/dicts/" + (row.id - 1),
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(row),
 			success: function (data) {
-				console.log("successsusss",data);
-				_this.setState({rows: rows});
+				console.log("update success");
+				_this.setState({rows: _this.state.rows});
 			},
 			error: function(msg) {
 				console.error("failed", msg);
