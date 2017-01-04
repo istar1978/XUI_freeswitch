@@ -9,6 +9,7 @@ LANGUAGES["zh"] = {
 	About: "关于",
 	Phone: "电话",
 	Settings: "设置",
+	"Socket Already Connected": "Socket已连接",
 	Profiles: "Profiles",
 	Help: "帮助",
 
