@@ -32,39 +32,163 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import ReactDOM from 'react-dom';
-
+import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import ConferencePage from './page_conferences';
 
-class Conferences extends React.Component {
-	constructor(props, context) {
-    	super(props, context);
-		var conferences = ["3000", "3500", "3800"];
+class NewRoom extends React.Component {
+	propTypes: {handleNewRoomAdded: React.PropTypes.func}
 
-    	this.state = {
-    		rows: conferences
-    	};
-  	}
+	constructor(props) {
+		super(props);
+
+		this.state = {errmsg: ''};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var room = form2json('#newRoom');
+		console.log("room", room);
+
+		if (!room.name || !room.nbr) {
+			notify(<T.span text="Mandatory fields left blank"/>);
+			return;
+		}
+
+		room.realm = domain;
+
+		$.ajax({
+			type: "POST",
+			url: "/api/conference_rooms",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(room),
+			success: function (obj) {
+				console.log(obj);
+				room.id = obj.id;
+				_this.props.onNewRoomAdded(room);
+			},
+			error: function(msg) {
+				console.error("room", msg);
+			}
+		});
+	}
 
 	render() {
-		var items = this.state.rows.map(function(c) {
-			var name = c + "-" + domain;
-			return <NavItem eventKey={c} key={c}>{name}</NavItem>;
+		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.onNewRoomAdded;
+
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Room" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newRoom">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="Seven's Room" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
+					<Col sm={10}><FormControl type="input" name="description" placeholder="Beijing" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="fromNumber">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="nbr" placeholder="3000" /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
+class Conferences extends React.Component {
+	constructor(props, context) {
+		super(props, context);
+
+		this.state = {
+			formShow: false,
+			rows: []
+		};
+	}
+
+	handleControlClick(e) {
+		var data = e.target.getAttribute("data");
+
+		if (data == "new") {
+			this.setState({ formShow: true});
+		}
+	}
+
+	handleNewRoomAdded(room) {
+		let rows = this.state.rows;
+		rows.push(room);
+		this.setState({rows: rows, formShow: false})
+	}
+
+	componentDidMount() {
+		const _this = this;
+		$.getJSON('/api/conference_rooms', function(rows) {
+			console.log(rows);
+			_this.setState({rows: rows});
+		})
+	}
+
+	render() {
+		let formClose = () => this.setState({ formShow: false });
+		const defaultActiveKey = this.state.rows.length > 0 ? this.state.rows[0].id : 0;
+
+		let items = this.state.rows.map(function(room) {
+			return <NavItem eventKey={room.id} key={room.id}>{room.name}</NavItem>;
 		});
 
-		var panes = this.state.rows.map(function(c) {
-			var name = c + "-" + domain;
-			return <Tab.Pane eventKey={c} key={c} unmountOnExit><ConferencePage name={name}/></Tab.Pane>;
+		let panes = this.state.rows.map(function(room) {
+			let name = room.nbr + "-" + domain;
+			return <Tab.Pane eventKey={room.id} key={room.id} unmountOnExit><ConferencePage name={name}/></Tab.Pane>;
 		});
 
-		return <Tab.Container id="left-tabs-example" defaultActiveKey={this.state.rows[0]}>
+		return <Tab.Container id="conference-tabs" defaultActiveKey={defaultActiveKey}>
 			<Row className="clearfix">
 				<Col sm={2}>
 					<br />
 					<Nav bsStyle="pills" stacked>
 						{ items }
 					</Nav>
+
+					<hr/>
+
+					<Button>
+						<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+						<T.span onClick={this.handleControlClick.bind(this)} data="new" text="New" />
+					</Button>
+
+					<NewRoom show={this.state.formShow} onHide={formClose} onNewRoomAdded={this.handleNewRoomAdded.bind(this)}/>
 				</Col>
 				<Col sm={10} className="leftBar">
 					<Tab.Content animation>

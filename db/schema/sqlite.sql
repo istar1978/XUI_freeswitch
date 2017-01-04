@@ -182,6 +182,18 @@ CREATE TABLE media_files(
 CREATE INDEX media_files_created_epoch ON media_files(created_epoch);
 CREATE INDEX media_files_type ON media_files(type);
 
+CREATE TABLE conference_rooms (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR,
+	description VARCHAR,
+	nbr VARCHAR,  -- conference number
+	capacity integer,
+	realm VARCHAR,
+
+	created_epoch INTEGER,
+	updated_epoch INTEGER,
+	deleted_epoch INTEGER
+);
 
 
 -- END
