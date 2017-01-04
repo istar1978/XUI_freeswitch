@@ -42,13 +42,12 @@ class ModulePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {module: {}, edit: false, params:[]};
+		this.state = {edit: false, rows:[]};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleToggleParam = this.handleToggleParam.bind(this);
-		this.handleChange = this.handleChange.bind(this);
-		this.toggleHighlight = this.toggleHighlight.bind(this);
 		this.handleSort = this.handleSort.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 	}
 
 	handleToggleParam(e) {
@@ -57,58 +56,25 @@ class ModulePage extends React.Component {
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/sip_module/" + this.state.module.id + "/params/" + data,
+			url: "/api/modules/" + data,
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify({action: "toggle"}),
 			success: function (param) {
-				// console.log("success!!!!", param);
-				const params = _this.state.module.params.map(function(p) {
+				console.log("success!!!!", param);
+				const rows = _this.state.rows.map(function(p) {
 					if (p.id == data) {
 						p.disabled = param.disabled;
 					}
 					return p;
 				});
-				_this.state.module.params = params;
-				_this.setState({module: _this.state.module});
+				_this.state.rows = rows;
+				_this.setState({rows: _this.state.rows});
 			},
 			error: function(msg) {
 				console.error("toggle params", msg);
 			}
 		});
-	}
-
-	handleChange(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-
-		console.log("change", obj);
-
-		$.ajax({
-			type: "PUT",
-			url: "/api/module/" + this.state.module.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.module.params = _this.state.module.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({module: _this.state.module});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-				_this.setState({module: _this.state.module});
-			}
-		});
-	}
-
-	toggleHighlight() {
-		this.setState({highlight: !this.state.highlight});
 	}
 
 	isStringAcceptable() {
@@ -117,8 +83,9 @@ class ModulePage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/module/" + this.props.params.id, "", function(data) {
-			_this.setState({module: data});
+		$.getJSON("/api/modules/" , "", function(data) {
+			console.log(data);
+			_this.setState({rows: data});
 		}, function(e) {
 			console.log("get module ERR");
 		});
@@ -126,52 +93,46 @@ class ModulePage extends React.Component {
 
 	handleSort(e){
 		var _this = this;
-		const module = _this.state.module;
-		var params = _this.state.module.params;
-		if (params[0].disabled == 0) {
-			params.sort(function(b,a){
+		const rows = _this.state.rows;
+		if (rows[0].disabled == 0) {
+			rows.sort(function(b,a){
 			return a.disabled - b.disabled;
 			})
 		} else{
-			params.sort(function(a,b){
+			rows.sort(function(a,b){
 			return a.disabled - b.disabled;
 			})
 		};
 		
-		_this.setState({module: module, edit: false});
+		_this.setState({rows: rows, edit: false});
+	}
+
+	handleChange(obj) {
+		
 	}
 
 	render() {
-		const module = this.state.module;
 		const _this = this;
 		let save_btn = "";
 		let err_msg = "";
-		let params = <tr></tr>;
 
-		if (this.state.module.params && Array.isArray(this.state.module.params)) {
-			// console.log(this.state.module.params)
-			params = this.state.module.params.map(function(param) {
-				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
+		var rows = _this.state.rows.map(function(row) {
+				const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
 
-				return <tr key={param.id} className={disabled_class}>
-					<td>{param.k}</td>
-					<td><RIEInput value={param.v} change={_this.handleChange}
-						propName={param.id}
+				return <tr key={row.id} className={disabled_class}>
+					<td>{row.k}</td>
+					<td><RIEInput value={row.v} change={_this.handleChange}
+						propName={row.id}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
-					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
+					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? "Yes" : "No"}</Button></td>
 				</tr>
 			});
-		}
 
 		return <div>
-			<ButtonGroup className="controls">
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
-			</ButtonGroup>
-
 			<h2>Params</h2>
 			<table className="table">
 				<tbody>
@@ -180,7 +141,7 @@ class ModulePage extends React.Component {
 					<th>Value</th>
 					<th onClick={this.handleSort.bind(this)}>Enabled</th>
 				</tr>
-				{params}
+				{rows}
 				</tbody>
 			</table>
 		</div>
