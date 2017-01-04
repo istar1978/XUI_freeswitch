@@ -266,6 +266,7 @@ class DictsPage extends React.Component {
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
 		this.toggleHighlight = this.toggleHighlight.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -391,32 +392,32 @@ class DictsPage extends React.Component {
 
 	handleChange(obj) {
 		const _this = this;
-		const id = Object.keys(obj)[0];
+		const id = parseInt(Object.keys(obj)[0]);
 		const value = Object.values(obj)[0];
-		console.log("change", obj);
 
-		alert(id);
-		alert(value);
+		var rows = _this.state.rows;
+
+		var row = {};
+		row.realm = rows[id].realm;
+		row.k = rows[id].k;		
+		row.v = value;		
+		row.d = rows[id].d;		
+		row.o = rows[id].o;	
+
+		console.log("row", row);
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/dicts/" + id,
+			url: "/api/dicts/" + row.id,
 			dataType: "json",
 			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (row) {
-				console.log("success!!!!", row);
-				_this.state.rows = _this.state.rows.map(function(p) {
-					if (p.id == id) {
-						return row;
-					}
-					return p;
-				});
-				_this.setState({row: _this.state.row});
+			data: JSON.stringify(row),
+			success: function (data) {
+				console.log("successsusss",data);
+				_this.setState({rows: rows});
 			},
 			error: function(msg) {
-				console.error("update params", msg);
-				_this.setState({row: _this.state.row});
+				console.error("failed", msg);
 			}
 		});
 	}
@@ -457,11 +458,11 @@ class DictsPage extends React.Component {
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
+				&nbsp;&nbsp;
+				<Button>
+					<T.span onClick={this.toggleHighlight} text="Edit" />
+				</Button>
 			</div>
-
-			<ButtonGroup className="controls">
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
-			</ButtonGroup>
 
 			<h1><T.span text="Dicts"/></h1>
 			<div>
