@@ -417,6 +417,7 @@ class DictsPage extends React.Component {
 			success: function (data) {
 				console.log("update success");
 				_this.setState({rows: _this.state.rows});
+				location.reload([true]);
 			},
 			error: function(msg) {
 				console.error("failed", msg);
@@ -441,7 +442,7 @@ class DictsPage extends React.Component {
 					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={_this.handleRealmClick.bind(_this)} data={row.realm}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
 					<td>
-						<RIEInput value={row.v} change={_this.handleChange}
+						<RIEInput value={row.v?row.v:'NULL'} change={_this.handleChange}
 						propName={row.id}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
