@@ -385,12 +385,7 @@ class RoutePage extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" className="mandatory"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="prefix" defaultValue={route.prefix}/></Col>
 				</FormGroup>
-{/*
-				<FormGroup controlId="formLength">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Length" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="length" defaultValue={route.length}/></Col>
-				</FormGroup>
-*/}
+
 				<FormGroup controlId="formDNC">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="DNC" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="dnc" defaultValue={route.dnc}/></Col>

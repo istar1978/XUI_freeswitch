@@ -44,6 +44,7 @@ class ModulePage extends React.Component {
 		// This binding is necessary to make `this` work in the callback
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleSort = this.handleSort.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
 	}
 
 	handleToggleParam(e) {
@@ -99,6 +100,24 @@ class ModulePage extends React.Component {
 		_this.setState({rows: rows, edit: false});
 	}
 
+	handleControlClick(e) {
+		var data = e.target.getAttribute("data");
+		console.log("data", data);
+		var id = e.target.getAttribute("id");
+		var rows = this.state.rows;
+
+		if (data == "load") {
+			fsAPI("load", rows[id-1].k);
+			console.log(rows[id-1].k);
+		} else if (data == "unload") {
+			fsAPI("unload", rows[id-1].k);
+			console.log(rows[id-1].k);
+		} else if (data == "reload") {
+			fsAPI("reload", rows[id-1].k);
+			console.log(rows[id-1].k);
+		}
+	}
+
 	render() {
 		const _this = this;
 		let save_btn = "";
@@ -110,6 +129,12 @@ class ModulePage extends React.Component {
 				return <tr key={row.id} className={disabled_class}>
 					<td>{row.k}</td>
 					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? "Yes" : "No"}</Button></td>
+					<td>
+						<T.a onClick={_this.handleControlClick} id={row.id} data="load" text="Load"/> |
+						<T.a onClick={_this.handleControlClick} id={row.id} data="unload" text="Unload"/> |
+						<T.a onClick={_this.handleControlClick} id={row.id} data="reload" text="Reload"/> |
+						<span>{row.class_name}</span>
+					</td>
 				</tr>
 			});
 
@@ -120,6 +145,7 @@ class ModulePage extends React.Component {
 				<tr>
 					<th>Name</th>
 					<th onClick={this.handleSort.bind(this)}>Enabled</th>
+					<th><T.span text="Control"/></th>
 				</tr>
 				{rows}
 				</tbody>
