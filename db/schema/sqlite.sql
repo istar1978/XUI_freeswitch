@@ -182,6 +182,20 @@ CREATE TABLE media_files(
 CREATE INDEX media_files_created_epoch ON media_files(created_epoch);
 CREATE INDEX media_files_type ON media_files(type);
 
+CREATE TABLE macs (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR,
+	mac VARCHAR,
+	created_epoch INTEGER,
+	updated_epoch INTEGER,
+	deleted_epoch INTEGER
+);
+
+CREATE TABLE relation (
+	id INTEGER PRIMARY KEY,
+	user_id INTEGER NOT NULL,
+	mac_id VARCHAR NOT NULL
+);
 
 
 -- END
