@@ -39,7 +39,7 @@ get('/:mac', function(params)
 	y = string.sub(params.mac,1,12)
 	t = string.sub(params.mac,4,15)
 	if params.mac then
-	xdb.dbh:query("select * from macs as a join relation as c on c.mac_id=a.id join users as b on b.id=c.user_id where a.mac='" ..t.. "'",function(row)
+	xdb.dbh:query("SELECT * FROM devices AS a JOIN user_devices AS c ON c.mac_id=a.id JOIN users AS b ON b.id=c.user_id WHERE a.mac='" ..t.. "'",function(row)
 	tab = [[<?xml version="1.0" encoding="UTF-8"?><gs_provision version="1"><config version="1">]]..
 	[[<P271>1</P271>]]..
 	[[<P2312>]]..row.domain..[[</P2312>]]..
@@ -52,7 +52,7 @@ get('/:mac', function(params)
 	[[<P34>]]..row.password..[[</P34>]]..
 	[[</config></gs_provision>]]
 	end)
-	xdb.dbh:query("select * from macs as a join relation as c on c.mac_id=a.id join users as b on b.id=c.user_id where a.mac='" ..y.. "'",function(row)
+	xdb.dbh:query("SELECT * FROM devices AS a JOIN user_devices AS c ON c.mac_id=a.id JOIN users AS b ON b.id=c.user_id WHERE a.mac='" ..y.. "'",function(row)
 	tab = [[#!version:1.0.0.1
 	##File header "#!version:1.0.0.1" can not be edited or deleted.##
 	account.1.sip_server.1.expires = 300
