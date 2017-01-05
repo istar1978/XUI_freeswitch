@@ -196,4 +196,23 @@ CREATE TABLE conference_rooms (
 );
 
 
+CREATE TABLE devices (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR,
+	type VARCHAR,
+	vendor VARCHAR,
+	mac VARCHAR,
+	
+	created_epoch INTEGER,
+	updated_epoch INTEGER,
+	deleted_epoch INTEGER
+);
+
+CREATE TABLE user_devices (
+	id INTEGER PRIMARY KEY,
+	user_id INTEGER NOT NULL,
+	mac_id VARCHAR NOT NULL
+);
+
+
 -- END
