@@ -31,6 +31,8 @@
 
 'use strict';
 
+import '../css/xui.css';
+
 import React from 'react'
 import ReactDOM from 'react-dom';
 import T from 'i18n-react';
