@@ -396,7 +396,6 @@ class DictsPage extends React.Component {
 		const value = Object.values(obj)[0];
 
 		var rows = _this.state.rows;
-
 		var row = {};
 
 		row.id = id;
@@ -406,8 +405,7 @@ class DictsPage extends React.Component {
 		row.d = rows[(id - 1)].d;
 		row.o = rows[(id - 1)].o;
 
-		console.log("row", row);
-
+		var resrows = [];
 		$.ajax({
 			type: "PUT",
 			url: "/api/dicts/" + (row.id - 1),
@@ -415,9 +413,16 @@ class DictsPage extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(row),
 			success: function (data) {
-				console.log("update success");
-				_this.setState({rows: _this.state.rows});
-				location.reload([true]);
+
+				_this.state.rows.map(function(r){
+				console.log(id+'--'+r.id);
+					if (r.id == id) {
+						r = row;
+					}			
+					resrows.push(r);	
+				})
+				console.log(resrows)
+				_this.setState({rows: resrows});
 			},
 			error: function(msg) {
 				console.error("failed", msg);
@@ -430,6 +435,7 @@ class DictsPage extends React.Component {
 	}
 
 	render() {
+		const row = this.state.rows;
 		let formClose = () => this.setState({ formShow: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    var danger = this.state.danger ? "danger" : "";
