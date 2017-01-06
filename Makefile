@@ -21,5 +21,4 @@ csetup:
 	bower install
 
 release:
-	echo todo ...
-
+	cd jsapp && make release
