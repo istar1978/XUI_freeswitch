@@ -79,7 +79,8 @@ if user then
 
 		vars =  '<variable name="user_context" value="' .. row.context .. '"/>' ..
 				'<variable name="effective_caller_id_name" value="' .. cid_name .. '"/>' ..
-				'<variable name="effective_caller_id_number" value="' .. cid_number .. '"/>'
+				'<variable name="effective_caller_id_number" value="' .. cid_number .. '"/>' ..
+				'<variable name="accountcode" value="' .. row.extn .. '"/>'
 	end)
 end
 
@@ -99,7 +100,6 @@ if (found) then
 				<variable name="record_stereo" value="true"/>
 				<variable name="transfer_fallback_extension" value="operator"/>
 				<variable name="toll_allow" value="domestic,international,local"/>
-				<variable name="accountcode" value="1000"/>
 				<variable name="outbound_caller_id_name" value="FSXUI"/>
 				<variable name="outbound_caller_id_number" value="0000000"/>
 				<variable name="callgroup" value="techsupport"/>
