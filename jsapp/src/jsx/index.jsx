@@ -112,8 +112,8 @@ const Home = React.createClass({
 		const handleLogout = function(params, replace) {
 			console.log(params, replace);
 			if (verto) verto.logout();
-			localStorage.removeItem("username");
-			localStorage.removeItem("password");
+			localStorage.removeItem("xui.username");
+			localStorage.removeItem("xui.password");
 			ReactDOM.render(<Login/>, document.getElementById('body'));
 		}
 
