@@ -34,12 +34,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import ReactDOM from 'react-dom';
-import { Button } from 'react-bootstrap';
-import { Navbar } from 'react-bootstrap';
-import { Nav } from 'react-bootstrap';
-import { NavItem } from 'react-bootstrap';
-import { NavDropdown } from 'react-bootstrap';
-import { MenuItem } from 'react-bootstrap';
+import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { Router, Route, Link, browserHistory } from 'react-router'
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import Phone from './phone';
