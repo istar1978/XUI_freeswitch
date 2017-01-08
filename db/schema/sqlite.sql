@@ -202,7 +202,7 @@ CREATE TABLE devices (
 	type VARCHAR,
 	vendor VARCHAR,
 	mac VARCHAR,
-	
+
 	created_epoch INTEGER,
 	updated_epoch INTEGER,
 	deleted_epoch INTEGER
@@ -214,5 +214,20 @@ CREATE TABLE user_devices (
 	mac_id VARCHAR NOT NULL
 );
 
+CREATE TABLE fifo_cdrs (
+	id INTEGER PRIMARY KEY,
+	channel_uuid VARCHAR NOT NULL,
+	fifo_name VARCHAR NOT NULL,
+	ani VARCHAR,                -- the original caller id number
+	dest_number VARCHAR,        -- the original dest number
+	bridged_number VARCHAR,     -- bridged_number
+
+	start_epoch INTEGER,
+	bridge_epoch INTEGER,
+	end_epoch INTEGER
+);
+
+CREATE INDEX fifo_cdrs_start_epoch ON fifo_cdrs(start_epoch);
+CREATE INDEX fifo_cdrs_channel_uuid ON fifo_cdrs(channel_uuid);
 
 -- END
