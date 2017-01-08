@@ -30,12 +30,17 @@
  */
 ]]
 
+require 'sqlescape'
+local escape = sqlescape.EscapeFunction()
+
 local actions = ""
 local dest = params:getHeader("Hunt-Destination-Number")
 local context = params:getHeader("Hunt-Context")
 local actions_table = {}
-local sql = "SELECT * FROM routes WHERE SUBSTR(prefix, 1, 1) = '" .. dest:sub(1,1) .. "' ORDER BY length(prefix) DESC"
+local sql = "SELECT * FROM routes WHERE context = '" .. context .. "' AND " .. escape(dest) .. " LIKE prefix || '%' ORDER BY length(prefix) DESC"
 local found = false
+
+do_debug = true
 
 if do_debug then print(sql) end
 
