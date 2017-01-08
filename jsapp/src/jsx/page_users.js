@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
@@ -303,10 +303,12 @@ class UserPage extends React.Component {
 		}
 
 		return <div>
-			<ButtonGroup className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				{err_msg} { save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1>{user.name} &lt;{user.extn}&gt;</h1>
 			<hr/>
@@ -463,17 +465,21 @@ class UsersPage extends React.Component {
 		})
 
 		return <div>
-			<div className="controls">
+			<ButtonToolbar className="pull-right">
+				<ButtonGroup>
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
-				&nbsp;&nbsp;
+				</ButtonGroup>
+
+				<ButtonGroup>
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="import" text="Import" />
 				</Button>
-			</div>
+				</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1><T.span text="Users"/></h1>
 			<div>

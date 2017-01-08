@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col, ProgressBar } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col, ProgressBar } from 'react-bootstrap';
 import { Link } from 'react-router';
 // http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
@@ -276,10 +276,12 @@ class MediaFilePage extends React.Component {
 		}
 
 		return <div>
-			<ButtonGroup className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				{ save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1>{mfile.name} <small>{mfile.extn}</small></h1>
 			<hr/>
@@ -476,17 +478,21 @@ class MediaFilesPage extends React.Component {
 		})
 
 		return <Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} className="dropzone" activeClassName="dropzone_active" disableClick={true}><div>
-			<div className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="Upload" />
 				</Button>
-				&nbsp;&nbsp;
+			</ButtonGroup>
+
+			<ButtonGroup>
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="ivr" text="TTS" />
 				</Button>
-			</div>
+			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1><T.span text="Media Files"/> <small><T.span text="Drag and drop files here to upload"/></small></h1>
 

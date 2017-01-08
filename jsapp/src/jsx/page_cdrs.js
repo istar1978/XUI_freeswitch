@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
 var CDRsPage = React.createClass({
 	getInitialState: function() {
@@ -87,9 +87,11 @@ var CDRsPage = React.createClass({
 		})
 
 		return <div>
-			<ButtonGroup className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				<Button><T.span onClick={this.handleControlClick} text="Search"/></Button>
 			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1><T.span text="CDRs"/></h1>
 			<div>

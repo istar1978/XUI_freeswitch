@@ -13,6 +13,7 @@ LANGUAGES["zh"] = {
 	"Socket Already Connected": "Socket已连接",
 	Profiles: "Profiles",
 	Help: "帮助",
+	Search: "查询",
 
 	Overview: "概览",
 	Calls: "Calls",
@@ -83,6 +84,7 @@ LANGUAGES["zh"] = {
 	FS_DEST_IVRBLOCK: "积木",
 
 	"Create New User": "新建用户",
+	Import: "导入",
 	"CID Name": "主叫名称",
 	"CID Number": "主叫号码",
 	Number: "号码",

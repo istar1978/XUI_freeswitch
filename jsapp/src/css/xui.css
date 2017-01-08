@@ -28,10 +28,6 @@
 #phone-state.Busy { color:lime !important;}
 #phone-state.Offline { color:grey !important;}
 
-#conference-controls {
-	float:right;
-}
-
 #dest_number{
 	margin-bottom: 5px;
 }
@@ -55,10 +51,6 @@
     font-size: 16px;
     line-height: 2.2;
     border-radius: 30px;
-}
-
-.controls {
-	float: right;
 }
 
 .leftBar {

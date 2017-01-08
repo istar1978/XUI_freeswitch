@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
@@ -361,10 +361,12 @@ class RoutePage extends React.Component {
 		});
 
 		return <div>
-			<ButtonGroup className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				{ save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1>{route.name} <small>{route.extn}</small></h1>
 			<hr/>
@@ -519,12 +521,12 @@ class RoutesPage extends React.Component {
 		})
 
 		return <div>
-			<div className="controls">
+			<ButtonToolbar className="pull-right">
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
-			</div>
+			</ButtonToolbar>
 
 			<h1><T.span text="Routes" /></h1>
 

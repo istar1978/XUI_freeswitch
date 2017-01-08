@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 // http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
@@ -305,10 +305,12 @@ class SIPProfilePage extends React.Component {
 		}
 
 		return <div>
-			<ButtonGroup className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				{ save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h1>{profile.name} <small>{profile.extn}</small></h1>
 			<hr/>
@@ -326,9 +328,11 @@ class SIPProfilePage extends React.Component {
 				</FormGroup>
 			</Form>
 
-			<ButtonGroup className="controls">
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
 				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
 			</ButtonGroup>
+			</ButtonToolbar>
 
 			<h2>Params</h2>
 			<table className="table">
@@ -473,12 +477,12 @@ class SIPProfilesPage extends React.Component {
 		})
 
 		return <div>
-			<div className="controls">
+			<ButtonToolbar className="pull-right">
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
-			</div>
+			</ButtonToolbar>
 
 			<h1><T.span text="SIP Profiles"/></h1>
 			<div>

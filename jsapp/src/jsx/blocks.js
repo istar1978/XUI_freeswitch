@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 class BlockPage extends React.Component {
@@ -670,11 +670,11 @@ var toolbox = `<xml id="toolbox" style="display: none">
 
 	render() {
 		return <div id='blocks'>
-			<div className="controls">
+			<ButtonToolbar className="pull-right">
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="exportSVG" text="Export SVG" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export Lua" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="save" text="Save" /></Button>
-			</div>
+			</ButtonToolbar>
 			<h1><T.span text="Blocks"/> {this.state.block.name} <small>{this.state.block.description}</small></h1>
 		</div>;
 	}
@@ -833,12 +833,12 @@ class BlocksPage extends React.Component {
 		})
 
 		return <div>
-			<div className="controls">
+			<ButtonToolbar className="pull-right">
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
-			</div>
+			</ButtonToolbar>
 
 			<h1><T.span text="IVR Blocks"/></h1>
 			<div>

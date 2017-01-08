@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { ButtonGroup,  Button } from 'react-bootstrap';
+import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
 
 var Member = React.createClass({
 	propTypes: {
@@ -215,7 +215,7 @@ var ConferencePage = React.createClass({
 		var _this = this;
 
 		return <div>
-			<div id="conference-controls">
+			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				<Button>
 					<i className="fa fa-microphone-slash" aria-hidden="true"></i>&nbsp;
@@ -230,14 +230,14 @@ var ConferencePage = React.createClass({
 					<T.span onClick={this.handleControlClick} text= "Hangup" data="hup"/>
 				</Button>
 			</ButtonGroup>
-			&nbsp;&nbsp;
+
 			<ButtonGroup>
 				<Button>
 					<i className="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} text= "Select" data="select"/>
 				</Button>
 			</ButtonGroup>
-			&nbsp;&nbsp;
+
 			<ButtonGroup>
 				<Button>
 					<i className="fa fa-lock" aria-hidden="true"></i>&nbsp;
@@ -248,8 +248,10 @@ var ConferencePage = React.createClass({
 					<T.span onClick={this.handleControlClick} text= "unLock" data="unlock"/>
 				</Button>
 			</ButtonGroup>
-			</div>
+			</ButtonToolbar>
+
 			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
+
 			<div>
 				<table className="table conference">
 				<tbody>
