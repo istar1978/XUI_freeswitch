@@ -85,11 +85,9 @@ const LoginBox = React.createClass({
 		return <div id='loginbox'>
 			<br/><T.span text={errmsg} className="danger"/>
 			<h1><T.span text="Login with username and password"/></h1>
-			<form>
-				<p><input id='username' name='username' placeholder='username'/></p>
-				<p><input id='password' name='password' type='password' placeholder='password'/></p>
-				<Button bsStyle="primary" type="submit" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
-			</form>
+			<p><input id='username' name='username' placeholder='username'/></p>
+			<p><input id='password' name='password' type='password' placeholder='password'/></p>
+			<Button bsStyle="primary" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
 		</div>
 	}
 })
