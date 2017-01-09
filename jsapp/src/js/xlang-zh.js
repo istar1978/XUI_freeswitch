@@ -15,7 +15,7 @@ LANGUAGES["zh"] = {
 	Help: "帮助",
 	Search: "查询",
 
-	Overview: "概览",
+	Overview: "状态",
 	Calls: "Calls",
 	Channels: "Channels",
 	Users: "用户",
