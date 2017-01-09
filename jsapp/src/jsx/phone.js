@@ -228,7 +228,7 @@ var Phone = React.createClass({
 
 		if (!ishttps) {
 			return <NavItem eventKey="phone">
-				<T.span id="phone-static" className={state} text={{ key: "Socket Already Connected"}} onClick={this.handleMenuClick} />
+				<T.span id="phone-static" className={state} text="Socket Connected" onClick={this.handleMenuClick} />
 			</NavItem>
 		}
 

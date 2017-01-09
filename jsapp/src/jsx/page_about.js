@@ -31,15 +31,17 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 
 var AboutPage = React.createClass({
 
 	render: function() {
 		return <div>
-			<h1>About XUI</h1>
-			<p>XUI is a FreeSWITCH UI framework and implementation.</p>
-			<p>Author: Seven Du</p>
-			<p>See <a href="https://github.com/seven1240/xui" target="_blank">XUI Github page</a> for more info.</p>
+			<h1><T.span text="About XUI"/></h1>
+			<p><T.span text="XUI is a FreeSWITCH UI framework and implementation"/></p>
+			<p><T.span text="Version"/>: 1.0</p>
+			<p><T.span text="Author"/>: Seven Du</p>
+			<p><T.span text="More info"/>: <a href="https://github.com/seven1240/xui" target="_blank">XUI on Github</a></p>
 		</div>;
 	}
 });
