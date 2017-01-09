@@ -412,3 +412,17 @@ Blockly.Msg.FS_BLOCK_DEFAULT = "Default";
 Blockly.Msg.FS_BLOCK_IVRSTART = "IVR Start Point";
 Blockly.Msg.FS_BLOCK_IVR = "IVR";
 Blockly.Msg.FS_BLOCK_CASE = "Case";
+Blockly.Msg.FS_BLOCK_FIFO = "FIFO队列";
+
+
+Blockly.Msg.tNow = "Now";
+Blockly.Msg.tDate = "Create Time";
+Blockly.Msg.tDateField = "Get Field";
+Blockly.Msg.tDateField_YEAR = "Year";
+Blockly.Msg.tDateField_MONTH = "Month";
+Blockly.Msg.tDateField_DAY = "Day";
+Blockly.Msg.tDateField_HOUR = "Hour";
+Blockly.Msg.tDateField_MIN = "Minute";
+Blockly.Msg.tDateField_SEC = "Second";
+Blockly.Msg.tDateField_WDAY = "Week Day";
+Blockly.Msg.tDateField_YDAY = "Year Day";

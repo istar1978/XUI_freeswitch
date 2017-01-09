@@ -123,6 +123,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
          </value>
         </block>
 	<block type="fsFilePath"></block>
+	<block type="fsFifo"></block>
 	<block type="fsSessionAnswer"></block>
 	<block type="fsSessionGet"></block>
 	<block type="fsSessionSet">
@@ -178,6 +179,12 @@ var toolbox = `<xml id="toolbox" style="display: none">
 </category>
 
 <sep></sep>
+
+<category name="Time" colour="200">
+	<block type="tNow"></block>
+	<block type="tDate"></block>
+	<block type="tDateField"></block>
+</category>
 
 <category name="Logic" colour="210">
 	<block type="controls_if"></block>
@@ -542,6 +549,31 @@ var toolbox = `<xml id="toolbox" style="display: none">
 					this.appendDummyInput()
 					.appendField(Blockly.Msg.FS_BLOCK_FILE)
 					.appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
+
+					this.setInputsInline(true);
+					this.setOutput(true, "String");
+					this.setTooltip('');
+					this.setColour(0);
+					this.setHelpUrl('http://www.example.com/');
+				}
+			};
+
+			const fifos = new Array()
+			fifos.push({name: "Default", value: "default"})
+
+			_this.fs_fifos_dropdown_data = fifos.map(function(row) {
+				return [row.name, row.value];
+			});
+
+			let get_fs_fifo_dropdown_data = function() {
+				return _this.fs_fifos_dropdown_data;
+			}
+
+			Blockly.Blocks['fsFifo'] = {
+				init: function() {
+					this.appendDummyInput()
+					.appendField(Blockly.Msg.FS_BLOCK_FIFO)
+					.appendField(new Blockly.FieldDropdown(get_fs_fifo_dropdown_data), "NAME");
 
 					this.setInputsInline(true);
 					this.setOutput(true, "String");

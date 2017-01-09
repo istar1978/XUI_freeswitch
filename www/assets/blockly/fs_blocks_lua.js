@@ -88,6 +88,12 @@ Blockly.Lua.fsFilePath = function(block) {
   return [code, Blockly.Lua.ORDER_NONE];
 };
 
+Blockly.Lua.fsFifo = function(block) {
+  var dropdown_name = block.getFieldValue('NAME');
+  var code = '"' + dropdown_name + '"';
+  return [code, Blockly.Lua.ORDER_NONE];
+};
+
 Blockly.Lua.fsSessionSet = function(block) {
   var text_var = block.getFieldValue('var');
   var text_val = Blockly.Lua.valueToCode(block, 'args',
@@ -100,7 +106,7 @@ Blockly.Lua.fsSessionRead = function(block) {
   var text_min = block.getFieldValue('min');
   var text_max = block.getFieldValue('max');
   var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
-  var variable_digits = Blockly.Lua.variableDB_.getName(block.getFieldValue('digits'), Blockly.Variables.NAME_TYPE);
+  var variable_digits = Blockly.Lua.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var text_timeout = block.getFieldValue('timeout');
   var text_terminator = block.getFieldValue('terminator');
 
@@ -175,3 +181,28 @@ Blockly.Lua.fsDBHRow = function(block) {
   return [code, Blockly.Lua.ORDER_NONE];
 };
 
+Blockly.Lua.tNow = function(block) {
+  var code = "os.date('*t')";
+  return [code, Blockly.Lua.ORDER_NONE];
+}
+
+Blockly.Lua.tDate = function(block) {
+  var year = block.getFieldValue('year');
+  var month = block.getFieldValue('month');
+  var day = block.getFieldValue('day');
+  var hour = block.getFieldValue('hour');
+  var min = block.getFieldValue('min');
+  var sec = block.getFieldValue('sec');
+  var code = "os.date('*t', os.time{year=" + year +
+    ", month=" + month + ", day=" + day +
+    ", hour=" + hour + ", min=" + min + ", sec=" + sec + "})";
+  return [code, Blockly.Lua.ORDER_NONE];
+}
+
+Blockly.Lua.tDateField = function(block) {
+  var variable_date = Blockly.Lua.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+  var dropdown_field = block.getFieldValue('FIELD');
+
+  var code = variable_date + "." + dropdown_field;
+  return [code, Blockly.Lua.ORDER_NONE];
+}

@@ -414,4 +414,17 @@ Blockly.Msg.FS_BLOCK_IVRSTART = "IVR起点";
 Blockly.Msg.FS_BLOCK_DEFAULT = "默认";
 Blockly.Msg.FS_BLOCK_IVR = "IVR";
 Blockly.Msg.FS_BLOCK_CASE = "如果收到";
+Blockly.Msg.FS_BLOCK_FIFO = "FIFO队列";
 
+
+Blockly.Msg.tNow = "当前时间";
+Blockly.Msg.tDate = "构造时间";
+Blockly.Msg.tDateField = "从时间中获取";
+Blockly.Msg.tDateField_YEAR = "年";
+Blockly.Msg.tDateField_MONTH = "月";
+Blockly.Msg.tDateField_DAY = "日";
+Blockly.Msg.tDateField_HOUR = "时";
+Blockly.Msg.tDateField_MIN = "分";
+Blockly.Msg.tDateField_SEC = "秒";
+Blockly.Msg.tDateField_WDAY = "星期";
+Blockly.Msg.tDateField_YDAY = "一年中的第几天";

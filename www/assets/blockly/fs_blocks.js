@@ -324,7 +324,8 @@ Blockly.Blocks['fsSessionRead'] = {
             .appendField(Blockly.Msg.FS_BLOCK_MAX)
         this.appendDummyInput()
             .appendField(Blockly.Msg.FS_BLOCK_VAR)
-            .appendField(new Blockly.FieldVariable("digits"), "digits")
+            .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME),"VAR")
+
         this.appendValueInput("TIMEOUT")
             .appendField(Blockly.Msg.FS_BLOCK_TIMEOUT)
         this.appendDummyInput()
@@ -437,6 +438,64 @@ Blockly.Blocks['fsDBHRow'] = {
         .appendField("row.")
         .appendField(new Blockly.FieldTextInput("col"), "col");
     this.setOutput(true, null);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+
+Blockly.Blocks['tNow'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.tNow);
+
+    this.setOutput(true, "Date");
+    // this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Blocks['tDate'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.tDate)
+        .appendField(new Blockly.FieldTextInput("year"), "year")
+        .appendField("-")
+        .appendField(new Blockly.FieldTextInput("month"), "month")
+        .appendField("-")
+        .appendField(new Blockly.FieldTextInput("day"), "day")
+        .appendField(new Blockly.FieldTextInput("hour"), "hour")
+        .appendField(":")
+        .appendField(new Blockly.FieldTextInput("min"), "min")
+        .appendField(":")
+        .appendField(new Blockly.FieldTextInput("sec"), "sec");
+
+    this.setOutput(true, "Date");
+    this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Blocks['tDateField'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.tDateField)
+        .appendField(new Blockly.FieldDropdown([
+            [Blockly.Msg.tDateField_YEAR, "year"],
+            [Blockly.Msg.tDateField_MONTH, "month"],
+            [Blockly.Msg.tDateField_DAY, "day"],
+            [Blockly.Msg.tDateField_HOUR, "hour"],
+            [Blockly.Msg.tDateField_MIN, "min"],
+            [Blockly.Msg.tDateField_SEC, "sec"],
+            [Blockly.Msg.tDateField_WDAY, "wday"],
+            [Blockly.Msg.tDateField_YDAY, "yday"]
+        ]), "FIELD")
+        .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), "VAR")
+    this.setInputsInline(true);
+    this.setOutput(true, "Number");
+    this.setColour(20);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
