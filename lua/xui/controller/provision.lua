@@ -60,7 +60,7 @@ get('/gs/:mac', function(params)
 end)
 
 
-get('/yl/:mac', function(params)
+get('/yealink/:mac', function(params)
 
 	utils.print_r(params)
 	yl = string.sub(params.mac, 1, 12)
@@ -130,7 +130,7 @@ get('/yl/:mac', function(params)
            	account.2.outbound_proxy_enable = 1
            	account.1.static_cache_pri = 1
 
-           	auto_provision.server.url = http://192.168.3.67:8081/api/provision/yl
+           	auto_provision.server.url = http://192.168.3.67:8081/api/provision/yealink
            	security.trust_certificates = 0]]
            	end)
 
