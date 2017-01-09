@@ -627,6 +627,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				data: JSON.stringify(block),
 				success: function () {
 					_this.setState({errmsg: {key: "Saved at", time: Date()}});
+                                         notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 				},
 				error: function(msg) {
 					console.error("block", msg);
