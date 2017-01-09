@@ -450,7 +450,7 @@ class DictsPage extends React.Component {
 					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={_this.handleRealmClick.bind(_this)} data={row.realm}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
 					<td>
-						<RIEInput value={row.v?row.v:'NULL'} change={_this.handleChange}
+						<RIEInput value={_this.state.highlight ? (row.v ? row.v : '--NULL--') : row.v} change={_this.handleChange}
 						propName={row.id}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
