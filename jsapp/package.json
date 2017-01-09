@@ -49,6 +49,15 @@
     "build": " webpack && npm run build:js",
     "watch:js": "watch 'npm run build:js' src/js/",
     "release": "webpack --progress --profile --colors --config webpack.production.config.js && npm run build:js",
-    "build:watch": "webpack -w"
+    "build:watch": "webpack -w",
+
+    "oldstuff": "echo ------------ support old version of node.js -----------",
+
+    "oldbuild:css": "cat src/css/*.css > ../www/assets/css/xui.css",
+    "oldbuild:jsx": "browserify -t [ babelify --presets [ es2015 react ] ] src/jsx/index.jsx > ../www/assets/js/jsx/index.js",
+    "oldrelease:jsx": "NODE_ENV=production browserify -t [ babelify --presets [ es2015 react ] ] src/jsx/index.jsx | uglifyjs -mc > ../www/assets/js/jsx/index.js",
+    "build:html": "echo ok",
+    "oldbuild": "npm run oldbuild:css && npm run oldbuild:jsx && npm run build:html",
+    "oldrelease": "npm run oldbuild:css && npm run oldrelease:jsx && npm run build:html"
   }
 }
