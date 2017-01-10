@@ -1,9 +1,8 @@
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var path = require('path');
 var config = {
-    entry: ["./src/jsx/index.jsx"],
+    entry: ["./src/jsx/index.jsx","./src/css/xui.css"],
     output: {
         path: '../www/assets',
         filename: 'js/jsx/index.js'
@@ -14,7 +13,7 @@ var config = {
             loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
             exclude: /node_modules/
         }, {
-            test: /\.(jsx)$/,
+            test: /\.(js|jsx)$/,
             loaders: ['react-hot', 'babel?' + JSON.stringify({
                 cacheDirectory: true,
                 plugins: [
