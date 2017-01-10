@@ -80,13 +80,21 @@ const LoginBox = React.createClass({
 		this.setState({login_err: true});
 	},
 
+	handleLogin: function(e){
+		var event = e || window.event;
+		if (event.keyCode == 13) {
+			console.log(event);
+			this.handleClick();
+		};
+	},
+
 	render() {
 		var errmsg = this.state.login_err ? "Invalid username or password" : "";
 		return <div id='loginbox'>
 			<br/><T.span text={errmsg} className="danger"/>
 			<h1><T.span text="Login with username and password"/></h1>
 			<p><input id='username' name='username' placeholder='username'/></p>
-			<p><input id='password' name='password' type='password' placeholder='password'/></p>
+			<p><input id='password' name='password' type='password' onKeyDown= {this.handleLogin} placeholder='password'/></p>
 			<Button bsStyle="primary" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
 		</div>
 	}
