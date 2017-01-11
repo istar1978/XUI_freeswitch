@@ -422,11 +422,12 @@ class RoutePage extends React.Component {
 class RoutesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false};
+		this.state = { formShow: false, rows: [], danger: false,isSysRouterShow:false};
 
 	    // This binding is necessary to make `this` work in the callback
 	    this.handleControlClick = this.handleControlClick.bind(this);
 	    this.handleDelete = this.handleDelete.bind(this);
+	    this.handleSysRouterShow=this.handleSysRouterShow.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -465,6 +466,9 @@ class RoutesPage extends React.Component {
 			}
 		});
 	}
+	handleSysRouterShow(e){
+		this.setState({isSysRouterShow:!this.state.isSysRouterShow});
+	}
 
 	handleClick(x) {
 	}
@@ -498,9 +502,13 @@ class RoutesPage extends React.Component {
 	    let toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    var _this = this;
 	    var danger = this.state.danger ? "danger" : "";
+	    var styleSheet = {
+			"display" : "none"
+		}
 
 		var rows = this.state.rows.map(function(row) {
 			let dest = row.body;
+			let sysStyle = row.dest_type == 'FS_DEST_SYSTEM' && !_this.state.isSysRouterShow ? styleSheet : null;
 			switch(row.dest_type) {
 				case 'FS_DEST_SYSTEM': dest = null; break;
 				case 'FS_DEST_GATEWAY': dest = <Link to={`/settings/gateways/${row.dest_uuid}`}>{row.body}</Link>;break;
@@ -508,7 +516,7 @@ class RoutesPage extends React.Component {
 				default: break;
 			}
 
-			return <tr key={row.id}>
+			return <tr key={row.id} style={sysStyle}>
 					<td>{row.id}</td>
 					<td>{row.context}</td>
 					<td>{row.prefix}</td>
@@ -525,6 +533,9 @@ class RoutesPage extends React.Component {
 				<Button>
 					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
+				</Button>
+				<Button>
+					<T.span onClick={this.handleSysRouterShow} data="sysRoute" text="Show Hide SysRoute" />
 				</Button>
 			</ButtonToolbar>
 
