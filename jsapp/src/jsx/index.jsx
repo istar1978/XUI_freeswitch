@@ -41,6 +41,7 @@ import Languages from "./languages";
 import MainMenu from './main-menu';
 import FSShow from "./fs_show";
 import CDRsPage from "./page_cdrs";
+import FifoCDRsPage from "./page_fifo_cdrs";
 import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
 import OverViewPage from "./page_overview";
@@ -68,6 +69,7 @@ if (lang_map) T.setTexts(lang_map);
 const MENUS = [
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: '/conferences'},
 	{id: "MM_CDRS", description: <T.span text={{ key: "CDR"}} />, data: '/cdrs'},
+	{id: "MM_FIFOCDRS", description: <T.span text={{ key: "FifoCDR"}} />, data: '/fifocdrs'},
 	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: '/about'}
 ];
 
@@ -126,6 +128,7 @@ const Home = React.createClass({
 
 				<Route path="show" component={FSShow} />
 				<Route path="cdrs" component={CDRsPage} />
+				<Route path="fifocdrs" component={FifoCDRsPage} />
 
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>
