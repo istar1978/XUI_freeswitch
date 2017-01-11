@@ -608,6 +608,11 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			console.log(code);
 			return code;
 		}
+		let toXml = function() {
+			let code = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(_this.workspace));;
+			console.log(code);
+			return code;
+		}
 
 		if (data == "save") {
 			let lua = toLua();
@@ -615,7 +620,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			block.id = this.props.params.id;
 			block.lua = toLua();
 			let xml = Blockly.Xml.workspaceToDom(_this.workspace);
-			block.xml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(_this.workspace));
+			block.xml = toXml();
 			block.js = "alert(1);"// disabled;
 
 			$.ajax({
@@ -648,7 +653,25 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				}
 			}
 
-		    download("block-" + this.state.block.id + ".lua", toLua());
+		download("block-" + this.state.block.id + ".lua", toLua());
+
+		} else if (data == "exportXML") {
+			let download = function(filename, text) {
+				var pom = document.createElement('a');
+				pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				pom.setAttribute('download', filename);
+
+				if (document.createEvent) {
+					var event = document.createEvent('MouseEvents');
+					event.initEvent('click', true, true);
+					pom.dispatchEvent(event);
+				} else {
+					pom.click();
+				}
+			}
+
+		download("block-" + this.state.block.id + ".xml",toXml());
+
 		} else if (data == "exportSVG") {
 			const renderSimple = function (workspace) {
 				var aleph = workspace.svgBlockCanvas_.cloneNode(true);
@@ -704,6 +727,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	render() {
 		return <div id='blocks'>
 			<ButtonToolbar className="pull-right">
+                                <Button><T.span onClick={this.handleControlClick.bind(this)} data="exportXML" text="Export XML" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="exportSVG" text="Export SVG" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export Lua" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="save" text="Save" /></Button>
