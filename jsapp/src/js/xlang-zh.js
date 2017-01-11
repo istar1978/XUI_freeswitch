@@ -155,6 +155,7 @@ LANGUAGES["zh"] = {
 	"Bill Sec": "计费时长",
 	Cause: "挂机原因",
 	"Account Code": "计费号码",
+	"Import New Users": "导入新用户",
 
 
 
