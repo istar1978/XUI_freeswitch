@@ -209,17 +209,24 @@ class ImportUser extends React.Component {
 			<Modal.Body>
 			<Form horizontal id="importUserForm">
 				<FormGroup controlId="formExtn">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="users" className="mandatory"/></Col>
-					<Col sm={10}><FormControl componentClass="textarea" name="info" placeholder={"new users"} /></Col>
+					<Col sm={12}><FormControl componentClass="textarea" name="info"
+					placeholder={"extn1 name1 password1 vm_password1 comtext1 cid_name1 cid_number1 \nextn2 name2 password2 vm_password2 comtext2 cid_name2 cid_number2"} />
+					</Col>
 				</FormGroup>
 
 				<FormGroup>
-					<Col smOffset={2} sm={10}>
+					<Col sm={12}>
 						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
 							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
-							<T.span text="Save" />
+							<T.span text="Import" />
 						</Button>
 						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col sm={12}>
+						<T.span text="说明：像文本框中例子一样添加用户数据，也可以由excle中导入。" />
 					</Col>
 				</FormGroup>
 			</Form>
