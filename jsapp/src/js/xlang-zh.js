@@ -60,6 +60,7 @@ LANGUAGES["zh"] = {
 	Submit: "提交",
 
 	"Create New Route": "新建路由",
+	"Show Hide SysRoute": "显示/隐藏系统路由",
 	Routes: "路由",
 	Route: "路由",
 	Name: "名称",
