@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var config = {
-    entry: ["./src/jsx/index.jsx"],
+    entry: ["./src/jsx/index.jsx","./src/css/xui.css"],
     output: {
         path: '../www/assets',
         filename: 'js/jsx/index.js'
@@ -34,19 +34,7 @@ var config = {
         hints: false
     },
     plugins: [
-        // new webpack.optimize.CommonsChunkPlugin("js/xui.js",["xui"]),
         new ExtractTextPlugin("./css/xui.css"),
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production')
-            }
-        }),
-    ],
-    // ,
-    // devServer:{
-    //  color:true,
-    //  historyApiFallback:true,
-    //  port:6000
-    // }
+    ]
 };
 module.exports = config;
