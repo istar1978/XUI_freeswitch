@@ -480,15 +480,15 @@ class MediaFilesPage extends React.Component {
 		return <Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} className="dropzone" activeClassName="dropzone_active" disableClick={true}><div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+				<Button onClick={this.handleControlClick} data="new">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="Upload" />
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+				<Button onClick={this.handleControlClick} data="ivr">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="ivr"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="ivr" text="TTS" />
 				</Button>
 			</ButtonGroup>

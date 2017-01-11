@@ -466,14 +466,14 @@ class DictsPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+				<Button onClick={this.handleControlClick} data="new">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button>
+				<Button onClick={this.toggleHighlight}>
 					<T.span onClick={this.toggleHighlight} text="Edit" />
 				</Button>
 			</ButtonGroup>

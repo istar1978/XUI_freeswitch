@@ -530,11 +530,11 @@ class RoutesPage extends React.Component {
 
 		return <div>
 			<ButtonToolbar className="pull-right">
-				<Button>
-					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+				<Button onClick={this.handleControlClick} data="new">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
-				<Button>
+				<Button onClick={this.handleSysRouterShow} data="sysRoute">
 					<T.span onClick={this.handleSysRouterShow} data="sysRoute" text="Show Hide SysRoute" />
 				</Button>
 			</ButtonToolbar>
