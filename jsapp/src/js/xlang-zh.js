@@ -156,8 +156,10 @@ LANGUAGES["zh"] = {
 	Cause: "挂机原因",
 	"Account Code": "计费号码",
 	"Import New Users": "导入新用户",
-	FifoCDR: "FIFO话单",
-	FifoCDRs: "FIFO话单",
+	"Fifo CDR": "FIFO话单",
+	"Fifo CDRs": "FIFO话单",
+	"Bridged Number": "服务号码",
+	"Fifo Name": "队列",
 
 
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",

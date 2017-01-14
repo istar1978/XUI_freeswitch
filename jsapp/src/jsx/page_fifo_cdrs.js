@@ -71,18 +71,15 @@ var FifoCDRsPage = React.createClass({
 
 	render: function() {
 		var rows = this.state.rows.map(function(row) {
-			return <tr key={row.uuid}>
-				<td>{row.caller_id_name}</td>
-				<td>{row.caller_id_number}</td>
-				<td>{row.destination_number}</td>
-				<td>{row.context}</td>
-				<td>{row.start_stamp}</td>
-				<td>{row.answer_stamp}</td>
-				<td>{row.end_stamp}</td>
-				<td>{row.duration}</td>
-				<td>{row.billsec}</td>
-				<td>{row.hangup_cause}</td>
-				<td>{row.account_code}</td>
+			return <tr key={row.id}>
+				<td>{row.channel_uuid}</td>
+				<td>{row.fifo_name}</td>
+				<td>{row.ani}</td>
+				<td>{row.dest_number}</td>
+				<td>{row.bridged_number}</td>
+				<td>{xdatetime(row.start_epoch)}</td>
+				<td>{xdatetime(row.bridge_epoch)}</td>
+				<td>{xdatetime(row.end_epoch)}</td>
 			</tr>
 		})
 
@@ -93,22 +90,19 @@ var FifoCDRsPage = React.createClass({
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1><T.span text="FifoCDRs"/></h1>
+			<h1><T.span text="Fifo CDRs"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
-					<th><T.span text="CID Name"/></th>
+					<th><T.span text="UUID"/></th>
+					<th><T.span text="Fifo Name"/></th>
 					<th><T.span text="CID Number"/></th>
 					<th><T.span text="Dest Number"/></th>
-					<th><T.span text="Context"/></th>
+					<th><T.span text="Bridged Number"/></th>
 					<th><T.span text="Start"/></th>
 					<th><T.span text="Answer"/></th>
 					<th><T.span text="End"/></th>
-					<th><T.span text="Duration"/></th>
-					<th><T.span text="Bill Sec"/></th>
-					<th><T.span text="Cause"/></th>
-					<th><T.span text="Account Code"/></th>
 				</tr>
 				{rows}
 				</tbody>

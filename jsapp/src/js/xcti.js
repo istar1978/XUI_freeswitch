@@ -357,3 +357,24 @@ function setCookie(cname, cvalue, seconds) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+
+function xdatetime(dt) {
+	if (!dt) return null;
+
+	function pad(number) {
+		var r = String(number);
+		if ( r.length === 1 ) {
+			r = '0' + r;
+		}
+		return r;
+	}
+
+	let date = new Date(dt * 1000);
+
+	return date.getUTCFullYear()
+		+ '-' + pad(date.getUTCMonth() + 1)
+		+ '-' + pad(date.getUTCDate())
+		+ ' ' + pad(date.getUTCHours())
+		+ ':' + pad(date.getUTCMinutes())
+		+ ':' + pad(date.getUTCSeconds());
+}
