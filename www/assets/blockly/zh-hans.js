@@ -419,6 +419,7 @@ Blockly.Msg.FS_BLOCK_FIFO = "FIFO队列";
 
 Blockly.Msg.tNow = "当前时间";
 Blockly.Msg.tDate = "构造时间";
+Blockly.Msg.tDateFormat = "格式化时间";
 Blockly.Msg.tDateField = "从时间中获取";
 Blockly.Msg.tDateField_YEAR = "年";
 Blockly.Msg.tDateField_MONTH = "月";

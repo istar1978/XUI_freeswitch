@@ -183,6 +183,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 <category name="Time" colour="200">
 	<block type="tNow"></block>
 	<block type="tDate"></block>
+	<block type="tDateFormat"></block>
 	<block type="tDateField"></block>
 </category>
 

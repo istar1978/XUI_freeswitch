@@ -478,6 +478,20 @@ Blockly.Blocks['tDate'] = {
   }
 };
 
+Blockly.Blocks['tDateFormat'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.tDateFormat)
+        .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), "VAR")
+        .appendField(new Blockly.FieldTextInput("fmt"), "fmt")
+    this.setInputsInline(true);
+    this.setOutput(true, "Number");
+    this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
 Blockly.Blocks['tDateField'] = {
   init: function() {
     this.appendDummyInput()
