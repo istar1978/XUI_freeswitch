@@ -208,6 +208,30 @@ Blockly.Blocks['fsStart'] = {
   }
 };
 
+Blockly.Blocks['audioRecord'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD);
+    this.appendDummyInput().appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_NAME);
+    this.appendValueInput("name").setCheck(null);
+
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_MAX)
+        .appendField(new Blockly.FieldTextInput("6000"), "max")
+        .appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_THRESHOLD )
+        .appendField(new Blockly.FieldTextInput("500"), "threshold")
+        .appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_SILENCE)
+        .appendField(new Blockly.FieldTextInput("5"), "silence");
+
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(20);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
 Blockly.Blocks['fsSessionAnswer'] = {
   init: function() {
     this.appendDummyInput()

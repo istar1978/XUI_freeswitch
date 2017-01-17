@@ -214,3 +214,22 @@ Blockly.Lua.tDateField = function(block) {
   var code = variable_date + "." + dropdown_field;
   return [code, Blockly.Lua.ORDER_NONE];
 }
+
+Blockly.Lua.audioRecord = function(block) {
+  var filename  = block.getFieldValue('filename');
+  var max_sec = block.getFieldValue("max");
+  var threshold = block.getFieldValue("threshold");
+  var silence_sec = block.getFieldValue("silence");
+
+  var code = "local recording_dir = '/tmp/'\n";
+  if (filename) {
+    code = code + "local recording_filename = '" + "'\n";
+  } else {
+    code = code + "local uuid = session:get_uuid()\n"
+      + "local date=os.date('%Y%m%d%H%M%S')\n"
+      + "local recording_filename = string.format('%s%s-%s.wav', recording_dir, uuid, date)\n";
+  }
+  code = code + "session:recordFile(recording_filename, "+ max_sec + ", " + threshold + ", " + silence_sec + ")";
+
+  return code;
+};
