@@ -55,8 +55,8 @@ Blockly.Lua.fsConsoleLog = function(block) {
 };
 
 Blockly.Lua.fsSetTTS = function(block) {
-  var text_engine = block.getFieldValue('engine');
-  var text_voice = block.getFieldValue('voice');
+  var text_engine = Blockly.Lua.valueToCode(block, 'TTSENGINE', Blockly.Lua.ORDER_ATOMIC);
+  var text_voice = Blockly.Lua.valueToCode(block, 'VOICE', Blockly.Lua.ORDER_ATOMIC);
   var code = 'tts_engine = "' + text_engine + '"\ntts_voice = "' + text_voice + '"\n' +
     'session:set_tts_params("' + text_engine + '", "' + text_voice + '")\n' +
     'session:setVariable("tts_engine", ' + 'tts_engine)\n' +
@@ -103,11 +103,11 @@ Blockly.Lua.fsSessionSet = function(block) {
 };
 
 Blockly.Lua.fsSessionRead = function(block) {
-  var text_min = block.getFieldValue('min');
-  var text_max = block.getFieldValue('max');
+  var text_min = Blockly.Lua.valueToCode(block, 'MIN', Blockly.Lua.ORDER_ATOMIC);
+  var text_max = Blockly.Lua.valueToCode(block, 'MAX', Blockly.Lua.ORDER_ATOMIC);
   var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
   var variable_digits = Blockly.Lua.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-  var text_timeout = block.getFieldValue('timeout');
+  var text_timeout = Blockly.Lua.valueToCode(block, 'TIMEOUT', Blockly.Lua.ORDER_ATOMIC);
   var text_terminator = block.getFieldValue('terminator');
 
   if (!(text_sound.indexOf(".") >= 0 || text_sound.indexOf("/") >= 0 || text_sound.indexOf("\\\\") >= 0)) {
@@ -150,7 +150,8 @@ Blockly.Lua.IVR = function(block) {
 };
 
 Blockly.Lua.IVREntry = function(block) {
-  var text_digit = block.getFieldValue('digit');
+  // var text_digit = block.getFieldValue('digit');
+  var text_digit = Blockly.Lua.valueToCode(block, 'case', Blockly.Lua.ORDER_ATOMIC);
   var statements_actions = Blockly.Lua.statementToCode(block, 'actions');
   var the_else = Blockly.Lua.globalIVREntryStart ? "else" : "";
   Blockly.Lua.globalIVREntryStart = 1;
@@ -216,14 +217,14 @@ Blockly.Lua.tDateField = function(block) {
 }
 
 Blockly.Lua.audioRecord = function(block) {
-  var filename  = block.getFieldValue('filename');
+  var filename  = Blockly.Lua.valueToCode(block, 'name', Blockly.Lua.ORDER_ATOMIC);
   var max_sec = block.getFieldValue("max");
   var threshold = block.getFieldValue("threshold");
   var silence_sec = block.getFieldValue("silence");
 
   var code = "local recording_dir = '/tmp/'\n";
   if (filename) {
-    code = code + "local recording_filename = '" + "'\n";
+    code = code + "local recording_filename = '" + filename + "'\n";
   } else {
     code = code + "local uuid = session:get_uuid()\n"
       + "local date=os.date('%Y%m%d%H%M%S')\n"
