@@ -131,7 +131,7 @@ Blockly.Lua.fsSessionExecute = function(block) {
 
 Blockly.Lua.IVR = function(block) {
   var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
-  var text_max = block.getFieldValue('max');
+  var text_max = Blockly.Lua.valueToCode(block, 'MAX', Blockly.Lua.ORDER_ATOMIC);
   var statements_entries = Blockly.Lua.statementToCode(block, 'entries');
   var statements_default = Blockly.Lua.statementToCode(block, 'default');
   var timeout = 5000;
@@ -224,7 +224,7 @@ Blockly.Lua.audioRecord = function(block) {
 
   var code = "local recording_dir = '/tmp/'\n";
   if (filename) {
-    code = code + "local recording_filename = '" + filename + "'\n";
+    code = code + "local recording_filename = recording_dir .. '" + filename + "'\n";
   } else {
     code = code + "local uuid = session:get_uuid()\n"
       + "local date=os.date('%Y%m%d%H%M%S')\n"
