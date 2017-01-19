@@ -248,9 +248,14 @@ end
 --query cdrs
 function  xdb.find_by_time(t, time)
 	-- body
-	local theTime = "SELECT strftime('%s',datetime())"
-	local theTargetTime = theTime - tonumber(time)*24*60*60
-	local sql = "SELECT * FROM " .. t .. "WHERE strftime('%s', start_stamp) > theTargetTime"
+	local theTime = os.time()
+	local theTargetTime = theTime - time*24*60*60
+	
+	local sql = "SELECT * FROM " .. t .. " WHERE  strftime('%s', start_stamp) -" .. theTargetTime ..  " > 0"
+
+	-- local sql = "SELECT * FROM " .. t .. " WHERE " .. os.time(year = os.date("%Y",tonumber(end_stamp)), month = os.date("%m",tonumber(end_stamp)), day = os.date("%d",tonumber(end_stamp))) .. " > " .. theTargetTime
+	freeswitch.consoleLog("err",theTime)
+	freeswitch.consoleLog("err",sql)
 
 	return xdb.find_by_sql(sql, cb)
 end
