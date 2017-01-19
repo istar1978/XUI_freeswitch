@@ -1,11 +1,16 @@
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var WebpackMd5Hash = require('webpack-md5-hash');
 var config = {
-    entry: ["./src/jsx/index.jsx","./src/css/xui.css"],
+    entry: {
+        "xui": ["./src/js/verto.js","./src/js/xlang-en.js","./src/js/xcti.js","./src/js/xlang-zh.js"],
+        "index": ["./src/jsx/index.jsx"],
+        "xui": ["./src/css/xui.css"]
+    },
     output: {
         path: '../www/assets',
-        filename: 'js/jsx/index.js'
+        filename: 'js/jsx/[name].[chunkhash:8].js'
     },
     module: {
         loaders: [{
@@ -34,7 +39,14 @@ var config = {
         hints: false
     },
     plugins: [
-        new ExtractTextPlugin("./css/xui.css"),
+        new HtmlWebpackPlugin({
+            filename: '../index.html',
+            template: './index.html',
+            inject: true,
+            chunks: ['index', 'xui']
+        }),
+        new WebpackMd5Hash(),
+        new ExtractTextPlugin("./css/[name].[chunkhash:8].css"),
     ]
 };
 module.exports = config;
