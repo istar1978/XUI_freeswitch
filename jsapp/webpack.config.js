@@ -4,7 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackMd5Hash = require('webpack-md5-hash');
 var config = {
     entry: {
-        "xui": ["./src/js/verto.js","./src/js/xlang-en.js","./src/js/xcti.js","./src/js/xlang-zh.js"],
+        // "xui": ["./src/js/verto.js","./src/js/xlang-en.js","./src/js/xcti.js","./src/js/xlang-zh.js"],
         "index": ["./src/jsx/index.jsx"],
         "xui": ["./src/css/xui.css"]
     },
@@ -46,7 +46,7 @@ var config = {
             chunks: ['index', 'xui']
         }),
         new WebpackMd5Hash(),
-        new ExtractTextPlugin("./css/[name].[chunkhash:8].css"),
+        new ExtractTextPlugin("css/[name].[chunkhash:8].css"),
     ]
 };
 module.exports = config;
