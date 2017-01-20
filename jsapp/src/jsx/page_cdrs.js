@@ -36,7 +36,12 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 
 var CDRsPage = React.createClass({
 	getInitialState: function() {
-		return {rows: []};
+		var theRows = localStorage.getItem("theRows");
+    	if (theRows == null) {
+	    	var r = 10000;
+	    	localStorage.setItem("theRows", r);
+     	}
+		return {rows: [], query_visible: false};
 	},
 
 	handleClick: function(x) {
@@ -44,6 +49,10 @@ var CDRsPage = React.createClass({
 
 	handleControlClick: function(e) {
 		console.log("clicked", e.target);
+	},
+
+	handleHide: function(){
+		this.setState({query_visible: !this.state.query_visible})
 	},
 
 	componentWillMount: function() {
@@ -56,20 +65,24 @@ var CDRsPage = React.createClass({
 		const _this = this;
 
 		$.getJSON("/api/cdrs", function(cdrs) {
+			console.log(cdrs);
 			_this.setState({rows: cdrs});
 		})
 	},
 
-	cdrsQuery: function(){
-		const _this = this;
+	handlequery: function(e){
+		var _this = this;
+		var data = parseInt(e.target.getAttribute("data"));
 
-		$.getJSON("/api/cdrs/" + num, function(cdrs) {
+		$.getJSON("/api/cdrs?data=" + data, function(cdrs) {
+			console.log(cdrs);
 			_this.setState({rows: cdrs});
 		})
-
 	},
 
 	render: function() {
+		var _this = this;
+
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.uuid}>
 				<td>{row.caller_id_name}</td>
@@ -89,12 +102,25 @@ var CDRsPage = React.createClass({
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button><T.span onClick={this.handleControlClick} text="Search"/></Button>
+				<Button onClick={this.handleHide}><T.span onClick={this.handleHide} text="Search"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
 			<h1><T.span text="CDRs"/></h1>
 			<div>
+				{this.state.query_visible  &&
+					<table className="table">
+					<tbody>
+					<tr>
+						<th><T.a onClick={_this.handlequery} text="7days" data="7" /></th>
+						<th><T.a onClick={_this.handlequery} text="15days" data="15" /></th>
+						<th><T.a onClick={_this.handlequery} text="30days" data="30" /></th>
+						<th><T.a onClick={_this.handlequery} text="60days" data="60" /></th>
+						<th><T.a onClick={_this.handlequery} text="90days" data="90" /></th>
+					</tr>
+				</tbody>
+				</table>
+				}
 				<table className="table">
 				<tbody>
 				<tr>

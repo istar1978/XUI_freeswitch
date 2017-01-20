@@ -83,8 +83,10 @@ class SystemPage extends React.Component {
 			, audio_rows:[
 				{"id":"1",	"k":"audio-width",	"v":wi},
 				{"id":"2",	"k":"audio-height",	"v":he},
-				{"id":"3",	"k":"audio-rate",	"v":ra}]
-			};
+				{"id":"3",	"k":"audio-rate",	"v":ra}],
+
+			eventsocket_rows:[]
+			}
 		// this.state = {editable: false, rows:[], video_rows:[], audio_rows:[]aaaaas };
 
 		// This binding is necessary to make `this` work in the callback
@@ -152,13 +154,61 @@ class SystemPage extends React.Component {
 		console.log("change", obj);
 	}
 
+	handleChangeEventSocket(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+		const value = Object.values(obj)[0];
+
+		this.state.audio_rows.map(function(row) {
+			if (row.id == id) {
+				localStorage.setItem(row.k, value);
+			}
+		});
+
+		console.log("change", obj);
+	}
+
 	componentDidMount() {
 		const _this = this;
 		$.getJSON("/api/dicts?realm=BAIDU", "", function(rows) {
 			_this.setState({rows: rows});
 		}, function(e) {
 			console.error(e);
-		})
+		});
+
+		$.getJSON("/api/event", "", function(data) {
+			_this.setState({rows: data});
+		}, function(e) {
+			console.log("get EventSocket ERR");
+		});
+
+	}
+
+	handleToggleParam(e) {
+		const _this = this;
+		const data = e.target.getAttribute("data");
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/event/" + data,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({action: "toggle"}),
+			success: function (param) {
+				console.log("success!!!!", param);
+				const eventsocket_rows = _this.state.eventsocket_rows.map(function(eventsocket_row) {
+					if (eventsocket_row.id == data) {
+						eventsocket_row.disabled = param.disabled;
+					}
+					return eventsocket_row;
+				});
+				_this.state.eventsocket_rows = eventsocket_rows;
+				_this.setState({eventsocket_rows: _this.state.eventsocket_rows});
+			},
+			error: function(msg) {
+				console.error("toggle params", msg);
+			}
+		});
 	}
 
 	render() {
@@ -200,7 +250,23 @@ class SystemPage extends React.Component {
 					<RIEInput value={audio_row.v} change={_this.handleChangeAudio.bind(_this)}
 						propName={audio_row.id}
 						className={_this.state.highlight ? "editable" : "editable2"}
-						validate={_this.isStringAcceptable}ß
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+				</Col>
+			</Row>
+		});		
+
+		const eventsocket_rows = this.state.eventsocket_rows.map((eventsocket_row) => {
+			const disabled_class = dbfalse(eventsocket_row.disabled) ? "" : "disabled";
+			return <Row key={eventsocket_row.k}>
+				<Col sm={2}><T.span text={eventsocket_row.k}/></Col>
+				<Col sm={2}><Button onClick={_this.handleToggleParam} data={eventsocket_row.id}>{dbfalse(eventsocket_row.disabled) ? "Yes" : "No"}</Button></Col>
+				<Col>
+					<RIEInput value={eventsocket_row.v} change={_this.handleChangeEventSocket.bind(_this)}
+						propName={eventsocket_row.id}
+						className={_this.state.highlight ? "editable" : "editable2"}
+						validate={_this.isStringAcceptable}
 						classLoading="loading"
 						classInvalid="invalid"/>
 				</Col>
@@ -219,6 +285,9 @@ class SystemPage extends React.Component {
 			<hr/>
 			<h2><T.span text="Audio Settings"/></h2>
 			{audio_rows}
+			<hr/>
+			<h2><T.span text="EventSocket Settings"/></h2>
+			{eventsocket_rows}
 		</div>;
 	}
 }

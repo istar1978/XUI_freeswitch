@@ -160,6 +160,11 @@ LANGUAGES["zh"] = {
 	"Fifo CDRs": "FIFO话单",
 	"Bridged Number": "服务号码",
 	"Fifo Name": "队列",
+	"7days": "7天",
+	"15days": "15天",
+	"30days": "30天",
+	"60days": "60天",
+	"90days": "90天",
 
 
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
