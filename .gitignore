@@ -2,6 +2,7 @@ npm-debug.log
 www/assets/js/xui.js
 # auto generated from jsx
 jsapp/src/js/jsx/*.js
+www/index.html
 www/assets/js/jsx/*
 www/assets/css/xui.css
 www/assets/css/xui.*.css
