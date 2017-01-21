@@ -415,6 +415,12 @@ Blockly.Msg.FS_BLOCK_DEFAULT = "默认";
 Blockly.Msg.FS_BLOCK_IVR = "IVR";
 Blockly.Msg.FS_BLOCK_CASE = "如果收到";
 Blockly.Msg.FS_BLOCK_FIFO = "FIFO队列";
+Blockly.Msg.FS_BLOCK_AUDIORECORD = "录音";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_PATH = "路径";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_NAME = "名称";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_MAX = "录音时长";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_THRESHOLD = "静音阀值";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_SILENCE = "静音时长";
 
 
 Blockly.Msg.tNow = "当前时间";

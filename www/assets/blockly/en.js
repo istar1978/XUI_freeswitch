@@ -413,6 +413,12 @@ Blockly.Msg.FS_BLOCK_IVRSTART = "IVR Start Point";
 Blockly.Msg.FS_BLOCK_IVR = "IVR";
 Blockly.Msg.FS_BLOCK_CASE = "Case";
 Blockly.Msg.FS_BLOCK_FIFO = "FIFO队列";
+Blockly.Msg.FS_BLOCK_AUDIORECORD = "Record Audio";
+// Blockly.Msg.FS_BLOCK_AUDIORECORD_PATH = "path";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_NAME = "name";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_MAX = "max_len";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_THRESHOLD = "silence_threshold";
+Blockly.Msg.FS_BLOCK_AUDIORECORD_SILENCE = "silence_secs";
 
 
 Blockly.Msg.tNow = "Now";

@@ -103,6 +103,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 </category>
 
 <category name="FreeSWITCH" colour="10">
+	<block type="audioRecord"></block>
 	<block type="fsConsoleLog">
 	      <value name="args">
           <shadow type="text">
