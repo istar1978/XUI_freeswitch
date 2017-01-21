@@ -203,7 +203,7 @@ Blockly.Lua.tDateFormat = function(block) {
   var variable_date = Blockly.Lua.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var fmt_field = block.getFieldValue('fmt');
 
-  var code = "os.date('" + fmt_field + "', variable_date)";
+  var code = "os.date('" + fmt_field + "', os.time(" + variable_date + "))";
   return [code, Blockly.Lua.ORDER_NONE];
 }
 
