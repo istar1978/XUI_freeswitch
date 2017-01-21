@@ -33,7 +33,9 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
-import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
+import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
+import SettingBaiduTTS from './system/baidu_tts';
+import SettingEventSocket from './system/event_socket';
 
 class SystemPage extends React.Component {
 	constructor(props) {
@@ -84,39 +86,7 @@ class SystemPage extends React.Component {
 				{"id":"1",	"k":"audio-width",	"v":wi},
 				{"id":"2",	"k":"audio-height",	"v":he},
 				{"id":"3",	"k":"audio-rate",	"v":ra}],
-
-			eventsocket_rows:[]
-			}
-		// this.state = {editable: false, rows:[], video_rows:[], audio_rows:[]aaaaas };
-
-		// This binding is necessary to make `this` work in the callback
-	}
-
-	fetchACCKEY() {
-		const _this = this;
-		$.ajax({
-			type: "PUT",
-			url: "/api/baidu/acckey",
-			dataType: "json",
-			contentType: "application/json",
-			data: null,
-			success: function (obj) {
-				console.log(obj);
-				const rows = _this.state.rows.map(function(row) {
-					if (row.k == obj.k) {
-						row.v = obj.v;
-						return row;
-					} else {
-						return row;
-					}
-				});
-
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("sip_profile", msg);
-			}
-		});
+		}
 	}
 
 	handleChange(obj) {
@@ -154,80 +124,12 @@ class SystemPage extends React.Component {
 		console.log("change", obj);
 	}
 
-	handleChangeEventSocket(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-		const value = Object.values(obj)[0];
-
-		this.state.audio_rows.map(function(row) {
-			if (row.id == id) {
-				localStorage.setItem(row.k, value);
-			}
-		});
-
-		console.log("change", obj);
-	}
-
 	componentDidMount() {
-		const _this = this;
-		$.getJSON("/api/dicts?realm=BAIDU", "", function(rows) {
-			_this.setState({rows: rows});
-		}, function(e) {
-			console.error(e);
-		});
 
-		$.getJSON("/api/event", "", function(data) {
-			_this.setState({rows: data});
-		}, function(e) {
-			console.log("get EventSocket ERR");
-		});
-
-	}
-
-	handleToggleParam(e) {
-		const _this = this;
-		const data = e.target.getAttribute("data");
-
-		$.ajax({
-			type: "PUT",
-			url: "/api/event/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				const eventsocket_rows = _this.state.eventsocket_rows.map(function(eventsocket_row) {
-					if (eventsocket_row.id == data) {
-						eventsocket_row.disabled = param.disabled;
-					}
-					return eventsocket_row;
-				});
-				_this.state.eventsocket_rows = eventsocket_rows;
-				_this.setState({eventsocket_rows: _this.state.eventsocket_rows});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
-		});
 	}
 
 	render() {
 		const _this = this;
-		const rows = this.state.rows.map((row) => {
-			return <Row key={row.k}>
-				<Col sm={2}><T.span text={row.k}/></Col>
-				<Col>
-					<RIEInput value={row.v} change={_this.handleChange.bind(_this)}
-						propName={row.id}
-						className={_this.state.highlight ? "editable" : "editable2"}
-						validate={_this.isStringAcceptable}
-						classLoading="loading"
-						classInvalid="invalid"/>
-
-					{row.k == "ACCTOKEN" ? <Button onClick={_this.fetchACCKEY.bind(_this)}><T.span text="Fetch"/></Button> : null}
-				</Col>
-			</Row>
-		});
 
 		const video_rows = this.state.video_rows.map((row) => {
 			return <Row key={row.k}>
@@ -257,37 +159,13 @@ class SystemPage extends React.Component {
 			</Row>
 		});		
 
-		const eventsocket_rows = this.state.eventsocket_rows.map((eventsocket_row) => {
-			const disabled_class = dbfalse(eventsocket_row.disabled) ? "" : "disabled";
-			return <Row key={eventsocket_row.k}>
-				<Col sm={2}><T.span text={eventsocket_row.k}/></Col>
-				<Col sm={2}><Button onClick={_this.handleToggleParam} data={eventsocket_row.id}>{dbfalse(eventsocket_row.disabled) ? "Yes" : "No"}</Button></Col>
-				<Col>
-					<RIEInput value={eventsocket_row.v} change={_this.handleChangeEventSocket.bind(_this)}
-						propName={eventsocket_row.id}
-						className={_this.state.highlight ? "editable" : "editable2"}
-						validate={_this.isStringAcceptable}
-						classLoading="loading"
-						classInvalid="invalid"/>
-				</Col>
-			</Row>
-		});
-
 		return <div>
 			<h1><T.span text="System Settings"/></h1>
 			<hr/>
-			<h2><T.span text="Baidu TTS"/></h2>
+			<SettingBaiduTTS/>
 
-			{rows}
 			<hr/>
-			<h2><T.span text="Video Settings"/></h2>
-			{video_rows}
-			<hr/>
-			<h2><T.span text="Audio Settings"/></h2>
-			{audio_rows}
-			<hr/>
-			<h2><T.span text="EventSocket Settings"/></h2>
-			{eventsocket_rows}
+			<SettingEventSocket/>
 		</div>;
 	}
 }

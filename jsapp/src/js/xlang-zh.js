@@ -168,6 +168,7 @@ LANGUAGES["zh"] = {
 
 	"System Settings": "系统设置",
 	"Baidu TTS": "百度TTS",
+	"EventSocket Settings": "EventSocket设置",
 
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
