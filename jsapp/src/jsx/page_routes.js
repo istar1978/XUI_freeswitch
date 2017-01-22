@@ -156,8 +156,8 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"  className="mandatory"/></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="context" placeholder="select">
-							<option value="default"><T.span text="default" /></option>
-							<option value="public"><T.span text="public" /></option>
+							<option value="default">default</option>
+							<option value="public">public</option>
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -166,11 +166,11 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="dest_type" onChange={this.handleDestTypeChange}>
-							<option value="FS_DEST_USER"><T.span text="Local User" /></option>
-							<option value="FS_DEST_GATEWAY"><T.span text="Gateway" /></option>
-							<option value="FS_DEST_IP"><T.span text="IP" /></option>
-							<option value="FS_DEST_IVRBLOCK"><T.span text="IVR Block" /></option>
-							<option value="FS_DEST_SYSTEM"><T.span text="System" /></option>
+							<option value="FS_DEST_USER">{T.translate("Local User")}</option>
+							<option value="FS_DEST_GATEWAY">{T.translate("Gateway")}</option>
+							<option value="FS_DEST_IP">{T.translate("IP")}</option>
+							<option value="FS_DEST_IVRBLOCK">{T.translate("IVR Block")}</option>
+							<option value="FS_DEST_SYSTEM">{T.translate("System")}</option>
 						</FormControl>
 					</Col>
 				</FormGroup>
