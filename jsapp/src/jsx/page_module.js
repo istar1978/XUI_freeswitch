@@ -186,9 +186,9 @@ class ModulePage extends React.Component {
 					<td>{row.k}</td>
 					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? "Yes" : "No"}</Button></td>
 					<td>
-						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load"/> |
-						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload"/> |
-						<T.a onClick={_this.handleControlClick} data-k={row.k} data="reload" text="Reload"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load" className="cursor-hand"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload" className="cursor-hand"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="reload" text="Reload" className="cursor-hand"/> |
 						<span>{row.class_name}</span>
 					</td>
 				</tr>
