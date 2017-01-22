@@ -1,6 +1,6 @@
-function build_evenconf(event)
+function build_event_socket_conf(event)
 	local settings = ""
-	local cond = {realm = 'event', disables = 0}
+	local cond = {realm = 'event_socket', disabled = 0}
 
 	xdb.find_by_cond("params", cond, 'id', function (row)
 		settings = settings .. '<param name ="' .. row.k .. '" value="' .. row.v .. '"/>'
@@ -10,5 +10,5 @@ function build_evenconf(event)
 end
 
 XML_STRING = [[<configuration name="event_socket.conf" description="Event Socket Server">]] ..
-                build_socketconf(event) .. [[</configuration>]]
+                build_event_socket_conf(event) .. [[</configuration>]]
 
