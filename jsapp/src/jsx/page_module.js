@@ -45,6 +45,7 @@ class ModulePage extends React.Component {
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleSort = this.handleSort.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleFSEvent = this.handleFSEvent.bind(this);
 	}
 
 	handleToggleParam(e) {
@@ -74,14 +75,72 @@ class ModulePage extends React.Component {
 		});
 	}
 
+	handleFSEvent(v, e) {
+		console.log("FSevent:", e);
+		let loaded = false;
+
+		if (e.eventChannel == "FSevent.module_load") {
+			loaded = true;
+		} else if (e.eventChannel == "FSevent.module_unload") {
+			loaded = false;
+		}
+
+		let module = e.data.key;
+
+		let rows = this.state.rows.map(function(row) {
+			if (row.k == e.data.key) {
+				row.loaded = loaded;
+			}
+			return row;
+		});
+
+		this.setState({rows: rows});
+	}
+
+	componentWillUnmount() {
+		verto.unsubscribe("FSevent.module_load");
+		verto.unsubscribe("FSevent.module_unload");
+	}
+
 	componentDidMount() {
 		var _this = this;
+
+
+		verto.subscribe("FSevent.module_load", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.module_unload", {handler: this.handleFSEvent});
+
 		$.getJSON("/api/modules/" , "", function(data) {
 			console.log(data);
 			_this.setState({rows: data});
+
+			fsAPI("show", "modules as json", function(ret) {
+				var msg = $.parseJSON(ret.message);
+				let modules = {};
+
+				console.log(msg);
+
+				// filter uniq keys
+				msg.rows.forEach(function(item) {
+					modules[item.ikey] = 1;
+				});
+
+
+				console.log(modules);
+
+				let rows = data.map(function(row) {
+					if (modules[row.k] == 1) {
+						row.loaded = true;
+					}
+					return row;
+				})
+
+				_this.setState({rows: rows});
+			});
+
 		}, function(e) {
 			console.log("get module ERR");
 		});
+
 	}
 
 	handleSort(e){
@@ -121,9 +180,9 @@ class ModulePage extends React.Component {
 		let err_msg = "";
 
 		var rows = _this.state.rows.map(function(row) {
-				const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
+				const loaded_class = row.loaded ? "" : "disabled";
 
-				return <tr key={row.id} className={disabled_class}>
+				return <tr key={row.id} className={loaded_class}>
 					<td>{row.k}</td>
 					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? "Yes" : "No"}</Button></td>
 					<td>
