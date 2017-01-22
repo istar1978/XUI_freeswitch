@@ -121,7 +121,7 @@ class SettingEventSocket extends React.Component {
 			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
 
 			return <Row key={row.id} className={disabled_class}>
-				<Col sm={2}><T.span text={row.k}/></Col>
+				<Col sm={2} title={T.translate("eventsocket-"+row.k)}>{row.k}</Col>
 				<Col sm={8}>
 					<RIEInput value={row.v} change={_this.handleChange.bind(_this)}
 						propName={row.id}

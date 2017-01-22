@@ -180,6 +180,19 @@ LANGUAGES["zh"] = {
 	Yes: "是",
 	No: "否",
 
+
+
+
+
+
+	"eventsocket-listen-ip": "监听IP，可以是127.0.0.1，0.0.0.0，或一个真实的IP地址如192.168.0.1，支持IPV6",
+	"eventsocket-debug": "开启调试模式",
+	"eventsocket-nat-map": "nat-map",
+	"eventsocket-listen-port": "监听端口",
+	"eventsocket-password": "密码",
+	"eventsocket-apply-inbound-acl": "启动ACL",
+	"eventsocket-stop-on-bind-error": "如果无法绑定监听端口，则不加载该模块",
+
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
 };
