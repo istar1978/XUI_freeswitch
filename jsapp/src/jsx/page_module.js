@@ -103,20 +103,17 @@ class ModulePage extends React.Component {
 	handleControlClick(e) {
 		var data = e.target.getAttribute("data");
 		console.log("data", data);
-		var id = e.target.getAttribute("id");
-		var rows = this.state.rows;
+		var k = e.target.getAttribute("data-k");
 
 		if (data == "load") {
-			fsAPI("load", rows[id-1].k);
-			console.log(rows[id-1].k);
+			fsAPI("load", k);
 		} else if (data == "unload") {
-			fsAPI("unload", rows[id-1].k);
-			console.log(rows[id-1].k);
+			fsAPI("unload", k);
 		} else if (data == "reload") {
-			fsAPI("reload", rows[id-1].k);
-			console.log(rows[id-1].k);
+			fsAPI("reload", k);
 		}
 	}
+
 
 	render() {
 		const _this = this;
@@ -130,9 +127,9 @@ class ModulePage extends React.Component {
 					<td>{row.k}</td>
 					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? "Yes" : "No"}</Button></td>
 					<td>
-						<T.a onClick={_this.handleControlClick} id={row.id} data="load" text="Load"/> |
-						<T.a onClick={_this.handleControlClick} id={row.id} data="unload" text="Unload"/> |
-						<T.a onClick={_this.handleControlClick} id={row.id} data="reload" text="Reload"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="reload" text="Reload"/> |
 						<span>{row.class_name}</span>
 					</td>
 				</tr>
