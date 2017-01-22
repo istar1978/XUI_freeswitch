@@ -120,7 +120,6 @@ class SettingEventSocket extends React.Component {
 		const rows = this.state.rows.map((row) => {
 			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
 
-console.log(disabled_class)
 			return <Row key={row.id} className={disabled_class}>
 				<Col sm={2}><T.span text={row.k}/></Col>
 				<Col sm={8}>
