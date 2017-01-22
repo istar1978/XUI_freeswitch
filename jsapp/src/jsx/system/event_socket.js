@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
+import { Modal, ButtonGroup, ButtonToolbar, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 
 class SettingEventSocket extends React.Component {
@@ -113,6 +113,12 @@ class SettingEventSocket extends React.Component {
 		});
 	}
 
+	handleReload() {
+		fsAPI("reload", "mod_event_socket", function(r) {
+			notify(<T.span text="Module reloaded"/>);
+		});
+	}
+
 	render() {
 		const _this = this;
 
@@ -139,6 +145,12 @@ class SettingEventSocket extends React.Component {
 		});
 
 		return <div>
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
+				<Button><T.span onClick={this.handleReload} text="Reload"/></Button>
+			</ButtonGroup>
+			</ButtonToolbar>
+
 			<h2><T.span text="EventSocket Settings"/></h2>
 			{rows}
 		</div>;

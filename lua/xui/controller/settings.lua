@@ -1,7 +1,6 @@
 content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
-require 'm_events'
 
 get('/event_socket', function(params)
         n, events = xdb.find_by_cond('params', {realm = 'event_socket'})

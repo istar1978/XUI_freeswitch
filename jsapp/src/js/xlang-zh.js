@@ -179,8 +179,7 @@ LANGUAGES["zh"] = {
 	Reload: "重载",
 	Yes: "是",
 	No: "否",
-
-
+	"Module reloaded": "模块重新加载成功",
 
 
 
