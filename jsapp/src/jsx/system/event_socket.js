@@ -45,21 +45,39 @@ class SettingEventSocket extends React.Component {
 	handleChange(obj) {
 		const _this = this;
 		const id = Object.keys(obj)[0];
-		const value = Object.values(obj)[0];
+		const value = obj[id];
 
-		this.state.rows.map(function(row) {
-			if (row.id == id) {
-				localStorage.setItem(row.k, value);
+		console.log("id", id);
+		console.log("value", value);
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/settings/event_socket/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({v: value}),
+			success: function (param) {
+				console.log("success!!!!", param);
+
+				const rows = _this.state.rows.map(function(row) {
+					if (row.id == param.id) {
+						row = param;
+					}
+					return row;
+				});
+
+				_this.setState({rows: rows});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
 			}
 		});
-
-		console.log("change", obj);
 	}
 
 	componentDidMount() {
 		const _this = this;
 
-		$.getJSON("/api/event", "", function(data) {
+		$.getJSON("/api/settings/event_socket", "", function(data) {
 			_this.setState({rows: data});
 		}, function(e) {
 			console.log("get EventSocket ERR");
@@ -69,24 +87,25 @@ class SettingEventSocket extends React.Component {
 
 	handleToggleParam(e) {
 		const _this = this;
-		const data = e.target.getAttribute("data");
+		const param_id = e.target.getAttribute("data");
 
 		$.ajax({
 			type: "PUT",
-			url: "/api/event/" + data,
+			url: "/api/settings/event_socket/" + param_id,
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify({action: "toggle"}),
 			success: function (param) {
 				console.log("success!!!!", param);
-				const eventsocket_rows = _this.state.rows.map(function(eventsocket_row) {
-					if (eventsocket_row.id == data) {
-						eventsocket_row.disabled = param.disabled;
+
+				const rows = _this.state.rows.map(function(row) {
+					if (row.id == param.id) {
+						row.disabled = param.disabled;
 					}
-					return eventsocket_row;
+					return row;
 				});
-				_this.state.eventsocket_rows = eventsocket_rows;
-				_this.setState({eventsocket_rows: _this.state.eventsocket_rows});
+
+				_this.setState({rows: rows});
 			},
 			error: function(msg) {
 				console.error("toggle params", msg);
@@ -98,18 +117,24 @@ class SettingEventSocket extends React.Component {
 		const _this = this;
 
 
-		const rows = this.state.rows.map((eventsocket_row) => {
-			const disabled_class = dbfalse(eventsocket_row.disabled) ? "" : "disabled";
-			return <Row key={eventsocket_row.k}>
-				<Col sm={2}><T.span text={eventsocket_row.k}/></Col>
-				<Col sm={2}><Button onClick={_this.handleToggleParam} data={eventsocket_row.id}>{dbfalse(eventsocket_row.disabled) ? "Yes" : "No"}</Button></Col>
-				<Col>
-					<RIEInput value={eventsocket_row.v} change={_this.handleChangeEventSocket.bind(_this)}
-						propName={eventsocket_row.id}
+		const rows = this.state.rows.map((row) => {
+			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
+
+console.log(disabled_class)
+			return <Row key={row.id} className={disabled_class}>
+				<Col sm={2}><T.span text={row.k}/></Col>
+				<Col sm={8}>
+					<RIEInput value={row.v} change={_this.handleChange.bind(_this)}
+						propName={row.id}
 						className={_this.state.highlight ? "editable" : "editable2"}
 						validate={_this.isStringAcceptable}
 						classLoading="loading"
 						classInvalid="invalid"/>
+				</Col>
+				<Col sm={2}>
+					<Button onClick={_this.handleToggleParam.bind(this)} data={row.id} className={disabled_class}>
+						{dbfalse(row.disabled) ? T.translate("Enabled") : T.translate("Disabled")}
+					</Button>
 				</Col>
 			</Row>
 		});

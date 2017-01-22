@@ -132,6 +132,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T4', '
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auto-jitterbuffer-msec', '60', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'renegotiate-codec-on-hold', 'true', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'context', 'public', 0, 1);
+
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register', 'false', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'scheme', 'Digest', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'realm', 'example.com', 0, 1);
@@ -158,14 +159,6 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'rfc-5626',
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'reg-id', '?', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'contact-params', '?', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register-transport', 'tcp', 0, 1);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'listen-ip', '::', 0);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'debug', '1', 1);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'nat-map', 'false', 0);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'listen-port', '8021', 0);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'password', 'ClueCon', 0);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'apply-inbound-acl', 'loopback.auto', 1);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'password', 'ClueCon', 0);
-INSERT INTO params (realm, k, v, disabled) VALUES('event', 'stop-on-bind-error', 'true', 1);
 
 INSERT INTO gateways (name, realm, register) VALUES ('example','example.com','false');
 INSERT INTO sip_profiles (name) VALUES ('default');

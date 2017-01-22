@@ -69,6 +69,10 @@ tr.disabled {
 	color: #CCC !important;
 }
 
+div.disabled {
+	color: #CCC !important;
+}
+
 .container {
 	width: 100% !important;
 }

@@ -173,6 +173,7 @@ LANGUAGES["zh"] = {
 	Fetch: "获取",
 
 	Enabled: "启用",
+	Disabled: "禁用",
 	Load: "加载",
 	Unload: "卸载",
 	Reload: "重载",
