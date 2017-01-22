@@ -169,6 +169,7 @@ LANGUAGES["zh"] = {
 	"System Settings": "系统设置",
 	"Baidu TTS": "百度TTS",
 	"EventSocket Settings": "EventSocket设置",
+	Fetch: "获取",
 
 	Enabled: "启用",
 	Load: "加载",
