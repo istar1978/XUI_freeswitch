@@ -312,7 +312,7 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1>{profile.name} <small>{profile.extn}</small></h1>
+			<h1>Profile {profile.name}</h1>
 			<hr/>
 
 			<Form horizontal id="newSIPProfileForm">
@@ -334,13 +334,13 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h2>Params</h2>
+			<h2><T.span text="Params"/></h2>
 			<table className="table">
 				<tbody>
 				<tr>
-					<th>Name</th>
-					<th>Value</th>
-					<th style={{textAlign: "right", paddingRight: 0}} onClick={this.handleSort.bind(this)}>Enabled</th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="Value"/></th>
+					<th style={{textAlign: "right", paddingRight: 0}} onClick={this.handleSort.bind(this)}><T.span text="Enabled"/></th>
 				</tr>
 				{params}
 				</tbody>
@@ -465,7 +465,7 @@ class SIPProfilesPage extends React.Component {
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
-					<td>{row.disabled ? "Yes" : "No"}</td>
+					<td>{row.disabled ? T.translate("Yes") : T.translate("No")}</td>
 					<td>
 						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
 						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;

@@ -52,6 +52,7 @@ LANGUAGES["zh"] = {
 	Speak: "发言",
 
 	New: "新建",
+	Edit: "编辑",
 	Delete: "删除",
 	"Export XML": "导出 XML",
 	"Export SVG": "导出 SVG",
