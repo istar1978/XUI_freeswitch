@@ -170,6 +170,13 @@ LANGUAGES["zh"] = {
 	"Baidu TTS": "百度TTS",
 	"EventSocket Settings": "EventSocket设置",
 
+	Enabled: "启用",
+	Load: "加载",
+	Unload: "卸载",
+	Reload: "重载",
+	Yes: "是",
+	No: "否",
+
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
 };

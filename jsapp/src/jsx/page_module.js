@@ -184,7 +184,7 @@ class ModulePage extends React.Component {
 
 				return <tr key={row.id} className={loaded_class}>
 					<td>{row.k}</td>
-					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? "Yes" : "No"}</Button></td>
+					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}</Button></td>
 					<td>
 						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load"/> |
 						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload"/> |
@@ -199,8 +199,8 @@ class ModulePage extends React.Component {
 			<table className="table">
 				<tbody>
 				<tr>
-					<th>Name</th>
-					<th onClick={this.handleSort.bind(this)}>Enabled</th>
+					<th><T.span text="Name"/></th>
+					<th onClick={this.handleSort.bind(this)}><T.span text="Enabled"/></th>
 					<th><T.span text="Control"/></th>
 				</tr>
 				{rows}
