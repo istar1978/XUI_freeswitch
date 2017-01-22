@@ -141,3 +141,7 @@ tr.HELD {color: #ea8619 !important;}
 .dropzone_active a{
 	color: #DDD;
 }
+
+.cursor-hand{
+	cursor: pointer;
+}
