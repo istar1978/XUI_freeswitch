@@ -96,7 +96,7 @@ end
 
 function build_profiles()
 	local profiles = ""
-	xdb.find_by_cond("sip_profiles", {disabled = 'false'}, 'id', function(row)
+	xdb.find_by_cond("sip_profiles", {disabled = 0}, 'id', function(row)
 		profiles = profiles .. build_profile(row)
 	end)
 
