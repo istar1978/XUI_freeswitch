@@ -467,10 +467,10 @@ class SIPProfilesPage extends React.Component {
 					<td>{row.description}</td>
 					<td>{row.disabled ? "Yes" : "No"}</td>
 					<td>
-						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |
-						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |
-						<T.a onClick={_this.handleRestart} data-name={row.name} text="Restart" href='#'/> |
-						<T.a onClick={_this.handleRescan} data-name={row.name} text="Rescan" href='#'/> |
+						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleRestart} data-name={row.name} text="Restart" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleRescan} data-name={row.name} text="Rescan" href='#'/>
 					</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
