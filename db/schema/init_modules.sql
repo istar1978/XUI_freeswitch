@@ -24,7 +24,6 @@ INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_alsa', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_sofia', 0);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_av', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_h264', 1);
-INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_woomera', 0);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_freetdm', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_unicall', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_skinny', 1);
