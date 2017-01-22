@@ -166,6 +166,9 @@ class SystemPage extends React.Component {
 
 			<hr/>
 			<SettingEventSocket/>
+
+			<hr/>
+			<a href="/api/freeswitch/log"><T.span text="Download Log"/></a>
 		</div>;
 	}
 }

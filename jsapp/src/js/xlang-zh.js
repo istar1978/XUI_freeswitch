@@ -181,7 +181,7 @@ LANGUAGES["zh"] = {
 	No: "否",
 	"Module reloaded": "模块重新加载成功",
 
-
+	"Download Log": "下载日志",
 
 
 	"eventsocket-listen-ip": "监听IP，可以是127.0.0.1，0.0.0.0，或一个真实的IP地址如192.168.0.1，支持IPV6",
