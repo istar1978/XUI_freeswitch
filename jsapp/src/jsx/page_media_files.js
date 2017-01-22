@@ -40,8 +40,6 @@ import Dropzone from 'react-dropzone';
 import { EditControl } from './xtools'
 
 class NewMediaFile extends React.Component {
-	propTypes: {handleNewMediaFileAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -71,7 +69,7 @@ class NewMediaFile extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(mfile),
 			success: function (obj) {
-				_this.props["data-handleNewMediaFileAdded"](obj);
+				_this.props.handleNewMediaFileAdded(obj);
 				var rows = _this.state.rows;
 				_this.setState({rows:rows, formShow: false});
 			},
@@ -87,6 +85,7 @@ class NewMediaFile extends React.Component {
 		const props = Object.assign({}, this.props);
 		const mfiles = props.mfiles;
 		delete props.mfiles;
+		delete props.handleNewMediaFileAdded;
 
 		const mfiles_options = mfiles.map(mfile => {
 			return <option value={mfile.id} key={mfile.id}>Profile[{mfile.name}]</option>
@@ -125,8 +124,6 @@ class NewMediaFile extends React.Component {
 }
 
 class MediaFilePage extends React.Component {
-	propTypes: {handleNewMediaFileAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -516,7 +513,7 @@ class MediaFilesPage extends React.Component {
 
 			<NewMediaFile show={this.state.formShow} onHide={formClose}
 				mfiles = {this.state.rows}
-				data-handleNewMediaFileAdded={this.handleMediaFileAdded.bind(this)}/>
+				handleNewMediaFileAdded={this.handleMediaFileAdded.bind(this)}/>
 		</div></Dropzone>
 	}
 }

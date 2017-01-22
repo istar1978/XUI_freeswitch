@@ -39,8 +39,6 @@ import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 
 import { EditControl } from './xtools'
 
 class NewSIPProfile extends React.Component {
-	propTypes: {handleNewSIPProfileAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -69,7 +67,7 @@ class NewSIPProfile extends React.Component {
 			data: JSON.stringify(profile),
 			success: function (obj) {
 				profile.id = obj.id;
-				_this.props["data-handleNewSIPProfileAdded"](profile);
+				_this.props.handleSIPProfileAdded(profile);
 			},
 			error: function(msg) {
 				console.error("sip_profile", msg);
@@ -83,6 +81,7 @@ class NewSIPProfile extends React.Component {
 		const props = Object.assign({}, this.props);
 		const profiles = props.profiles;
 		delete props.profiles;
+		delete props.handleSIPProfileAdded;
 
 		const profiles_options = profiles.map(profile => {
 			return <option value={profile.id} key={profile.id}>Profile[{profile.name}]</option>
@@ -136,8 +135,6 @@ class NewSIPProfile extends React.Component {
 }
 
 class SIPProfilePage extends React.Component {
-	propTypes: {handleNewSIPProfileAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -251,6 +248,7 @@ class SIPProfilePage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
+			console.log(data);
 			_this.setState({profile: data});
 		}, function(e) {
 			console.log("get profile ERR");
@@ -503,7 +501,7 @@ class SIPProfilesPage extends React.Component {
 
 			<NewSIPProfile show={this.state.formShow} onHide={formClose}
 				profiles = {this.state.rows}
-				data-handleNewSIPProfileAdded={this.handleSIPProfileAdded.bind(this)}/>
+				handleSIPProfileAdded={this.handleSIPProfileAdded.bind(this)}/>
 		</div>
 	}
 }

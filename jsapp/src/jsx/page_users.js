@@ -37,8 +37,6 @@ import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
 class NewUser extends React.Component {
-	propTypes: {handleNewUserAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -68,7 +66,7 @@ class NewUser extends React.Component {
 			data: JSON.stringify(user),
 			success: function (obj) {
 				user.id = obj.id;
-				_this.props["data-handleNewUserAdded"](user);
+				_this.props.handleNewUserAdded(user);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -77,9 +75,10 @@ class NewUser extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewUserAdded;
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New User" /></Modal.Title>
 			</Modal.Header>
@@ -142,8 +141,6 @@ class NewUser extends React.Component {
 }
 
 class ImportUser extends React.Component {
-	propTypes: {handleNewUserAdded1: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -190,7 +187,7 @@ class ImportUser extends React.Component {
 				data: JSON.stringify(user),
 				success: function (obj) {
 					user.id = obj.id;
-					_this.props["data-handleNewUserAdded1"](user);
+					_this.props.handleNewUserAdded1(user);
 				},
 				error: function(msg) {
 					console.error("route", msg);
@@ -200,9 +197,10 @@ class ImportUser extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewUserAdded1;
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Import New Users" /></Modal.Title>
 			</Modal.Header>
@@ -242,9 +240,6 @@ class ImportUser extends React.Component {
 }
 
 class UserPage extends React.Component {
-	propTypes: {handleNewUserAdded: React.PropTypes.func,
-				handleNewUserAdded1: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -508,8 +503,8 @@ class UsersPage extends React.Component {
 				</table>
 			</div>
 
-			<NewUser show={this.state.formShow} onHide={formClose} data-handleNewUserAdded={this.handleUserAdded.bind(this)}/>
-			<ImportUser show={this.state.formShow1} onHide={formClose1} data-handleNewUserAdded1={this.handleUserAdded1.bind(this)}/>
+			<NewUser show={this.state.formShow} onHide={formClose} handleNewUserAdded={this.handleUserAdded.bind(this)}/>
+			<ImportUser show={this.state.formShow1} onHide={formClose1} handleNewUserAdded1={this.handleUserAdded1.bind(this)}/>
 		</div>
 	}
 }

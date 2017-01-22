@@ -37,8 +37,6 @@ import { Link } from 'react-router';
 import { EditControl } from './xtools'
 
 class NewRoute extends React.Component {
-	propTypes: {handleNewRouteAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -121,7 +119,7 @@ class NewRoute extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(route),
 			success: function (obj) {
-				_this.props["data-handleNewRouteAdded"](obj);
+				_this.props.handleNewRouteAdded(obj);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -130,9 +128,10 @@ class NewRoute extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewRouteAdded;
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Route" /></Modal.Title>
 			</Modal.Header>
@@ -202,8 +201,6 @@ class NewRoute extends React.Component {
 }
 
 class RoutePage extends React.Component {
-	propTypes: {handleNewRouteAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -559,7 +556,7 @@ class RoutesPage extends React.Component {
 				</table>
 			</div>
 
-			<NewRoute show={this.state.formShow} onHide={formClose} data-handleNewRouteAdded={this.handleRouteAdded.bind(this)}/>
+			<NewRoute show={this.state.formShow} onHide={formClose} handleNewRouteAdded={this.handleRouteAdded.bind(this)}/>
 		</div>
 	}
 }

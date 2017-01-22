@@ -38,8 +38,6 @@ import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 
 import { EditControl } from './xtools'
 
 class NewDict extends React.Component {
-	propTypes: {handleNewDictAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -70,7 +68,7 @@ class NewDict extends React.Component {
 			data: JSON.stringify(dt),
 			success: function (obj) {
 				dt.id = obj.id;
-				_this.props["data-handleNewDictAdded"](dt);
+				_this.props.handleNewDictAdded(dt);
 			},
 			error: function(msg) {
 				console.error("dict", msg);
@@ -79,9 +77,10 @@ class NewDict extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewDictAdded;
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Dict" /></Modal.Title>
 			</Modal.Header>
@@ -135,8 +134,6 @@ class NewDict extends React.Component {
 }
 
 class DictPage extends React.Component {
-	propTypes: {handleNewDictAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -497,7 +494,7 @@ class DictsPage extends React.Component {
 				</table>
 			</div>
 
-			<NewDict show={this.state.formShow} onHide={formClose} data-handleNewDictAdded={this.handleDictAdded.bind(this)}/>
+			<NewDict show={this.state.formShow} onHide={formClose} handleNewDictAdded={this.handleDictAdded.bind(this)}/>
 		</div>
 	}
 }

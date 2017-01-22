@@ -740,8 +740,6 @@ var toolbox = `<xml id="toolbox" style="display: none">
 }
 
 class NewBlock extends React.Component {
-	propTypes: {handleNewUserAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -771,7 +769,7 @@ class NewBlock extends React.Component {
 			data: JSON.stringify(block),
 			success: function (obj) {
 				block.id = obj.id;
-				_this.props["data-handleNewBlockAdded"](block);
+				_this.props.handleNewBlockAdded(block);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -780,9 +778,10 @@ class NewBlock extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewBlockAdded;
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Block" /></Modal.Title>
 			</Modal.Header>
@@ -834,7 +833,7 @@ class BlocksPage extends React.Component {
 
 	handleBlockAdded(block) {
 		var rows = this.state.rows;
-		rows.push(block);
+		rows.unshift(block);
 		this.setState({rows: rows, formShow: false});
 	}
 
@@ -915,7 +914,7 @@ class BlocksPage extends React.Component {
 				</table>
 			</div>
 
-			<NewBlock show={this.state.formShow} onHide={formClose} data-handleNewBlockAdded={this.handleBlockAdded.bind(this)}/>
+			<NewBlock show={this.state.formShow} onHide={formClose} handleNewBlockAdded={this.handleBlockAdded.bind(this)}/>
 		</div>
 	}
 }

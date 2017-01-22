@@ -38,8 +38,6 @@ import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 
 import { EditControl } from './xtools'
 
 class NewGateway extends React.Component {
-	propTypes: {handleNewGatewayAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -69,7 +67,7 @@ class NewGateway extends React.Component {
 			data: JSON.stringify(gw),
 			success: function (obj) {
 				gw.id = obj.id;
-				_this.props["data-handleNewGatewayAdded"](gw);
+				_this.props.handleNewGatewayAdded(gw);
 			},
 			error: function(msg) {
 				console.error("gateway", msg);
@@ -83,12 +81,13 @@ class NewGateway extends React.Component {
 		const props = Object.assign({}, this.props);
 		const gateways = props.gateways;
 		delete props.gateways;
+		delete props.handleNewGatewayAdded;
 
 		const gateways_options = gateways.map(gw => {
 			return <option value={gw.id} key={gw.id}>Gateway[{gw.name}]</option>
 		});
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Gateway" /></Modal.Title>
 			</Modal.Header>
@@ -159,8 +158,6 @@ class NewGateway extends React.Component {
 }
 
 class GatewayPage extends React.Component {
-	propTypes: {handleNewGatewayAdded: React.PropTypes.func}
-
 	constructor(props) {
 		super(props);
 
@@ -605,7 +602,7 @@ class GatewaysPage extends React.Component {
 				</table>
 			</div>
 
-			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} data-handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
+			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
 		</div>
 	}
 }
