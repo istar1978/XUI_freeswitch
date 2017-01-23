@@ -496,112 +496,124 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			body.appendChild(xml);
 		}
 
-		var init_blockly = function() {
+		var init_blockly = function(obj) {
 			let workspace = Blockly.inject('blocks', {
 				toolbox: document.getElementById('toolbox'),
 				media: "/assets/blockly/media/"
 			});
+			obj.workspace = workspace;
+			console.log(workspace);
 			return workspace;
 		}
 
+		var blockly_files = ["/assets/blockly/blockly_compressed.js", 
+			"/assets/blockly/blocks_compressed.js", "/assets/blockly/lua_compressed.js", 
+			"/assets/blockly/javascript_compressed.js", "/assets/blockly/fs_blocks.js",
+			"/assets/blockly/fs_blocks_lua.js", "/assets/blockly/fs_blocks_javascript.js",
+			"/assets/blockly/en.js"];
+		var scr;
 		if (typeof(Blockly) === "undefined") {
-			// this dosn't work yet, trying to figure out, if you know how to make it work, fire a pull request
-			window.alert("SHOULD NOT HAPPEN!");
+	        scr = document.createElement('script');
+	        scr.src = blockly_files[0];
+	        body.appendChild(scr);
+	        scr.onload = function() {
+	        	loadJs(blockly_files, 1);
+	        }
+	    }else{
+	    	expand();
+	    }
+	    function loadJs(files, i) {
+	        var body = document.getElementsByTagName("body")[0];
+	        var script;
+	        if (files[i]) {
+	            script = document.createElement('script');
+	            script.src = files[i];
+	            body.appendChild(script);
+	            if (files[i + 1] != null) {
+	                script.onload = function() {
+	                    loadJs(files, i + 1);
+	                }
+	            } else {
+	                expand();
+	            }
+	        }
+	    }
 
-			var body = document.getElementById('body');
-			var script = document.createElement('script');
+    	function expand() {
+            $.get('/api/media_files', function(obj) {
+                console.log("data", obj);
+                if (obj.length == 0) {
+                    obj.push({
+                        name: "Error: No file, Please upload some media files",
+                        abs_path: "/tmp/File-Not-Found-Error.wav"
+                    });
+                }
+                _this.fs_file_path_dropdown_data = obj.map(function(row) {
+                    return [row.name, row.abs_path];
+                });
+            });
 
-			script.setAttribute('type', 'text/javascript');
-			script.setAttribute('src', "/assets/blockly/blockly_compressed.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/blocks_compressed.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/lua_compressed.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/javascript_compressed.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/fs_blocks.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/fs_blocks_lua.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/fs_blocks_javascript.js");
-			body.appendChild(script);
-			script.setAttribute('src', "/assets/blockly/en.js");
-			body.appendChild(script);
+            let get_fs_file_path_drowndown_data = function() {
+                return _this.fs_file_path_dropdown_data;
+            }
 
-			setTimeout(init_blockly, 1000);
-			window.addEventListener('resize', this.onresize, false);
-			this.onresize();
-			// Blockly.svgResize(workspace);
-		} else {
-			$.get('/api/media_files', function(obj) {
-				console.log("data", obj);
-				if (obj.length == 0) {
-					obj.push({name:"Error: No file, Please upload some media files", abs_path:"/tmp/File-Not-Found-Error.wav"});
-				}
-				_this.fs_file_path_dropdown_data = obj.map(function(row) {
-					return [row.name, row.abs_path];
-				});
-			});
+            Blockly.Blocks['fsFilePath'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField(Blockly.Msg.FS_BLOCK_FILE)
+                        .appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
+                    this.setInputsInline(true);
+                    this.setOutput(true, "String");
+                    this.setTooltip('');
+                    this.setColour(0);
+                    this.setHelpUrl('http://www.example.com/');
+                }
+            };
 
-			let get_fs_file_path_drowndown_data = function() {
-				return _this.fs_file_path_dropdown_data;
-			}
+            const fifos = new Array()
+            fifos.push({
+                name: "Default",
+                value: "default"
+            })
 
-			Blockly.Blocks['fsFilePath'] = {
-				init: function() {
-					this.appendDummyInput()
-					.appendField(Blockly.Msg.FS_BLOCK_FILE)
-					.appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
+            _this.fs_fifos_dropdown_data = fifos.map(function(row) {
+                return [row.name, row.value];
+            });
 
-					this.setInputsInline(true);
-					this.setOutput(true, "String");
-					this.setTooltip('');
-					this.setColour(0);
-					this.setHelpUrl('http://www.example.com/');
-				}
-			};
+            let get_fs_fifo_dropdown_data = function() {
+                return _this.fs_fifos_dropdown_data;
+            }
 
-			const fifos = new Array()
-			fifos.push({name: "Default", value: "default"})
+            Blockly.Blocks['fsFifo'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField(Blockly.Msg.FS_BLOCK_FIFO)
+                        .appendField(new Blockly.FieldDropdown(get_fs_fifo_dropdown_data), "NAME");
+                    this.setInputsInline(true);
+                    this.setOutput(true, "String");
+                    this.setTooltip('');
+                    this.setColour(0);
+                    this.setHelpUrl('http://www.example.com/');
+                }
+            };
 
-			_this.fs_fifos_dropdown_data = fifos.map(function(row) {
-				return [row.name, row.value];
-			});
+            load_toolbox();
+            _this.workspace = init_blockly(_this);
+            window.addEventListener('resize', _this.onresize, false);
+            _this.onresize();
+            Blockly.svgResize(_this.workspace);
 
-			let get_fs_fifo_dropdown_data = function() {
-				return _this.fs_fifos_dropdown_data;
-			}
-
-			Blockly.Blocks['fsFifo'] = {
-				init: function() {
-					this.appendDummyInput()
-					.appendField(Blockly.Msg.FS_BLOCK_FIFO)
-					.appendField(new Blockly.FieldDropdown(get_fs_fifo_dropdown_data), "NAME");
-
-					this.setInputsInline(true);
-					this.setOutput(true, "String");
-					this.setTooltip('');
-					this.setColour(0);
-					this.setHelpUrl('http://www.example.com/');
-				}
-			};
-
-			load_toolbox();
-			_this.workspace = init_blockly();
-			this.onresize();
-			window.addEventListener('resize', this.onresize, false);
-			Blockly.svgResize(_this.workspace);
-
-			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
-				_this.setState({block, block});
-
-				if (block && block.xml && block.xml.length > 0) {
-					Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
-				}
-			});
-		}
-	}
+            $.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
+                _this.setState({
+                    block,
+                    block
+                });
+                if (block && block.xml && block.xml.length > 0) {
+                    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
+                }
+            });
+        }	
+    }
 
 	handleControlClick(e) {
 		let _this = this;
