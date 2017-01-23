@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import Dropzone from 'react-dropzone';
 
 class BlockPage extends React.Component {
 	constructor(props) {
@@ -42,6 +43,7 @@ class BlockPage extends React.Component {
 		this.onresize = null;
 		this.fs_file_path_dropdown_data = null;
 		this.state = {block: {name: "Loading ..."}};
+		this.onDrop = this.onDrop.bind(this);
 	}
 
 	componentDidMount() {
@@ -640,6 +642,10 @@ var toolbox = `<xml id="toolbox" style="display: none">
 					console.error("block", msg);
 				}
 			});
+		}else if (data == "import") {
+
+			this.dropzone.open();
+
 		} else if (data == "export") {
 			let download = function(filename, text) {
 				var pom = document.createElement('a');
@@ -714,6 +720,32 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		}
 	}
 
+	onDrop (acceptedFiles, rejectedFiles) {
+		const _this = this;
+		console.log('Accepted files: ', acceptedFiles);
+		console.log('Rejected files: ', rejectedFiles);
+		const formdataSupported = !!window.FormData;
+		let data = new FormData()
+
+		for (var i = 0; i < acceptedFiles.length; i++) {
+			data.append('file', acceptedFiles[i])
+			}	
+
+		function handleFiles(acceptedFiles) {  
+			if (acceptedFiles.length)  {
+				var file = acceptedFiles[0];
+				var reader = new FileReader();
+				reader.readAsText(file);  
+				reader.onload = function() {
+				console.log(reader.result);
+			Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(reader.result), _this.workspace);
+				};
+			}
+		console.log("reader", reader);
+		}
+
+	handleFiles(acceptedFiles)
+}
 	componentWillUnmount() {
 		console.log("will unmount ......");
 		if (this.workspace) {
@@ -727,15 +759,20 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	}
 
 	render() {
-		return <div id='blocks'>
+		return<Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} className="dropzone" activeClassName="dropzone_active" disableClick={true}> <div id='blocks'>
 			<ButtonToolbar className="pull-right">
-                                <Button><T.span onClick={this.handleControlClick.bind(this)} data="exportXML" text="Export XML" /></Button>
+				<ButtonGroup>
+				<Button><T.span onClick={this.handleControlClick.bind(this)} data="exportXML" text="Export XML" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="exportSVG" text="Export SVG" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="export" text="Export Lua" /></Button>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="save" text="Save" /></Button>
+				</ButtonGroup>
+				<ButtonGroup>
+				<Button><T.span onClick={this.handleControlClick.bind(this)} data="import" text="Import" /></Button>
+				</ButtonGroup>
 			</ButtonToolbar>
 			<h1><T.span text="Blocks"/> {this.state.block.name} <small>{this.state.block.description}</small></h1>
-		</div>;
+		</div></Dropzone>;
 	}
 }
 
