@@ -119,6 +119,16 @@ LANGUAGES["zh"] = {
 	"Blocks": "积木",
 	"Block": "积木",
 
+	Time: "时间",
+	Logic: "逻辑",
+	Loops: "循环",
+	Math: "数学",
+	Text: "文本",
+	Lists: "列表",
+	Color: "颜色",
+	Variables: "变量",
+	Functions: "函数",
+
 	Gateways: "网关",
 	Gateway: "网关",
 	Server: "服务器",

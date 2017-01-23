@@ -183,14 +183,14 @@ var toolbox = `<xml id="toolbox" style="display: none">
 
 <sep></sep>
 
-<category name="Time" colour="200">
+<category name="` + T.translate("Time") + `" colour="200">
 	<block type="tNow"></block>
 	<block type="tDate"></block>
 	<block type="tDateFormat"></block>
 	<block type="tDateField"></block>
 </category>
 
-<category name="Logic" colour="210">
+<category name="` + T.translate("Logic") + `" colour="210">
 	<block type="controls_if"></block>
 	<block type="logic_compare"></block>
 	<block type="logic_operation"></block>
@@ -200,7 +200,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="logic_ternary"></block>
 </category>
 
-<category name="Loops" colour="120">
+<category name="` + T.translate("Loops") + `" colour="120">
 	<block type="controls_repeat_ext">
 		<value name="TIMES">
 		<shadow type="math_number">
@@ -230,7 +230,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="controls_flow_statements"></block>
 </category>
 
-<category name="Math" colour="230">
+<category name="` + T.translate("Math") + `" colour="230">
 	<block type="math_number"></block>
 	<block type="math_arithmetic">
 		<value name="A">
@@ -317,7 +317,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	</block>
 	<block type="math_random_float">	</block>
 </category>
-<category name="Text" colour="160">
+<category name="` + T.translate("Text") + `" colour="160">
 	<block type="text">	</block>
 	<block type="text_join">	</block>
 	<block type="text_append">
@@ -394,7 +394,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		</value>
 	</block>
 </category>
-<category name="Lists" colour="260">
+
+<category name="` + T.translate("Lists") + `" colour="260">
 	<block type="lists_create_with">
 <mutation items="0"></mutation>
 	</block>
@@ -445,7 +446,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	</block>
 	<block type="lists_sort">	</block>
 </category>
-<category name="Colour" colour="20">
+
+<category name="` + T.translate("Color") + `" colour="20">
 	<block type="colour_picker">	</block>
 	<block type="colour_random">	</block>
 	<block type="colour_rgb">
@@ -484,8 +486,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	</block>
 </category>
 <sep></sep>
-<category name="Variables" colour="330" custom="VARIABLE"></category>
-<category name="Functions" colour="290" custom="PROCEDURE"></category>
+<category name="` + T.translate("Variables") + `" colour="330" custom="VARIABLE"></category>
+<category name="` + T.translate("Functions") + `" colour="290" custom="PROCEDURE"></category>
 </xml>
 `
 
