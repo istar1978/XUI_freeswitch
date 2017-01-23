@@ -50,7 +50,6 @@ class EditControl extends FormControl {
 				const options = props.options;
 				delete props.options;
 				// delete props.defaultValue;
-				console.log('options', options);
 
 				let options_tag = options.map(function(opt) {
 					return <option key={opt[0]} value={opt[0]}>{opt[1]}</option>
