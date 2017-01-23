@@ -10,7 +10,7 @@ function create(kvp)
 	id = xdb.create_return_id("gateways", kvp)
 	-- print(id)
 	if id then
-		local realm = 'SOFIA'
+		local realm = 'gateway'
 		local ref_id = 0
 		if not (template == "default") then
 			realm = 'gateway' -- the table name
