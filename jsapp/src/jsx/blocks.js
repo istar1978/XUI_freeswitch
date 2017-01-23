@@ -84,94 +84,94 @@ var toolbox = `<xml id="toolbox" style="display: none">
 <category name="IVR" colour="0">
 	<block type="fsStart"></block>
 	<block type="IVR">
-         <value name="sound">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-         <value name="MAX">
-            <shadow type="math_number">
-             <field name="NUM">1</field>
-           </shadow>
-         </value>
-        </block>
+		 <value name="sound">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		 <value name="MAX">
+			<shadow type="math_number">
+			 <field name="NUM">1</field>
+		   </shadow>
+		 </value>
+		</block>
 	<block type="IVREntry">
-         <value name="case">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-       </block>
+		 <value name="case">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+	   </block>
 </category>
 
 <category name="FreeSWITCH" colour="10">
 	<block type="audioRecord"></block>
 	<block type="fsConsoleLog">
-	      <value name="args">
-          <shadow type="text">
-            <field name="TEXT"></field>
-          </shadow>
-        </value>
+		  <value name="args">
+		  <shadow type="text">
+			<field name="TEXT"></field>
+		  </shadow>
+		</value>
 	</block>
 	<block type="fsSetTTS">
-         <value name="TTSENGINE">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-         <value name="VOICE">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-        </block>
+		 <value name="TTSENGINE">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		 <value name="VOICE">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		</block>
 	<block type="fsFilePath"></block>
 	<block type="fsFifo"></block>
 	<block type="fsSessionAnswer"></block>
 	<block type="fsSessionGet"></block>
 	<block type="fsSessionSet">
-         <value name="args">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-        </block>
+		 <value name="args">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		</block>
 	<block type="fsSessionPlay">
-          <value name="args">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-        </block>
+		  <value name="args">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		</block>
 	<block type="fsSessionSpeak">
-          <value name="args">
-           <shadow type="text">
-            <field name="TEXT"></field>
-           </shadow>
-         </value>
-        </block>
+		  <value name="args">
+		   <shadow type="text">
+			<field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		</block>
 	<block type="fsSessionRead">
-          <value name="MIN">
-            <shadow type="math_number">
-             <field name="NUM">4</field>
-           </shadow>
-         </value>
-         <value name="MAX">
-            <shadow type="math_number">
-             <field name="NUM">11</field>
-           </shadow>
-         </value>
-         <value name="TIMEOUT">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-        <value name="sound">
-            <shadow type="text">
-             <field name="TEXT"></field>
-           </shadow>
-         </value>
-        </block>
+		  <value name="MIN">
+			<shadow type="math_number">
+			 <field name="NUM">4</field>
+		   </shadow>
+		 </value>
+		 <value name="MAX">
+			<shadow type="math_number">
+			 <field name="NUM">11</field>
+		   </shadow>
+		 </value>
+		 <value name="TIMEOUT">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		<value name="sound">
+			<shadow type="text">
+			 <field name="TEXT"></field>
+		   </shadow>
+		 </value>
+		</block>
 	<block type="fsSessionExecute"></block>
 </category>
 
@@ -496,124 +496,129 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			body.appendChild(xml);
 		}
 
-		var init_blockly = function(obj) {
+		$.get('/api/media_files', function(obj) {
+			console.log("data", obj);
+			if (obj.length == 0) {
+				obj.push({
+					name: "Error: No file, Please upload some media files",
+					abs_path: "/tmp/File-Not-Found-Error.wav"
+				});
+			}
+
+			_this.fs_file_path_dropdown_data = obj.map(function(row) {
+				return [row.name, row.abs_path];
+			});
+		});
+
+		let get_fs_file_path_drowndown_data = function() {
+			return _this.fs_file_path_dropdown_data;
+		}
+
+		const fifos = new Array()
+		fifos.push({
+			name: "Default",
+			value: "default"
+		})
+
+		_this.fs_fifos_dropdown_data = fifos.map(function(row) {
+			return [row.name, row.value];
+		});
+
+		let get_fs_fifo_dropdown_data = function() {
+			return _this.fs_fifos_dropdown_data;
+		}
+
+		var init_blockly = function() {
+			Blockly.Blocks['fsFilePath'] = {
+				init: function() {
+					this.appendDummyInput()
+						.appendField(Blockly.Msg.FS_BLOCK_FILE)
+						.appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
+					this.setInputsInline(true);
+					this.setOutput(true, "String");
+					this.setTooltip('');
+					this.setColour(0);
+					this.setHelpUrl('http://www.example.com/');
+				}
+			};
+
+			Blockly.Blocks['fsFifo'] = {
+				init: function() {
+					this.appendDummyInput()
+						.appendField(Blockly.Msg.FS_BLOCK_FIFO)
+						.appendField(new Blockly.FieldDropdown(get_fs_fifo_dropdown_data), "NAME");
+					this.setInputsInline(true);
+					this.setOutput(true, "String");
+					this.setTooltip('');
+					this.setColour(0);
+					this.setHelpUrl('http://www.example.com/');
+				}
+			};
+
 			let workspace = Blockly.inject('blocks', {
 				toolbox: document.getElementById('toolbox'),
 				media: "/assets/blockly/media/"
 			});
-			obj.workspace = workspace;
-			console.log(workspace);
 			return workspace;
 		}
 
-		var blockly_files = ["/assets/blockly/blockly_compressed.js", 
-			"/assets/blockly/blocks_compressed.js", "/assets/blockly/lua_compressed.js", 
-			"/assets/blockly/javascript_compressed.js", "/assets/blockly/fs_blocks.js",
-			"/assets/blockly/fs_blocks_lua.js", "/assets/blockly/fs_blocks_javascript.js",
-			"/assets/blockly/en.js"];
-		var scr;
-		if (typeof(Blockly) === "undefined") {
-	        scr = document.createElement('script');
-	        scr.src = blockly_files[0];
-	        body.appendChild(scr);
-	        scr.onload = function() {
-	        	loadJs(blockly_files, 1);
-	        }
-	    }else{
-	    	expand();
-	    }
-	    function loadJs(files, i) {
-	        var body = document.getElementsByTagName("body")[0];
-	        var script;
-	        if (files[i]) {
-	            script = document.createElement('script');
-	            script.src = files[i];
-	            body.appendChild(script);
-	            if (files[i + 1] != null) {
-	                script.onload = function() {
-	                    loadJs(files, i + 1);
-	                }
-	            } else {
-	                expand();
-	            }
-	        }
-	    }
+		function init_blocks() {
+			load_toolbox();
+			_this.workspace = init_blockly();
+			window.addEventListener('resize', _this.onresize, false);
+			_this.onresize();
+			Blockly.svgResize(_this.workspace);
 
-    	function expand() {
-            $.get('/api/media_files', function(obj) {
-                console.log("data", obj);
-                if (obj.length == 0) {
-                    obj.push({
-                        name: "Error: No file, Please upload some media files",
-                        abs_path: "/tmp/File-Not-Found-Error.wav"
-                    });
-                }
-                _this.fs_file_path_dropdown_data = obj.map(function(row) {
-                    return [row.name, row.abs_path];
-                });
-            });
+			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
+				_this.setState({block: block});
 
-            let get_fs_file_path_drowndown_data = function() {
-                return _this.fs_file_path_dropdown_data;
-            }
+				if (block && block.xml && block.xml.length > 0) {
+					Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
+				}
+			});
+		}
 
-            Blockly.Blocks['fsFilePath'] = {
-                init: function() {
-                    this.appendDummyInput()
-                        .appendField(Blockly.Msg.FS_BLOCK_FILE)
-                        .appendField(new Blockly.FieldDropdown(get_fs_file_path_drowndown_data), "NAME");
-                    this.setInputsInline(true);
-                    this.setOutput(true, "String");
-                    this.setTooltip('');
-                    this.setColour(0);
-                    this.setHelpUrl('http://www.example.com/');
-                }
-            };
+		var blockly_lang = current_lang();
 
-            const fifos = new Array()
-            fifos.push({
-                name: "Default",
-                value: "default"
-            })
+		if (!blockly_lang) blockly_lang = 'en';
 
-            _this.fs_fifos_dropdown_data = fifos.map(function(row) {
-                return [row.name, row.value];
-            });
+		switch (blockly_lang.substring(0, 2)) {
+			case "zh":
+				blockly_lang = "zh-hans";
+				break;
+			default:
+				break;
+		}
 
-            let get_fs_fifo_dropdown_data = function() {
-                return _this.fs_fifos_dropdown_data;
-            }
+		var blockly_files = [
+			"/assets/blockly/blockly_compressed.js",
+			"/assets/blockly/blocks_compressed.js",
+			"/assets/blockly/lua_compressed.js",
+			"/assets/blockly/javascript_compressed.js",
+			"/assets/blockly/fs_blocks.js",
+			"/assets/blockly/fs_blocks_lua.js",
+			// "/assets/blockly/fs_blocks_javascript.js",
+			"/assets/blockly/" + blockly_lang + ".js"
+		];
 
-            Blockly.Blocks['fsFifo'] = {
-                init: function() {
-                    this.appendDummyInput()
-                        .appendField(Blockly.Msg.FS_BLOCK_FIFO)
-                        .appendField(new Blockly.FieldDropdown(get_fs_fifo_dropdown_data), "NAME");
-                    this.setInputsInline(true);
-                    this.setOutput(true, "String");
-                    this.setTooltip('');
-                    this.setColour(0);
-                    this.setHelpUrl('http://www.example.com/');
-                }
-            };
+		function loadJS() {
+			var file = blockly_files.shift();
+			// console.log(file);
 
-            load_toolbox();
-            _this.workspace = init_blockly(_this);
-            window.addEventListener('resize', _this.onresize, false);
-            _this.onresize();
-            Blockly.svgResize(_this.workspace);
+			if (file) {
+				var body = document.getElementsByTagName("body")[0];
+				var script = document.createElement('script');
+				script.src = file;
+				script.onload = loadJS;
 
-            $.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
-                _this.setState({
-                    block,
-                    block
-                });
-                if (block && block.xml && block.xml.length > 0) {
-                    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(block.xml), _this.workspace);
-                }
-            });
-        }	
-    }
+				body.appendChild(script);
+			} else {
+				init_blocks();
+			}
+		}
+
+		loadJS();
+	}
 
 	handleControlClick(e) {
 		let _this = this;
@@ -648,7 +653,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				data: JSON.stringify(block),
 				success: function () {
 					_this.setState({errmsg: {key: "Saved at", time: Date()}});
-                                         notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+										 notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 				},
 				error: function(msg) {
 					console.error("block", msg);
@@ -925,7 +930,7 @@ class BlocksPage extends React.Component {
 	render() {
 		let formClose = () => this.setState({ formShow: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
-	    var danger = this.state.danger ? "danger" : "";
+		var danger = this.state.danger ? "danger" : "";
 
 		let _this = this;
 
