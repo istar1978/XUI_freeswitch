@@ -662,7 +662,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 					console.error("block", msg);
 				}
 			});
-		}else if (data == "import") {
+		} else if (data == "import") {
 
 			this.dropzone.open();
 
@@ -681,7 +681,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				}
 			}
 
-		download("block-" + this.state.block.id + ".lua", toLua());
+			download("block-" + this.state.block.id + ".lua", toLua());
 
 		} else if (data == "exportXML") {
 			let download = function(filename, text) {
@@ -698,7 +698,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				}
 			}
 
-		download("block-" + this.state.block.id + ".xml",toXml());
+			download("block-" + this.state.block.id + ".xml",toXml());
 
 		} else if (data == "exportSVG") {
 			const renderSimple = function (workspace) {
@@ -749,7 +749,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 
 		for (var i = 0; i < acceptedFiles.length; i++) {
 			data.append('file', acceptedFiles[i])
-			}	
+		}
 
 		function handleFiles(acceptedFiles) {  
 			if (acceptedFiles.length)  {
@@ -757,15 +757,15 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				var reader = new FileReader();
 				reader.readAsText(file);  
 				reader.onload = function() {
-				console.log(reader.result);
-			Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(reader.result), _this.workspace);
+					console.log(reader.result);
+					Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(reader.result), _this.workspace);
 				};
 			}
-		console.log("reader", reader);
 		}
 
-	handleFiles(acceptedFiles)
-}
+		handleFiles(acceptedFiles)
+	}
+
 	componentWillUnmount() {
 		console.log("will unmount ......");
 		if (this.workspace) {
