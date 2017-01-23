@@ -41,7 +41,7 @@ class EditControl extends FormControl {
 
 	render() {
 		const props = Object.assign({}, this.props);
-		const text = props.text;
+		let text = props.text;
 		delete props.edit;
 		delete props.text;
 
@@ -49,9 +49,14 @@ class EditControl extends FormControl {
 			if (this.props.componentClass == "select") {
 				const options = props.options;
 				delete props.options;
-				delete props.defaultValue;
+				// delete props.defaultValue;
 				console.log('options', options);
-				return <FormControl {...props}>{options}</FormControl>
+
+				let options_tag = options.map(function(opt) {
+					return <option key={opt[0]} value={opt[0]}>{opt[1]}</option>
+				});
+
+				return <FormControl {...props}>{options_tag}</FormControl>
 			} else {
 				return <FormControl {...props} />
 			}

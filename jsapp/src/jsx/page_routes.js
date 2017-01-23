@@ -40,7 +40,9 @@ class NewRoute extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', dest_uuid: null, route_body: null};
+		this.state = {errmsg: '', dest_uuid: null, route_body: null,
+			contexts: [], dest_types: []
+		};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,7 +52,6 @@ class NewRoute extends React.Component {
 	handleDestTypeChange(e) {
 		const _this = this;
 
-		console.log(e.target);
 		switch(e.target.value) {
 			case 'FS_DEST_USER':
 				_this.setState({dest_uuid: null, route_body: null});
@@ -70,12 +71,12 @@ class NewRoute extends React.Component {
 			case 'FS_DEST_GATEWAY':
 				$.getJSON("/api/gateways", function(gateways) {
 					const dest_options = gateways.map(function(gateway) {
-						return <option key={gateway.id} value={gateway.id}>{gateway.name} [{gateway.realm} {gateway.username}]</option>;
+						return [gateway.id, gateway.name + " [ + " + gateway.realm + " " + gateway.username + "]"];
 					});
 
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Gateway" /></Col>
-						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{dest_options}</FormControl></Col>
+						<Col sm={10}><FormControl componentClass="select" name="dest_uuid" defaultValue={gateway.id}>{dest_options}</FormControl></Col>
 					</FormGroup>;
 
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
@@ -84,7 +85,7 @@ class NewRoute extends React.Component {
 			case 'FS_DEST_IVRBLOCK':
 				$.getJSON("/api/blocks", function(blocks) {
 					const dest_options = blocks.map(function(block) {
-						return <option key={block.id} value={block.id}>{block.name} [{block.description}]</option>;
+						return [block.id, block.name + " [" + block.description + "]"];
 					});
 
 					const dest_uuid = <FormGroup controlId="formDestUUID">
@@ -127,6 +128,18 @@ class NewRoute extends React.Component {
 		});
 	}
 
+	componentDidMount() {
+		const _this = this;
+
+		$.getJSON("/api/dicts?realm=CONTEXT", function(data) {
+			_this.setState({contexts: data});
+		});
+
+		$.getJSON("/api/dicts?realm=DEST", function(data) {
+			_this.setState({dest_types: data});
+		});
+	}
+
 	render() {
 		const props = Object.assign({}, this.props);
 		delete props.handleNewRouteAdded;
@@ -156,8 +169,9 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"  className="mandatory"/></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="context" placeholder="select">
-							<option value="default">default</option>
-							<option value="public">public</option>
+							{this.state.contexts.map(function(c) {
+								return <option key={c.id}>{c.k}</option>;
+							})}
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -166,11 +180,9 @@ class NewRoute extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Type" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="dest_type" onChange={this.handleDestTypeChange}>
-							<option value="FS_DEST_USER">{T.translate("Local User")}</option>
-							<option value="FS_DEST_GATEWAY">{T.translate("Gateway")}</option>
-							<option value="FS_DEST_IP">{T.translate("IP")}</option>
-							<option value="FS_DEST_IVRBLOCK">{T.translate("IVR Block")}</option>
-							<option value="FS_DEST_SYSTEM">{T.translate("System")}</option>
+							{this.state.dest_types.map(function(t) {
+								return <option key={t.id}>{T.translate(t.k)}</option>;
+							})}
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -204,7 +216,9 @@ class RoutePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {route: {}, edit: false, dest_uuid: null, dest_body: null};
+		this.state = {route: {}, edit: false, dest_uuid: null, dest_body: null,
+			contexts: [], dest_types: []
+		};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -215,7 +229,6 @@ class RoutePage extends React.Component {
 	handleDestTypeChange(e) {
 		const _this = this;
 
-		console.log(e.target);
 		switch(e.target.value) {
 			case 'FS_DEST_USER':
 				_this.setState({dest_uuid: null, route_body: null});
@@ -237,17 +250,17 @@ class RoutePage extends React.Component {
 					let current_gateway = null
 					const dest_options = gateways.map(function(gateway) {
 						const gw_text = gateway.name + '[' + gateway.realm + ' ' + gateway.username + ']';
+
 						if (_this.state.route.dest_uuid == gateway.id) {
 							current_gateway = gw_text;
-							return <option key={gateway.id} value={gateway.id} selected>{gw_text}</option>;
-						} else {
-							return <option key={gateway.id} value={gateway.id}>{gw_text}</option>;
 						}
+
+						return [gateway.id, gw_text];
 					});
 
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Gateway" /></Col>
-						<Col sm={10}><EditControl edit={_this.state.edit} componentClass="select" name="dest_uuid" defaultValue={current_gateway} options={dest_options}/></Col>
+						<Col sm={10}><EditControl edit={_this.state.edit} componentClass="select" name="dest_uuid" text={current_gateway} defaultValue={_this.state.route.dest_uuid} options={dest_options}/></Col>
 					</FormGroup>;
 
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
@@ -258,17 +271,13 @@ class RoutePage extends React.Component {
 					let current_block = null
 					const dest_options = blocks.map(function(block) {
 						const block_text = block.name + '[' + block.description + ']';
-						if (_this.state.route.dest_uuid == block.id) {
-							current_block = block_text;
-							return <option key={block.id} value={block.id} selected>{block_text}</option>;
-						} else {
-							return <option key={block.id} value={block.id}>{block_text}</option>;
-						}
+						if (_this.state.route.dest_uuid == block.id) current_block = block_text;
+						return [block.id, block_text];
 					});
 
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="IVR Block" /></Col>
-						<Col sm={10}><EditControl edit={_this.state.edit} componentClass="select" name="dest_uuid" defaultValue={current_block} options={dest_options}/></Col>
+						<Col sm={10}><EditControl edit={_this.state.edit} componentClass="select" name="dest_uuid" text={current_block} defaultValue={_this.state.route.dest_uuid} options={dest_options}/></Col>
 					</FormGroup>;
 
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
@@ -314,10 +323,28 @@ class RoutePage extends React.Component {
 	}
 
 	componentDidMount() {
-		var _this = this;
+		const _this = this;
+		let change = 3;
+
+		const checkDestType = function() {
+			if (--change > 0) return;
+			console.log("update change!");
+			_this.handleDestTypeChange({target: {value: _this.state.route.dest_type}});
+		}
+
+		$.getJSON("/api/dicts?realm=CONTEXT", function(data) {
+			_this.setState({contexts: data});
+			checkDestType();
+		});
+
+		$.getJSON("/api/dicts?realm=DEST", function(data) {
+			_this.setState({dest_types: data});
+			checkDestType();
+		});
+
 		$.getJSON("/api/routes/" + this.props.params.id, "", function(data) {
 			_this.setState({route: data});
-			_this.handleDestTypeChange({target: {value: data.dest_type}});
+			checkDestType();
 		}, function(e) {
 			console.log("get gw ERR");
 		});
@@ -336,25 +363,12 @@ class RoutePage extends React.Component {
 			}
 		}
 
-		const contexts = [
-			{name:'default'},
-			{name:'public'}
-		];
-
-		const context_options = contexts.map(function(row) {
-			return <option value={row.name} key={row.name} selected={row.name == route.context}>{row.name}</option>
+		const context_options = this.state.contexts.map(function(row) {
+			return [row.k, row.k];
 		});
 
-		const dest_types = [
-			{name:'Local User', value:'FS_DEST_USER'},
-			{name:'Gateway', value:'FS_DEST_GATEWAY'},
-			{name:'IP', value:'FS_DEST_IP'},
-			{name:'System', value:'FS_DEST_SYSTEM'},
-			{name:'IVR Block', value:'FS_DEST_IVRBLOCK'}
-		];
-
-		const dest_type_options = dest_types.map(function(row) {
-			return <option value={row.value} key={row.value} selected={row.value == route.dest_type}>{row.name}</option>
+		const dest_type_options = this.state.dest_types.map(function(row) {
+			return [row.k, T.translate(row.k)]
 		});
 
 		return <div>
