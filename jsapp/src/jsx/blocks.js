@@ -589,6 +589,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				blockly_lang = "zh-hans";
 				break;
 			default:
+				blockly_lang = "en";
 				break;
 		}
 
