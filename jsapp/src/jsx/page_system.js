@@ -168,8 +168,17 @@ class SystemPage extends React.Component {
 			<SettingEventSocket/>
 
 			<hr/>
-			<a href="/api/freeswitch/log"><T.span text="Download Log"/></a>
-		</div>;
+			<h2><T.span text="Log"/></h2>
+			<ul>
+				<li><a href="/api/freeswitch/log"><T.span text="Download Log"/></a></li>
+			</ul>
+
+			<h2><T.span text="Sound Files"/></h2>
+			<ul>
+				<li><a href="/api/freeswitch/dir/sounds" target="_blank"><T.span text="Sounds"/></a></li>
+				<li><a href="/api/freeswitch/dir/storage" target="_blank"><T.span text="Storage"/></a></li>
+			</ul>
+		</div>
 	}
 }
 
