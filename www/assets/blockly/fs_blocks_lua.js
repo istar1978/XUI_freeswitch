@@ -57,10 +57,9 @@ Blockly.Lua.fsConsoleLog = function(block) {
 Blockly.Lua.fsSetTTS = function(block) {
   var text_engine = Blockly.Lua.valueToCode(block, 'TTSENGINE', Blockly.Lua.ORDER_ATOMIC);
   var text_voice = Blockly.Lua.valueToCode(block, 'VOICE', Blockly.Lua.ORDER_ATOMIC);
-  var code = 'tts_engine = "' + text_engine + '"\ntts_voice = "' + text_voice + '"\n' +
-    'session:set_tts_params("' + text_engine + '", "' + text_voice + '")\n' +
-    'session:setVariable("tts_engine", ' + 'tts_engine)\n' +
-    'session:setVariable("tts_voice", ' + 'tts_voice)\n';
+  var code = 'session:set_tts_params(' + text_engine + ', ' + text_voice + ')\n' +
+    'session:setVariable("tts_engine", ' + text_engine + ')\n' +
+    'session:setVariable("tts_voice", ' + text_voice + ')\n';
   return code;
 };
 
