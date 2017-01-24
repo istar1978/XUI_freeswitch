@@ -11,6 +11,7 @@ INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'USERTYPE', 'USERTYPE');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'CONTEXT', 'CONTEXT');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'DEST', 'DEST');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'GROUP', 'GROUP');
+INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'BAIDU', 'BAIDU');
 
 -- k,v to each realm
 INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'NAME', 'XUI');
@@ -39,5 +40,10 @@ INSERT INTO dicts (realm, k, v) VALUES ('GROUP', 'FS_GRP_USER', 'User Group');
 INSERT INTO dicts (realm, k, v) VALUES ('GROUP', 'FS_GRP_EXTN', 'Extn Group');
 INSERT INTO dicts (realm, k, v) VALUES ('GROUP', 'FS_GRP_IVRB', 'IVR Block Group');
 INSERT INTO dicts (realm, k, v) VALUES ('GROUP', 'FS_GRP_IVR', 'IVR Group');
+
+INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'APPID', 'APPID');
+INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'APPKEY', 'APPKEY');
+INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'SECKEY', 'SECKEY');
+INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'ACCTOKEN', 'ACCTOKEN');
 
 -- END
