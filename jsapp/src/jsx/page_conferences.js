@@ -250,7 +250,7 @@ var ConferencePage = React.createClass({
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1><T.span text={{ key: "Conference"}} /> {this.props.name}</h1>
+			<h1><T.span text={{ key: "Conference"}} /><small>{this.props.name}</small></h1>
 
 			<div>
 				<table className="table conference">
