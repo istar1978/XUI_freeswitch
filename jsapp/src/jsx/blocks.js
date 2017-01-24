@@ -744,26 +744,16 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		const _this = this;
 		console.log('Accepted files: ', acceptedFiles);
 		console.log('Rejected files: ', rejectedFiles);
-		const formdataSupported = !!window.FormData;
-		let data = new FormData()
 
-		for (var i = 0; i < acceptedFiles.length; i++) {
-			data.append('file', acceptedFiles[i])
+		if (acceptedFiles.length)  {
+			var file = acceptedFiles[0];
+			var reader = new FileReader();
+			reader.readAsText(file);
+			reader.onload = function() {
+				// console.log(reader.result);
+				Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(reader.result), _this.workspace);
+			};
 		}
-
-		function handleFiles(acceptedFiles) {  
-			if (acceptedFiles.length)  {
-				var file = acceptedFiles[0];
-				var reader = new FileReader();
-				reader.readAsText(file);  
-				reader.onload = function() {
-					console.log(reader.result);
-					Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(reader.result), _this.workspace);
-				};
-			}
-		}
-
-		handleFiles(acceptedFiles)
 	}
 
 	componentWillUnmount() {
@@ -779,7 +769,13 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	}
 
 	render() {
-		return<Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} className="dropzone" activeClassName="dropzone_active" disableClick={true}> <div id='blocks'>
+		return <Dropzone ref={(node) => { this.dropzone = node; }}
+			onDrop={this.onDrop} className="dropzone"
+			activeClassName="dropzone_active" disableClick={true}
+			// accept="text/xml"
+			multiple={false}>
+
+			<div id='blocks'>
 			<ButtonToolbar className="pull-right">
 				<ButtonGroup>
 				<Button><T.span onClick={this.handleControlClick.bind(this)} data="exportXML" text="Export XML" /></Button>
@@ -792,7 +788,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				</ButtonGroup>
 			</ButtonToolbar>
 			<h1><T.span text="Blocks"/> {this.state.block.name} <small>{this.state.block.description}</small></h1>
-		</div></Dropzone>;
+			</div>
+		</Dropzone>;
 	}
 }
 
