@@ -620,7 +620,11 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			}
 		}
 
-		loadJS();
+		if (typeof(Blockly) === "undefined") {
+			loadJS();
+		} else {
+			init_blocks();
+		}
 	}
 
 	handleControlClick(e) {
