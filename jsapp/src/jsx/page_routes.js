@@ -70,28 +70,28 @@ class NewRoute extends React.Component {
 				break;
 			case 'FS_DEST_GATEWAY':
 				$.getJSON("/api/gateways", function(gateways) {
-					const dest_options = gateways.map(function(gateway) {
-						return [gateway.id, gateway.name + " [ + " + gateway.realm + " " + gateway.username + "]"];
-					});
-
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Gateway" /></Col>
-						<Col sm={10}><FormControl componentClass="select" name="dest_uuid" defaultValue={gateway.id}>{dest_options}</FormControl></Col>
-					</FormGroup>;
+						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{
+							gateways.map(function(gateway) {
+								return <option key={gateway.id} value={gateway.id}>[{gateway.realm} {gateway.username}]</option>
+							})
+						}</FormControl></Col>
+					</FormGroup>
 
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
 				break;
 			case 'FS_DEST_IVRBLOCK':
 				$.getJSON("/api/blocks", function(blocks) {
-					const dest_options = blocks.map(function(block) {
-						return [block.id, block.name + " [" + block.description + "]"];
-					});
-
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="IVR Block" /></Col>
-						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{dest_options}</FormControl></Col>
-					</FormGroup>;
+						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{
+							blocks.map(function(block) {
+								return <option key={block.id} value={block.id}>{block.name}</option>
+							})
+						}</FormControl></Col>
+					</FormGroup>
 
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
@@ -181,7 +181,7 @@ class NewRoute extends React.Component {
 					<Col sm={10}>
 						<FormControl componentClass="select" name="dest_type" onChange={this.handleDestTypeChange}>
 							{this.state.dest_types.map(function(t) {
-								return <option key={t.id}>{T.translate(t.k)}</option>;
+								return <option key={t.id} value={t.k}>{T.translate(t.k)}</option>;
 							})}
 						</FormControl>
 					</Col>
