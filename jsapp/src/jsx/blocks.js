@@ -116,12 +116,12 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="fsSetTTS">
 		 <value name="TTSENGINE">
 			<shadow type="text">
-			 <field name="TEXT"></field>
+			 <field name="TEXT">tts_commandline</field>
 		   </shadow>
 		 </value>
 		 <value name="VOICE">
 			<shadow type="text">
-			 <field name="TEXT"></field>
+			 <field name="TEXT">Ting-Ting</field>
 		   </shadow>
 		 </value>
 		</block>
