@@ -23,4 +23,4 @@ config.abnormal_instant_conference_timeout = "120"
 config.is_auth = true
 config.session_path = "/tmp"
 config.view_path = config.base_dir .. "/xui/lua/xui/view"
-config.prefix_table = "gw"
+-- config.prefix_table = "gw"

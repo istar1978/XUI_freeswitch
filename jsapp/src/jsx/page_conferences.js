@@ -63,11 +63,11 @@ var Member = React.createClass({
 		return <tr className={className} data-member-id={row.memberID} onClick={this.handleClick}>
 					<td>{row.memberID}</td>
 					<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
-					<td>{row.status.audio.floor ? "F" : "f"} |
-						{row.status.audio.talking ? " T" : " t"} |
-						{row.status.audio.deaf ? " D" : " d"} |
-						{row.status.audio.muted ? " M" : " m"} |
-						{row.status.audio.onHold ? " H" : " h"} |
+					<td>{row.status.audio.floor ? "F" : "f"} |&nbsp;
+						{row.status.audio.talking ? " T" : " t"} |&nbsp;
+						{row.status.audio.deaf ? " D" : " d"} |&nbsp;
+						{row.status.audio.muted ? " M" : " m"} |&nbsp;
+						{row.status.audio.onHold ? " H" : " h"} |&nbsp;
 						{row.status.audio.energyScore}
 					</td>
 					<td>{row.email}</td>
@@ -80,11 +80,18 @@ var ConferencePage = React.createClass({
 	activeMembers: {},
 
 	getInitialState: function() {
-		return {name: this.props.name, rows: [], la: null};
+		return {name: this.props.name, rows: [], la: null,
+			last_outcall_member_id: 0, outcall_rows: [],
+			outcallNumber: '', outcallNumberShow: false
+		};
 	},
 
 	getChannelName: function(what) { // liveArray chat mod
 		return "conference-" + what + "." + this.props.name + "@" + domain;
+	},
+
+	handleOutcallNumberChange: function(e) {
+		this.setState({outcallNumber: e.target.value});
 	},
 
 	handleControlClick: function(e) {
@@ -110,6 +117,52 @@ var ConferencePage = React.createClass({
 				this.setState({rows: rows});
 			}
 			return;
+		} else if (data == "call") {
+			if (!this.state.outcallNumberShow) {
+				this.setState({outcallNumberShow: true});
+				this.outcallNumberInput.focus();
+				return;
+			}
+
+			if (this.state.outcallNumber == '') {
+				// this.outcallNumberInput.focus();
+				this.setState({outcallNumberShow: false});
+				return;
+			}
+
+			this.state.last_outcall_member_id--;
+
+			let member = {
+				uuid: this.state.last_outcall_member_id,
+				memberID: this.state.last_outcall_member_id,
+				cidNumber: this.state.outcallNumber,
+				cidName: this.state.outcallNumber,
+				codec: null,
+				status: {audio: {energyScore: 'Calling ...'}, video: {}},
+				email: null,
+				active: false
+			};
+
+			let rows = this.state.outcall_rows;
+			rows.unshift(member);
+			this.setState({outcall_rows: rows});
+
+			// fsAPI("bgapi", "conference " + this.state.name + " dial user/1007");
+
+			$.ajax({
+				type: "POST",
+				url: "/api/conferences/" + this.state.name,
+				dataType: "json",
+				contentType: "application/json",
+				data: JSON.stringify({
+					from: member.cidNumber,
+					to: member.cidNumber}),
+				success: function (obj) {
+				},
+				error: function(msg) {
+					console.error("err call", msg);
+				}
+			});
 		}
 
 		for(var member in this.activeMembers) {
@@ -168,11 +221,27 @@ var ConferencePage = React.createClass({
 			break;
 
 		case "add":
-			var rows = this.state.rows;
-			rows.push(translateMember([a.key, a.data]));
-			this.setState({rows: rows});
-			break;
+			var found = 0;
+			var member = translateMember([a.key, a.data]);
 
+			if (member.cidName == "Outbound Call") {
+				var outcall_rows = this.state.outcall_rows.filter(function(row) {
+					if (row.cidNumber == member.cidNumber) {
+						found++;
+						return false;
+					} else {
+						return true;
+					}
+				});
+
+				if (found) this.setState({outcall_rows: outcall_rows});
+			}
+
+			var rows = this.state.rows;
+			rows.push(member);
+			this.setState({rows: rows});
+
+			break;
 		case "modify":
 			var rows = [];
 			var _this = this;
@@ -214,8 +283,22 @@ var ConferencePage = React.createClass({
 	render: function() {
 		var _this = this;
 
+		const rows = this.state.outcall_rows.concat(this.state.rows);
+
 		return <div>
 			<ButtonToolbar className="pull-right">
+
+			<ButtonGroup style={ this.state.outcallNumberShow ? null : {display: 'none'} }>
+				<input value={this.state.outcallNumber} onChange={this.handleOutcallNumberChange} size={10}
+					ref={(input) => { this.outcallNumberInput = input; }} placeholder="number"/>
+			</ButtonGroup>
+
+			<ButtonGroup>
+				<Button>
+					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "Call" data="call"/>
+				</Button>
+			</ButtonGroup>
 
 			<ButtonGroup>
 				<Button>
@@ -263,7 +346,7 @@ var ConferencePage = React.createClass({
 					<th><T.span text="Email"/></th>
 				</tr>
 				{
-					this.state.rows.map(function(member) {
+					rows.map(function(member) {
 						return <Member member={member} key={member.uuid} onMemberClick={_this.handleMemberClick} />
 					})
 				}
