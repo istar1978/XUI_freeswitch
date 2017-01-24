@@ -216,6 +216,14 @@ var ConferencePage = React.createClass({
 
 		return <div>
 			<ButtonToolbar className="pull-right">
+
+			<ButtonGroup>
+				<Button>
+					<i className="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text= "Select" data="select"/>
+				</Button>
+			</ButtonGroup>
+
 			<ButtonGroup>
 				<Button>
 					<i className="fa fa-microphone-slash" aria-hidden="true"></i>&nbsp;
@@ -228,13 +236,6 @@ var ConferencePage = React.createClass({
 				<Button>
 					<i className="fa fa-power-off" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} text= "Hangup" data="hup"/>
-				</Button>
-			</ButtonGroup>
-
-			<ButtonGroup>
-				<Button>
-					<i className="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "Select" data="select"/>
 				</Button>
 			</ButtonGroup>
 
