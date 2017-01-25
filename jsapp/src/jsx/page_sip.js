@@ -350,7 +350,7 @@ class SIPProfilePage extends React.Component {
 class SIPProfilesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false};
+		this.state = { formShow: false, rows: [], danger: false, profileDetails: {}};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -521,6 +521,40 @@ class SIPProfilesPage extends React.Component {
 		});
 	}
 
+	handleMore(e) {
+		e.preventDefault();
+
+		var _this = this;
+		var profile_name = e.target.getAttribute("data-name");
+
+		if (this.state.profileDetails.name) {
+			this.setState({profileDetails: {name: undefined}});
+			return;
+		}
+
+		fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
+			if (!data.message.match('<')) {
+				console.log(data);
+				notify(data.message, 'error');
+				return;
+			}
+
+			var msg = $(data.message);
+			var profile = msg[2];
+			var info = profile.firstElementChild.firstElementChild;
+
+			var rows = [];
+
+			rows.push({k: info.localName, v: info.innerText});
+
+			while(info = info.nextElementSibling) {
+				rows.push({k: info.localName, v: info.innerText});
+			}
+
+			_this.setState({profileDetails: {name: profile_name, rows: rows}});
+		});
+	}
+
 	render() {
 		const formClose = () => this.setState({ formShow: false });
 		const toggleDanger = () => this.setState({ danger: !this.state.danger });
@@ -528,11 +562,13 @@ class SIPProfilesPage extends React.Component {
 
 		const _this = this;
 
-		const rows = this.state.rows.map(function(row) {
+		let rows = [];
+
+		this.state.rows.forEach(function(row) {
 			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
 			const running_class = row.running ? "running" : null;
 
-			return <tr key={row.id} className={disabled_class}>
+			rows.push(<tr key={row.id} className={disabled_class}>
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
@@ -540,11 +576,27 @@ class SIPProfilesPage extends React.Component {
 					<td className={running_class}>
 						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
 						<T.a onClick={_this.handleStop.bind(_this)} data-name={row.name} text="Stop" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleRestart.bind(this)} data-name={row.name} text="Restart" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleRescan.bind(this)} data-name={row.name} text="Rescan" href='#'/>
+						<T.a onClick={_this.handleRestart.bind(_this)} data-name={row.name} text="Restart" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleRescan.bind(_this)} data-name={row.name} text="Rescan" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleMore.bind(_this)} data-name={row.name} text="More" href='#'/>...
 					</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
-			</tr>;
+			</tr>);
+
+			if (_this.state.profileDetails.name == row.name) {
+				var profile_params = [];
+				var profiles;
+
+				_this.state.profileDetails.rows.forEach(function(p) {
+					profile_params.push(<li key={p.k}>{p.k}: {p.v}</li>);
+				})
+
+				profiles = <ul>{profile_params}</ul>
+
+				rows.push(<tr key={row.name + '+' + row.type + '-profile-details'}>
+					<td colSpan={6}>{profiles}</td>
+				</tr>);
+			}
 		})
 
 		return <div>
@@ -564,7 +616,7 @@ class SIPProfilesPage extends React.Component {
 					<th><T.span text="Name"/></th>
 					<th><T.span text="Description"/></th>
 					<th><T.span text="Enabled"/></th>
-					<th><T.span text="Status"/></th>
+					<th><T.span text="Status"/> / <T.span text="Control"/></th>
 					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}

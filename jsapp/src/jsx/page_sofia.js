@@ -314,7 +314,7 @@ var SofiaPage = React.createClass({
 				var profiles;
 
 				_this.state.profileDetails.rows.forEach(function(p) {
-					profile_params.push(<li>{p.k}: {p.v}</li>);
+					profile_params.push(<li key={p.k}>{p.k}: {p.v}</li>);
 				})
 
 				profiles = <ul>{profile_params}</ul>

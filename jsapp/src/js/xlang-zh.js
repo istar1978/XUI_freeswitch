@@ -152,6 +152,7 @@ LANGUAGES["zh"] = {
 	Restart: "重启",
 	Rescan: "重新扫描",
 	Params: "参数",
+	More: "更多",
 
 	"Media Files": "媒体文件",
 	"Drag and drop files here to upload": "将文件拖到此处上传",
