@@ -138,10 +138,33 @@ tr.HELD {color: #ea8619 !important;}
 	color: #DDD;
 }
 
-.dropzone_active a{
+.dropzone_active a {
 	color: #DDD;
 }
 
-.cursor-hand{
+.cursor-hand {
 	cursor: pointer;
 }
+
+.terminal-area {
+	margin: 0px !important;
+	font-family: 'Inconsolata', monospace;
+	font-size: 14px;
+	/*color: #dfe1e8;*/
+	/*background: #343d46;*/
+	height: 100%;
+	/*max-width: 560px;*/
+	/*background: #2b303b;*/
+	/*height: 400px;*/
+	overflow: scroll;
+	left: -15px;
+}
+
+input.terminal-input {
+	width: 96%;
+	border: 0px;
+}
+
+input.terminal-input:focus {
+	border: 0px !important;
+};

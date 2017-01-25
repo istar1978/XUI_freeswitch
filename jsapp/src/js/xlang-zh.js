@@ -177,6 +177,8 @@ LANGUAGES["zh"] = {
 	"60days": "60天",
 	"90days": "90天",
 
+	"Terminal": "终端",
+
 	"System Settings": "系统设置",
 	"Baidu TTS": "百度TTS",
 	"EventSocket Settings": "EventSocket设置",

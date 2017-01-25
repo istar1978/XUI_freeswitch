@@ -62,6 +62,7 @@ import { SIPProfilesPage, SIPProfilePage } from './page_sip';
 import { MediaFilesPage, MediaFilePage } from './page_media_files';
 import { Login, LoginBox } from './page_login';
 import Footer from './footer';
+import Terminal from './terminal';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -169,6 +170,7 @@ const Home = React.createClass({
 						<Route path=":id" components={{sidebar: Settings, main: MediaFilePage}}/>
 					</Route>
 					<Route path="system" components={{sidebar: Settings, main: SystemPage}}/>
+					<Route path="term" components={{sidebar: Settings, main: Terminal}}/>
 				</Route>
 			</Route>
 		</Router>
