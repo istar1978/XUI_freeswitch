@@ -401,18 +401,70 @@ class SIPProfilesPage extends React.Component {
 	}
 
 	componentWillUnmount() {
+		verto.unsubscribe("FSevent.custom::sofia::profile_start");
+		verto.unsubscribe("FSevent.custom::sofia::profile_stop");
 	}
 
 	componentDidMount() {
+		verto.subscribe("FSevent.custom::sofia::profile_start", {
+			handler: this.handleFSEvent.bind(this)
+		});
+
+		verto.subscribe("FSevent.custom::sofia::profile_stop", {
+			handler: this.handleFSEvent.bind(this)
+		});
+
 		var _this = this;
 		$.getJSON("/api/sip_profiles", "", function(data) {
 			_this.setState({rows: data});
+
+			fsAPI("sofia", "xmlstatus", function(data) {
+				var rows = _this.state.rows;
+				var msg = $(data.message);
+
+				msg.find("profile").each(function() {
+					var profile = this;
+					var name = $(profile).find("name").text();
+
+					rows = rows.map(function(row) {
+						if (row.name == name) row.running = true;
+						return row;
+					});
+				});
+
+				_this.setState({rows: rows});
+			});
 		}, function(e) {
 			console.log("get sip_profiles ERR");
 		});
 	}
 
 	handleFSEvent(v, e) {
+		const _this = this;
+
+		if (e.eventChannel == "FSevent.custom::sofia::profile_start") {
+			const profile_name = e.data["profile_name"];
+
+			const rows = _this.state.rows.map(function(row) {
+				if (row.name == profile_name) {
+					row.running = true;
+				}
+				return row;
+			});
+
+			_this.setState({rows: rows});
+		} else if (e.eventChannel == "FSevent.custom::sofia::profile_stop") {
+			const profile_name = e.data["profile_name"];
+
+			const rows = _this.state.rows.map(function(row) {
+				if (row.name == profile_name) {
+					row.running = false;
+				}
+				return row;
+			});
+
+			_this.setState({rows: rows});
+		}
 	}
 
 	handleSIPProfileAdded(route) {
@@ -430,23 +482,43 @@ class SIPProfilesPage extends React.Component {
 
 	handleStop(e) {
 		e.preventDefault();
+		const _this = this;
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " stop");
+		fsAPI("sofia", "profile " + name + " stop", function(ret) {
+			if (ret.message.match("stopping:")) {
+				// trick FS has no sofia::profile_stop event
+				var evt = {}
+				evt.eventChannel = "FSevent.custom::sofia::profile_stop";
+				evt.data = {profile_name: name}
+				_this.handleFSEvent(verto, evt);
+			} else {
+				notify(ret.message);
+			}
+		});
 	}
 
 	handleRestart(e) {
 		e.preventDefault();
+		const _this = this;
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " restart");
+		fsAPI("sofia", "profile " + name + " restart", function(ret) {
+			if (ret.message.match("restarting:")) {
+				notify("restarting profile ...");
+			} else {
+				notify(ret.message);
+			}
+		});
 	}
 
 	handleRescan(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " rescan");
+		fsAPI("sofia", "profile " + name + " rescan", function(ret) {
+			notify(ret.message);
+		});
 	}
 
 	render() {
@@ -457,18 +529,19 @@ class SIPProfilesPage extends React.Component {
 		const _this = this;
 
 		const rows = this.state.rows.map(function(row) {
-			const disabled_class = row.disabled == "false" ? "" : "disabled";
+			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
+			const running_class = row.running ? "running" : null;
 
 			return <tr key={row.id} className={disabled_class}>
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.disabled ? T.translate("Yes") : T.translate("No")}</td>
-					<td>
+					<td className={running_class}>
 						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleRestart} data-name={row.name} text="Restart" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleRescan} data-name={row.name} text="Rescan" href='#'/>
+						<T.a onClick={_this.handleStop.bind(_this)} data-name={row.name} text="Stop" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleRestart.bind(this)} data-name={row.name} text="Restart" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleRescan.bind(this)} data-name={row.name} text="Rescan" href='#'/>
 					</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;

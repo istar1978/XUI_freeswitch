@@ -148,6 +148,10 @@ LANGUAGES["zh"] = {
 
 
 	"Create New SIP Profile": "新建SIP Profile",
+	Stop: "停止",
+	Restart: "重启",
+	Rescan: "重新扫描",
+	Params: "参数",
 
 	"Media Files": "媒体文件",
 	"Drag and drop files here to upload": "将文件拖到此处上传",
