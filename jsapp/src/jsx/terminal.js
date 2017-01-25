@@ -64,7 +64,7 @@ class Terminal extends React.Component {
 		this.pushLine("Welcome to FreeSWITCH ;)");
 		const _this = this;
 		fsAPI("status", "", function(ret) {
-			_this.pushLine2(ret.message);
+			_this.pushLine2(ret.message, 'pre');
 		});
 	}
 
@@ -78,13 +78,21 @@ class Terminal extends React.Component {
 		this.registerCommands();
 		this.welcome();
 		this.commandLine.focus();
+
+		verto.subscribe("FSLog", {
+			handler: this.handleFSLog.bind(this)
+		});
+	}
+
+	componentWillUnmount() {
+		verto.unsubscribe("FSLog");
 	}
 
 	componentDidUpdate() {
 		var el = ReactDom.findDOMNode(this);
 		// var container = document.getElementsByClassName('container')[0];
-		var container = document.getElementById("terminal-area");
-		container.scrollTop = el.scrollHeight;
+		// var container = document.getElementById("terminal-area");
+		// container.scrollTop = el.scrollHeight;
 		window.scrollTo(0, document.body.scrollHeight);
 	}
 
@@ -129,7 +137,7 @@ class Terminal extends React.Component {
 				const _this = this;
 
 				fsAPI(input, arg, function(ret) {
-					_this.pushLine2(ret.message);
+					_this.pushLine2(ret.message, 'pre');
 				});
 			} else {
 				command(arg);
@@ -144,14 +152,22 @@ class Terminal extends React.Component {
 	}
 
 	pushLine(line) {
+		this.state.lineNumber++;
 		var lines = this.state.lines;
-		lines.push(line)
+		lines.push(<p key={this.state.lineNumber}>{line}</p>)
 		this.setState({'lines': lines});
 	}
 
-	pushLine2(line) {
+	pushLine2(line, type, level) {
 		var lines = this.state.lines;
-		lines.push({type: 'pre', text: line});
+		this.state.lineNumber++;
+
+		if (type == 'pre') {
+			lines.push(<pre key={this.state.lineNumber}>{line}</pre>)
+		} else if (type == 'span') {
+			lines.push(<span key={this.state.lineNumber} className={"log" + level}>{line}<br/></span>)
+		}
+
 		this.setState({'lines': lines});
 	}
 
@@ -159,17 +175,16 @@ class Terminal extends React.Component {
 		this.commandLine.focus();
 	}
 
+	handleFSLog(v, log) {
+		// console.log("FSLog:", log.data);
+		if (log.data == "\n") return;
+		this.pushLine2(log.data, 'span', log.logLevel);
+	}
+
 	render() {
+		// console.log("render", this.state.lines.length);
 		return <div id='terminal-area' className='terminal-area' onClick={this.handleClick.bind(this)}>
-			{
-				this.state.lines.map(function(line, i) {
-					if (typeof(line) === 'string') {
-						return <p key={i}>{line}</p>
-					} else {
-						return <pre key={i}>{line.text}</pre>
-					}
-				})
-			}
+			{this.state.lines}
 			<p>
 				<span className="prompt">{this.state.prompt}</span>
 				<input type="text" ref={(input) => { this.commandLine = input; }}
