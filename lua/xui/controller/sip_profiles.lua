@@ -58,12 +58,22 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update("sip_profiles", params.request)
-	if ret then
-		return 200, "{}"
+
+	if params.request.action and params.request.action == "toggle" then
+		profile = m_sip_profile.toggle(params.id)
+
+		if (profile) then
+			return profile
+		end
 	else
-		return 500
+		ret = xdb.update("sip_profiles", params.request)
+
+		if ret then
+			return 200, "{}"
+		end
 	end
+
+	return 500
 end)
 
 put('/:id/params/:param_id', function(params)

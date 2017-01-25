@@ -555,6 +555,30 @@ class SIPProfilesPage extends React.Component {
 		});
 	}
 
+	HandleToggleProfile(e) {
+		const profile_id = e.target.getAttribute("data");
+		const _this = this;
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/sip_profiles/" + profile_id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({action: 'toggle'}),
+			success: function (profile) {
+				const rows = _this.state.rows.map(function(row) {
+					if (row.id == profile.id) row.disabled = profile.disabled;
+					return row;
+				});
+
+				_this.setState({rows: rows});
+			},
+			error: function(msg) {
+				console.error("sip_profile", msg);
+			}
+		});
+	}
+
 	render() {
 		const formClose = () => this.setState({ formShow: false });
 		const toggleDanger = () => this.setState({ danger: !this.state.danger });
@@ -572,7 +596,7 @@ class SIPProfilesPage extends React.Component {
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
-					<td>{row.disabled ? T.translate("Yes") : T.translate("No")}</td>
+					<td><Button onClick={_this.HandleToggleProfile.bind(_this)} data={row.id}>{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}</Button></td>
 					<td className={running_class}>
 						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
 						<T.a onClick={_this.handleStop.bind(_this)} data-name={row.name} text="Stop" href='#'/> |&nbsp;
