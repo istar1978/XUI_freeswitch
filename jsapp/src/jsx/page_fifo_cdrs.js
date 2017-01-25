@@ -90,13 +90,13 @@ var FifoCDRsPage = React.createClass({
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1><T.span text="Fifo CDRs"/></h1>
+			<h1><T.span text="FIFO CDRs"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
 					<th><T.span text="UUID"/></th>
-					<th><T.span text="Fifo Name"/></th>
+					<th><T.span text="FIFO Name"/></th>
 					<th><T.span text="CID Number"/></th>
 					<th><T.span text="Dest Number"/></th>
 					<th><T.span text="Bridged Number"/></th>

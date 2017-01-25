@@ -70,7 +70,6 @@ if (lang_map) T.setTexts(lang_map);
 const MENUS = [
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conferences"}} />, data: '/conferences'},
 	{id: "MM_CDRS", description: <T.span text={{ key: "CDR"}} />, data: '/cdrs'},
-	{id: "MM_FIFOCDRS", description: <T.span text={{ key: "Fifo CDRs"}} />, data: '/fifocdrs'},
 	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: '/about'}
 ];
 
