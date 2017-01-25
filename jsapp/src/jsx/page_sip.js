@@ -367,6 +367,8 @@ class SIPProfilesPage extends React.Component {
 	}
 
 	handleDelete(e) {
+		e.preventDefault();
+
 		var id = e.target.getAttribute("data-id");
 		console.log("deleting id", id);
 		var _this = this;
@@ -604,7 +606,7 @@ class SIPProfilesPage extends React.Component {
 						<T.a onClick={_this.handleRescan.bind(_this)} data-name={row.name} text="Rescan" href='#'/> |&nbsp;
 						<T.a onClick={_this.handleMore.bind(_this)} data-name={row.name} text="More" href='#'/>...
 					</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href='#'/></td>
 			</tr>);
 
 			if (_this.state.profileDetails.name == row.name) {
