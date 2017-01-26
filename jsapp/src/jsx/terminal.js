@@ -89,11 +89,12 @@ class Terminal extends React.Component {
 	}
 
 	componentDidUpdate() {
-		var el = ReactDom.findDOMNode(this);
+		// var el = ReactDom.findDOMNode(this);
 		// var container = document.getElementsByClassName('container')[0];
 		// var container = document.getElementById("terminal-area");
 		// container.scrollTop = el.scrollHeight;
-		window.scrollTo(0, document.body.scrollHeight);
+		// window.scrollTo(0, document.body.scrollHeight);
+        this.commandLine.scrollIntoView(false);
 	}
 
 	handleArrows(e) {
