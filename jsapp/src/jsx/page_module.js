@@ -144,19 +144,22 @@ class ModulePage extends React.Component {
 	}
 
 	handleSort(e){
-		var _this = this;
-		const rows = _this.state.rows;
-		if (rows[0].disabled == 0) {
-			rows.sort(function(b,a){
-			return a.disabled - b.disabled;
-			})
-		} else{
-			rows.sort(function(a,b){
-			return a.disabled - b.disabled;
-			})
-		};
-		
-		_this.setState({rows: rows, edit: false});
+		const rows = this.state.rows;
+		var field = e.target.getAttribute('data');
+		var n = 1;
+
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
+		}
+
+		rows.sort(function(a,b) {
+			return a[field].toUpperCase() < b[field].toUpperCase() ? -1 * n : 1 * n;
+		});
+
+		this.setState({rows: rows});
 	}
 
 	handleControlClick(e) {
@@ -204,8 +207,8 @@ class ModulePage extends React.Component {
 			<table className="table">
 				<tbody>
 				<tr>
-					<th><T.span text="Name"/></th>
-					<th onClick={this.handleSort.bind(this)}><T.span text="Enabled"/></th>
+					<th onClick={this.handleSort.bind(this)} data="k"><T.span text="Name" data="k"/></th>
+					<th onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
 					<th><T.span text="Control"/></th>
 				</tr>
 				{rows}

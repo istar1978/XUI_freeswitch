@@ -310,33 +310,23 @@ class DictsPage extends React.Component {
 	}
 
 	handleSortClick(e) {
-		var data = e.target.getAttribute("data");
-		console.log("data", data);
+		var field = e.target.getAttribute("data");
 		var rows = this.state.rows;
 
-		if (data == "realm") {
-			rows.sort(function(a,b){
-				return (a.realm[0].toLowerCase().charCodeAt() - b.realm[0].toLowerCase().charCodeAt());
-			})
+		var n = 1;
 
-			this.setState({rows: rows});
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
 		}
 
-		if (data == "key") {
-			rows.sort(function(a,b){
-				return (a.k[0].toLowerCase().charCodeAt() - b.k[0].toLowerCase().charCodeAt());
-			})
+		rows.sort(function(a,b) {
+			return a[field] < b[field] ? -1 * n : 1 * n;
+		});
 
-			this.setState({rows: rows});
-		}
-
-		if (data == "order") {
-			rows.sort(function(a,b){
-				return parseInt(b.o) - parseInt(a.o);
-			})
-
-			this.setState({rows: rows});
-		};
+		this.setState({rows: rows});
 	}
 
 	handleClick(x) {

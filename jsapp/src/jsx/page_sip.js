@@ -138,7 +138,7 @@ class SIPProfilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {profile: {}, edit: false, params:[]};
+		this.state = {profile: {}, edit: false, params:[], order: 'ASC'};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -256,20 +256,23 @@ class SIPProfilePage extends React.Component {
 	}
 
 	handleSort(e){
-		var _this = this;
-		const profile = _this.state.profile;
-		var params = _this.state.profile.params;
-		if (params[0].disabled == 0) {
-			params.sort(function(b,a){
-			return a.disabled - b.disabled;
-			})
-		} else{
-			params.sort(function(a,b){
-			return a.disabled - b.disabled;
-			})
-		};
-		
-		_this.setState({profile: profile, edit: false});
+		const profile = this.state.profile;
+		var params = this.state.profile.params;
+		var field = e.target.getAttribute('data');
+		var n = 1;
+
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
+		}
+
+		params.sort(function(a,b) {
+			return a[field].toUpperCase() < b[field].toUpperCase() ? -1 * n : 1 * n;
+		});
+
+		this.setState({profile: profile});
 	}
 
 	render() {
@@ -346,9 +349,9 @@ class SIPProfilePage extends React.Component {
 			<table className="table">
 				<tbody>
 				<tr>
-					<th><T.span text="Name"/></th>
+					<th onClick={this.handleSort.bind(this)} data="k"><T.span text="Name" data="k"/></th>
 					<th><T.span text="Value"/></th>
-					<th style={{textAlign: "right", paddingRight: 0}} onClick={this.handleSort.bind(this)}><T.span text="Enabled"/></th>
+					<th style={{textAlign: "right", paddingRight: 0}} onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
 				</tr>
 				{params}
 				</tbody>

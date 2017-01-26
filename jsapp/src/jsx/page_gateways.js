@@ -215,10 +215,26 @@ class GatewayPage extends React.Component {
 	}
 
 	handleSort(e){
-		var _this = this;
-		const gw =_this.state.gw;
-		var params = _this.state.gw.params;
-		alert(params[0].k);
+		const gw =this.state.gw;
+		var params = this.state.gw.params;
+
+		var field = e.target.getAttribute('data');
+		var n = 1;
+
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
+		}
+
+		params.sort(function(a,b) {
+			return a[field].toUpperCase() < b[field].toUpperCase() ? -1 * n : 1 * n;
+		});
+
+		gw.params = params;
+
+		this.setState({gw: gw});
 	}
 
 	toggleHighlight() {
@@ -345,7 +361,7 @@ class GatewayPage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1>{gw.name} <small>{gw.extn}</small></h1>
+			<h1><T.span text="Gateway"/><small>{gw.name} {gw.username}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newGatewayForm">
@@ -392,13 +408,13 @@ class GatewayPage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h2>Params</h2>
+			<h2><T.span text="Params"/></h2>
 			<table className="table">
 				<tbody>
 				<tr>
-					<th>Name</th>
-					<th>Value</th>
-					<th onClick={this.handleSort.bind(this)}>Enabled</th>
+					<th onClick={this.handleSort.bind(this)} data="d"><T.span text="Name" data="k"/></th>
+					<th><T.span text="Value"/></th>
+					<th onClick={this.handleSort.bind(this)} data='disabled'><T.span text="Enabled" data="disabled"/></th>
 				</tr>
 				{params}
 				</tbody>
