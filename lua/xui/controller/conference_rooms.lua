@@ -64,3 +64,22 @@ post('/', function(params)
 		return 500, "{}"
 	end
 end)
+
+put('/:id', function(params)
+	ret = xdb.update("conference_rooms", params.request)
+	if ret then
+		return 200, "{}"
+	else
+		return 500
+	end
+end)
+
+delete('/:id', function(params)
+	ret = xdb.delete("conference_rooms", params.id);
+
+	if ret == 1 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
