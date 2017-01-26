@@ -129,6 +129,109 @@ class NewRoom extends React.Component {
 	}
 }
 
+class ConferenceRoom extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {room: {}, edit: false};
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var room = form2json('#editRoomForm');
+
+		if (!room.name || !room.nbr) {
+			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			return;
+		}
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/conference_rooms/" + room.id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(room),
+			success: function () {
+				_this.setState({room: room, edit: false})
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+			},
+			error: function(msg) {
+				console.error("room", msg);
+			}
+		});
+	}
+
+	handleControlClick(e) {
+		this.setState({edit: !this.state.edit});
+	}
+
+	componentDidMount() {
+		const _this = this;
+		$.getJSON("/api/conference_rooms/" + this.props.params.id, "", function(data) {
+			_this.setState({room: data});
+		}, function(e) {
+			console.log("get gw ERR");
+		});
+	}
+
+	render() {
+		const room = this.state.room;
+		let save_btn = null;
+		let err_msg = null;
+
+		if (this.state.edit) {
+			save_btn = <Button><T.span onClick={this.handleSubmit.bind(this)} text="Save"/></Button>
+		}
+
+		return <div>
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
+				{ save_btn }
+				<Button><T.span onClick={this.handleControlClick.bind(this)} text="Edit"/></Button>
+			</ButtonGroup>
+			</ButtonToolbar>
+
+			<h1>{room.name} <small>{room.nbr}</small></h1>
+			<hr/>
+
+			<Form horizontal id='editRoomForm'>
+				<input type="hidden" name="id" defaultValue={room.id}/>
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="name" defaultValue={room.name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={room.description}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formNumber">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="nbr" defaultValue={room.nbr}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formCapacity">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Capacity"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="capacity" defaultValue={room.capacity}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={room.realm}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSave">
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
+				</FormGroup>
+			</Form>
+		</div>
+	}
+}
+
 class ConferenceRooms extends React.Component {
 	constructor(props) {
 		super(props);
@@ -225,32 +328,10 @@ class ConferenceRooms extends React.Component {
 		});
 	}
 
-	handleRealmClick(e) {
-		const _this = this;
-		console.log("realm clicked", e.target);
-		var realm = e.target.getAttribute("data");
-
-		console.log(realm);
-		let url = "/api/dicts";
-
-		if (realm) url = url + "?realm=" + realm;
-
-        $.getJSON(url, "", function(data) {
-			console.log("dt", data)
-			_this.setState({rows: data});
-		}, function(e) {
-			console.log("get dicts ERR");
-		});
-	}
-
 	handleRoomAdded(route) {
 		var rows = this.state.rows;
 		rows.unshift(route);
 		this.setState({rows: rows, formShow: false});
-	}
-
-	isStringAcceptable() {
-		return true;
 	}
 
 	render() {
@@ -264,7 +345,7 @@ class ConferenceRooms extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td>{row.name}</td>
+					<td><Link to={`/settings/conference_rooms/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.nbr}</td>
 					<td>{row.realm}</td>
@@ -306,4 +387,4 @@ class ConferenceRooms extends React.Component {
 	}
 }
 
-export { ConferenceRooms };
+export { ConferenceRooms, ConferenceRoom };

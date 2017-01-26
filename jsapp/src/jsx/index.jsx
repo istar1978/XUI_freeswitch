@@ -52,7 +52,7 @@ import SofiaPage from "./page_sofia";
 import Conferences from './conferences';
 import SystemPage from './page_system';
 import Settings from './settings';
-import { ConferenceRooms } from './page_conference_rooms';
+import { ConferenceRooms, ConferenceRoom } from './page_conference_rooms';
 import { UsersPage, UserPage } from './page_users';
 import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
@@ -155,7 +155,7 @@ const Home = React.createClass({
 					</Route>
 					<Route path="conference_rooms">
 						<IndexRoute components={{sidebar: Settings, main: ConferenceRooms}}/>
-						<Route path=":id" components={{sidebar: Settings, main: ConferenceRooms}}/>
+						<Route path=":id" components={{sidebar: Settings, main: ConferenceRoom}}/>
 					</Route>
 					<Route path="sip_profiles">
 						<IndexRoute components={{sidebar: Settings, main: SIPProfilesPage}}/>
