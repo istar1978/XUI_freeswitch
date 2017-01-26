@@ -34,14 +34,14 @@ import React from 'react';
 
 var ShowFSApplication = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.name}>
+		var i = 0;
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={i++}>
 				<td>{row.name }</td>
 				<td>{row.description }</td>
 				<td>{row.syntax }</td>
 				<td>{row.ikey }</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>Applications</h1>
@@ -64,14 +64,14 @@ var ShowFSApplication = React.createClass({
 
 var ShowFSAPI = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.name}>
+		var i = 0;
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={i++}>
 				<td>{row.name }</td>
 				<td>{row.description }</td>
 				<td>{row.syntax }</td>
 				<td>{row.ikey }</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>{this.props.title}</h1>
@@ -94,9 +94,9 @@ var ShowFSAPI = React.createClass({
 
 var ShowFSComplete = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.a1}>
+		var i = 0;
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={i++}>
 				<td>{row.sticky}</td>
 				<td>{row.a1}</td>
 				<td>{row.a2}</td>
@@ -109,7 +109,7 @@ var ShowFSComplete = React.createClass({
 				<td>{row.a9}</td>
 				<td>{row.a10}</td>
 				<td>{row.hosthame}</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>{this.props.title}</h1>
@@ -140,13 +140,14 @@ var ShowFSComplete = React.createClass({
 
 var ShowFSModule = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.name}>
+		var i = 0;
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={i++}>
 				<td>{row.type }</td>
 				<td>{row.name }</td>
+				<td>{row.ikey }</td>
 				<td>{row.filename }</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>{this.props.title}</h1>
@@ -169,9 +170,8 @@ var ShowFSModule = React.createClass({
 
 var ShowFSRegistration = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.reg_user + row.token}>
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={row.reg_user + row.token}>
 				<td>{row.reg_user }</td>
 				<td>{row.realm }</td>
 				<td>{row.expires }</td>
@@ -181,7 +181,7 @@ var ShowFSRegistration = React.createClass({
 				<td>{row.hostname }</td>
 				<td>{row.metadata }</td>
 				<td>{row.token }</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>{this.props.title}</h1>
@@ -209,15 +209,14 @@ var ShowFSRegistration = React.createClass({
 
 var ShowFSTasks = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.task_id}>
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={row.task_id}>
 				<td>{row.task_id }</td>
 				<td>{row.task_desc }</td>
 				<td>{row.task_group }</td>
 				<td>{row.task_sql_manager }</td>
 				<td>{row.hostname }</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>{this.props.title}</h1>
@@ -239,15 +238,45 @@ var ShowFSTasks = React.createClass({
 	}
 });
 
+var ShowFSAliases = React.createClass({
+	render: function() {
+		var i = 0;
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={i++}>
+				<td>{row.alias }</td>
+				<td>{row.command }</td>
+				<td>{row.hostname }</td>
+				<td>{row.sticky }</td>
+			</tr>
+		});
+
+		return <div><h1>{this.props.title}</h1>
+			<div>
+				<table className="table">
+				<tbody>
+				<tr>
+					<th>Alias</th>
+					<th>Command</th>
+					<th>HostName</th>
+					<th>Sticky</th>
+				</tr>
+				{rows}
+				</tbody>
+				</table>
+			</div>
+		</div>
+	}
+});
+
 var ShowFSCommon = React.createClass({
 	render: function() {
-		var rows = [];
-		this.props.rows.forEach(function(row) {
-			rows.push(<tr key={row.name}>
+		var i = 0;
+		var rows = this.props.rows.map(function(row) {
+			return <tr key={i++}>
 				<td>{row.type }</td>
 				<td>{row.name }</td>
 				<td>{row.ikey }</td>
-			</tr>);
+			</tr>
 		});
 
 		return <div><h1>{this.props.title}</h1>
@@ -293,12 +322,14 @@ var ShowFSPage = React.createClass({
 			return <ShowFSAPI rows = {this.state.rows} title = {this.props.title}/>
 		} else if (this.props.what == "complete") {
 			return <ShowFSComplete rows = {this.state.rows} title = {this.props.title}/>
-		} else if (this.props.what == "module") {
+		} else if (this.props.what == "modules") {
 			return <ShowFSModule rows = {this.state.rows} title = {this.props.title}/>
 		} else if (this.props.what == "registrations") {
 			return <ShowFSRegistration rows = {this.state.rows} title = {this.props.title}/>
 		} else if (this.props.what == "tasks") {
 			return <ShowFSTasks rows = {this.state.rows} title = {this.props.title}/>
+		} else if (this.props.what == "aliases") {
+			return <ShowFSAliases rows = {this.state.rows} title = {this.props.title}/>
 		} else {
 			return <ShowFSCommon rows = {this.state.rows} title = {this.props.title}/>
 		}

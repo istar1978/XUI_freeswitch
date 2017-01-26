@@ -46,7 +46,7 @@ class FSShow extends React.Component {
 			<Row className="clearfix">
 				<Col sm={2}>
 					<Nav bsStyle="pills" stacked>
-						<br />
+						<NavItem eventKey="M_SHOW_nothing"></NavItem>
 						<NavItem eventKey="M_SHOW_application">Applications</NavItem>
 						<NavItem eventKey="M_SHOW_registrations">Registrations</NavItem>
 						<NavItem eventKey="M_SHOW_module">Modules</NavItem>
