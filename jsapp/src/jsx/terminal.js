@@ -132,7 +132,7 @@ class Terminal extends React.Component {
 			var command = this.state.commands[input];
 
 			this.pushLine(this.state.prompt + " " + input_text);
-			this.state.history.unshift(input_text);
+			if (input_text != this.state.history[0]) this.state.history.unshift(input_text);
 			this.state.historyIndex = -1;
 
 			if (command === undefined) {
