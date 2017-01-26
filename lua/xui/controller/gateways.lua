@@ -46,11 +46,11 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	user = xdb.find("gateways", params.id)
-	if user then
+	gw = xdb.find("gateways", params.id)
+	if gw then
 		p_params = m_gateway.params(params.id)
-		user.params = p_params
-		return user
+		gw.params = p_params
+		return gw
 	else
 		return 404
 	end

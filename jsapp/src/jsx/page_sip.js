@@ -167,8 +167,7 @@ class SIPProfilePage extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(profile),
 			success: function () {
-				profile.params = _this.state.profile.params;
-				_this.setState({profile: profile, edit: false});
+				_this.setState({profile: profile, edit:false});
 				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 			},
 			error: function(msg) {
@@ -193,14 +192,13 @@ class SIPProfilePage extends React.Component {
 			data: JSON.stringify({action: "toggle"}),
 			success: function (param) {
 				// console.log("success!!!!", param);
-				const params = _this.state.profile.params.map(function(p) {
+				const params = _this.state.params.map(function(p) {
 					if (p.id == data) {
 						p.disabled = param.disabled;
 					}
 					return p;
 				});
-				_this.state.profile.params = params;
-				_this.setState({profile: _this.state.profile});
+				_this.setState({params: params});
 			},
 			error: function(msg) {
 				console.error("toggle params", msg);
@@ -257,7 +255,7 @@ class SIPProfilePage extends React.Component {
 
 	handleSort(e){
 		const profile = this.state.profile;
-		var params = this.state.profile.params;
+		var params = this.state.params;
 		var field = e.target.getAttribute('data');
 		var n = 1;
 
@@ -282,9 +280,9 @@ class SIPProfilePage extends React.Component {
 		let err_msg = "";
 		let params = <tr></tr>;
 
-		if (this.state.profile.params && Array.isArray(this.state.profile.params)) {
+		if (this.state.params && Array.isArray(this.state.params)) {
 			// console.log(this.state.profile.params)
-			params = this.state.profile.params.map(function(param) {
+			params = this.state.params.map(function(param) {
 				const enabled_style = dbfalse(param.disabled) ? "success" : "default";
 				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
 
