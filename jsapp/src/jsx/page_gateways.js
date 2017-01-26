@@ -303,8 +303,9 @@ class GatewayPage extends React.Component {
 		const _this = this; 
 		let params = <tr></tr>;
 		let save_btn = "";
-		let err_msg = "";
 		let register = gw.register == "true" ? "Yes" : "No";
+
+		register = <FormControl.Static><T.span text={register}/></FormControl.Static>
 
 		if (this.state.params && Array.isArray(this.state.params)) {
 			params = this.state.params.map(function(param) {
@@ -334,25 +335,21 @@ class GatewayPage extends React.Component {
 
 			if (gw.register == "true") {
 				register = <span>
-					<Radio name="register" value="true" inline defaultChecked>Yes</Radio>
-					<Radio name="register" value="false" inline>No</Radio>
+					<Radio name="register" value="true" inline defaultChecked><T.span text="Yes"/></Radio>
+					<Radio name="register" value="false" inline><T.span text="No"/></Radio>
 				</span>
 			} else {
 				register = <span>
-					<Radio name="register" value="true" inline>Yes</Radio>
-					<Radio name="register" value="false" inline defaultChecked>No</Radio>
+					<Radio name="register" value="true" inline defaultChecked="true"><T.span text="Yes"/></Radio>
+					<Radio name="register" value="false" inline defaultChecked="false"><T.span text="No"/></Radio>
 				</span>
-			}
-
-			if (this.state.errmsg) {
-				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
 			}
 		}
 
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				{err_msg} { save_btn }
+				{ save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
