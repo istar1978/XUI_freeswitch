@@ -133,13 +133,9 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auto-jitterb
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'renegotiate-codec-on-hold', 'true', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'context', 'public', 0, 1);
 
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'register', 'false', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'scheme', 'Digest', 0, 1);
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'realm', 'example.com', 0, 1);
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'username', 'example.com', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'extension-in-contact', 'true', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'auth-username', 'cluecon', 0, 1);
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'password', '1234', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'caller-id-in-from', 'false', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'extension', 'cluecon', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'proxy', 'example.com', 0, 1);
