@@ -97,6 +97,42 @@ class Terminal extends React.Component {
         this.commandLine.scrollIntoView(false);
 	}
 
+	complete() {
+		var _this = this;
+
+		fsAPI("console_complete", this.state.commandLine, function(ret) {
+			// console.log(ret);
+
+			if (ret.message == "\n\n\n\n") return;
+
+			if (ret.message.indexOf("\n\nwrite=")) {
+				var a = ret.message.split("\n\nwrite=");
+				var matched_str = a[0];
+
+				if (matched_str.indexOf('\n\n') == 0) {
+					matched_str = matched_str.substr(2)
+				}
+
+				var matches = matched_str.match(/\[ *[^\]]+\]/g)
+
+				// console.log('matches', matches);
+
+				if (matches && matches.length == 1) {
+					var write = a[1].split(':');
+					var len = parseInt(write[0]);
+					var str = write[1];
+					var cmd = _this.state.commandLine;
+
+					cmd = cmd.substr(0, cmd.length - len) + str;
+					_this.setState({commandLine: cmd});
+				} else {
+					_this.pushLine2(matched_str, 'pre');
+				}
+			}
+		})
+
+	}
+
 	handleArrows(e) {
 		// console.log("keyDown", e.keyCode);
 		var index = this.state.historyIndex;
@@ -106,6 +142,10 @@ class Terminal extends React.Component {
 			e.preventDefault(); // prevent cursor from going to start of line
 		} else if (e.keyCode == 40) {// down
 			index--;
+		} else if (e.keyCode == 9) {// Tab
+			this.complete();
+			e.preventDefault();
+			return;
 		} else {
 			return;
 		}
