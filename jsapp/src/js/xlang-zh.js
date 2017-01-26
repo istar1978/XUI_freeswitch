@@ -51,6 +51,9 @@ LANGUAGES["zh"] = {
 	Loop: "循环",
 	Speak: "发言",
 
+	"Conference Rooms": "会议室",
+	"Create New Room": "创建新会议室",
+
 	New: "新建",
 	Edit: "编辑",
 	Delete: "删除",
