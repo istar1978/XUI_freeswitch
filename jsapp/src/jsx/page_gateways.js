@@ -370,7 +370,7 @@ class GatewayPage extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formUsername">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Userame" className="mandatory"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Username" className="mandatory"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="username" defaultValue={gw.username}/></Col>
 				</FormGroup>
 
