@@ -42,9 +42,6 @@ class DashBoard extends React.Component {
 			<IndexLinkContainer to="/" key="M_OVERVIEW">
 				<NavItem eventKey="M_OVERVIEW"><T.span text={{ key: "Overview"}}/></NavItem>
 			</IndexLinkContainer>
-			<LinkContainer to="/fifocdrs" key="M_FIFOCDRS">
-				<NavItem eventKey="M_FIFOCDRS"><T.span text={{ key: "FIFO CDRs"}}/></NavItem>
-			</LinkContainer>
 			<LinkContainer to="/calls" key="M_CALLS">
 				<NavItem eventKey="M_CALLS"><T.span text={{ key: "Calls"}}/></NavItem>
 			</LinkContainer>
@@ -59,6 +56,9 @@ class DashBoard extends React.Component {
 			</LinkContainer>
 			<LinkContainer to="/show" key="M_SHOW">
 				<NavItem eventKey="M_SHOW"><T.span text={{ key: "Show"}} /></NavItem>
+			</LinkContainer>
+			<LinkContainer to="/fifocdrs" key="M_FIFOCDRS">
+				<NavItem eventKey="M_FIFOCDRS"><T.span text={{ key: "FIFO CDRs"}}/></NavItem>
 			</LinkContainer>
 		</Nav>
 	}
