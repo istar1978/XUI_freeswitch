@@ -160,7 +160,7 @@ class NewRoute extends React.Component {
 					<Col sm={10}><FormControl type="input" name="description" placeholder="Beijing" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="fromPrefix">
+				<FormGroup controlId="formPrefix">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="prefix" placeholder="010" /></Col>
 				</FormGroup>
@@ -394,7 +394,7 @@ class RoutePage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={route.description}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="fromPrefix">
+				<FormGroup controlId="formPrefix">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Prefix" className="mandatory"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="prefix" defaultValue={route.prefix}/></Col>
 				</FormGroup>
@@ -425,6 +425,11 @@ class RoutePage extends React.Component {
 
 				{this.state.dest_uuid}
 				{this.state.route_body}
+
+				<FormGroup controlId="formSave">
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
+				</FormGroup>
 			</Form>
 		</div>
 	}

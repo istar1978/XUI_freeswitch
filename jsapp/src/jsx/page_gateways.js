@@ -161,7 +161,7 @@ class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false,params:[]};
+		this.state = {errmsg: '', gw: {}, edit: false, params:[]};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -185,14 +185,14 @@ class GatewayPage extends React.Component {
 		}
 
 		$.ajax({
-			type: "POST",
+			type: "PUT",
 			url: "/api/gateways/" + gw.id,
-			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(gw),
 			success: function () {
-				_this.setState({gw: gw, errmsg: {key: "Saved at", time: Date()}})
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+				_this.setState({gw: gw, edit: false})
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -373,6 +373,11 @@ class GatewayPage extends React.Component {
 				<FormGroup controlId="formRegister">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Register" /> ?</Col>
 					<Col sm={10}>{register}</Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSave">
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
 			</Form>
 

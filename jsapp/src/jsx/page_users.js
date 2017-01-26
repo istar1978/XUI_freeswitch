@@ -356,6 +356,11 @@ class UserPage extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="CIDR" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="user_cidr" defaultValue={user.user_cidr}/></Col>
 				</FormGroup>
+
+				<FormGroup controlId="formSave">
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
+				</FormGroup>
 			</Form>
 		</div>
 	}

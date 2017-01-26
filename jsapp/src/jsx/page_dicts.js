@@ -251,6 +251,10 @@ class DictPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="o" defaultValue={dt.o}/></Col>
 				</FormGroup>
 
+				<FormGroup controlId="formSave">
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
+				</FormGroup>
 			</Form>
 		</div>
 	}

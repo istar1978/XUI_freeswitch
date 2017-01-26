@@ -299,6 +299,11 @@ class MediaFilePage extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="路径"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="abs_path" defaultValue={mfile.abs_path}/></Col>
 				</FormGroup>
+
+				<FormGroup controlId="formSave">
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
+				</FormGroup>
 			</Form>
 
 		</div>
