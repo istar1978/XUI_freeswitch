@@ -103,6 +103,7 @@ class Terminal extends React.Component {
 
 		if (e.keyCode == 38) {// up
 			index++;
+			e.preventDefault(); // prevent cursor from going to start of line
 		} else if (e.keyCode == 40) {// down
 			index--;
 		} else {
