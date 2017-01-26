@@ -282,7 +282,8 @@ class SIPProfilePage extends React.Component {
 		if (this.state.profile.params && Array.isArray(this.state.profile.params)) {
 			// console.log(this.state.profile.params)
 			params = this.state.profile.params.map(function(param) {
-				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
+				const enabled_style = dbfalse(param.disabled) ? "success" : "default";
+				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
 
 				return <tr key={param.id} className={disabled_class}>
 					<td>{param.k}</td>
@@ -293,7 +294,11 @@ class SIPProfilePage extends React.Component {
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
-					<td style={{textAlign: "right", paddingRight: 0}}><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
+					<td style={{textAlign: "right", paddingRight: 0}}>
+						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
+							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
+						</Button>
+					</td>
 				</tr>
 			});
 		}

@@ -180,11 +180,16 @@ class ModulePage extends React.Component {
 		let err_msg = "";
 
 		var rows = _this.state.rows.map(function(row) {
-				const loaded_class = row.loaded ? "" : "disabled";
+				const enabled_style = dbfalse(row.disabled) ? "success" : "default";
+				const loaded_class = row.loaded ? null : "disabled";
 
 				return <tr key={row.id} className={loaded_class}>
 					<td>{row.k}</td>
-					<td><Button onClick={_this.handleToggleParam} data={row.id}>{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}</Button></td>
+					<td>
+						<Button onClick={_this.handleToggleParam} data={row.id} bsStyle={enabled_style}>
+							{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}
+						</Button>
+					</td>
 					<td>
 						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load" className="cursor-hand"/> |
 						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload" className="cursor-hand"/> |

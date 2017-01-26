@@ -124,8 +124,8 @@ class SettingEventSocket extends React.Component {
 
 
 		const rows = this.state.rows.map((row) => {
-			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
-
+			const enabled_style = dbfalse(row.disabled) ? "success" : "default";
+			const disabled_class = dbfalse(row.disabled) ? null : "disabled";
 			return <Row key={row.id} className={disabled_class}>
 				<Col sm={2} title={T.translate("eventsocket-"+row.k)}>{row.k}</Col>
 				<Col sm={8}>
@@ -137,7 +137,7 @@ class SettingEventSocket extends React.Component {
 						classInvalid="invalid"/>
 				</Col>
 				<Col sm={2}>
-					<Button onClick={_this.handleToggleParam.bind(this)} data={row.id} className={disabled_class}>
+					<Button onClick={_this.handleToggleParam.bind(this)} data={row.id} bsStyle={enabled_style}>
 						{dbfalse(row.disabled) ? T.translate("Enabled") : T.translate("Disabled")}
 					</Button>
 				</Col>

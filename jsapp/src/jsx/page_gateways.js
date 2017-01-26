@@ -296,7 +296,8 @@ class GatewayPage extends React.Component {
 		if (this.state.gw.params && Array.isArray(this.state.gw.params)) {
 			console.log(this.state.gw.params)
 			params = this.state.gw.params.map(function(param) {
-				const disabled_class = dbfalse(param.disabled) ? "" : "disabled";
+				const enabled_style = dbfalse(param.disabled) ? "success" : "default";
+				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
 
 				return <tr key={param.id} className={disabled_class}>
 					<td>{param.k}</td>
@@ -307,7 +308,11 @@ class GatewayPage extends React.Component {
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
-					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
+					<td>
+						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
+							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
+						</Button>
+					</td>
 				</tr>
 			});
 		}
