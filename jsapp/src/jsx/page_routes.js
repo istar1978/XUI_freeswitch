@@ -512,6 +512,25 @@ class RoutesPage extends React.Component {
 		rows.unshift(route);
 		this.setState({rows: rows, formShow: false});
     }
+    handleSortClick(e){
+    	var field = e.target.getAttribute("data");
+		var rows = this.state.rows;
+
+		var n = 1;
+
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
+		}
+
+		rows.sort(function(a,b) {
+			return a[field] < b[field] ? -1 * n : 1 * n;
+		});
+
+		this.setState({rows: rows});
+    }
 
 	render() {
 	    let formClose = () => this.setState({ formShow: false });
@@ -563,7 +582,7 @@ class RoutesPage extends React.Component {
 				<tr>
 					<th>ID</th>
 					<th><T.span text="Context" /></th>
-					<th><T.span text="Prefix" /></th>
+					<th><T.span text="Prefix" onClick={this.handleSortClick.bind(this)} data='prefix'/></th>
 					<th><T.span text="Name" /></th>
 					<th><T.span text="Description" /></th>
 					<th><T.span text="Dest Type" /></th>
