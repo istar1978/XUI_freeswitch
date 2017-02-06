@@ -41,123 +41,12 @@ class SystemPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var w = localStorage.getItem("video-width");
-		if (w == null) {
-			w = 800;
-			localStorage.setItem("video-width", w);
-		}
-
-		var h = localStorage.getItem("video-height");
-		if (h == null) {
-			h = 600;
-			localStorage.setItem("video-height", h);
-		}
-
-		var r = localStorage.getItem("video-rate");
-		if (r == null) {
-			r = 10;
-			localStorage.setItem("video-rate", r);
-		}
-
-		var wi = localStorage.getItem("audio-width");
-		if (wi == null) {
-			wi = 180;
-			localStorage.setItem("audio-width", wi);
-		}
-
-		var he = localStorage.getItem("audio-height");
-		if (he == null) {
-			he = 240;
-			localStorage.setItem("audio-height", he);
-		}
-
-		var ra = localStorage.getItem("audio-rate");
-		if (ra == null) {
-			ra = 10;
-			localStorage.setItem("audio-rate", ra);
-		}
-
-		this.state = {editable: false, rows:[], video_rows:[
-				{"id":"1",	"k":"video-width",	"v":w},
-				{"id":"2",	"k":"video-height",	"v":h},
-				{"id":"3",	"k":"video-rate",	"v":r}
-				]
-			, audio_rows:[
-				{"id":"1",	"k":"audio-width",	"v":wi},
-				{"id":"2",	"k":"audio-height",	"v":he},
-				{"id":"3",	"k":"audio-rate",	"v":ra}],
-		}
+		this.state = {rows:[]};
 	}
 
-	handleChange(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-
-		console.log("change", obj);
-	}
-
-	handleChangeVideo(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-		const value = Object.values(obj)[0];
-
-		this.state.video_rows.map(function(row) {
-			if (row.id == id) {
-				localStorage.setItem(row.k, value);
-			}
-		});
-
-		console.log("change", obj);
-	}
-
-	handleChangeAudio(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-		const value = Object.values(obj)[0];
-
-		this.state.audio_rows.map(function(row) {
-			if (row.id == id) {
-				localStorage.setItem(row.k, value);
-			}
-		});
-
-		console.log("change", obj);
-	}
-
-	componentDidMount() {
-
-	}
 
 	render() {
 		const _this = this;
-
-		const video_rows = this.state.video_rows.map((row) => {
-			return <Row key={row.k}>
-				<Col sm={2}><T.span text={row.k}/></Col>
-				<Col>
-					<RIEInput value={row.v} change={_this.handleChangeVideo.bind(_this)}
-						propName={row.id}
-						className={_this.state.highlight ? "editable" : "editable2"}
-						validate={_this.isStringAcceptable}
-						classLoading="loading"
-						classInvalid="invalid"/>
-				</Col>
-			</Row>
-		});
-
-		const audio_rows = this.state.audio_rows.map((audio_row) => {
-			return <Row key={audio_row.k}>
-				<Col sm={2}><T.span text={audio_row.k}/></Col>
-				<Col>
-					<RIEInput value={audio_row.v} change={_this.handleChangeAudio.bind(_this)}
-						propName={audio_row.id}
-						className={_this.state.highlight ? "editable" : "editable2"}
-						validate={_this.isStringAcceptable}
-						classLoading="loading"
-						classInvalid="invalid"/>
-				</Col>
-			</Row>
-		});		
 
 		return <div>
 			<h1><T.span text="System Settings"/></h1>
@@ -172,7 +61,7 @@ class SystemPage extends React.Component {
 			<ul>
 				<li><a href="/api/freeswitch/log"><T.span text="Download Log"/></a></li>
 			</ul>
-
+			<hr/>
 			<h2><T.span text="Sound Files"/></h2>
 			<ul>
 				<li><a href="/api/freeswitch/dir/sounds" target="_blank"><T.span text="Sounds"/></a></li>
