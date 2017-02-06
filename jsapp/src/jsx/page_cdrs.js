@@ -107,19 +107,14 @@ var CDRsPage = React.createClass({
 			</ButtonToolbar>
 
 			<h1><T.span text="CDRs"/></h1>
+				<T.a onClick={_this.handlequery} text="7days" data="7" />&nbsp;|&nbsp;
+				<T.a onClick={_this.handlequery} text="15days" data="15" />&nbsp;|&nbsp;
+				<T.a onClick={_this.handlequery} text="30days" data="30" />&nbsp;|&nbsp;
+				<T.a onClick={_this.handlequery} text="60days" data="60" />&nbsp;|&nbsp;
+				<T.a onClick={_this.handlequery} text="90days" data="90" />
 			<div>
 				{this.state.query_visible  &&
-					<table className="table">
-					<tbody>
-					<tr>
-						<th><T.a onClick={_this.handlequery} text="7days" data="7" /></th>
-						<th><T.a onClick={_this.handlequery} text="15days" data="15" /></th>
-						<th><T.a onClick={_this.handlequery} text="30days" data="30" /></th>
-						<th><T.a onClick={_this.handlequery} text="60days" data="60" /></th>
-						<th><T.a onClick={_this.handlequery} text="90days" data="90" /></th>
-					</tr>
-				</tbody>
-				</table>
+				<div></div>
 				}
 				<table className="table">
 				<tbody>
