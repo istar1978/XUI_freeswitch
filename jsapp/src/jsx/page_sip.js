@@ -218,19 +218,18 @@ class SIPProfilePage extends React.Component {
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.profile.params = _this.state.profile.params.map(function(p) {
+			success: function (obj) {
+				console.log("success!!!!", obj);
+				const params = _this.state.profile.params.map(function(p) {
 					if (p.id == id) {
-						return param;
+						return obj;
 					}
 					return p;
 				});
-				_this.setState({profile: _this.state.profile});
+				_this.setState({params: params});
 			},
 			error: function(msg) {
 				console.error("update params", msg);
-				_this.setState({profile: _this.state.profile});
 			}
 		});
 	}
