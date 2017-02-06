@@ -602,13 +602,14 @@ class SIPProfilesPage extends React.Component {
 
 		this.state.rows.forEach(function(row) {
 			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
+			const enabled_style = dbfalse(row.disabled) ? "success" : "default";
 			const running_class = row.running ? "running" : null;
 
 			rows.push(<tr key={row.id} className={disabled_class}>
 					<td>{row.id}</td>
 					<td><Link to={`/settings/sip_profiles/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
-					<td><Button onClick={_this.HandleToggleProfile.bind(_this)} data={row.id}>{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}</Button></td>
+					<td><Button onClick={_this.HandleToggleProfile.bind(_this)} bsStyle={enabled_style} data={row.id}>{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}</Button></td>
 					<td className={running_class}>
 						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
 						<T.a onClick={_this.handleStop.bind(_this)} data-name={row.name} text="Stop" href='#'/> |&nbsp;
