@@ -194,9 +194,9 @@ class ModulePage extends React.Component {
 						</Button>
 					</td>
 					<td>
-						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load" className="cursor-hand"/> |
-						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload" className="cursor-hand"/> |
-						<T.a onClick={_this.handleControlClick} data-k={row.k} data="reload" text="Reload" className="cursor-hand"/> |
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="load" text="Load" className="cursor-hand"/> |&nbsp;
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="unload" text="Unload" className="cursor-hand"/> |&nbsp;
+						<T.a onClick={_this.handleControlClick} data-k={row.k} data="reload" text="Reload" className="cursor-hand"/> |&nbsp;
 						<span>{row.class_name}</span>
 					</td>
 				</tr>
