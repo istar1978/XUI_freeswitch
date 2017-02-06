@@ -122,7 +122,7 @@ function verto_params() {
 	return {
 		login: username + "@" + host,
 		passwd: password,
-		socketUrl: protocol + host + ":" + window.location.port,
+		socketUrl: protocol + host + ":" + window.location.port + "/ws",
 		tag: "webcam",
 		ringFile: "/assets/sounds/bell_ring2.mp3",
 		iceServers: [
