@@ -51,8 +51,23 @@ var CDRsPage = React.createClass({
 		console.log("clicked", e.target);
 	},
 
-	handleHide: function(){
+	handleMore: function(e){
+		e.preventDefault();
 		this.setState({query_visible: !this.state.query_visible})
+	},
+
+	handleSearch: function(e) {
+		const _this = this;
+		const qs = "startDate=" + this.startDate.value +
+			"endDate=" + this.endDate.value +
+			"cidNumber=" + this.cidNumber.value +
+			"destNumber=" + this.destNumber.value;
+
+		console.log(qs);
+
+		$.getJSON("/api/cdrs?" + qs, function(cdrs) {
+			_this.setState({rows: cdrs});
+		})
 	},
 
 	componentWillMount: function() {
@@ -65,17 +80,17 @@ var CDRsPage = React.createClass({
 		const _this = this;
 
 		$.getJSON("/api/cdrs", function(cdrs) {
-			console.log(cdrs);
 			_this.setState({rows: cdrs});
 		})
 	},
 
-	handlequery: function(e){
+	handleQuery: function(e) {
 		var _this = this;
 		var data = parseInt(e.target.getAttribute("data"));
 
-		$.getJSON("/api/cdrs?data=" + data, function(cdrs) {
-			console.log(cdrs);
+		e.preventDefault();
+
+		$.getJSON("/api/cdrs?last=" + data, function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
 	},
@@ -101,21 +116,25 @@ var CDRsPage = React.createClass({
 
 		return <div>
 			<ButtonToolbar className="pull-right">
-			<ButtonGroup>
-				<Button onClick={this.handleHide}><T.span onClick={this.handleHide} text="Search"/></Button>
-			</ButtonGroup>
+				<T.span text="Last"/> &nbsp;
+				<T.a onClick={this.handleQuery} text="7days" data="7" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="15days" data="15" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="30days" data="30" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="60days" data="60" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="90days" data="90" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleMore} text="More" data="more" href="#"/>...
 			</ButtonToolbar>
 
 			<h1><T.span text="CDRs"/></h1>
-				<T.a onClick={_this.handlequery} text="7days" data="7" />&nbsp;|&nbsp;
-				<T.a onClick={_this.handlequery} text="15days" data="15" />&nbsp;|&nbsp;
-				<T.a onClick={_this.handlequery} text="30days" data="30" />&nbsp;|&nbsp;
-				<T.a onClick={_this.handlequery} text="60days" data="60" />&nbsp;|&nbsp;
-				<T.a onClick={_this.handlequery} text="90days" data="90" />
 			<div>
-				{this.state.query_visible  &&
-				<div></div>
-				}
+				{this.state.query_visible && <div style={{padding: "5px"}} className="pull-right">
+					<input type="date" defaultValue="2017-01-01" ref={(input) => { _this.startDate = input; }}/> -&nbsp;
+					<input type="date" defaultValue="2017-02-02" ref={(input) => { _this.endDate = input; }}/> &nbsp;
+					<T.span text="CID Number"/><input ref={(input) => { _this.cidNumber = input; }}/> &nbsp;
+					<T.span text="Dest Number"/><input ref={(input) => { _this.destNumber = input; }}/> &nbsp;
+					<T.button text="Search" onClick={this.handleSearch}/>
+				</div>}
+
 				<table className="table">
 				<tbody>
 				<tr>

@@ -34,13 +34,11 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	data = env:getHeader('data')
+	last = env:getHeader('last')
 
-	if data then
-		n, cdrs = xdb.find_by_time("cdrs", data)
-	else
-		n, cdrs = xdb.find_all("cdrs")
-	end
+	if not last then last = "31" end
+
+	n, cdrs = xdb.find_by_time("cdrs", last)
 
 	if (n > 0) then
 		return cdrs

@@ -18,6 +18,7 @@ LANGUAGES["zh"] = {
 	Profiles: "Profiles",
 	Help: "帮助",
 	Search: "查询",
+	Last: "最近",
 
 	Overview: "状态",
 	Calls: "Calls",
