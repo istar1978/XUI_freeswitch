@@ -16,7 +16,16 @@ CSS/JS/HTML: https://github.com/felixge/Node-style-guide
 
 ## run
 
-install npm tools first
+
+### Install npm (optional)
+
+need recent version or npm
+
+    curl -sL https://deb.nodesource.com/setup_4.x | bash -
+    apt-get install -y nodejs
+
+
+### Install npm tools
 
     npm install -g jshint
     npm install -g browserify

@@ -379,7 +379,7 @@ class RoutePage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1>{route.name} <small>{route.extn}</small></h1>
+			<h1><T.span text="Route"/> &nbsp; <small>{route.name} {route.prefix}</small></h1>
 			<hr/>
 
 			<Form horizontal id='editRouteForm'>

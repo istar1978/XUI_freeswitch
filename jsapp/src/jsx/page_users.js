@@ -312,7 +312,7 @@ class UserPage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1>{user.name} &lt;{user.extn}&gt;</h1>
+			<h1><T.span text="User"/> <small>{user.name} &lt;{user.extn}&gt;</small></h1>
 			<hr/>
 
 			<Form horizontal id="newUserForm">

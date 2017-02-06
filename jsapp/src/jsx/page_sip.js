@@ -315,7 +315,7 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1>Profile {profile.name}</h1>
+			<h1>Profile <small>{profile.name}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newSIPProfileForm">
