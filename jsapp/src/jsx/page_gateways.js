@@ -585,10 +585,10 @@ class GatewaysPage extends React.Component {
 					<td>{row.username}</td>
 					<td>{row.register}</td>
 					<td>
-						<T.a onClick={_this.handleReg} data-name={row.name} text="Reg" href='#'/> |
-						<T.a onClick={_this.handleUnreg} data-name={row.name} text="Unreg" href='#'/> |
-						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |
-						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |
+						<T.a onClick={_this.handleReg} data-name={row.name} text="Reg" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleUnreg} data-name={row.name} text="Unreg" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;
 						<span>{row.class_name}</span>
 					</td>
 					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
