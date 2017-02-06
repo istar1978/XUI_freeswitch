@@ -247,7 +247,7 @@ class SIPProfilePage extends React.Component {
 		var _this = this;
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
 			console.log(data);
-			_this.setState({profile: data});
+			_this.setState({profile: data, params: data.params});
 		}, function(e) {
 			console.log("get profile ERR");
 		});
