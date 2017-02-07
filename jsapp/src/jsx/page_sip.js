@@ -417,15 +417,7 @@ class SIPProfilesPage extends React.Component {
 		verto.unsubscribe("FSevent.custom::sofia::profile_stop");
 	}
 
-	componentDidMount() {
-		verto.subscribe("FSevent.custom::sofia::profile_start", {
-			handler: this.handleFSEvent.bind(this)
-		});
-
-		verto.subscribe("FSevent.custom::sofia::profile_stop", {
-			handler: this.handleFSEvent.bind(this)
-		});
-
+	syncSofiaStatus() {
 		var _this = this;
 		$.getJSON("/api/sip_profiles", "", function(data) {
 			_this.setState({rows: data});
@@ -449,6 +441,18 @@ class SIPProfilesPage extends React.Component {
 		}, function(e) {
 			console.log("get sip_profiles ERR");
 		});
+	}
+
+	componentDidMount() {
+		verto.subscribe("FSevent.custom::sofia::profile_start", {
+			handler: this.handleFSEvent.bind(this)
+		});
+
+		verto.subscribe("FSevent.custom::sofia::profile_stop", {
+			handler: this.handleFSEvent.bind(this)
+		});
+
+		this.syncSofiaStatus();
 	}
 
 	handleFSEvent(v, e) {
@@ -535,6 +539,8 @@ class SIPProfilesPage extends React.Component {
 
 	handleMore(e) {
 		e.preventDefault();
+
+		this.syncSofiaStatus();
 
 		var _this = this;
 		var profile_name = e.target.getAttribute("data-name");
