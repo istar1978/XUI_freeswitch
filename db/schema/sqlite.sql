@@ -12,12 +12,17 @@ CREATE TABLE routes (
 	dest_type VARCHAR,
 	dest_uuid VARCHAR,
 	body TEXT,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE INDEX routes_deleted_epoch ON routes(deleted_epoch);
+
+CREATE TRIGGER tg_routes AFTER UPDATE ON routes
+BEGIN
+	UPDATE routes set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY,
@@ -32,13 +37,18 @@ CREATE TABLE users (
 	user_cidr VARCHAR,
 	type VARCHAR,
 	disabled VARCHAR,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE UNIQUE INDEX users_extn ON users(domain, extn);
 CREATE INDEX users_deleted_epoch ON users(deleted_epoch);
+
+CREATE TRIGGER tg_users AFTER UPDATE ON users
+BEGIN
+	UPDATE users set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE blocks (
 	id INTEGER PRIMARY KEY,
@@ -48,12 +58,17 @@ CREATE TABLE blocks (
 	xml TEXT,
 	js TEXT,
 	lua TEXT,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE INDEX blocks_deleted_epoch ON blocks(deleted_epoch);
+
+CREATE TRIGGER tg_blocks AFTER UPDATE ON blocks
+BEGIN
+	UPDATE blocks set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE dicts (
 	id INTEGER PRIMARY KEY,
@@ -62,8 +77,8 @@ CREATE TABLE dicts (
 	v VARCHAR, -- value
 	d VARCHAR, -- description
 	o INTEGER, -- order
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
@@ -71,40 +86,60 @@ CREATE INDEX dicts_realm ON dicts(realm);
 CREATE INDEX dicts_k ON dicts(k);
 CREATE UNIQUE INDEX dicts_realm_k ON dicts(realm, k);
 
+CREATE TRIGGER tg_dicts AFTER UPDATE ON dicts
+BEGIN
+	UPDATE dicts set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
 CREATE TABLE groups (
 	id INTEGER PRIMARY KEY,
 	realm VARCHAR NOT NULL,           -- a key in dicts
 	name VARCHAR NOT NULL,
 	description VARCHAR,
 	group_id INTEGER,        -- nested groups
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE INDEX groups_deleted_epoch ON groups(deleted_epoch);
 
-CREATE TABLE user_group (
+CREATE TRIGGER tg_groups AFTER UPDATE ON groups
+BEGIN
+	UPDATE groups set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE user_groups (
 	id INTEGER PRIMARY KEY,
 	user_id INTEGER NOT NULL,
 	group_id INTEGER NOT NULL,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
-CREATE INDEX user_group_u_g_id ON user_group(user_id, group_id);
+CREATE INDEX user_group_u_g_id ON user_groups(user_id, group_id);
 
-CREATE TABLE extn_group (
+CREATE TRIGGER tg_user_group AFTER UPDATE ON user_groups
+BEGIN
+	UPDATE user_groups set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE extn_groups (
 	id INTEGER PRIMARY KEY,
 	user_id INTEGER NOT NULL,
 	group_id INTEGER NOT NULL,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
-CREATE INDEX extn_group_e_g_id ON user_group(user_id, group_id);
+CREATE INDEX extn_group_e_g_id ON extn_groups(user_id, group_id);
+
+CREATE TRIGGER tg_extn_groups AFTER UPDATE ON extn_groups
+BEGIN
+	UPDATE extn_groups set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE gateways (
 	id INTEGER PRIMARY KEY,
@@ -114,13 +149,18 @@ CREATE TABLE gateways (
 	password VARCHAR,
 	register VARCHAR NOT NULL DEFAULT 'true',
 	description VARCHAR,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE INDEX gateways_name ON gateways(name);
 CREATE INDEX gateways_deleted_epoch ON gateways(deleted_epoch);
+
+CREATE TRIGGER tg_gateways AFTER UPDATE ON gateways
+BEGIN
+	UPDATE gateways set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE params (
 	id INTEGER PRIMARY KEY,
@@ -129,8 +169,8 @@ CREATE TABLE params (
 	v VARCHAR,
 	ref_id INTEGER,-- e.g. sip_profiles.id or gateway.id
 	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
@@ -138,18 +178,28 @@ CREATE INDEX params_realm ON params(realm);
 CREATE INDEX params_rrk ON params(realm, ref_id, k);
 CREATE INDEX params_deleted_epoch ON params(deleted_epoch);
 
+CREATE TRIGGER tg_params AFTER UPDATE ON params
+BEGIN
+	UPDATE params set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
 CREATE TABLE sip_profiles (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR NOT NULL,
 	description VARCHAR,
 	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE UNIQUE INDEX sip_profiles_name ON sip_profiles(name);
 CREATE INDEX sip_profiles_deleted_epoch ON sip_profiles(deleted_epoch);
+
+CREATE TRIGGER tg_sip_profiles AFTER UPDATE ON sip_profiles
+BEGIN
+	UPDATE sip_profiles set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 
 CREATE TABLE media_files(
@@ -174,13 +224,18 @@ CREATE TABLE media_files(
 	geo_position VARCHAR,
 	user_id INTEGER,
 	channel_uuid VARCHAR,
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE INDEX media_files_created_epoch ON media_files(created_epoch);
 CREATE INDEX media_files_type ON media_files(type);
+
+CREATE TRIGGER tg_media_files AFTER UPDATE ON media_files
+BEGIN
+	UPDATE media_files set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE conference_rooms (
 	id INTEGER PRIMARY KEY,
@@ -189,12 +244,17 @@ CREATE TABLE conference_rooms (
 	nbr VARCHAR,  -- conference number
 	capacity integer,
 	realm VARCHAR,
+	pin VARCHAR,
 
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
+CREATE TRIGGER tg_conference_rooms AFTER UPDATE ON conference_rooms
+BEGIN
+	UPDATE conference_rooms set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE devices (
 	id INTEGER PRIMARY KEY,
@@ -203,16 +263,30 @@ CREATE TABLE devices (
 	vendor VARCHAR,
 	mac VARCHAR,
 
-	created_epoch INTEGER,
-	updated_epoch INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
+
+CREATE TRIGGER tg_devices AFTER UPDATE ON devices
+BEGIN
+	UPDATE devices set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE user_devices (
 	id INTEGER PRIMARY KEY,
 	user_id INTEGER NOT NULL,
-	mac_id VARCHAR NOT NULL
+	mac_id VARCHAR NOT NULL,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
 );
+
+CREATE TRIGGER tg_user_devices AFTER UPDATE ON user_devices
+BEGIN
+	UPDATE user_devices set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 CREATE TABLE fifo_cdrs (
 	id INTEGER PRIMARY KEY,

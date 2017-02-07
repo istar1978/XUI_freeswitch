@@ -16,7 +16,7 @@ INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'BAIDU', 'BAIDU');
 -- k,v to each realm
 INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'NAME', 'XUI');
 INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'VER', '1.0');
-INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'DBVER', '1.0');
+INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'DBVER', '1.1');
 
 INSERT INTO dicts (realm, k, v) VALUES ('GLOBAL', 'default_password', '1234');
 INSERT INTO dicts (realm, k, v) VALUES ('GLOBAL', 'domain', 'xui');
@@ -35,6 +35,7 @@ INSERT INTO dicts (realm, k, v) VALUES ('DEST', 'FS_DEST_IVRBLOCK', 'IVRBLOCK');
 INSERT INTO dicts (realm, k, v) VALUES ('DEST', 'FS_DEST_GATEWAY', 'GATEWAY');
 INSERT INTO dicts (realm, k, v) VALUES ('DEST', 'FS_DEST_USERGW', 'USERGW');
 INSERT INTO dicts (realm, k, v) VALUES ('DEST', 'FS_DEST_IP', 'IP');
+INSERT INTO dicts (realm, k, v) VALUES ('DEST', 'FS_DEST_CONFERENCE', 'CONFERENCE');
 
 INSERT INTO dicts (realm, k, v) VALUES ('GROUP', 'FS_GRP_USER', 'User Group');
 INSERT INTO dicts (realm, k, v) VALUES ('GROUP', 'FS_GRP_EXTN', 'Extn Group');
