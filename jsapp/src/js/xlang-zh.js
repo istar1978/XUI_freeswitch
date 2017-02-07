@@ -51,6 +51,7 @@ LANGUAGES["zh"] = {
 	unLock: "解锁",
 	Loop: "循环",
 	Speak: "发言",
+	Capacity: "容量",
 
 	"Conference Rooms": "会议室",
 	"Create New Room": "创建新会议室",
