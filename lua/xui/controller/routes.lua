@@ -78,9 +78,12 @@ put('/:id', function(params)
 	if params.request.dest_type == 'FS_DEST_GATEWAY' then
 		gw = xdb.find("gateways", params.request.dest_uuid)
 		params.request.body = gw.name
-	elseif params.request.dest_type == 'IVRBLOCK' then
+	elseif params.request.dest_type == 'FS_DEST_IVRBLOCK' then
 		block = xdb.find("blocks", params.request.dest_uuid)
 		params.request.body = block.name
+	elseif params.request.dest_type == 'FS_DEST_CONFERENCE' then
+		room = xdb.find("conference_rooms", params.request.dest_uuid)
+		params.request.body = room.nbr
 	end
 
 	ret = xdb.update("routes", params.request)

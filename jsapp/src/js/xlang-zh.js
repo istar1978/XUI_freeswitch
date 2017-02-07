@@ -52,6 +52,7 @@ LANGUAGES["zh"] = {
 	Loop: "循环",
 	Speak: "发言",
 	Capacity: "容量",
+	PIN: "密码",
 
 	"Conference Rooms": "会议室",
 	"Create New Room": "创建新会议室",
@@ -96,9 +97,11 @@ LANGUAGES["zh"] = {
 
 	FS_DEST_USER: "本地用户",
 	FS_DEST_GATEWAY: "网关",
+	FS_DEST_USERGW: "用户网关",
 	FS_DEST_SYSTEM: "系统",
 	FS_DEST_IP: "IP地址",
 	FS_DEST_IVRBLOCK: "积木",
+	FS_DEST_CONFERENCE: "会议",
 
 	"Create New User": "新建用户",
 	Import: "导入",

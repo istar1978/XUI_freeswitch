@@ -96,6 +96,20 @@ class NewRoute extends React.Component {
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
 				break;
+			case 'FS_DEST_CONFERENCE':
+				$.getJSON("/api/conference_rooms", function(rooms) {
+					const dest_uuid = <FormGroup controlId="formDestUUID">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Room" /></Col>
+						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{
+							rooms.map(function(room) {
+								return <option key={room.id} value={room.id}>{room.name}</option>
+							})
+						}</FormControl></Col>
+					</FormGroup>
+
+					_this.setState({dest_uuid: dest_uuid, route_body: null});
+				});
+				break;
 			default:
 				break;
 		}
@@ -283,6 +297,24 @@ class RoutePage extends React.Component {
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
 				break;
+			case 'FS_DEST_CONFERENCE':
+				$.getJSON("/api/conference_rooms", function(rooms) {
+					let current_room = "null"
+					const dest_options = rooms.map(function(room) {
+						const room_text = room.name + '[' + room.nbr + ']';
+						console.log(_this.state.route.dest_uuid, room.id + room_text);
+						if (_this.state.route.dest_uuid == room.id) current_room = room_text;
+						return [room.id, room_text];
+					});
+
+					const dest_uuid = <FormGroup controlId="formDestUUID">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Room" /></Col>
+						<Col sm={10}><EditControl edit={_this.state.edit} componentClass="select" name="dest_uuid" text={current_room} defaultValue={_this.state.route.dest_uuid} options={dest_options}/></Col>
+					</FormGroup>;
+
+					_this.setState({dest_uuid: dest_uuid, route_body: null});
+				});
+				break;
 			default:
 				break;
 		}
@@ -346,7 +378,7 @@ class RoutePage extends React.Component {
 			_this.setState({route: data});
 			checkDestType();
 		}, function(e) {
-			console.log("get gw ERR");
+			console.log("get route ERR");
 		});
 	}
 

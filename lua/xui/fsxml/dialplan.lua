@@ -37,7 +37,7 @@ local actions = ""
 local dest = params:getHeader("Hunt-Destination-Number")
 local context = params:getHeader("Hunt-Context")
 local actions_table = {}
-local sql = "SELECT * FROM routes WHERE context = '" .. context .. "' AND " .. escape(dest) .. " LIKE prefix || '%' ORDER BY length(prefix) DESC"
+local sql = "SELECT * FROM routes WHERE context = '" .. context .. "' AND " .. escape(dest) .. " LIKE prefix || '%' ORDER BY length(prefix) DESC LIMIT 1"
 local found = false
 
 do_debug = true
@@ -108,6 +108,8 @@ xdb.find_by_sql(sql, function(row)
 	elseif (row.dest_type == 'FS_DEST_IVRBLOCK') then
 		local block_prefix = config.block_path .. "/blocks-"
 		table.insert(actions_table, {app = "lua", data = block_prefix .. row.dest_uuid .. ".lua"})
+	elseif (row.dest_type == 'FS_DEST_CONFERENCE') then
+		table.insert(actions_table, {app = "conference", data = row.body .. "-$${domain}"})
 	end
 end)
 
