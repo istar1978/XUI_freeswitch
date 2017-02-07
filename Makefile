@@ -22,3 +22,6 @@ csetup:
 
 release:
 	cd jsapp && make release
+
+clean:
+	rm -f www/assets/js/jsx/*
