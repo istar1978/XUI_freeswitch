@@ -1,6 +1,6 @@
 /*
  * HTML5 GUI Framework for FreeSWITCH - XUI
- * Copyright (C) 2015-2016, Seven Du <dujinfang@x-y-t.cn>
+ * Copyright (C) 2015-2017, Seven Du <dujinfang@x-y-t.cn>
  *
  * Version: MPL 1.1
  *
@@ -36,6 +36,7 @@ import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel,
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import SettingBaiduTTS from './system/baidu_tts';
 import SettingEventSocket from './system/event_socket';
+import SettingDevice from './system/device';
 
 class SystemPage extends React.Component {
 	constructor(props) {
@@ -55,6 +56,9 @@ class SystemPage extends React.Component {
 
 			<hr/>
 			<SettingEventSocket/>
+
+			<hr/>
+			<SettingDevice/>
 
 			<hr/>
 			<h2><T.span text="Log"/></h2>
