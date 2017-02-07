@@ -238,6 +238,16 @@ LANGUAGES["zh"] = {
 	"eventsocket-password": "密码",
 	"eventsocket-apply-inbound-acl": "启动ACL",
 	"eventsocket-stop-on-bind-error": "如果无法绑定监听端口，则不加载该模块",
+	abs_path: "路径",
+	ext: "扩展名",
+	dir_path: "所在文件夹",
+	file_size: "大小",
+	mime: "文件类型",
+	original_file_name: "原始文件名",
+	created_epoch: "文件创建时间戳",
+	updated_epoch: "文件更新时间戳",
+	channel_uuid: "路径识别码",
+
 
 	Copyright: "版权所有 2016-2017 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
