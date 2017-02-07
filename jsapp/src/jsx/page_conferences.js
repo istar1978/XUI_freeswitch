@@ -92,7 +92,7 @@ var ConferencePage = React.createClass({
 		return {name: this.props.name, rows: [], la: null,
 			last_outcall_member_id: 0, outcall_rows: [],
 			outcallNumber: '', outcallNumberShow: false,
-			displayStyle: 'table'
+			displayStyle: 'table', toolbarText: false
 		};
 	},
 
@@ -173,6 +173,8 @@ var ConferencePage = React.createClass({
 					console.error("err call", msg);
 				}
 			});
+		} else if (data == "toolbarText") {
+			this.setState({toolbarText: !this.state.toolbarText});
 		} else {
 			this.setState({displayStyle: data});
 		}
@@ -319,6 +321,8 @@ var ConferencePage = React.createClass({
 			member_list = <ul>{members}</ul>
 		}
 
+		const toolbarTextStyle = this.state.toolbarText ? null : {display: 'none'};
+
 		return <div>
 			<ButtonToolbar className="pull-right">
 
@@ -327,43 +331,44 @@ var ConferencePage = React.createClass({
 					ref={(input) => { this.outcallNumberInput = input; }} placeholder="number"/>
 			</ButtonGroup>
 
+
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "Call" data="call"/>
+				<Button onClick={this.handleControlClick} data="call">
+					<i className="fa fa-phone" aria-hidden="true" data="call"></i>&nbsp;
+					<T.span text= "Call" data="call" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "Select" data="select"/>
+				<Button onClick={this.handleControlClick} data="select">
+					<i className="fa fa-check-square-o" aria-hidden="true" data="select"></i>&nbsp;
+					<T.span text= "Select" data="select" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-microphone-slash" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "Mute" data="mute"/>
+				<Button onClick={this.handleControlClick} data="mute">
+					<i className="fa fa-microphone-slash" aria-hidden="true" data="mute"></i>&nbsp;
+					<T.span text= "Mute" data="mute"  style={toolbarTextStyle}/>
 				</Button>
-				<Button>
-					<i className="fa fa-microphone" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "unMute" data="unmute"/>
+				<Button onClick={this.handleControlClick} data="unmute">
+					<i className="fa fa-microphone" aria-hidden="true" data="unmute"></i>&nbsp;
+					<T.span text= "unMute" data="unmute" style={toolbarTextStyle}/>
 				</Button>
-				<Button>
-					<i className="fa fa-power-off" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "Hangup" data="hup"/>
+				<Button onClick={this.handleControlClick} data="hup">
+					<i className="fa fa-power-off" aria-hidden="true" data="hup"></i>&nbsp;
+					<T.span text= "Hangup" data="hup" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button>
-					<i className="fa fa-lock" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "Lock" data="lock"/>
+				<Button onClick={this.handleControlClick} data="lock">
+					<i className="fa fa-lock" aria-hidden="true" data="lock"></i>&nbsp;
+					<T.span text= "Lock" data="lock" style={toolbarTextStyle}/>
 				</Button>
-				<Button>
-					<i className="fa fa-unlock-alt" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} text= "unLock" data="unlock"/>
+				<Button onClick={this.handleControlClick} data="unlock">
+					<i className="fa fa-unlock-alt" aria-hidden="true" data="unlock"></i>&nbsp;
+					<T.span text= "unLock" data="unlock" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
@@ -374,7 +379,12 @@ var ConferencePage = React.createClass({
 				<Button>
 					<T.span onClick={this.handleControlClick} text= "=" data="list"/>
 				</Button>
+				<Button>
+					<T.span onClick={this.handleControlClick} text= "T" data="toolbarText"/>
+				</Button>
 			</ButtonGroup>
+
+
 			</ButtonToolbar>
 
 			<h1><T.span text={{ key: "Conference"}} /><small>{this.props.name}</small></h1>
