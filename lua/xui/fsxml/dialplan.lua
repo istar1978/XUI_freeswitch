@@ -113,7 +113,7 @@ end)
 
 if found then
 	build_actions(actions_table)
-	XML_STRING = [[<context name="default">
+	XML_STRING = [[<context name="]] .. context .. [[">
 		<extension name="LUA Dialplan">
 			<condition>]] .. actions .. [[</condition>
 		</extension>
