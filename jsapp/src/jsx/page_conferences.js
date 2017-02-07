@@ -373,14 +373,14 @@ var ConferencePage = React.createClass({
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button>
-					<T.span onClick={this.handleControlClick} text= "T" data="table"/>
+				<Button onClick={this.handleControlClick} data="table">
+					<T.span text= "T" data="table"/>
 				</Button>
-				<Button>
-					<T.span onClick={this.handleControlClick} text= "=" data="list"/>
+				<Button onClick={this.handleControlClick} data="list">
+					<T.span text= "=" data="list"/>
 				</Button>
-				<Button>
-					<T.span onClick={this.handleControlClick} text= "T" data="toolbarText"/>
+				<Button onClick={this.handleControlClick} data="toolbarText">
+					<T.span text= "T" data="toolbarText"/>
 				</Button>
 			</ButtonGroup>
 
