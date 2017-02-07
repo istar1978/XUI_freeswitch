@@ -1,3 +1,5 @@
+HASH=$(shell git rev-parse HEAD | cut -b 1-8)
+
 all:
 	cd jsapp && make
 
@@ -25,3 +27,13 @@ release:
 
 clean:
 	rm -f www/assets/js/jsx/*
+	rm -f out/*
+
+
+out:
+	mkdir out
+
+tar: out
+	echo $(HASH)
+	tar cvzf out/xui-1.0.0.$(HASH).tar.gz www lua
+	ls out
