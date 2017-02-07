@@ -55,6 +55,11 @@ LANGUAGES["zh"] = {
 	"Conference Rooms": "会议室",
 	"Create New Room": "创建新会议室",
 
+	"Display as Table": "以表格形式显示",
+	"Display as List": "以列表形式显示",
+	"Toggle Toolbar Text": "切换按钮图标文字提示",
+
+
 	New: "新建",
 	Edit: "编辑",
 	Delete: "删除",
