@@ -174,3 +174,6 @@ UPDATE params set v = '5080'
 
 UPDATE params set v = 'false'
 	WHERE k = 'auth-calls' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'public');
+
+UPDATE params set disabled = 1
+	WHERE k = 'apply-inbound-acl' and realm = 'sip_profile' and ref_id = (SELECT id FROM sip_profiles WHERE name = 'public');
