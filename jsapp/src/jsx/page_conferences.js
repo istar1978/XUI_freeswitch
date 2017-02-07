@@ -60,7 +60,11 @@ var Member = React.createClass({
 	render: function() {
 		var row = this.state;
 		var className = this.state.active ? "member active selected" : "member";
-		return <tr className={className} data-member-id={row.memberID} onClick={this.handleClick}>
+
+		console.log('props', this.props);
+
+		if (this.props.displayStyle == 'table') {
+			return <tr className={className} data-member-id={row.memberID} onClick={this.handleClick}>
 					<td>{row.memberID}</td>
 					<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
 					<td>{row.status.audio.floor ? "F" : "f"} |&nbsp;
@@ -72,6 +76,11 @@ var Member = React.createClass({
 					</td>
 					<td>{row.email}</td>
 			</tr>;
+		} else if (this.props.displayStyle == 'list') {
+			return <li className={className} data-member-id={row.memberID} onClick={this.handleClick}>
+				{row.cidNumber}
+			</li>
+		}
 	}
 });
 
@@ -82,7 +91,8 @@ var ConferencePage = React.createClass({
 	getInitialState: function() {
 		return {name: this.props.name, rows: [], la: null,
 			last_outcall_member_id: 0, outcall_rows: [],
-			outcallNumber: '', outcallNumberShow: false
+			outcallNumber: '', outcallNumberShow: false,
+			displayStyle: 'table'
 		};
 	},
 
@@ -163,6 +173,8 @@ var ConferencePage = React.createClass({
 					console.error("err call", msg);
 				}
 			});
+		} else {
+			this.setState({displayStyle: data});
 		}
 
 		for(var member in this.activeMembers) {
@@ -285,6 +297,28 @@ var ConferencePage = React.createClass({
 
 		const rows = this.state.outcall_rows.concat(this.state.rows);
 
+		const members = rows.map(function(member) {
+			return <Member member={member} key={member.uuid} onMemberClick={_this.handleMemberClick} displayStyle={_this.state.displayStyle}/>
+		});
+
+		let member_list;
+
+		if (this.state.displayStyle == 'table') {
+			member_list = <table className="table conference">
+				<tbody>
+				<tr>
+					<th><T.span text="Member ID"/></th>
+					<th><T.span text="CID"/></th>
+					<th><T.span text="Status"/></th>
+					<th><T.span text="Email"/></th>
+				</tr>
+				{members}
+				</tbody>
+			</table>
+		} else if (this.state.displayStyle == 'list') {
+			member_list = <ul>{members}</ul>
+		}
+
 		return <div>
 			<ButtonToolbar className="pull-right">
 
@@ -332,26 +366,21 @@ var ConferencePage = React.createClass({
 					<T.span onClick={this.handleControlClick} text= "unLock" data="unlock"/>
 				</Button>
 			</ButtonGroup>
+
+			<ButtonGroup>
+				<Button>
+					<T.span onClick={this.handleControlClick} text= "T" data="table"/>
+				</Button>
+				<Button>
+					<T.span onClick={this.handleControlClick} text= "=" data="list"/>
+				</Button>
+			</ButtonGroup>
 			</ButtonToolbar>
 
 			<h1><T.span text={{ key: "Conference"}} /><small>{this.props.name}</small></h1>
 
 			<div>
-				<table className="table conference">
-				<tbody>
-				<tr>
-					<th><T.span text="Member ID"/></th>
-					<th><T.span text="CID"/></th>
-					<th><T.span text="Status"/></th>
-					<th><T.span text="Email"/></th>
-				</tr>
-				{
-					rows.map(function(member) {
-						return <Member member={member} key={member.uuid} onMemberClick={_this.handleMemberClick} />
-					})
-				}
-				</tbody>
-				</table>
+				{member_list}
 			</div>
 		</div>
 	}
