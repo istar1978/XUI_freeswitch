@@ -241,7 +241,7 @@ class ConferenceRooms extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { formShow: false, rows: [], danger: false};
-
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -258,7 +258,7 @@ class ConferenceRooms extends React.Component {
 		console.log("deleting id", id);
 		var _this = this;
 
-		if (!this.state.danger) {
+		if (!_this.state.danger) {
 			var c = confirm(T.translate("Confirm to Delete ?"));
 
 			if (!c) return;
@@ -266,7 +266,7 @@ class ConferenceRooms extends React.Component {
 
 		$.ajax({
 			type: "DELETE",
-			url: "/api/dicts/" + id,
+			url: "/api/conference_rooms/" + id,
 			success: function () {
 				console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {

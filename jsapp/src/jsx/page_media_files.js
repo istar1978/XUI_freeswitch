@@ -237,6 +237,7 @@ class MediaFilePage extends React.Component {
 		var _this = this;
 		$.getJSON("/api/media_files/" + this.props.params.id, "", function(data) {
 			_this.setState({mfile: data});
+			console.log(data);
 		}, function(e) {
 			console.log("get media files ERR");
 		});
@@ -296,8 +297,48 @@ class MediaFilePage extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="路径"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="abs_path"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="abs_path" defaultValue={mfile.abs_path}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="ext"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="ext" defaultValue={mfile.ext}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="dir_path"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="dir_path" defaultValue={mfile.dir_path}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="file_size"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="file_size" defaultValue={mfile.file_size + "byte"}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="mime"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="mime" defaultValue={mfile.mime}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="original_file_name"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="original_file_name" defaultValue={mfile.original_file_name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="channel_uuid"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={mfile.channel_uuid}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="created_epoch"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="created_epoch" defaultValue={mfile.created_epoch}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="updated_epoch"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="updated_epoch" defaultValue={mfile.updated_epoch}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formSave">
@@ -404,22 +445,6 @@ class MediaFilesPage extends React.Component {
 		for (var i = 0; i < acceptedFiles.length; i++) {
 			data.append('file', acceptedFiles[i])
 		}
-
-/*
-		// fetch is promise based so hard to track upload progress
-		fetch('/api/upload', {
-			method: 'POST',
-			body: data
-		}).then(function(response) {
-			if (response.status == 200) {
-				return response.json().then(function(mfiles) {
-					_this.setState({rows: mfiles.concat(_this.state.rows)});
-				});
-			} else {
-				console.error(response);
-			}
-		});
-*/
 
 		let xhr = new XMLHttpRequest();
 		const progressSupported = "upload" in xhr;
