@@ -1,13 +1,20 @@
-# XUI Readme
+# the XUI Project
 
 This project is in active development and is not ready for production use.
 
 ## Design
 
+Use the built-in HTTP server in mod_verto, no depends on anything except FreeSWITCH.
+
+Use SQLite by default, PostgreSQL is in TODO list.
+
 Follow the morden https://freeswitch.org/stash/projects/FS/repos/fs18configs/browse config layouts, old configs layouts should also work with trival changed. The goals is to remove all static XML configs and store everything in DB and dynamically serve with lua or xml_curl bindings.
 
 
-ToDo...
+## ToDo
+
+* PostgreSQL support
+* Mixed HTTP & Websocket Authentication suport
 
 ## Coding Style:
 
