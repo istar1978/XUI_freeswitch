@@ -41,7 +41,7 @@ class BlockPage extends React.Component {
 		super(props);
 		this.workspace = null;
 		this.onresize = null;
-		this.fs_file_path_dropdown_data = null;
+		this.fs_file_path_dropdown_data = [];
 		this.state = {block: {name: "Loading ..."}};
 		this.onDrop = this.onDrop.bind(this);
 	}
@@ -498,21 +498,27 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			body.appendChild(xml);
 		}
 
+		$.get('/api/dicts?realm=TONE', function(obj) {
+			obj.forEach(function(row) {
+				 _this.fs_file_path_dropdown_data.push(["[Tone]: " + row.k, "tone_stream://" + row.v]);
+			});
+		});
+
 		$.get('/api/media_files', function(obj) {
 			console.log("data", obj);
-			if (obj.length == 0) {
-				obj.push({
-					name: "Error: No file, Please upload some media files",
-					abs_path: "/tmp/File-Not-Found-Error.wav"
-				});
-			}
 
-			_this.fs_file_path_dropdown_data = obj.map(function(row) {
-				return [row.name, row.abs_path];
+			obj.forEach(function(row) {
+				_this.fs_file_path_dropdown_data.push([row.name, row.abs_path]);
 			});
 		});
 
 		let get_fs_file_path_drowndown_data = function() {
+			_this.fs_file_path_dropdown_data = [];
+
+			if (_this.fs_file_path_dropdown_data.length == 0) {
+				return [['--NO FILE--', 'silence_stream://1000']];
+			}
+
 			return _this.fs_file_path_dropdown_data;
 		}
 
