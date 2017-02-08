@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 
 var ChannelsPage = React.createClass({
 	getInitialState: function() {
@@ -147,17 +148,17 @@ var ChannelsPage = React.createClass({
 		})
 
 		return <div>
-			<h1>Channels</h1>
+			<h1><T.span text="Channels"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>UUID</th>
-					<th>CID</th>
-					<th>Dest</th>
-					<th>Call State</th>
-					<th>Direction</th>
-					<th>Created</th>
+					<th><T.span text="UUID"/></th>
+					<th><T.span text="CID Number"/></th>
+					<th><T.span text="Dest Number"/></th>
+					<th><T.span text="Call State"/></th>
+					<th><T.span text="Direction"/></th>
+					<th><T.span text="Created"/></th>
 				</tr>
 				{rows}
 				</tbody>

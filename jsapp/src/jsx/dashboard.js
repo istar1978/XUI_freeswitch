@@ -48,6 +48,9 @@ class DashBoard extends React.Component {
 			<LinkContainer to="/channels" key="M_CHANNELS">
 				<NavItem eventKey="M_CHANNELS"><T.span text={{ key: "Channels"}} /></NavItem>
 			</LinkContainer>
+			<LinkContainer to="/registrations" key="M_REGISTRATIONS">
+				<NavItem eventKey="M_REGISTRATIONS"><T.span text={{ key: "Registrations"}} /></NavItem>
+			</LinkContainer>
 			<LinkContainer to="/users" key="M_USERS">
 				<NavItem eventKey="M_USERS"><T.span text={{ key: "Users"}} /></NavItem>
 				</LinkContainer>

@@ -19,10 +19,11 @@ LANGUAGES["zh"] = {
 	Help: "帮助",
 	Search: "查询",
 	Last: "最近",
+	Refresh: "刷新",
 
 	Overview: "状态",
-	Calls: "Calls",
-	Channels: "Channels",
+	Calls: "呼叫",
+	Channels: "通道",
 	Users: "用户",
 	Sofia: "Sofia",
 
@@ -41,6 +42,20 @@ LANGUAGES["zh"] = {
 	Busy: "通话中",
 	Held: "保持",
 
+	"Call State": "呼叫状态",
+	Direction: "方向",
+	Created: "创建时间",
+
+	Registrations: "注册",
+	"Reg User": "注册用户",
+	Expires: "过期时间",
+	"Network IP": "网络地址",
+	"Network Port": "端口",
+	"Network Proto": "协议",
+	Hostname: "主机名",
+	Metadata: "元数据",
+	Group: "组",
+	Contact: "联系地址",
 
 	Conference: "会议",
 	Mute: "静音",

@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 
 var FSUsersPage = React.createClass({
 	getInitialState: function() {
@@ -112,19 +113,19 @@ var FSUsersPage = React.createClass({
 		})
 
 		return <div>
-			<h1>Users</h1>
+			<h1><T.span text="Users"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>ID</th>
-					<th>Context</th>
-					<th>Domain</th>
-					<th>Group</th>
-					<th>Callgroup</th>
-					<th>CidName</th>
-					<th>CidNumber</th>
-					<th>Contact</th>
+					<th><T.span text="ID"/></th>
+					<th><T.span text="Context"/></th>
+					<th><T.span text="Domain"/></th>
+					<th><T.span text="Group"/></th>
+					<th><T.span text="Callgroup"/></th>
+					<th><T.span text="CID Name"/></th>
+					<th><T.span text="CID Number"/></th>
+					<th><T.span text="Contact"/></th>
 				</tr>
 				{rows}
 				</tbody>

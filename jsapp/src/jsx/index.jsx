@@ -46,6 +46,7 @@ import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
 import OverViewPage from "./page_overview";
 import ChannelsPage from "./page_channels";
+import RegistrationsPage from "./page_registrations";
 import CallsPage from "./page_calls";
 import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
@@ -124,6 +125,7 @@ const Home = React.createClass({
 				<Route path="overview" components={{sidebar: DashBoard, main: OverViewPage}} onlyActiveOnIndex/>
 				<Route path="calls" components = {{sidebar: DashBoard, main: CallsPage}}/>
 				<Route path="channels" components = {{sidebar: DashBoard, main: ChannelsPage}}/>
+				<Route path="registrations" components = {{sidebar: DashBoard, main: RegistrationsPage}}/>
 				<Route path="users" components = {{sidebar: DashBoard, main: FSUsersPage}}/>
 				<Route path="sofia" components = {{sidebar: DashBoard, main: SofiaPage}}/>
 
