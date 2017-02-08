@@ -37,3 +37,6 @@ tar: out
 	echo $(HASH)
 	tar cvzf out/xui-1.0.0.$(HASH).tar.gz www lua
 	ls out
+
+sync:
+	rsync -raz www/ $(path)
