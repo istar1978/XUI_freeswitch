@@ -374,13 +374,16 @@ var ConferencePage = React.createClass({
 
 			<ButtonGroup>
 				<Button onClick={this.handleControlClick} data="table" title={T.translate("Display as Table")}>
-					<T.span text= "T" data="table"/>
+					<i className="fa fa-table" aria-hidden="true" data="table"></i>
+					<T.span data="table"/>
 				</Button>
 				<Button onClick={this.handleControlClick} data="list" title={T.translate("Display as List")}>
-					<T.span text= "=" data="list"/>
+					<i className="fa fa-list" aria-hidden="true" data="list"></i>
+					<T.span data="list"/>
 				</Button>
 				<Button onClick={this.handleControlClick} data="toolbarText" title={T.translate("Toggle Toolbar Text")}>
-					<T.span text= "T" data="toolbarText"/>
+					<i className="fa fa-text-width" aria-hidden="true" data="toolbarText"></i>
+					<T.span data="toolbarText"/>
 				</Button>
 			</ButtonGroup>
 
