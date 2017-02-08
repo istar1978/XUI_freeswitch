@@ -173,10 +173,13 @@ var ConferencePage = React.createClass({
 					console.error("err call", msg);
 				}
 			});
+			return;
 		} else if (data == "toolbarText") {
 			this.setState({toolbarText: !this.state.toolbarText});
-		} else {
+			return;
+		} else if (data == "table" || data == "list") {
 			this.setState({displayStyle: data});
+			return;
 		}
 
 		for(var member in this.activeMembers) {
