@@ -513,8 +513,6 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		});
 
 		let get_fs_file_path_drowndown_data = function() {
-			_this.fs_file_path_dropdown_data = [];
-
 			if (_this.fs_file_path_dropdown_data.length == 0) {
 				return [['--NO FILE--', 'silence_stream://1000']];
 			}
