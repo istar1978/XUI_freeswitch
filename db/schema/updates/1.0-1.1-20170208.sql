@@ -19,7 +19,7 @@ BEGIN
 	UPDATE groups set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
-DROP TABLE user_groups;
+DROP TABLE user_group;
 CREATE TABLE user_groups (
 	id INTEGER PRIMARY KEY,
 	user_id INTEGER NOT NULL,
@@ -36,7 +36,7 @@ BEGIN
 	UPDATE user_groups set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
-DROP TABLE extn_groups;
+DROP TABLE extn_group;
 CREATE TABLE extn_groups (
 	id INTEGER PRIMARY KEY,
 	user_id INTEGER NOT NULL,
