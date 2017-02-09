@@ -172,6 +172,14 @@ input.terminal-input:focus {
 	color: blue;
 };
 
+.inline{
+	float: right;
+}
+
+.inlineleft{
+	float: left;
+}
+
 /* console,debug,info,notice,warning,err,crit,alert */
 
 span.log8 {color: #FFFF00;}

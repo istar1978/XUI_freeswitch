@@ -1,6 +1,6 @@
 /*
  * HTML5 GUI Framework for FreeSWITCH - XUI
- * Copyright (C) 2015-2016, Seven Du <dujinfang@x-y-t.cn>
+ * Copyright (C) 2015-2017, Seven Du <dujinfang@x-y-t.cn>
  *
  * Version: MPL 1.1
  *
@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
+import { ButtonToolbar, ButtonGroup, Button, ProgressBar, Thumbnail } from 'react-bootstrap';
 
 var Member = React.createClass({
 	propTypes: {
@@ -67,12 +67,13 @@ var Member = React.createClass({
 			return <tr className={className} data-member-id={row.memberID} onClick={this.handleClick}>
 					<td>{row.memberID}</td>
 					<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
-					<td>{row.status.audio.floor ? "F" : "f"} |&nbsp;
-						{row.status.audio.talking ? " T" : " t"} |&nbsp;
-						{row.status.audio.deaf ? " D" : " d"} |&nbsp;
-						{row.status.audio.muted ? " M" : " m"} |&nbsp;
-						{row.status.audio.onHold ? " H" : " h"} |&nbsp;
-						{row.status.audio.energyScore}
+					<td><div className='inlineleft'>{row.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
+						{row.status.audio.talking ? <i className="fa fa-volume-up" style={{color:"green"}} aria-hidden="true"></i> : <i className="fa fa-volume-off" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
+						{row.status.audio.deaf ? <i className="fa fa-bell-slash-o" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-bell-o" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
+						{row.status.audio.muted ? <i className="fa fa-microphone-slash" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-microphone" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
+						{row.status.audio.onHold ? <i className="fa fa-circle-o-notch" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-circle-o" style={{color:"#ffe200"}} aria-hidden="true"></i>} |&nbsp;
+						</div>
+						<div className="inline"> <ProgressBar active bsStyle="success" now={row.status.audio.energyScore/50} /></div>
 					</td>
 					<td>{row.email}</td>
 			</tr>;
