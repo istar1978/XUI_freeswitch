@@ -172,6 +172,23 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		   </shadow>
 		 </value>
 		</block>
+	<block type="fsSessionTransfer">
+		<value name="destination">
+			<shadow type="text">
+			<field name="TEXT"></field>
+			</shadow>
+		</value>
+		<value name="dialplan">
+			<shadow type="text">
+			<field name="TEXT">XML</field>
+			</shadow>
+		</value>
+		<value name="context">
+			<shadow type="text">
+			<field name="TEXT">default</field>
+			</shadow>
+		</value>
+	</block>
 	<block type="fsSessionExecute"></block>
 </category>
 

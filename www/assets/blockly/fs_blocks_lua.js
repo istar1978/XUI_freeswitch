@@ -121,6 +121,14 @@ Blockly.Lua.fsSessionRead = function(block) {
   return code;
 };
 
+Blockly.Lua.fsSessionTransfer = function(block) {
+  var text_dest = Blockly.Lua.valueToCode(block, 'destination', Blockly.Lua.ORDER_ATOMIC);
+  var text_dialplan = Blockly.Lua.valueToCode(block, 'dialplan', Blockly.Lua.ORDER_ATOMIC);
+  var text_context = Blockly.Lua.valueToCode(block, 'context', Blockly.Lua.ORDER_ATOMIC);
+  var code = 'session:execute("transfer",' + text_dest + ' .. ' + text_dialplan + ' .. ' + '  ' + text_context + ' )\n';  
+  return code;
+};
+
 Blockly.Lua.fsSessionExecute = function(block) {
   var text_app = block.getFieldValue('execute');
   var value_args = Blockly.Lua.valueToCode(block, 'args', Blockly.Lua.ORDER_ATOMIC) || '""';
@@ -154,7 +162,7 @@ Blockly.Lua.IVREntry = function(block) {
   var statements_actions = Blockly.Lua.statementToCode(block, 'actions');
   var the_else = Blockly.Lua.globalIVREntryStart ? "else" : "";
   Blockly.Lua.globalIVREntryStart = 1;
-  var code = the_else + 'if (digits == "' + text_digit + '") then\n' + statements_actions
+  var code = the_else + 'if (digits == ' + text_digit + ') then\n' + statements_actions
   return code;
 };
 

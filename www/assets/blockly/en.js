@@ -419,6 +419,10 @@ Blockly.Msg.FS_BLOCK_AUDIORECORD_NAME = "name";
 Blockly.Msg.FS_BLOCK_AUDIORECORD_MAX = "max_len";
 Blockly.Msg.FS_BLOCK_AUDIORECORD_THRESHOLD = "silence_threshold";
 Blockly.Msg.FS_BLOCK_AUDIORECORD_SILENCE = "silence_secs";
+Blockly.Msg.FS_BLOCK_TRANSFER = "Transfer";
+Blockly.Msg.FS_BLOCK_DIALPLAN = "Dialplan";
+Blockly.Msg.FS_BLOCK_CONTEXT = "Context";
+Blockly.Msg.FS_BLOCK_DESTINATION = "Destination";
 
 
 Blockly.Msg.tNow = "Now";

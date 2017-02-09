@@ -316,6 +316,7 @@ Blockly.Blocks['fsSessionGet'] = {
         .appendField(new Blockly.FieldDropdown([
             ["Caller ID Number", "caller_id_number"],
             ["Caller ID Name", "caller_id_name"],
+            ["Destination_number", "destination_number"],
             ["UUID", "channel_uuid"]]), "NAME");
     this.setInputsInline(true);
     this.setOutput(true, "String");
@@ -358,6 +359,24 @@ Blockly.Blocks['fsSessionRead'] = {
         this.appendValueInput("sound")
             .setCheck("String")
             .appendField(Blockly.Msg.FS_BLOCK_SOUND)
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(20);
+        this.setTooltip('');
+        this.setHelpUrl('http://www.example.com/');
+    }
+};
+
+Blockly.Blocks['fsSessionTransfer'] = {
+    init: function() {
+        this.appendValueInput("destination")
+            .appendField(Blockly.Msg.FS_BLOCK_TRANSFER)
+            .appendField(Blockly.Msg.FS_BLOCK_DESTINATION)
+        this.appendValueInput("dialplan")
+            .appendField(Blockly.Msg.FS_BLOCK_DIALPLAN)
+        this.appendValueInput("context")
+            .appendField(Blockly.Msg.FS_BLOCK_CONTEXT)
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
