@@ -183,3 +183,8 @@ span.log3 {color: red;}
 span.log2 {color: red;}
 span.log1 {color: red;}
 span.log0 {color: black;}
+
+#showThing{
+	display: none;
+	margin-left: 16.7%;
+}
