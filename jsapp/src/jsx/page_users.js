@@ -208,7 +208,7 @@ class ImportUser extends React.Component {
 			<Form horizontal id="importUserForm">
 				<FormGroup controlId="formExtn">
 					<Col sm={12}><FormControl componentClass="textarea" name="info"
-					placeholder={"extn1 name1 password1 vm_password1 comtext1 cid_name1 cid_number1 \nextn2 name2 password2 vm_password2 comtext2 cid_name2 cid_number2"} />
+					placeholder={"在此处粘贴,Excel表格格式如下： \nextn1 name1 password1 vm_password1 comtext1 cid_name1 cid_number1 \nextn2 name2 password2 vm_password2 comtext2 cid_name2 cid_number2"} />
 					</Col>
 				</FormGroup>
 
@@ -224,7 +224,7 @@ class ImportUser extends React.Component {
 
 				<FormGroup>
 					<Col sm={12}>
-						<T.span text="说明：像文本框中例子一样添加用户数据，也可以由excle中导入。" />
+						<T.span text="说明：复制Excel表格中的数据，在文本框内粘贴,点击上方导入即可。" />
 					</Col>
 				</FormGroup>
 			</Form>
