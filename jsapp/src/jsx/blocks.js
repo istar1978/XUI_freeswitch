@@ -500,7 +500,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 
 		$.get('/api/dicts?realm=TONE', function(obj) {
 			obj.forEach(function(row) {
-				 _this.fs_file_path_dropdown_data.push(["[Tone]: " + row.k, "tone_stream://" + row.v]);
+				 _this.fs_file_path_dropdown_data.push(["[Tone]: " + row.k, row.v]);
 			});
 		});
 
