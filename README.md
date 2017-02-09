@@ -8,7 +8,7 @@ Use the built-in HTTP server in mod_verto, no depends on anything except FreeSWI
 
 Use SQLite by default, PostgreSQL is in TODO list.
 
-Follow the morden https://freeswitch.org/stash/projects/FS/repos/fs18configs/browse config layouts, old configs layouts should also work with trival changed. The goals is to remove all static XML configs and store everything in DB and dynamically serve with lua or xml_curl bindings.
+Follow the morden https://freeswitch.org/stash/projects/FS/repos/fs18configs/browse config layouts, old configs layouts should also work with trival changes. The goals is to remove all static XML configs and store everything in DB and dynamically serve with lua or xml_curl bindings.
 
 
 ## ToDo
@@ -26,7 +26,7 @@ CSS/JS/HTML: https://github.com/felixge/Node-style-guide
 
 ### Install npm (optional)
 
-need recent version or npm
+need recent version of npm, check <https://docs.npmjs.com/getting-started/what-is-npm> for more info.
 
     curl -sL https://deb.nodesource.com/setup_4.x | bash -
     apt-get install -y nodejs
@@ -47,7 +47,7 @@ need recent version or npm
     npm install
     bower install
 
-or if you are in China, use taobao mirror
+or if you are in China, use taobao mirror would be faster
 
     npm config set registry https://registry.npm.taobao.org
 
@@ -68,6 +68,10 @@ or use cnpm see <https://npm.taobao.org/> for more info
 ## Development
 
 init db:
+
+    cd db/schema && make
+
+or, if your freeswitch is not installed in /usr/local/freeswitch
 
     cd db/schema && cat sqlite.sql init*.sql | sqlite3 /usr/local/freeswitch/db/xui.db
 
