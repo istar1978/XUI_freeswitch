@@ -135,6 +135,8 @@ class MediaFilePage extends React.Component {
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.toggleHighlight = this.toggleHighlight.bind(this);
+		this.handleFileShow = this.handleFileShow.bind(this);
+		this.handleHiddenFileShow = this.handleHiddenFileShow.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -243,6 +245,14 @@ class MediaFilePage extends React.Component {
 		});
 	}
 
+	handleFileShow() {
+		document.getElementById('showThing').style.display = 'block';
+	}
+
+	handleHiddenFileShow() {
+		document.getElementById('showThing').style.display = 'none';
+	}
+
 	render() {
 		const mfile = this.state.mfile;
 		const _this = this;
@@ -270,19 +280,41 @@ class MediaFilePage extends React.Component {
 		}
 
 		if (this.state.edit) {
-			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit}><T.span onClick={this.handleSubmit} text="Save"/></Button>
 		}
+
+		let src = "/assets/upload/" + mfile.rel_path;
+
+		if (mfile.ext == 'jpg' || (mfile.ext == 'png' || mfile.ext == 'jpeg')) {
+			var adiv =  <div id = "showThing">
+							<img src={src} />
+						</div>;
+		}
+		if (mfile.ext == 'mp3' || mfile.ext == 'wav'){
+			var adiv =  <div id = "showThing">
+							<audio src={src} controls="controls" />
+						</div>;
+		}
+		if (mfile.ext == 'mp4') {
+			var adiv =  <div id = "showThing">
+							<video src={src} controls="controls" />
+						</div>;
+		};
 
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
+				<Button onClick={this.handleFileShow}><T.span onClick={this.handleFileShow} text="FileShow"/></Button>
+				<Button onClick={this.handleHiddenFileShow}><T.span onClick={this.handleHiddenFileShow} text="HiddenFileShow"/></Button>
 				{ save_btn }
-				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
 			<h1>{mfile.name} <small>{mfile.extn}</small></h1>
 			<hr/>
+
+			{ adiv }
 
 			<Form horizontal id="newMediaFilesForm">
 				<input type="hidden" name="id" defaultValue={mfile.id}/>
@@ -313,7 +345,7 @@ class MediaFilePage extends React.Component {
 
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="file_size"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="file_size" defaultValue={mfile.file_size + "byte"}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="file_size" defaultValue={parseInt(mfile.file_size) + "byte"}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
