@@ -125,7 +125,7 @@ Blockly.Lua.fsSessionTransfer = function(block) {
   var text_dest = Blockly.Lua.valueToCode(block, 'destination', Blockly.Lua.ORDER_ATOMIC);
   var text_dialplan = Blockly.Lua.valueToCode(block, 'dialplan', Blockly.Lua.ORDER_ATOMIC);
   var text_context = Blockly.Lua.valueToCode(block, 'context', Blockly.Lua.ORDER_ATOMIC);
-  var code = 'session:execute("transfer",' + text_dest + ' .. ' + text_dialplan + ' .. ' + '  ' + text_context + ' )\n';  
+  var code = 'session:execute("transfer",' + text_dest + ' .. ' + '" "' + '..' + text_dialplan + ' .. ' + '" "' + ' .. ' + text_context + ' )\n';  
   return code;
 };
 

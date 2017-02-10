@@ -422,7 +422,7 @@ Blockly.Msg.FS_BLOCK_AUDIORECORD_MAX = "录音时长";
 Blockly.Msg.FS_BLOCK_AUDIORECORD_THRESHOLD = "静音阀值";
 Blockly.Msg.FS_BLOCK_AUDIORECORD_SILENCE = "静音时长";
 Blockly.Msg.FS_BLOCK_TRANSFER = "转接";
-Blockly.Msg.FS_BLOCK_CONTEXT = "内容";
+Blockly.Msg.FS_BLOCK_CONTEXT = "Context";
 Blockly.Msg.FS_BLOCK_DIALPLAN = "拨号计划";
 Blockly.Msg.FS_BLOCK_DESTINATION = "目标号码";
 
