@@ -254,9 +254,24 @@ function  xdb.find_by_time(t, time)
 	local sql = "SELECT * FROM " .. t .. " WHERE  strftime('%s', start_stamp) -" .. theTargetTime ..  " > 0"
 
 	-- local sql = "SELECT * FROM " .. t .. " WHERE " .. os.time(year = os.date("%Y",tonumber(end_stamp)), month = os.date("%m",tonumber(end_stamp)), day = os.date("%d",tonumber(end_stamp))) .. " > " .. theTargetTime
-	freeswitch.consoleLog("err",theTime)
 	freeswitch.consoleLog("err",sql)
 
+	return xdb.find_by_sql(sql, cb)
+end
+
+-- query cdrs by calender
+function xdb.find_by_time_by_calender(t, startDate, endDate, cidNumber, destNumber)
+
+	local sql = " SELECT * FROM " .. t .. " WHERE strftime('%s', start_stamp) - strftime('%s', '" .. startDate .. "') > 0 AND strftime('%s', start_stamp) - strftime('%s', '" .. endDate .. "') < 0 ";
+
+	if cidNumber then
+		sql = sql .. " AND caller_id_number = '" .. cidNumber .. "'"
+	end
+	if destNumber then
+		sql = sql .. " AND destination_number = '" .. destNumber .. "'"
+	end
+
+	freeswitch.consoleLog("err",sql)
 	return xdb.find_by_sql(sql, cb)
 end
 

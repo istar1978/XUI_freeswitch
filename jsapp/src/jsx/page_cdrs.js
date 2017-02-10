@@ -59,9 +59,10 @@ var CDRsPage = React.createClass({
 	handleSearch: function(e) {
 		const _this = this;
 		const qs = "startDate=" + this.startDate.value +
-			"endDate=" + this.endDate.value +
-			"cidNumber=" + this.cidNumber.value +
-			"destNumber=" + this.destNumber.value;
+			"&endDate=" + this.endDate.value +
+			"&cidNumber=" + this.cidNumber.value +
+			"&destNumber=" + this.destNumber.value +
+			"&id=2";
 
 		console.log(qs);
 
@@ -79,7 +80,7 @@ var CDRsPage = React.createClass({
 	componentDidMount: function() {
 		const _this = this;
 
-		$.getJSON("/api/cdrs", function(cdrs) {
+		$.getJSON("/api/cdrs?id=0", function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
 	},
@@ -90,7 +91,7 @@ var CDRsPage = React.createClass({
 
 		e.preventDefault();
 
-		$.getJSON("/api/cdrs?last=" + data, function(cdrs) {
+		$.getJSON("/api/cdrs?last=" + data + "&id=1", function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
 	},
