@@ -74,6 +74,7 @@ INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_png', 0);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_shell_stream', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_shout', 0);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_local_stream', 0);
+INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_tone_stream', 0);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_timerfd', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_posix_timer', 1);
 INSERT INTO params (realm, k,disabled) VALUES('modules', 'mod_v8', 1);
