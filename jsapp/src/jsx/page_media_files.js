@@ -182,13 +182,13 @@ class NewRecordFile extends React.Component {
 				<hr/>
 
 				<FormGroup controlId="formMethod1">
-					<Col sm={12}>1.<T.span text="Use any phone, Call *991234 to Record"/></Col>
+					<Col sm={12}>1.<T.span text="Use any phone, Call *991234 to record after BEEP"/></Col>
 				</FormGroup>
 
 				<hr/>
 
 				<FormGroup controlId="formMethod2">
-					<Col sm={12}>2. <T.span text="Callback to Record"/></Col>
+					<Col sm={12}>2. <T.span text="Callback to record after BEEP"/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formMethod22">

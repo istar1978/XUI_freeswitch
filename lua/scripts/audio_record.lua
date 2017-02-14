@@ -4,6 +4,9 @@ session:consoleLog("err", '--------answer------------' .. "\n")
 -- warning tone 
 -- session:speak('Please say, what you say will be recorded')
 
+session:streamFile("silence_stream://1000")
+session:streamFile("tone_stream://%(250,0,1000)")
+
 -- record
 local recording_dir = '/tmp/'
 local uuid = session:get_uuid()

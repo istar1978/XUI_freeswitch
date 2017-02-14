@@ -193,8 +193,8 @@ LANGUAGES["zh"] = {
 	Modules: "模块",
 	Record: "录音",
 	"Two different ways to record": "请选用一种方式录音",
-	"Use any phone, Call *991234 to Record": "用电话呼叫 *991234 录音",
-	"Callback to Record": "呼叫一个号码并录音",
+	"Use any phone, Call *991234 to record after BEEP": "用电话呼叫 *991234，『嘀』声后开始录音",
+	"Callback to record after BEEP": "呼叫一个号码，在『嘀』声后开始录音",
 	"Recording to": "正在录音 *{path}*",
 	"Record completed": "录音完成 *{path}*",
 
