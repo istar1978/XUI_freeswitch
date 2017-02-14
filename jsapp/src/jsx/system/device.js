@@ -134,10 +134,12 @@ class SettingDevice extends React.Component {
 
 	handleAudioInDeviceChange(e) {
 		localStorage.setItem("xui.audio.audioInDevice", e.target.value);
+		this.setState({audioInDevice: e.target.value});
 	}
 
 	handleAudioOutDeviceChange(e) {
 		localStorage.setItem("xui.audio.audioOutDevice", e.target.value);
+		this.setState({audioOutDevice: e.target.value});
 	}
 
 
