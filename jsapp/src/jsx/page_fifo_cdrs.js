@@ -37,7 +37,7 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {rows: []};
+		this.state = {rows: [], query_visible: false};
 	}
 
 	handleClick (x) {
@@ -45,6 +45,26 @@ class FifoCDRsPage extends React.Component {
 
 	handleControlClick (e) {
 		console.log("clicked", e.target);
+	}
+
+	handleMore (e) {
+		e.preventDefault();
+		this.setState({query_visible: !this.state.query_visible})
+	}
+
+	handleSearch (e) {
+		const _this = this;
+		const qs = "startDate=" + this.startDate.value +
+			"&endDate=" + this.endDate.value +
+			"&ani=" + this.ani.value +
+			"&dest_number=" + this.dest_number.value +
+			"&id=2";
+
+		console.log(qs);
+
+		$.getJSON("/api/fifo_cdrs?" + qs, function(fifocdrs) {
+			_this.setState({rows: fifocdrs});
+		})
 	}
 
 	componentWillMount () {
@@ -56,18 +76,20 @@ class FifoCDRsPage extends React.Component {
 	componentDidMount () {
 		const _this = this;
 
-		$.getJSON("/api/fifo_cdrs", function(fifocdrs) {
+		$.getJSON("/api/fifo_cdrs?id=0", function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
 		})
 	}
 
-	fifocdrsQuery (){
-		const _this = this;
+	handleQuery (e) {
+		var _this = this;
+		var data = parseInt(e.target.getAttribute("data"));
 
-		$.getJSON("/api/fifo_cdrs/" + num, function(fifocdrs) {
+		e.preventDefault();
+
+		$.getJSON("/api/fifo_cdrs?last=" + data + "&id=1", function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
 		})
-
 	}
 
 	render () {
@@ -82,17 +104,29 @@ class FifoCDRsPage extends React.Component {
 				<td>{xdatetime(row.bridge_epoch)}</td>
 				<td>{xdatetime(row.end_epoch)}</td>
 			</tr>
-		})
+		});
 
 		return <div>
 			<ButtonToolbar className="pull-right">
-			<ButtonGroup>
-				<Button><T.span onClick={this.handleControlClick} text="Search"/></Button>
-			</ButtonGroup>
-			</ButtonToolbar>
+				<T.span text="Last"/> &nbsp;
+				<T.a onClick={this.handleQuery} text="7days" data="7" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="15days" data="15" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="30days" data="30" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="60days" data="60" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text="90days" data="90" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleMore} text="More" data="more" href="#"/>...
+			</ButtonToolbar>			
 
 			<h1><T.span text="FIFO CDRs"/></h1>
 			<div>
+				{this.state.query_visible && <div style={{padding: "5px"}} className="pull-right">
+					<input type="date" defaultValue="2017-01-01" ref={(input) => { _this.startDate = input; }}/> -&nbsp;
+					<input type="date" defaultValue="2017-02-02" ref={(input) => { _this.endDate = input; }}/> &nbsp;
+					<T.span text="CID Number"/><input ref={(input) => { _this.ani = input; }}/> &nbsp;
+					<T.span text="Dest Number"/><input ref={(input) => { _this.dest_number = input; }}/> &nbsp;
+					<T.button text="Search" onClick={this.handleSearch}/>
+				</div>}
+
 				<table className="table">
 				<tbody>
 				<tr>

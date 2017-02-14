@@ -34,21 +34,33 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	n, cdrs = xdb.find_all("fifo_cdrs")
+	id = env:getHeader('id')
 
-	if (n > 0) then
-		return cdrs
-	else
-		return "[]"
+	if id == '0' or id == '1' then
+		last = env:getHeader('last')
+		if not last then last = "31" end
+
+		n, cdrs = xdb.find_by_time("fifo_cdrs", last)
+
+		if (n > 0) then
+			return cdrs
+		else
+			return "[]"
+		end
 	end
-end)
 
-get('/:num', function(params)
-	n, cdrs = xdb.find_by_time("fifo_cdrs",num)
+	if id == '2' then
+		startDate = env:getHeader('startDate')
+		endDate = env:getHeader('endDate')
+		ani = env:getHeader('ani')
+		dest_number = env:dest_number('destNumber')
+		n, cdrs = xdb.find_by_time_by_calender("fifo_cdrs", startDate, endDate, ani, dest_number)
 
-	if (n > 0) then
-		return cdrs
-	else
-		return "[]"
+		if (n > 0) then
+			return cdrs
+		else
+			return "[]"
+		end
 	end
+
 end)
