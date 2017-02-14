@@ -136,7 +136,7 @@ function verto_params() {
 }
 
 $(document).ready(function(){
-	window.verto = new $.verto(verto_params(), callbacks);
+	// window.verto = new $.verto(verto_params(), callbacks);
 });
 
 $('#ocean_callButton').click(function() {

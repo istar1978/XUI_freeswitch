@@ -38,6 +38,7 @@ import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-boots
 import { Router, Route, Link, browserHistory } from 'react-router'
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import Phone from './phone';
+import { VertoPage } from './verto';
 
 class Notice extends React.Component {
 	constructor(props) {
@@ -113,6 +114,7 @@ class MainMenu extends React.Component {
 				<Nav pullRight><Notice/></Nav>
 			</Navbar.Collapse>
 			<video id="webcam" className="webcam"/>
+			<VertoPage/>
 		</Navbar>;
 	}
 }
