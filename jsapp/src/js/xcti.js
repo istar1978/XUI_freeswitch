@@ -31,8 +31,7 @@
 'use strict';
 
 // globals
-
-var verto;
+var verto = window.verto;
 var verto_loginState = false;
 var host = window.location.hostname;
 var domain = localStorage.getItem('xui.domain');

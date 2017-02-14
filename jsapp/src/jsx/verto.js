@@ -2,6 +2,7 @@
 
 import React from 'react';
 import verto from './verto/verto';
+import { Verto } from './verto/verto';
 
 
 class VertoPage extends React.Component {
@@ -63,7 +64,6 @@ class VertoPage extends React.Component {
 			}
 		};
 
-		// window.verto = Verto;
 		verto.connect(verto_params(), callbacks);
 	}
 

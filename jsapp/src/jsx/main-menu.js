@@ -75,7 +75,7 @@ class Notice extends React.Component {
 		if (this.state.msg) class_name = 'info';
 		if (this.state.level == 'error') class_name = 'error';
 
-		return <NavItem><span className={class_name} id='notification'>{this.state.msg}</span></NavItem>
+		return <NavItem><span className={class_name} id='notification'>{this.state.msg ? this.state.msg : ""}</span></NavItem>
 	}
 }
 

@@ -33,6 +33,8 @@
 import React from 'react';
 import T from 'i18n-react';
 import { ButtonToolbar, ButtonGroup, Button, ProgressBar, Thumbnail } from 'react-bootstrap';
+import verto from './verto/verto';
+import { VertoLiveArray } from './verto/verto-livearray';
 
 class Member extends React.Component {
 	propTypes: {
@@ -60,7 +62,8 @@ class Member extends React.Component {
 
 	render () {
 		const member = this.props.member;
-		var className = this.state.active ? "member active selected" : "member";
+		console.log("member", member);
+		var className = member.active ? "member active selected" : "member";
 
 		// console.log('props', this.props);
 
@@ -210,7 +213,7 @@ class ConferencePage extends React.Component {
 		for(var member in this.activeMembers) {
 			if (this.activeMembers[member] == true) {
 				var args = this.props.name + " " + data + " " + member;
-				// console.log("args", args);
+				console.log("args", args);
 				fsAPI("conference", args);
 			}
 		}
@@ -218,7 +221,21 @@ class ConferencePage extends React.Component {
 
 	handleMemberClick (member_id, isActive) {
 		console.log("member_id", member_id);
-		this.activeMembers[member_id] = isActive;
+		// this.activeMembers[member_id] = isActive;
+
+		var rows = [];
+		if (this.state.rows.length > 0) {
+			var active = !this.state.rows[0].active;
+
+			this.state.rows.forEach(function(row) {
+				if (row.memberID == member_id) {
+					row.active = isActive;
+				}
+				rows.push(row);
+				console.log("row", row.active);
+			});
+			this.setState({rows: rows});
+		}
 	}
 
 	componentWillMount () {
@@ -226,28 +243,53 @@ class ConferencePage extends React.Component {
 
 	componentWillUnmount () {
 		if (this.la) this.la.destroy();
+		if (this.binding) verto.unsubscribe(this.binding);
 	}
 
 	componentDidMount () {
-		console.log("name:", this.props.name);
+		console.log("conference name:", this.props.name);
 		window.addEventListener("verto-login", this.handleVertoLogin);
 
-		if (verto) {
-			this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
-			this.la.onChange = this.handleConferenceEvent;
-		} // else verto is not ready yet, this happends on a refresh, wait for the verto-login event;
+		const use_livearray = true;
+
+		if (use_livearray) {
+			this.la = new VertoLiveArray(verto, this.getChannelName("liveArray"), this.props.name, {
+				onChange: this.handleConferenceEvent
+			});
+		} else {
+			this.binding = verto.subscribe(this.getChannelName("liveArray"), {handler: this.handleFSEvent.bind(this),
+				userData: verto,
+				subParams: {}
+			});
+
+			this.laBootstrap(this.getChannelName("liveArray"), {});
+		}
+	}
+
+	laBootstrap(context, obj) {
+		verto.broadcast(context, {
+			liveArray: {
+				command: "bootstrap",
+				context: context,
+				name: this.props.name,
+				obj: obj
+			}
+		});
 	}
 
 	handleVertoLogin (e) {
 		// console.log("eeee", e.detail);
-		if (this.la) this.la.destroy;
-		this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
-		this.la.onChange = this.handleConferenceEvent;
+		// if (this.la) this.la.destroy;
+		// this.la = new VertoLiveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
+		// this.la.onChange = this.handleConferenceEvent;
+	}
+
+	handleFSEvent(verto, e) {
+		this.handleConferenceEvent(null, e.data);
 	}
 
 	handleConferenceEvent (la, a) {
-		// console.log("onChange FSevent:", la);
-		console.log("onChange FSevent:", a);
+		console.log("onChange FSevent:", a.action, a);
 
 		switch (a.action) {
 
@@ -264,7 +306,7 @@ class ConferencePage extends React.Component {
 
 		case "add":
 			var found = 0;
-			var member = translateMember([a.key, a.data]);
+			var member = translateMember([a.hashKey, a.data]);
 
 			if (member.cidName == "Outbound Call") {
 				var outcall_rows = this.state.outcall_rows.filter(function(row) {
@@ -289,8 +331,8 @@ class ConferencePage extends React.Component {
 			var _this = this;
 
 			this.state.rows = this.state.rows.map(function(row) {
-				if (row.uuid == a.key ) {
-					var member = translateMember([a.key, a.data]);
+				if (row.uuid == a.hashKey ) {
+					var member = translateMember([a.hashKey, a.data]);
 					member.active = _this.activeMembers[member.memberID];
 					return member;
 				} else {
@@ -303,7 +345,8 @@ class ConferencePage extends React.Component {
 
 		case "del":
 			var rows = this.state.rows.filter(function(row) {
-				return row.uuid != a.key;
+				console.log(row.uuid, a.hashKey);
+				return row.uuid != a.hashKey;
 			});
 
 			this.setState({rows: rows});

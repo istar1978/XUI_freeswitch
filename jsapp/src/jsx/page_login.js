@@ -37,6 +37,7 @@ import MainMenu from './main-menu';
 import Languages from "./languages";
 import Footer from "./footer";
 import { Home } from "./index.jsx";
+import verto from "./verto/verto";
 
 class LoginPage extends React.Component {
 	render() {
@@ -63,8 +64,11 @@ class LoginBox extends React.Component {
 		let password = this.refs.password.value;
 		localStorage.setItem('xui.username', username);
 		localStorage.setItem('xui.password', password);
-		verto.loginData(verto_params());
-		verto.login();
+		// verto.loginData(verto_params());
+		// verto.login();
+
+
+		verto.connect(verto_params());
 	}
 
 	componentDidMount () {
@@ -78,6 +82,7 @@ class LoginBox extends React.Component {
 	}
 
 	handleVertoLogin (e) {
+		console.log("page_login.js: login");
 		ReactDOM.render(<Home/>, document.getElementById('body'))
 	}
 

@@ -85,50 +85,42 @@ class Phone extends React.Component {
 	handleVertoDialogState (e) {
 		var d = e.detail;
 
-		switch (d.state) {
-		case $.verto.enum.state.ringing:
+		console.log("state", d.state);
+
+		if (d.state.name == "ringing") {
 			this.setState({
 				curCall: d,
 				callState: "Ringing",
 				cidNum: d.params.caller_id_number
 			});
-			break;
-		case $.verto.enum.state.trying:
+		} else if (d.state.name == "tring") {
 			this.setState({
 				curCall: d,
 				callState: "Trying"
 			});
-			break;
-		case $.verto.enum.state.early:
+		} else if (d.state.name == "early") {
 			this.setState({
 				curCall: d,
 				callState: "Early"
 			});
-			break;
-		case $.verto.enum.state.active:
+		} else if (d.state.name == "active") {
 			this.setState({
 				curCall: d,
 				callState: "Active",
 				cidName: d.cidString()
 			});
-			break;
-		case $.verto.enum.state.hangup:
+		} else if (d.state.name == "hangup") {
 			this.setState({
 				curCall: d,
 				callState: "Idle",
 				hangupCause: d.cause
 			});
-			break;
-		case $.verto.enum.state.destroy:
+		} else if (d.state.name == "destroy") {
 			this.setState({
 				curCall: null,
 				callState: "Idle",
 				hangupCause: null
 			});
-			break;
-		case $.verto.enum.state.held:
-			break;
-		default:
 		}
 	}
 
