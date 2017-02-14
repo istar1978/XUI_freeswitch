@@ -81,7 +81,7 @@ const RMENUS = [
 	{id: "MM_LOGOUT", description: <T.span text="Logout"/>, data: "/logout"}
 ];
 
-const App = React.createClass({
+class App extends React.Component{
 	render() {
 		let main = <div></div>;
 
@@ -107,9 +107,9 @@ const App = React.createClass({
 			<Footer/>
 		</div>
 	}
-})
+};
 
-const Home = React.createClass({
+class Home extends React.Component{
 	render() {
 		const handleLogout = function(params, replace) {
 			console.log(params, replace);
@@ -181,7 +181,7 @@ const Home = React.createClass({
 			</Route>
 		</Router>
 	}
-})
+};
 
 
 $(document).ready(function() {

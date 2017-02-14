@@ -33,22 +33,23 @@
 import React from 'react';
 import T from 'i18n-react';
 
-var FSUsersPage = React.createClass({
-	getInitialState: function() {
-		return {rows: []};
-	},
+class FSUsersPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {rows: []};
+	}
 
-	handleClick: function(x) {
-	},
+	handleClick(x) {
+	}
 
-	componentWillMount: function() {
-	},
+	componentWillMount() {
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount() {
 		verto.unsubscribe("presense", {handler: this.handleFSEvent});
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount() {
 		var _this = this;
 		fsAPI("list_users", "", function(data) {
 			// console.log(data.message);
@@ -79,9 +80,9 @@ var FSUsersPage = React.createClass({
 		});
 
 		verto.subscribe("presence", {handler: this.handleFSEvent});
-	},
+	}
 
-	handleFSEvent: function(v, e) {
+	handleFSEvent(v, e) {
 		console.log('presense', e);
 
 		if (e.data.callerUserName) {
@@ -95,9 +96,9 @@ var FSUsersPage = React.createClass({
 
 			this.setState({rows: rows});
 		}
-	},
+	}
 
-	render: function() {
+	render() {
 		var rows = [];
 		this.state.rows.forEach(function(row) {
 			rows.push(<tr key={row.index} className={row.channelCallState}>
@@ -133,6 +134,6 @@ var FSUsersPage = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
 export default FSUsersPage;

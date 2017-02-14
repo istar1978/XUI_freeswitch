@@ -38,7 +38,7 @@ import Languages from "./languages";
 import Footer from "./footer";
 import { Home } from "./index.jsx";
 
-const LoginPage = React.createClass({
+class LoginPage extends React.Component {
 	render() {
 		var menus = [{id: "MM_LOGIN", description: <T.span text={{ key: "Login"}} />, data: '/'}];
 		return <div><MainMenu menus = {menus} rmenus = {[]}/>
@@ -46,47 +46,52 @@ const LoginPage = React.createClass({
 			<Footer/>
 		</div>
 	}
-})
+};
 
-const LoginBox = React.createClass({
-	getInitialState: function() {
-		return {login_err: false};
-	},
+class LoginBox extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {login_err: false}
+		this.handleClick = this.handleClick.bind(this);
+		this.handleVertoLogin = this.handleVertoLogin.bind(this);
+		this.handleVertoLoginError = this.handleVertoLoginError.bind(this);
+		this.handleLogin = this.handleLogin.bind(this);
+	}
 
-	handleClick: function() {
+	handleClick () {
 		let username = $('#username').val();
 		let password = $('#password').val();
 		localStorage.setItem('xui.username', username);
 		localStorage.setItem('xui.password', password);
 		verto.loginData(verto_params());
 		verto.login();
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		window.addEventListener("verto-login", this.handleVertoLogin);
 		window.addEventListener("verto-login-error", this.handleVertoLoginError);
-	},
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		window.removeEventListener("verto-login", this.handleVertoLogin);
 		window.removeEventListener("verto-login-error", this.handleVertoLoginError);
-	},
+	}
 
-	handleVertoLogin: function(e) {
+	handleVertoLogin (e) {
 		ReactDOM.render(<Home/>, document.getElementById('body'))
-	},
+	}
 
-	handleVertoLoginError: function(e) {
+	handleVertoLoginError (e) {
 		this.setState({login_err: true});
-	},
+	}
 
-	handleLogin: function(e){
+	handleLogin (e){
 		var event = e || window.event;
 		if (event.keyCode == 13) {
 			console.log(event);
 			this.handleClick();
 		};
-	},
+	}
 
 	render() {
 		var errmsg = this.state.login_err ? "Invalid username or password" : "";
@@ -98,9 +103,9 @@ const LoginBox = React.createClass({
 			<Button bsStyle="primary" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
 		</div>
 	}
-})
+};
 
-const Login = React.createClass({
+class Login extends React.Component {
 	render() {
 		return <Router history={hashHistory}>
 			<Route path="/" component={LoginPage}>
@@ -112,6 +117,6 @@ const Login = React.createClass({
 			</Route>
 		</Router>
 	}
-});
+};
 
 export { Login, LoginBox };

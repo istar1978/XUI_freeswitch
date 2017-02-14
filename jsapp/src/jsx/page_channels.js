@@ -33,26 +33,27 @@
 import React from 'react';
 import T from 'i18n-react';
 
-var ChannelsPage = React.createClass({
-	getInitialState: function() {
-		return {rows: []};
-	},
+class ChannelsPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {rows: []};
+	}
 
-	handleClick: function(x) {
-	},
+	handleClick (x) {
+	}
 
-	componentWillMount: function() {
-	},
+	componentWillMount () {
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		verto.unsubscribe("FSevent.channel_create");
 		verto.unsubscribe("FSevent.channel_progress");
 		verto.unsubscribe("FSevent.channel_answer");
 		verto.unsubscribe("FSevent.channel_hangup");
 		// verto.unsubscribe("FSevent");
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		var _this = this;
 		showFSAPI("channels", function(data) {
 			var msg = $.parseJSON(data.message);
@@ -83,9 +84,9 @@ var ChannelsPage = React.createClass({
 		// verto.subscribe("FSevent", {
 		// 	handler: _this.handleFSEvent
 		// });
-	},
+	}
 
-	handleFSEvent: function(v, e) {
+	handleFSEvent (v, e) {
 		console.log("FSevent:", e);
 		if (e.eventChannel == "FSevent.channel_create") {
 			var rows = this.state.rows;
@@ -133,9 +134,9 @@ var ChannelsPage = React.createClass({
 
 			this.setState({rows: rows});
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		let rows = this.state.rows.map(function(row) {
 			return <tr key={row.uuid}>
 				<td>{row.uuid}</td>
@@ -166,6 +167,6 @@ var ChannelsPage = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
 export default ChannelsPage;

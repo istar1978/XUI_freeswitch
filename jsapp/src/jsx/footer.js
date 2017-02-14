@@ -32,7 +32,7 @@ import React from 'react'
 import T from 'i18n-react';
 import Languages from "./languages";
 
-const Footer = React.createClass({
+class Footer extends React.Component {
 	render() {
 		return <div id="footer">
 			<br/><br/><br/>
@@ -41,6 +41,6 @@ const Footer = React.createClass({
 			<br/><br/>
 		</div>
 	}
-});
+};
 
 export default Footer;

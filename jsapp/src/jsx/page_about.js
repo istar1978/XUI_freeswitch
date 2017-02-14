@@ -33,9 +33,9 @@
 import React from 'react';
 import T from 'i18n-react';
 
-var AboutPage = React.createClass({
+class AboutPage extends React.Component {
 
-	render: function() {
+	render() {
 		return <div>
 			<h1><T.span text="About XUI"/></h1>
 			<p><T.span text="XUI is a FreeSWITCH UI framework and implementation"/></p>
@@ -44,6 +44,6 @@ var AboutPage = React.createClass({
 			<p><T.span text="More info"/>: <a href="https://github.com/seven1240/xui" target="_blank">XUI on Github</a></p>
 		</div>;
 	}
-});
+};
 
 export default AboutPage;

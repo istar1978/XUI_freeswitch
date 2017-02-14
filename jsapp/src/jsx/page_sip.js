@@ -41,7 +41,6 @@ import { EditControl } from './xtools'
 class NewSIPProfile extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
