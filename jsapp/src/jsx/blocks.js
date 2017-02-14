@@ -105,7 +105,13 @@ var toolbox = `<xml id="toolbox" style="display: none">
 </category>
 
 <category name="FreeSWITCH" colour="10">
-	<block type="audioRecord"></block>
+	<block type="audioRecord">
+		<value name="path">
+			<shadow type="text">
+				<field name="TEXT"></field>
+			</shadow>
+		</value>
+	</block>
 	<block type="fsConsoleLog">
 		  <value name="args">
 		  <shadow type="text">
@@ -162,8 +168,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		   </shadow>
 		 </value>
 		 <value name="TIMEOUT">
-			<shadow type="text">
-			 <field name="TEXT"></field>
+			<shadow type="math_number">
+			 <field name="NUM">5000</field>
 		   </shadow>
 		 </value>
 		<value name="sound">

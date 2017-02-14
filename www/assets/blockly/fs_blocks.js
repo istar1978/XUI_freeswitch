@@ -212,8 +212,8 @@ Blockly.Blocks['audioRecord'] = {
   init: function() {
     this.appendDummyInput()
         .appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD);
-    this.appendDummyInput().appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_NAME);
-    this.appendValueInput("name").setCheck(null);
+    this.appendDummyInput().appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_PATH);
+    this.appendValueInput("path").setCheck(null);
 
     this.appendDummyInput()
         .appendField(Blockly.Msg.FS_BLOCK_AUDIORECORD_MAX)
