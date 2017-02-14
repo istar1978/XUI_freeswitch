@@ -47,4 +47,34 @@ INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'APPKEY', 'APPKEY');
 INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'SECKEY', 'SECKEY');
 INSERT INTO dicts (realm, k, v) VALUES ('BAIDU', 'ACCTOKEN', 'ACCTOKEN');
 
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'au-ring', '%(400,200,383,417);%(400,2000,383,417)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'be-ring', '%(1000,3000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'ca-ring', '%(2000,4000,440,480)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'cn-ring', '%(1000,4000,450)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'cy-ring', '%(1500,3000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'cz-ring', '%(1000,4000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'de-ring', '%(1000,4000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'dk-ring', '%(1000,4000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'dz-ring', '%(1500,3500,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'eg-ring', '%(2000,1000,475,375)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'es-ring', '%(1500,3000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'fi-ring', '%(1000,4000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'fr-ring', '%(1500,3500,440)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'hk-ring', '%(400,200,440,480);%(400,3000,440,480)';
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'hu-ring', '%(1250,3750,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'il-ring', '%(1000,3000,400)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'in-ring', '%(400,200,425,375);%(400,2000,425,375)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'jp-ring', '%(1000,2000,420,380)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'ko-ring', '%(1000,2000,440,480)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'pk-ring', '%(1000,2000,400)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'pl-ring', '%(1000,4000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'ro-ring', '%(1850,4150,475,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'rs-ring', '%(1000,4000,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'ru-ring', '%(800,3200,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'sa-ring', '%(1200,4600,425)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'tr-ring', '%(2000,4000,450)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'uk-ring', '%(400,200,400,450);%(400,2000,400,450)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'us-ring', '%(2000,4000,440,480)');
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'beep', '%(1000,0,640)')
+
 -- END
