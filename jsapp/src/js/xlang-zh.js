@@ -195,6 +195,8 @@ LANGUAGES["zh"] = {
 	"Two different ways to record": "请选用一种方式录音",
 	"Use any phone, Call *991234 to Record": "用电话呼叫 *991234 录音",
 	"Callback to Record": "呼叫一个号码并录音",
+	"Recording to": "正在录音 *{path}*",
+	"Record completed": "录音完成 *{path}*",
 
 	"Dest Number": "被叫号码",
 	Start: "开始",

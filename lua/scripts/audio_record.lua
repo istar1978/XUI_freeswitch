@@ -22,7 +22,7 @@ session:consoleLog("err", '--------file len=--------------' .. len .. "\n")
 -- generate sql command
 local data = {}
 data.type = "audio"
-data.name = string.format('%s-%s.wav', uuid, date)
+data.name = "Record-" .. session:getVariable("caller_id_number")
 data.description = "audio record"
 data.file_name = recording_filename
 data.file_size = len

@@ -127,7 +127,31 @@ class NewMediaFile extends React.Component {
 class NewRecordFile extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {recordingMSG: null};
+
+		this.handleFSEvent = this.handleFSEvent.bind(this);
+	}
+
+	componentDidMount() {
+		verto.subscribe("FSevent.record_start", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.record_stop", {handler: this.handleFSEvent});
+	}
+
+	componentWillUnmount() {
+		verto.unsubscribe("FSevent.record_start");
+		verto.unsubscribe("FSevent.record_stop");
+	}
+
+	handleFSEvent(v, e) {
+		console.log("FSevent:", e);
+
+		if (e.eventChannel == "FSevent.record_start") {
+			const path = e.data["Record-File-Path"];
+			this.setState({recordingMSG: <T.span text={{key:"Recording to", path: path}}/>});
+		} else if (e.eventChannel == "FSevent.record_stop") {
+			const path = e.data["Record-File-Path"];
+			this.setState({recordingMSG: <T.span text={{key:"Record completed", path: path}}/>});
+		}
 	}
 
 	doCallbackRecord() {
@@ -151,6 +175,12 @@ class NewRecordFile extends React.Component {
 			</Modal.Header>
 			<Modal.Body>
 			<Form horizontal id="newRecordFileForm">
+				<FormGroup controlId="formMSG">
+					<Col sm={12}>{this.state.recordingMSG}</Col>
+				</FormGroup>
+
+				<hr/>
+
 				<FormGroup controlId="formMethod1">
 					<Col sm={12}>1.<T.span text="Use any phone, Call *991234 to Record"/></Col>
 				</FormGroup>
@@ -443,7 +473,7 @@ class MediaFilePage extends React.Component {
 class MediaFilesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, recordFormShow: true, rows: [], danger: false, progress: -1};
+		this.state = { formShow: false, recordFormShow: false, rows: [], danger: false, progress: -1};
 
 		console.log("location", this.props.location.query)
 
