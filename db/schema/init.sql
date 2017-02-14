@@ -75,6 +75,6 @@ INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'sa-ring', '%(1200,4600,425)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'tr-ring', '%(2000,4000,450)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'uk-ring', '%(400,200,400,450);%(400,2000,400,450)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'us-ring', '%(2000,4000,440,480)');
-INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'beep', '%(1000,0,640)')
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'beep', '%(1000,0,640)');
 
 -- END
