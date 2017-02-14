@@ -76,8 +76,12 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("media_files", params.id);
-
+	local sql = "SELECT abs_path from media_files where id = " .. params.id
+	xdb.find_by_sql(sql, function(row)
+		os.remove(row.abs_path)
+		freeswitch.consoleLog('err',row.abs_path)
+	end)
+	ret = xdb.delete("media_files", params.id)
 	if ret == 1 then
 		return 200, "{}"
 	else
