@@ -40,6 +40,8 @@ cidName=event:getHeader("Caller-Caller-ID-Name")
 cidNumber=event:getHeader("Caller-ANI")
 destNumber=event:getHeader("Other-Leg-Destination-Number") or event:getHeader("Caller-Destination-Number")
 fifoAction = event:getHeader("FIFO-Action")
+httpFifoNotificationURL = nil -- "http://localhost:9999/"
+
 
 if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction == "bridge-caller-stop" then
 
@@ -53,6 +55,8 @@ if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction
 	require 'xdb'
 
 	if config.db_auto_connect then xdb.connect(config.fifo_cdr_dsn or config.dsn) end
+
+	httpFifoNotificationURL = config.httpFifoNotificationURL
 
 	uuid = event:getHeader("Unique-ID")
 	fifo_name = event:getHeader("Fifo-Name")
@@ -79,8 +83,6 @@ if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction
 		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, rec)
 	end
 end
-
-httpFifoNotificationURL = "http://localhost:9999/"
 
 if httpFifoNotificationURL and fifoAction == "bridge-caller-start" then
 	api = freeswitch.API()

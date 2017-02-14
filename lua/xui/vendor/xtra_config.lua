@@ -24,3 +24,4 @@ config.is_auth = true
 config.session_path = "/tmp"
 config.view_path = config.base_dir .. "/xui/lua/xui/view"
 -- config.prefix_table = "gw"
+-- config.httpFifoNotificationURL="http://localhost:9999"
