@@ -35,7 +35,8 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './xtools'
+import { EditControl } from './xtools';
+import verto from './verto/verto';
 
 class NewGateway extends React.Component {
 	constructor(props) {
@@ -492,7 +493,7 @@ class GatewaysPage extends React.Component {
 		verto.subscribe("FSevent.custom::sofia::gateway_add", {handler: this.handleFSEvent});
 		verto.subscribe("FSevent.custom::sofia::gateway_state", {handler: this.handleFSEvent});
 
-		fsAPI("sofia", "xmlstatus", function(data) {
+		verto.fsAPI("sofia", "xmlstatus", function(data) {
 			let msg = $(data.message);
 
 			msg.find("gateway").each(function() {

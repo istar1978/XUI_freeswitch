@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import verto from './verto/verto';
 
 class SofiaPage extends React.Component {
 	constructor(props) {
@@ -56,25 +57,25 @@ class SofiaPage extends React.Component {
 	handleProfileStart (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
-		fsAPI("sofia", "profile " + profile + " start");
+		verto.fsAPI("sofia", "profile " + profile + " start");
 	}
 
 	handleProfileStop (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
-		fsAPI("sofia", "profile " + profile + " stop");
+		verto.fsAPI("sofia", "profile " + profile + " stop");
 	}
 
 	handleProfileRestart (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
-		fsAPI("sofia", "profile " + profile + " restart");
+		verto.fsAPI("sofia", "profile " + profile + " restart");
 	}
 
 	handleProfileRescan (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
-		fsAPI("sofia", "profile " + profile + " rescan");
+		verto.fsAPI("sofia", "profile " + profile + " rescan");
 	}
 
 	handleProfileMore (e) {
@@ -88,7 +89,7 @@ class SofiaPage extends React.Component {
 			return;
 		}
 
-		fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
+		verto.fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
 			var msg = $(data.message);
 			console.log(msg);
 			var profile = msg[2];
@@ -109,21 +110,21 @@ class SofiaPage extends React.Component {
 	handleGatewayReg (e) {
 		e.preventDefault();
 		var gwname = e.target.getAttribute("data-action-target");
-		fsAPI("sofia", "profile external register " + gwname);
+		verto.fsAPI("sofia", "profile external register " + gwname);
 	}
 
 	handleGatewayUnreg (e) {
 		e.preventDefault();
 
 		var gwname = e.target.getAttribute("data-action-target");
-		fsAPI("sofia", "profile external unregister " + gwname);
+		verto.fsAPI("sofia", "profile external unregister " + gwname);
 	}
 
 	handleGatewayDelete (e) {
 		e.preventDefault();
 		var gwname = e.target.getAttribute("data-action-target");
 		var _this = this;
-		fsAPI("sofia", "profile external killgw " + gwname, function(data) {
+		verto.fsAPI("sofia", "profile external killgw " + gwname, function(data) {
 			if (data.message.substr(0, 3) == "+OK") {
 				console.log(gwname + "deleted, how to delete from the dom?");
 				// ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(_this).parentNode);
@@ -141,7 +142,7 @@ class SofiaPage extends React.Component {
 			return;
 		}
 
-		fsAPI("sofia", "xmlstatus gateway " + gwname, function(data) {
+		verto.fsAPI("sofia", "xmlstatus gateway " + gwname, function(data) {
 			var msg = $(data.message);
 			var gateway = msg[2];
 			var param = gateway.firstElementChild;
@@ -220,7 +221,7 @@ class SofiaPage extends React.Component {
 			handler: this.handleFSEvent
 		});
 
-		fsAPI("sofia", "xmlstatus", function(data) {
+		verto.fsAPI("sofia", "xmlstatus", function(data) {
 			var rows = [];
 			var msg = $(data.message);
 

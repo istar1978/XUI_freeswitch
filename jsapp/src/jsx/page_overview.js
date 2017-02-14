@@ -32,6 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
+import verto from './verto/verto';
 
 class OverViewPage extends React.Component {
 	// overview is so special because it must wait the websocket connected before it can get any data
@@ -55,7 +56,7 @@ class OverViewPage extends React.Component {
 
 	componentDidMount () {
 		var _this = this;
-		if (verto) fsStatus(function(e) {
+		verto.fsStatus(function(e) {
 			_this.setState({msg: e.message});
 		})
 	}

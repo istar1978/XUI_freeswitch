@@ -34,6 +34,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import { NavItem,  Button } from 'react-bootstrap';
+import verto from './verto/verto';
 
 
 class Phone extends React.Component {

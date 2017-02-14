@@ -32,6 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
+import verto from './verto/verto';
 
 class CallsPage extends React.Component {
 	constructor(props) {
@@ -58,7 +59,7 @@ class CallsPage extends React.Component {
 
 	componentDidMount () {
 		var _this = this;
-		showFSAPI("calls", function(data) {
+		verto.showFSAPI("calls", function(data) {
 			var msg = $.parseJSON(data.message);
 			if (msg.row_count === 0) {
 				_this.setState({rows: []});

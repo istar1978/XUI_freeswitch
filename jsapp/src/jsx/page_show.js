@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import verto from './verto/verto';
 
 class ShowFSApplication extends React.Component{
 	render () {
@@ -305,7 +306,7 @@ class ShowFSPage extends React.Component{
 	componentDidMount () {
 		var _this = this;
 
-		showFSAPI(this.props.what, function(data) {
+		verto.showFSAPI(this.props.what, function(data) {
 			var msg = $.parseJSON(data.message);
 			if (msg.row_count === 0) {
 				_this.setState({rows: []});

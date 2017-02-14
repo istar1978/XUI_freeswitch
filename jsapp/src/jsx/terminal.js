@@ -32,6 +32,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import T from 'i18n-react';
+import verto from './verto/verto';
 
 class Terminal extends React.Component {
 	constructor(props) {
@@ -63,7 +64,7 @@ class Terminal extends React.Component {
 	welcome() {
 		this.pushLine("Welcome to FreeSWITCH ;)");
 		const _this = this;
-		fsAPI("status", "", function(ret) {
+		verto.fsAPI("status", "", function(ret) {
 			_this.pushLine2(ret.message, 'pre');
 		});
 	}
@@ -100,7 +101,7 @@ class Terminal extends React.Component {
 	complete() {
 		var _this = this;
 
-		fsAPI("console_complete", this.state.commandLine, function(ret) {
+		verto.fsAPI("console_complete", this.state.commandLine, function(ret) {
 			// console.log(ret);
 
 			if (ret.message == "\n\n\n\n") return;
@@ -178,7 +179,7 @@ class Terminal extends React.Component {
 			if (command === undefined) {
 				const _this = this;
 
-				fsAPI(input, arg, function(ret) {
+				verto.fsAPI(input, arg, function(ret) {
 					_this.pushLine2(ret.message, 'pre');
 				});
 			} else {

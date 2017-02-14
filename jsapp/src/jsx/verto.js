@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import Verto from './verto/verto.js';
+import verto from './verto/verto';
 
 
 class VertoPage extends React.Component {
@@ -46,7 +46,7 @@ class VertoPage extends React.Component {
 
 				fire_event("verto-login", v);
 
-				fsStatus(function(s) {
+				verto.fsStatus(function(s) {
 					// fire a "update-status" event so the OverView component can update
 					fire_event("update-status", s);
 				});
@@ -63,8 +63,8 @@ class VertoPage extends React.Component {
 			}
 		};
 
-		window.verto = Verto;
-		Verto.connect(verto_params(), callbacks);
+		// window.verto = Verto;
+		verto.connect(verto_params(), callbacks);
 	}
 
 	render() {

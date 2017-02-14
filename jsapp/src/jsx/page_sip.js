@@ -37,6 +37,7 @@ import { Link } from 'react-router';
 // http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './xtools'
+import verto from './verto/verto';
 
 class NewSIPProfile extends React.Component {
 	constructor(props) {
@@ -509,7 +510,7 @@ class SIPProfilesPage extends React.Component {
 		$.getJSON("/api/sip_profiles", "", function(data) {
 			_this.setState({rows: data});
 
-			fsAPI("sofia", "xmlstatus", function(data) {
+			verto.fsAPI("sofia", "xmlstatus", function(data) {
 				var rows = _this.state.rows;
 				var msg = $(data.message);
 
@@ -580,7 +581,7 @@ class SIPProfilesPage extends React.Component {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " start");
+		verto.fsAPI("sofia", "profile " + name + " start");
 	}
 
 	handleStop(e) {
@@ -588,7 +589,7 @@ class SIPProfilesPage extends React.Component {
 		const _this = this;
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " stop", function(ret) {
+		verto.fsAPI("sofia", "profile " + name + " stop", function(ret) {
 			if (ret.message.match("stopping:")) {
 				// trick FS has no sofia::profile_stop event
 				var evt = {}
@@ -606,7 +607,7 @@ class SIPProfilesPage extends React.Component {
 		const _this = this;
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " restart", function(ret) {
+		verto.fsAPI("sofia", "profile " + name + " restart", function(ret) {
 			if (ret.message.match("restarting:")) {
 				notify("restarting profile ...");
 			} else {
@@ -619,7 +620,7 @@ class SIPProfilesPage extends React.Component {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " rescan", function(ret) {
+		verto.fsAPI("sofia", "profile " + name + " rescan", function(ret) {
 			notify(ret.message);
 		});
 	}
@@ -637,7 +638,7 @@ class SIPProfilesPage extends React.Component {
 			return;
 		}
 
-		fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
+		verto.fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
 			if (!data.message.match('<')) {
 				console.log(data);
 				notify(data.message, 'error');

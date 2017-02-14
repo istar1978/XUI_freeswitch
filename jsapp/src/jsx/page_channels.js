@@ -32,6 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
+import verto from './verto/verto';
 
 class ChannelsPage extends React.Component {
 	constructor(props) {
@@ -57,7 +58,7 @@ class ChannelsPage extends React.Component {
 
 	componentDidMount () {
 		var _this = this;
-		showFSAPI("channels", function(data) {
+		verto.showFSAPI("channels", function(data) {
 			var msg = $.parseJSON(data.message);
 			if (msg.row_count === 0) {
 				_this.setState({rows: []});

@@ -32,6 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
+import verto from './verto/verto';
 
 class FSUsersPage extends React.Component {
 	constructor(props) {
@@ -51,7 +52,7 @@ class FSUsersPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		fsAPI("list_users", "", function(data) {
+		verto.fsAPI("list_users", "", function(data) {
 			// console.log(data.message);
 			var lines = data.message.split("\n");
 			var rows = [];

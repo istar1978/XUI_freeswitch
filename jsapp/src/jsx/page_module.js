@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
+import verto from './verto/verto';
 
 class ModulePage extends React.Component {
 	constructor(props) {
@@ -113,7 +114,7 @@ class ModulePage extends React.Component {
 			console.log(data);
 			_this.setState({rows: data});
 
-			fsAPI("show", "modules as json", function(ret) {
+			verto.fsAPI("show", "modules as json", function(ret) {
 				var msg = $.parseJSON(ret.message);
 				let modules = {};
 
@@ -168,11 +169,11 @@ class ModulePage extends React.Component {
 		var k = e.target.getAttribute("data-k");
 
 		if (data == "load") {
-			fsAPI("load", k);
+			verto.fsAPI("load", k);
 		} else if (data == "unload") {
-			fsAPI("unload", k);
+			verto.fsAPI("unload", k);
 		} else if (data == "reload") {
-			fsAPI("reload", k);
+			verto.fsAPI("reload", k);
 		}
 	}
 

@@ -33,6 +33,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import verto from './verto/verto';
 
 class RegistrationsPage extends React.Component {
 	constructor(props) {
@@ -58,7 +59,7 @@ class RegistrationsPage extends React.Component {
 
 	refreshRegistrations () {
 		var _this = this;
-		showFSAPI("registrations", function(data) {
+		verto.showFSAPI("registrations", function(data) {
 			var msg = $.parseJSON(data.message);
 
 			if (msg.row_count === 0) {

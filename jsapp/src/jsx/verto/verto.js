@@ -6,6 +6,7 @@ export class Verto {
 		this.q = [];
 		this._ws_callbacks = {};
 		this._current_id = 0;
+		this.options = {};
 
 		this.generateGUID = (typeof(window.crypto) !== 'undefined' &&
 			typeof(window.crypto.getRandomValues) !== 'undefined') ? function() {
@@ -371,7 +372,7 @@ export class Verto {
 	}
 
 	subscribe(channel, sparams) {
-		verto.sendMethod("verto.subscribe", {
+		this.sendMethod("verto.subscribe", {
 			eventChannel: channel,
 			subParams: sparams
 		});
@@ -383,6 +384,35 @@ export class Verto {
 
 	broadcast(channel, params) {
 
+	}
+
+	fsAPI(cmd, arg, success_cb, failed_cb) {
+		this.sendMethod("jsapi", {
+			command: "fsapi",
+			data: {
+				cmd: cmd,
+				arg: arg
+			},
+		}, success_cb, failed_cb);
+	}
+
+	fsStatus(success_cb, failed_cb) {
+		this.sendMethod("jsapi", {
+			command: "fsapi",
+			data: {
+				cmd: "status"
+			},
+		}, success_cb, failed_cb);
+	}
+
+	showFSAPI(what, success_cb, failed_cb) {
+		this.sendMethod("jsapi", {
+			command: "fsapi",
+			data: {
+				cmd: "show",
+				arg: what + " as json"
+			},
+		}, success_cb, failed_cb);
 	}
 }
 
