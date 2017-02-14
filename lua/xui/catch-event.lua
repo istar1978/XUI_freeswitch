@@ -67,18 +67,18 @@ if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction
 		rec.fifo_name = fifo_name
 		rec.ani = cidNumber
 		rec.dest_number = destNumber
-		rec.start_epoch = "" .. os.time()
+		rec.start_epoch = "" .. os.time() + config.tz*60*60
 
 		xdb.create('fifo_cdrs', rec)
 	elseif fifoAction == "bridge-caller-start" then
 		rec = {}
 		rec.bridged_number = destNumber
-		rec.bridge_epoch = "" .. os.time()
+		rec.bridge_epoch = "" .. os.time() + config.tz*60*60
 
 		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, rec)
 	elseif fifoAction == "bridge-caller-stop" then
 		rec = {}
-		rec.end_epoch = "" .. os.time()
+		rec.end_epoch = "" .. os.time() + config.tz*60*60
 
 		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, rec)
 	end
