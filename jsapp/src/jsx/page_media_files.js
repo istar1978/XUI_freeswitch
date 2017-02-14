@@ -38,6 +38,7 @@ import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import Dropzone from 'react-dropzone';
 import { EditControl } from './xtools'
+// import verto from './verto/verto';
 
 class NewMediaFile extends React.Component {
 	constructor(props) {
@@ -109,6 +110,62 @@ class NewMediaFile extends React.Component {
 							<T.span text="TTS" />
 						</Button>
 						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
+class NewRecordFile extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {};
+	}
+
+	doCallbackRecord() {
+		console.log("callback record ...");
+		fsAPI("bgapi", "originate user/" + this.refs.callbackNumber.value + " *991234", function(s) {
+			console.log(s);
+		}, function(s) {
+			console.error(s);
+			notify(s);
+		});
+	}
+
+	render() {
+
+		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg">
+					<T.span text="Record" />&nbsp;
+					<small><T.span text="Two different ways to record"/></small>
+				</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newRecordFileForm">
+				<FormGroup controlId="formMethod1">
+					<Col sm={12}>1.<T.span text="Use any phone, Call *991234 to Record"/></Col>
+				</FormGroup>
+
+				<hr/>
+
+				<FormGroup controlId="formMethod2">
+					<Col sm={12}>2. <T.span text="Callback to Record"/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formMethod22">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
+					<Col sm={10}>
+						<input type="input" name="number" placeholder="1000" ref="callbackNumber"/>&nbsp;
+						<input type="button" value="Call" onClick={this.doCallbackRecord.bind(this)}/>
 					</Col>
 				</FormGroup>
 			</Form>
@@ -386,7 +443,7 @@ class MediaFilePage extends React.Component {
 class MediaFilesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false, progress: -1};
+		this.state = { formShow: false, recordFormShow: true, rows: [], danger: false, progress: -1};
 
 		console.log("location", this.props.location.query)
 
@@ -403,11 +460,11 @@ class MediaFilesPage extends React.Component {
 		if (data == "new") {
 			// this.setState({ formShow: true});
 			this.dropzone.open();
-		}
-
-		if (data == "ivr") {
+		} else if (data == "ivr") {
 			this.setState({ formShow: true});
-		};
+		} else if (data == "record") {
+			this.setState({ recordFormShow: true });
+		}
 	}
 
 	handleDelete(e) {
@@ -518,6 +575,7 @@ class MediaFilesPage extends React.Component {
 
 	render() {
 		const formClose = () => this.setState({ formShow: false });
+		const recordFormClose = () => this.setState({ recordFormShow: false });
 		const toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    const danger = this.state.danger ? "danger" : "";
 
@@ -551,6 +609,13 @@ class MediaFilesPage extends React.Component {
 					<T.span onClick={this.handleControlClick} data="ivr" text="TTS" />
 				</Button>
 			</ButtonGroup>
+
+			<ButtonGroup>
+				<Button onClick={this.handleControlClick} data="record">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="record"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="record" text="Record" />
+				</Button>
+			</ButtonGroup>
 			</ButtonToolbar>
 
 			<h1><T.span text="Media Files"/> <small><T.span text="Drag and drop files here to upload"/></small></h1>
@@ -576,6 +641,8 @@ class MediaFilesPage extends React.Component {
 			<NewMediaFile show={this.state.formShow} onHide={formClose}
 				mfiles = {this.state.rows}
 				handleNewMediaFileAdded={this.handleMediaFileAdded.bind(this)}/>
+
+			<NewRecordFile show={this.state.recordFormShow} onHide={recordFormClose}/>
 		</div></Dropzone>
 	}
 }

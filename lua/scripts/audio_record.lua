@@ -5,10 +5,10 @@ session:consoleLog("err", '--------answer------------' .. "\n")
 -- session:speak('Please say, what you say will be recorded')
 
 -- record
-local recording_dir = '/tmp/20170119/'
+local recording_dir = '/tmp/'
 local uuid = session:get_uuid()
 local date=os.date('%Y%m%d%H%M%S')
-local recording_filename = string.format('%s%s-%s.wav', recording_dir, uuid, date)
+local recording_filename = string.format('%s-%s%s.wav', recording_dir, date, uuid)
 session:recordFile(recording_filename, 6000, 50, 5)
 
 session:consoleLog("err", '--------record over--------------' .. "\n")

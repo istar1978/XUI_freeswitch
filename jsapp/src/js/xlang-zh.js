@@ -191,6 +191,10 @@ LANGUAGES["zh"] = {
 	Template: "模板",
 	Upload: "上传",
 	Modules: "模块",
+	Record: "录音",
+	"Two different ways to record": "请选用一种方式录音",
+	"Use any phone, Call *991234 to Record": "用电话呼叫 *991234 录音",
+	"Callback to Record": "呼叫一个号码并录音",
 
 	"Dest Number": "被叫号码",
 	Start: "开始",
