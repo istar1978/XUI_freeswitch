@@ -33,39 +33,41 @@
 import React from 'react';
 import T from 'i18n-react';
 
-var OverViewPage = React.createClass({
+class OverViewPage extends React.Component {
 	// overview is so special because it must wait the websocket connected before it can get any data
-	getInitialState: function() {
-		return {msg: "connecting ..."};
-	},
+	constructor(props) {
+		super(props);
+		this.state = {msg: "connecting ..."};
+		this.handleUpdateStatus = this.handleUpdateStatus.bind(this);
+	}
 
-	handleClick: function(x) {
-	},
+	handleClick (x) {
+	}
 
-	componentWillMount: function() {
+	componentWillMount () {
 		// listen to "update-status" event
 		window.addEventListener("update-status", this.handleUpdateStatus);
-	},
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		window.removeEventListener("update-status", this.handleUpdateStatus);
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		var _this = this;
 		if (verto) fsStatus(function(e) {
 			_this.setState({msg: e.message});
 		})
-	},
+	}
 
-	handleUpdateStatus: function(e) {
+	handleUpdateStatus (e) {
 		// console.log("eeee", e.detail);
 		this.setState({msg: e.detail.message});
-	},
+	}
 
-	render: function() {
+	render () {
 		return <div><h1><T.span text={{ key: "Status"}} /></h1><pre>{this.state.msg}</pre></div>;
 	}
-});
+};
 
 export default OverViewPage;

@@ -34,42 +34,43 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
-var FifoCDRsPage = React.createClass({
-	getInitialState: function() {
-		return {rows: []};
-	},
+class FifoCDRsPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {rows: []};
+	}
 
-	handleClick: function(x) {
-	},
+	handleClick (x) {
+	}
 
-	handleControlClick: function(e) {
+	handleControlClick (e) {
 		console.log("clicked", e.target);
-	},
+	}
 
-	componentWillMount: function() {
-	},
+	componentWillMount () {
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount () {
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		const _this = this;
 
 		$.getJSON("/api/fifo_cdrs", function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
 		})
-	},
+	}
 
-	fifocdrsQuery: function(){
+	fifocdrsQuery (){
 		const _this = this;
 
 		$.getJSON("/api/fifo_cdrs/" + num, function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
 		})
 
-	},
+	}
 
-	render: function() {
+	render () {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 				<td>{row.channel_uuid}</td>
@@ -110,6 +111,6 @@ var FifoCDRsPage = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
 export default FifoCDRsPage;

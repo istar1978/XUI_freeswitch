@@ -32,8 +32,8 @@
 
 import React from 'react';
 
-var ShowFSApplication = React.createClass({
-	render: function() {
+class ShowFSApplication extends React.Component{
+	render () {
 		var i = 0;
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={i++}>
@@ -60,10 +60,10 @@ var ShowFSApplication = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSAPI = React.createClass({
-	render: function() {
+class ShowFSAPI extends React.Component{
+	render () {
 		var i = 0;
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={i++}>
@@ -90,10 +90,10 @@ var ShowFSAPI = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSComplete = React.createClass({
-	render: function() {
+class ShowFSComplete extends React.Component{
+	render () {
 		var i = 0;
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={i++}>
@@ -136,10 +136,10 @@ var ShowFSComplete = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSModule = React.createClass({
-	render: function() {
+class ShowFSModule extends React.Component{
+	render () {
 		var i = 0;
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={i++}>
@@ -166,10 +166,10 @@ var ShowFSModule = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSRegistration = React.createClass({
-	render: function() {
+class ShowFSRegistration extends React.Component{
+	render () {
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={row.reg_user + row.token}>
 				<td>{row.reg_user }</td>
@@ -205,10 +205,10 @@ var ShowFSRegistration = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSTasks = React.createClass({
-	render: function() {
+class ShowFSTasks extends React.Component{
+	render () {
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={row.task_id}>
 				<td>{row.task_id }</td>
@@ -236,10 +236,10 @@ var ShowFSTasks = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSAliases = React.createClass({
-	render: function() {
+class ShowFSAliases extends React.Component{
+	render () {
 		var i = 0;
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={i++}>
@@ -266,10 +266,10 @@ var ShowFSAliases = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSCommon = React.createClass({
-	render: function() {
+class ShowFSCommon extends React.Component{
+	render () {
 		var i = 0;
 		var rows = this.props.rows.map(function(row) {
 			return <tr key={i++}>
@@ -294,14 +294,15 @@ var ShowFSCommon = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
-var ShowFSPage = React.createClass({
-	getInitialState: function() {
-		return {rows: []};
-	},
+class ShowFSPage extends React.Component{
+	constructor(props) {
+		super(props);
+		this.state = {rows: []};
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		var _this = this;
 
 		showFSAPI(this.props.what, function(data) {
@@ -313,9 +314,9 @@ var ShowFSPage = React.createClass({
 				_this.setState({rows: msg.rows});
 			};
 		});
-	},
+	}
 
-	render: function() {
+	render () {
 		if (this.props.what == "application") {
 			return <ShowFSApplication rows = {this.state.rows} title = {this.props.title}/>
 		} else if (this.props.what == "api") {
@@ -334,6 +335,6 @@ var ShowFSPage = React.createClass({
 			return <ShowFSCommon rows = {this.state.rows} title = {this.props.title}/>
 		}
 	}
-});
+};
 
 export default ShowFSPage;

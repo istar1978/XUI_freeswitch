@@ -34,29 +34,33 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
-var CDRsPage = React.createClass({
-	getInitialState: function() {
+class CDRsPage extends React.Component {
+	constructor(props) {
+		super(props);
 		var theRows = localStorage.getItem("theRows");
     	if (theRows == null) {
 	    	var r = 10000;
 	    	localStorage.setItem("theRows", r);
      	}
-		return {rows: [], query_visible: false};
-	},
+     	this.state = {rows: [], query_visible: false};
+     	this.handleQuery = this.handleQuery.bind(this);
+     	this.handleSearch = this.handleSearch.bind(this);
+     	this.handleMore = this.handleMore.bind(this);
+	}
 
-	handleClick: function(x) {
-	},
+	handleClick (x) {
+	}
 
-	handleControlClick: function(e) {
+	handleControlClick (e) {
 		console.log("clicked", e.target);
-	},
+	}
 
-	handleMore: function(e){
+	handleMore (e){
 		e.preventDefault();
 		this.setState({query_visible: !this.state.query_visible})
-	},
+	}
 
-	handleSearch: function(e) {
+	handleSearch (e) {
 		const _this = this;
 		const qs = "startDate=" + this.startDate.value +
 			"&endDate=" + this.endDate.value +
@@ -69,23 +73,23 @@ var CDRsPage = React.createClass({
 		$.getJSON("/api/cdrs?" + qs, function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
-	},
+	}
 
-	componentWillMount: function() {
-	},
+	componentWillMount () {
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount () {
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		const _this = this;
 
 		$.getJSON("/api/cdrs?id=0", function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
-	},
+	}
 
-	handleQuery: function(e) {
+	handleQuery (e) {
 		var _this = this;
 		var data = parseInt(e.target.getAttribute("data"));
 
@@ -94,9 +98,9 @@ var CDRsPage = React.createClass({
 		$.getJSON("/api/cdrs?last=" + data + "&id=1", function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
-	},
+	}
 
-	render: function() {
+	render () {
 		var _this = this;
 
 		var rows = this.state.rows.map(function(row) {
@@ -157,6 +161,6 @@ var CDRsPage = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
 export default CDRsPage;

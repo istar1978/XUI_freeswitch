@@ -34,30 +34,31 @@ import React from 'react';
 import T from 'i18n-react';
 import { ButtonToolbar, ButtonGroup, Button, ProgressBar, Thumbnail } from 'react-bootstrap';
 
-var Member = React.createClass({
+class Member extends React.Component {
 	propTypes: {
 		onMemberClick: React.PropTypes.func,
-	},
+	}
 
-	getInitialState: function() {
-		return this.props.member;
-	},
+	constructor(props) {
+		super(props);
+		this.state = {};
+		this.handleClick = this.handleClick.bind(this);
+	}
 
 	// allow the parent to set my state
-	componentWillReceiveProps: function(props) {
+	componentWillReceiveProps (props) {
 		// console.log("props", props);
 		this.setState(props.member);
-	},
+	}
 
-	handleClick: function(e) {
+	handleClick (e) {
 		var member_id = e.currentTarget.getAttribute("data-member-id");
 		this.state.active = !this.state.active;
 		this.setState(this.state);
-
 		this.props.onMemberClick(member_id, this.state.active);
-	},
+	}
 
-	render: function() {
+	render () {
 		var row = this.state;
 		var className = this.state.active ? "member active selected" : "member";
 
@@ -83,29 +84,37 @@ var Member = React.createClass({
 			</li>
 		}
 	}
-});
+};
 
-var ConferencePage = React.createClass({
-	la: null,
-	activeMembers: {},
+class ConferencePage extends React.Component {
+	la: null
+	activeMembers: {}
 
-	getInitialState: function() {
-		return {name: this.props.name, rows: [], la: null,
+	constructor(props) {
+		super(props);
+		this.state = {
+			name: this.props.name, rows: [], la: null,
 			last_outcall_member_id: 0, outcall_rows: [],
 			outcallNumber: '', outcallNumberShow: false,
 			displayStyle: 'table', toolbarText: false
 		};
-	},
+		this.getChannelName = this.getChannelName.bind(this);
+		this.handleOutcallNumberChange = this.handleOutcallNumberChange.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleVertoLogin = this.handleVertoLogin.bind(this);
+		this.handleConferenceEvent = this.handleConferenceEvent.bind(this);
 
-	getChannelName: function(what) { // liveArray chat mod
+	}
+
+	getChannelName (what) { // liveArray chat mod
 		return "conference-" + what + "." + this.props.name + "@" + domain;
-	},
+	}
 
-	handleOutcallNumberChange: function(e) {
+	handleOutcallNumberChange (e) {
 		this.setState({outcallNumber: e.target.value});
-	},
+	}
 
-	handleControlClick: function(e) {
+	handleControlClick (e) {
 		var data = e.target.getAttribute("data");
 		console.log("data", data);
 
@@ -190,21 +199,21 @@ var ConferencePage = React.createClass({
 				fsAPI("conference", args);
 			}
 		}
-	},
+	}
 
-	handleMemberClick: function(member_id, isActive) {
+	handleMemberClick (member_id, isActive) {
 		console.log("member_id", member_id);
 		this.activeMembers[member_id] = isActive;
-	},
+	}
 
-	componentWillMount: function() {
-	},
+	componentWillMount () {
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		if (this.la) this.la.destroy();
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		console.log("name:", this.props.name);
 		window.addEventListener("verto-login", this.handleVertoLogin);
 
@@ -212,16 +221,16 @@ var ConferencePage = React.createClass({
 			this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
 			this.la.onChange = this.handleConferenceEvent;
 		} // else verto is not ready yet, this happends on a refresh, wait for the verto-login event;
-	},
+	}
 
-	handleVertoLogin: function(e) {
+	handleVertoLogin (e) {
 		// console.log("eeee", e.detail);
 		if (this.la) this.la.destroy;
 		this.la = new $.verto.liveArray(verto, this.getChannelName("liveArray"), this.props.name, {});
 		this.la.onChange = this.handleConferenceEvent;
-	},
+	}
 
-	handleConferenceEvent: function(la, a) {
+	handleConferenceEvent (la, a) {
 		// console.log("onChange FSevent:", la);
 		console.log("onChange FSevent:", a);
 
@@ -296,9 +305,9 @@ var ConferencePage = React.createClass({
 			console.log("unknow action: ", a.action);
 			break;
 		}
-	},
+	}
 
-	render: function() {
+	render () {
 		var _this = this;
 
 		const rows = this.state.outcall_rows.concat(this.state.rows);
@@ -401,6 +410,6 @@ var ConferencePage = React.createClass({
 			</div>
 		</div>
 	}
-});
+};
 
 export default ConferencePage;

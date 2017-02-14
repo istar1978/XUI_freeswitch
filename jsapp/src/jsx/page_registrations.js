@@ -34,27 +34,29 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
-var RegistrationsPage = React.createClass({
-	getInitialState: function() {
-		return {rows: []};
-	},
+class RegistrationsPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {rows: []};
+		this.handleControlClick = this.handleControlClick.bind(this);
+	}
 
-	handleControlClick: function(e) {
+	handleControlClick (e) {
 		this.refreshRegistrations();
-	},
+	}
 
-	componentWillMount: function() {
-	},
+	componentWillMount () {
+	}
 
-	componentWillUnmount: function() {
-	},
+	componentWillUnmount () {
+	}
 
 
-	componentDidMount: function() {
+	componentDidMount () {
 		this.refreshRegistrations();
-	},
+	}
 
-	refreshRegistrations: function() {
+	refreshRegistrations () {
 		var _this = this;
 		showFSAPI("registrations", function(data) {
 			var msg = $.parseJSON(data.message);
@@ -66,12 +68,12 @@ var RegistrationsPage = React.createClass({
 				_this.setState({rows: msg.rows});
 			};
 		});
-	},
+	}
 
-	handleFSEvent: function(v, e) {
-	},
+	handleFSEvent (v, e) {
+	}
 
-	render: function() {
+	render () {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.reg_user + row.token}>
 				<td>{row.reg_user }</td>
@@ -89,8 +91,8 @@ var RegistrationsPage = React.createClass({
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={this.handleControlClick} data="refresh">
-					<i className="fa fa-refresh" aria-hidden="true" onClick={this.handleControlClick} data="refresh"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="refresh" text="Refresh" />
+					<i className="fa fa-refresh" aria-hidden="true" data="refresh"></i>&nbsp;
+					<T.span data="refresh" text="Refresh" />
 				</Button>
 			</ButtonToolbar>
 
@@ -114,7 +116,6 @@ var RegistrationsPage = React.createClass({
 			</table>
 		</div>
 	}
-
-});
+};
 
 export default RegistrationsPage;

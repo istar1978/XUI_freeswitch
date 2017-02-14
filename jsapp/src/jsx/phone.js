@@ -36,9 +36,10 @@ import T from 'i18n-react';
 import { NavItem,  Button } from 'react-bootstrap';
 
 
-var Phone = React.createClass({
-	getInitialState: function() {
-		return {
+class Phone extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
 			displayState: false,
 			loginState: false,
 			callState: "Idle",
@@ -48,24 +49,33 @@ var Phone = React.createClass({
 			dtmfVisible: false,
 			useVideo: false,
 			destNumber: '',
-
 			displayStyle: null
 		};
-	},
+		this.handleMenuClick = this.handleMenuClick.bind(this);
+		this.handleVertoLogin = this.handleVertoLogin.bind(this);
+		this.handleVertoDisconnect = this.handleVertoDisconnect.bind(this);
+		this.handleVertoDialogState = this.handleVertoDialogState.bind(this);
+		this.handleDestNumberChange = this.handleDestNumberChange.bind(this);
+		this.handleCall = this.handleCall.bind(this);
+		this.handleHangup = this.handleHangup.bind(this);
+		this.handleAnswer = this.handleAnswer.bind(this);
+		this.handleDTMF = this.handleDTMF.bind(this);
+		this.toggleVideo = this.toggleVideo.bind(this);
+	}
 
-	handleMenuClick: function() {
+	handleMenuClick () {
 		this.setState({displayState: !this.state.displayState});
-	},
+	}
 
-	handleVertoLogin: function() {
+	handleVertoLogin () {
 		this.setState({loginState: true});
-	},
+	}
 
-	handleVertoDisconnect: function() {
+	handleVertoDisconnect () {
 		this.setState({loginState: false});
-	},
+	}
 
-	handleVertoDialogState: function(e) {
+	handleVertoDialogState (e) {
 		var d = e.detail;
 
 		switch (d.state) {
@@ -113,13 +123,13 @@ var Phone = React.createClass({
 			break;
 		default:
 		}
-	},
+	}
 
-	handleDestNumberChange: function(e) {
+	handleDestNumberChange (e) {
 		this.setState({destNumber: e.target.value});
-	},
+	}
 
-	handleCall: function() {
+	handleCall () {
 		var number = this.state.destNumber;
 		if (!number) {
 			this.setState({destNumber: localStorage.getItem("phone.destNumber")});
@@ -161,17 +171,17 @@ var Phone = React.createClass({
 				useVideo: 'any'
 			}
 		});
-	},
+	}
 
-	handleHangup: function() {
+	handleHangup () {
 		this.state.curCall.hangup();
-	},
+	}
 
-	handleAnswer: function() {
+	handleAnswer () {
 		this.state.curCall.answer();
-	},
+	}
 
-	handleDTMF: function(e) {
+	handleDTMF (e) {
 		var dtmf = e.target.getAttribute("data-dtmf");
 
 		if (!dtmf) {
@@ -185,13 +195,13 @@ var Phone = React.createClass({
 				this.setState({destNumber: destNumber});
 			}
 		}
-	},
+	}
 
-	toggleVideo:function() {
+	toggleVideo() {
 		this.setState({useVideo: !this.state.useVideo});
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		window.addEventListener("verto-login", this.handleVertoLogin);
 		window.addEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.addEventListener("verto-dialog-state", this.handleVertoDialogState);
@@ -205,15 +215,15 @@ var Phone = React.createClass({
 
 		// hack ringer
 		verto.ringer = $('#webcam');
-	},
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		window.removeEventListener("verto-login", this.handleVertoLogin);
 		window.removeEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.removeEventListener("verto-dialog-state", this.handleVertoDialogState);
-	},
+	}
 
-	render: function() {
+	render () {
 		var state;
 		var hangupButton = null;
 		var transferButton = null;
@@ -356,7 +366,6 @@ var Phone = React.createClass({
 			</div>
 		</NavItem>
 	}
-
-});
+};
 
 export default Phone;

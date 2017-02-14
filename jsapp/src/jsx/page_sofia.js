@@ -32,40 +32,52 @@
 
 import React from 'react';
 
-var SofiaPage = React.createClass({
-	getInitialState: function() {
-		return {
+class SofiaPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
 			rows: [],
 			gwDetails: {name: undefined},
 			profileDetails: {name: undefined}
 		};
-	},
+		this.handleProfileStart = this.handleProfileStart.bind(this);
+		this.handleProfileStop = this.handleProfileStop.bind(this);
+		this.handleProfileRestart = this.handleProfileRestart.bind(this);
+		this.handleProfileRescan = this.handleProfileRescan.bind(this);
+		this.handleProfileMore = this.handleProfileMore.bind(this);
+		this.handleGatewayReg = this.handleGatewayReg.bind(this);
+		this.handleGatewayUnreg = this.handleGatewayUnreg.bind(this);
+		this.handleGatewayDelete = this.handleGatewayDelete.bind(this);
+		this.handleGatewayDetail = this.handleGatewayDetail.bind(this);
+		this.handleFSEvent = this.handleFSEvent.bind(this);
+		
+	}
 
-	handleProfileStart: function(e) {
+	handleProfileStart (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " start");
-	},
+	}
 
-	handleProfileStop: function(e) {
+	handleProfileStop (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " stop");
-	},
+	}
 
-	handleProfileRestart: function(e) {
+	handleProfileRestart (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " restart");
-	},
+	}
 
-	handleProfileRescan: function(e) {
+	handleProfileRescan (e) {
 		e.preventDefault();
 		var profile = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile " + profile + " rescan");
-	},
+	}
 
-	handleProfileMore: function(e) {
+	handleProfileMore (e) {
 		e.preventDefault();
 
 		var _this = this;
@@ -92,22 +104,22 @@ var SofiaPage = React.createClass({
 
 			_this.setState({profileDetails: {name: profile_name, rows: rows}});
 		});
-	},
+	}
 
-	handleGatewayReg: function(e) {
+	handleGatewayReg (e) {
 		e.preventDefault();
 		var gwname = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile external register " + gwname);
-	},
+	}
 
-	handleGatewayUnreg: function(e) {
+	handleGatewayUnreg (e) {
 		e.preventDefault();
 
 		var gwname = e.target.getAttribute("data-action-target");
 		fsAPI("sofia", "profile external unregister " + gwname);
-	},
+	}
 
-	handleGatewayDelete: function(e) {
+	handleGatewayDelete (e) {
 		e.preventDefault();
 		var gwname = e.target.getAttribute("data-action-target");
 		var _this = this;
@@ -117,9 +129,9 @@ var SofiaPage = React.createClass({
 				// ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(_this).parentNode);
 			}
 		});
-	},
+	}
 
-	handleGatewayDetail: function(e) {
+	handleGatewayDetail (e) {
 		e.preventDefault();
 		var _this = this;
 		var gwname = e.target.getAttribute("data-action-target");
@@ -147,9 +159,9 @@ var SofiaPage = React.createClass({
 
 			_this.setState({gwDetails: {name: gwname, rows: rows}});
 		});
-	},
+	}
 
-	handleFSEvent: function(v, e) {
+	handleFSEvent (v, e) {
 		console.log("FSevent:", e);
 		if (e.eventChannel == "FSevent.custom::sofia::gateway_state") {
 			var gw = e.data["Gateway"];
@@ -195,9 +207,9 @@ var SofiaPage = React.createClass({
 
 			this.setState({rows: rows});
 		}
-	},
+	}
 
-	componentDidMount: function() {
+	componentDidMount () {
 		var _this = this;
 
 		verto.subscribe("FSevent.custom::sofia::gateway_state", {
@@ -263,14 +275,14 @@ var SofiaPage = React.createClass({
 
 			_this.setState({rows: rows});
 		});
-	},
+	}
 
-	componentWillUnmount: function() {
+	componentWillUnmount () {
 		verto.unsubscribe("FSevent.custom::sofia::gateway_state");
 		verto.unsubscribe("FSevent.custom::sofia::profile_start");
-	},
+	}
 
-	render: function() {
+	render () {
 		var _this = this;
 		var rows = [];
 
@@ -340,6 +352,6 @@ var SofiaPage = React.createClass({
 			</table>
 		</div>;
 	}
-});
+};
 
 export default SofiaPage;
