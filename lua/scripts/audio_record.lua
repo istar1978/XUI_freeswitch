@@ -8,10 +8,10 @@ session:streamFile("silence_stream://1000")
 session:streamFile("tone_stream://%(250,0,1000)")
 
 -- record
-local recording_dir = '/usr/local/freeswitch/storage/recording'
+local recording_dir = '/usr/local/freeswitch/storage/upload'
 local uuid = session:get_uuid()
 local date=os.date('%Y%m%d%H%M%S')
-local recording_filename = string.format('%s-%s%s.wav', recording_dir, date, uuid)
+local recording_filename = string.format('%s/record-%s-%s.wav', recording_dir, date, uuid)
 session:recordFile(recording_filename, 6000, 50, 5)
 
 session:consoleLog("err", '--------record over--------------' .. "\n")
@@ -29,6 +29,8 @@ data.name = "Record-" .. session:getVariable("caller_id_number")
 data.description = "audio record"
 data.file_name = recording_filename
 data.file_size = len
+data.mime = "audio/wave"
+data.ext = "wav"
 data.abs_path = recording_filename
 data.dir_path = recording_dir
 data.rel_path = string.sub(data.abs_path, string.len(data.dir_path) + 2)
