@@ -37,6 +37,8 @@ class ChannelsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {rows: []};
+
+		this.handleFSEvent = this.handleFSEvent.bind(this);
 	}
 
 	handleClick (x) {
