@@ -271,6 +271,7 @@ LANGUAGES["zh"] = {
 	channel_uuid: "路径识别码",
 	FileShow: "文件预览",
 	HiddenFileShow: "关闭预览",
+	"days": "*{path}*天",
 
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
