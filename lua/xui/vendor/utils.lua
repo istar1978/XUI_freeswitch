@@ -125,10 +125,11 @@ utils.apply_dnc = function(number, dnc)
 	dnc:gsub("([+-][^+-]+)", function(prefix)
 		-- print(prefix)
 		if prefix:sub(1,1) == '-' then
+			prefix = prefix:sub(2)
 			local pos = 2
 			local s, e = string.find(number, prefix)
 			if (s == 1) then
-				pos = pos + e
+				pos = 1 + e
 			end
 			number = number:sub(pos)
 		elseif prefix:sub(1,1) == '+' then
