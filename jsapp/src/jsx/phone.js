@@ -55,6 +55,7 @@ class Phone extends React.Component {
 		this.handleVertoLogin = this.handleVertoLogin.bind(this);
 		this.handleVertoDisconnect = this.handleVertoDisconnect.bind(this);
 		this.handleVertoDialogState = this.handleVertoDialogState.bind(this);
+		this.handleVertoPhoneOpen = this.handleVertoPhoneOpen.bind(this);
 		this.handleDestNumberChange = this.handleDestNumberChange.bind(this);
 		this.handleCall = this.handleCall.bind(this);
 		this.handleHangup = this.handleHangup.bind(this);
@@ -73,6 +74,11 @@ class Phone extends React.Component {
 
 	handleVertoDisconnect () {
 		this.setState({loginState: false});
+	}
+
+	handleVertoPhoneOpen (e) {
+		const destNumber = e.detail;
+		this.setState({destNumber: destNumber, displayState: true});
 	}
 
 	handleVertoDialogState (e) {
@@ -205,6 +211,7 @@ class Phone extends React.Component {
 		window.addEventListener("verto-login", this.handleVertoLogin);
 		window.addEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.addEventListener("verto-dialog-state", this.handleVertoDialogState);
+		window.addEventListener("verto-phone-open", this.handleVertoPhoneOpen);
 
 		if (verto_loginState) this.handleVertoLogin();
 
@@ -221,6 +228,7 @@ class Phone extends React.Component {
 		window.removeEventListener("verto-login", this.handleVertoLogin);
 		window.removeEventListener("verto-disconnect", this.handleVertoDisconnect);
 		window.removeEventListener("verto-dialog-state", this.handleVertoDialogState);
+		window.removeEventListener("verto-phone-open", this.handleVertoPhoneOpen);
 	}
 
 	render () {

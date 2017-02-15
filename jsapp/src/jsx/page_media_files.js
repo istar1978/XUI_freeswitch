@@ -164,6 +164,11 @@ class NewRecordFile extends React.Component {
 		});
 	}
 
+	handleOpenWebPhone(e) {
+		e.preventDefault();
+		fire_event("verto-phone-open", '*991234');
+	}
+
 	render() {
 
 		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
@@ -182,7 +187,13 @@ class NewRecordFile extends React.Component {
 				<hr/>
 
 				<FormGroup controlId="formMethod1">
-					<Col sm={12}>1.<T.span text="Use any phone, Call *991234 to record after BEEP"/></Col>
+					<Col sm={12}>
+						<Button onClick={this.handleOpenWebPhone} className="pull-right">
+							<i className="fa fa-phone" aria-hidden="true" onClick={this.handleControlClick}></i>
+						</Button>
+
+						1.<T.span text="Use any phone, Call *991234 to record after BEEP"/>
+					</Col>
 				</FormGroup>
 
 				<hr/>
@@ -195,7 +206,9 @@ class NewRecordFile extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
 					<Col sm={10}>
 						<input type="input" name="number" placeholder="1000" ref="callbackNumber"/>&nbsp;
-						<input type="button" value="Call" onClick={this.doCallbackRecord.bind(this)}/>
+						<Button onClick={this.doCallbackRecord.bind(this)}>
+							<i className="fa fa-phone" aria-hidden="true" onClick={this.doCallbackRecord.bind(this)}></i>
+						</Button>
 					</Col>
 				</FormGroup>
 			</Form>
