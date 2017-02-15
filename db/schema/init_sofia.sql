@@ -131,7 +131,7 @@ INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T2', '
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'timer-T4', '4000', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'auto-jitterbuffer-msec', '60', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'renegotiate-codec-on-hold', 'true', 0, 1);
-INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'context', 'public', 0, 1);
+INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('SOFIA', 'context', 'public', 0, 0);
 
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'scheme', 'Digest', 0, 1);
 INSERT INTO params (realm, k, v, ref_id, disabled) VALUES('gateway', 'extension-in-contact', 'true', 0, 1);
