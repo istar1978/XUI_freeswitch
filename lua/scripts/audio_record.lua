@@ -8,7 +8,7 @@ session:streamFile("silence_stream://1000")
 session:streamFile("tone_stream://%(250,0,1000)")
 
 -- record
-local recording_dir = '/tmp/'
+local recording_dir = '/usr/local/freeswitch/storage/recording'
 local uuid = session:get_uuid()
 local date=os.date('%Y%m%d%H%M%S')
 local recording_filename = string.format('%s-%s%s.wav', recording_dir, date, uuid)

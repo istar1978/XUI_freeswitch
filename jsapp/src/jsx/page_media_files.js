@@ -170,15 +170,10 @@ class NewRecordFile extends React.Component {
 	}
 
 	render() {
+		if (!this.props.show) return null;
 
-		return <Modal {...this.props} aria-labelledby="contained-modal-title-lg">
-			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg">
-					<T.span text="Record" />&nbsp;
-					<small><T.span text="Two different ways to record"/></small>
-				</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
+		return <div aria-labelledby="contained-modal-title-lg">
+			<h1><T.span text="Record"/></h1>
 			<Form horizontal id="newRecordFileForm">
 				<FormGroup controlId="formMSG">
 					<Col sm={12}>{this.state.recordingMSG}</Col>
@@ -212,14 +207,8 @@ class NewRecordFile extends React.Component {
 					</Col>
 				</FormGroup>
 			</Form>
-			</Modal.Body>
-			<Modal.Footer>
-				<Button onClick={this.props.onHide}>
-					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
-					<T.span text="Close" />
-				</Button>
-			</Modal.Footer>
-		</Modal>;
+			<br/><br/><br/>
+		</div>
 	}
 }
 
@@ -506,7 +495,7 @@ class MediaFilesPage extends React.Component {
 		} else if (data == "ivr") {
 			this.setState({ formShow: true});
 		} else if (data == "record") {
-			this.setState({ recordFormShow: true });
+			this.setState({ recordFormShow: !this.state.recordFormShow });
 		}
 	}
 
@@ -618,7 +607,6 @@ class MediaFilesPage extends React.Component {
 
 	render() {
 		const formClose = () => this.setState({ formShow: false });
-		const recordFormClose = () => this.setState({ recordFormShow: false });
 		const toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    const danger = this.state.danger ? "danger" : "";
 
@@ -638,6 +626,8 @@ class MediaFilesPage extends React.Component {
 		})
 
 		return <Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} className="dropzone" activeClassName="dropzone_active" disableClick={true}><div>
+			<NewRecordFile show={this.state.recordFormShow}/>
+
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				<Button onClick={this.handleControlClick} data="new">
@@ -684,8 +674,6 @@ class MediaFilesPage extends React.Component {
 			<NewMediaFile show={this.state.formShow} onHide={formClose}
 				mfiles = {this.state.rows}
 				handleNewMediaFileAdded={this.handleMediaFileAdded.bind(this)}/>
-
-			<NewRecordFile show={this.state.recordFormShow} onHide={recordFormClose}/>
 		</div></Dropzone>
 	}
 }
