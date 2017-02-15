@@ -59,37 +59,34 @@ class Member extends React.Component {
 	}
 
 	render () {
-		var row = this.state;
+		const member = this.props.member;
 		var className = this.state.active ? "member active selected" : "member";
 
-		console.log('props', this.props);
+		// console.log('props', this.props);
 
 		if (this.props.displayStyle == 'table') {
-			return <tr className={className} data-member-id={row.memberID} onClick={this.handleClick}>
-					<td>{row.memberID}</td>
-					<td>"{row.cidName}" &lt;{row.cidNumber}&gt;</td>
-					<td><div className='inlineleft'>{row.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
-						{row.status.audio.talking ? <i className="fa fa-volume-up" style={{color:"green"}} aria-hidden="true"></i> : <i className="fa fa-volume-off" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
-						{row.status.audio.deaf ? <i className="fa fa-bell-slash-o" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-bell-o" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
-						{row.status.audio.muted ? <i className="fa fa-microphone-slash" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-microphone" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
-						{row.status.audio.onHold ? <i className="fa fa-circle-o-notch" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-circle-o" style={{color:"#ffe200"}} aria-hidden="true"></i>} |&nbsp;
+			return <tr className={className} data-member-id={member.memberID} onClick={this.handleClick}>
+					<td>{member.memberID}</td>
+					<td>"{member.cidName}" &lt;{member.cidNumber}&gt;</td>
+					<td><div className='inlineleft'>{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.talking ? <i className="fa fa-volume-up" style={{color:"green"}} aria-hidden="true"></i> : <i className="fa fa-volume-off" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.deaf ? <i className="fa fa-bell-slash-o" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-bell-o" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.muted ? <i className="fa fa-microphone-slash" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-microphone" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.onHold ? <i className="fa fa-circle-o-notch" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-circle-o" style={{color:"#ffe200"}} aria-hidden="true"></i>} |&nbsp;
 						</div>
-						<div className="inline"> <ProgressBar active bsStyle="success" now={row.status.audio.energyScore/50} /></div>
+						<div className="inline"> <ProgressBar active bsStyle="success" now={member.status.audio.energyScore/50} /></div>
 					</td>
-					<td>{row.email}</td>
+					<td>{member.email}</td>
 			</tr>;
 		} else if (this.props.displayStyle == 'list') {
-			return <li className={className} data-member-id={row.memberID} onClick={this.handleClick}>
-				{row.cidNumber}
+			return <li className={className} data-member-id={member.memberID} onClick={this.handleClick}>
+				{member.cidNumber}
 			</li>
 		}
 	}
 };
 
 class ConferencePage extends React.Component {
-	la: null
-	activeMembers: {}
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -98,6 +95,10 @@ class ConferencePage extends React.Component {
 			outcallNumber: '', outcallNumberShow: false,
 			displayStyle: 'table', toolbarText: false
 		};
+
+		this.la = null;
+		this.activeMembers = {};
+
 		this.getChannelName = this.getChannelName.bind(this);
 		this.handleOutcallNumberChange = this.handleOutcallNumberChange.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
