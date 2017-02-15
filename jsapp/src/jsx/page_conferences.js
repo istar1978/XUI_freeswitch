@@ -104,7 +104,7 @@ class ConferencePage extends React.Component {
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleVertoLogin = this.handleVertoLogin.bind(this);
 		this.handleConferenceEvent = this.handleConferenceEvent.bind(this);
-
+		this.handleMemberClick = this.handleMemberClick.bind(this);
 	}
 
 	getChannelName (what) { // liveArray chat mod
