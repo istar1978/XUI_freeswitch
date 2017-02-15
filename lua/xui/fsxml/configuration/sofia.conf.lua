@@ -62,16 +62,22 @@ end
 
 function build_gateways(cond)
 	local gws = ""
+
 	xdb.find_by_cond("gateways", cond, "id", function(row)
 		local p = '<param name="realm"' .. ' value="' .. row.realm .. '"/>'
 		p = p .. '<param name="username"' .. ' value="' .. row.username .. '"/>'
 		p = p .. '<param name="password"' .. ' value="' .. row.password .. '"/>'
 		p = p .. '<param name="register"' .. ' value="' .. row.register .. '"/>'
 
+		xdb.find_by_cond("params", {realm = 'gateway', ref_id = row.id, disabled = 0}, "id", function(row)
+			p = p .. '<param name="' .. row.k .. '"' .. ' value="' .. row.v .. '"/>'
+		end)
+
 		local gw = '<gateway name="' .. row.name .. '">' .. p .. '</gateway>'
 
 		gws = gws .. gw
 	end)
+
 	return gws
 end
 

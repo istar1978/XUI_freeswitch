@@ -175,6 +175,14 @@ function showFSAPI(what, success_cb, failed_cb)
 
 function fsAPI(cmd, arg, success_cb, failed_cb)
 {
+	if (!success_cb) success_cb = function(r) {
+		console.log("Success", r);
+	}
+
+	if (!success_cb) failed_cb = function(r) {
+		console.error("Error", r);
+	}
+
 	verto.sendMethod("jsapi", {
 		command: "fsapi",
 		data: {
