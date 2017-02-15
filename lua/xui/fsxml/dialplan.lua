@@ -104,7 +104,7 @@ xdb.find_by_sql(sql, function(row)
 	elseif (row.dest_type == 'FS_DEST_GATEWAY') then
 		table.insert(actions_table, {app = "bridge", data = "sofia/gateway/" .. row.body .. "/" .. dest})
 	elseif (row.dest_type == 'FS_DEST_IP') then
-		table.insert(actions_table, {app = "bridge", data = "sofia/default/" .. dest .. "@" .. row.body})
+		table.insert(actions_table, {app = "bridge", data = "sofia/public/" .. dest .. "@" .. row.body})
 	elseif (row.dest_type == 'FS_DEST_IVRBLOCK') then
 		local block_prefix = config.block_path .. "/blocks-"
 		table.insert(actions_table, {app = "lua", data = block_prefix .. row.dest_uuid .. ".lua"})
