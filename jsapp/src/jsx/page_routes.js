@@ -470,7 +470,7 @@ class RoutePage extends React.Component {
 class RoutesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false,isSysRouterShow:false};
+		this.state = { formShow: false, rows: [], danger: false,isSysRouterShow: false, ifShowBtName: "Show SysRoute"};
 
 	    // This binding is necessary to make `this` work in the callback
 	    this.handleControlClick = this.handleControlClick.bind(this);
@@ -516,6 +516,8 @@ class RoutesPage extends React.Component {
 	}
 	handleSysRouterShow(e){
 		this.setState({isSysRouterShow:!this.state.isSysRouterShow});
+		var ifShowBtName = (this.state.ifShowBtName == "Show SysRoute") ? "Hide SysRoute" : "Show SysRoute";
+		this.setState({ifShowBtName:ifShowBtName});
 	}
 
 	handleClick(x) {
@@ -602,7 +604,7 @@ class RoutesPage extends React.Component {
 					<T.span onClick={this.handleControlClick} data="new" text="New" />
 				</Button>
 				<Button onClick={this.handleSysRouterShow} data="sysRoute">
-					<T.span onClick={this.handleSysRouterShow} data="sysRoute" text="Show Hide SysRoute" />
+					<T.span onClick={this.handleSysRouterShow} data="sysRoute" text={this.state.ifShowBtName} />
 				</Button>
 			</ButtonToolbar>
 
@@ -613,7 +615,7 @@ class RoutesPage extends React.Component {
 				<tbody>
 				<tr>
 					<th>ID</th>
-					<th><T.span text="Context" /></th>
+					<th><T.span text="Context" onClick={this.handleSortClick.bind(this)} data="context"/></th>
 					<th><T.span text="Prefix" onClick={this.handleSortClick.bind(this)} data='prefix'/></th>
 					<th><T.span text="Name" /></th>
 					<th><T.span text="Description" /></th>
