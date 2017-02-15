@@ -135,11 +135,13 @@ class NewRecordFile extends React.Component {
 	componentDidMount() {
 		verto.subscribe("FSevent.record_start", {handler: this.handleFSEvent});
 		verto.subscribe("FSevent.record_stop", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.custom::xui::record_complete", {handler: this.handleFSEvent});
 	}
 
 	componentWillUnmount() {
 		verto.unsubscribe("FSevent.record_start");
 		verto.unsubscribe("FSevent.record_stop");
+		verto.subscribe("FSevent.custom::xui::record_complete");
 	}
 
 	handleFSEvent(v, e) {

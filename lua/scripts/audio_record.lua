@@ -58,3 +58,10 @@ session:consoleLog("err", '--------sql command--------------' .. sql .. "\n")
 local dbh = freeswitch.Dbh("sqlite://xui")
 dbh:query(sql)
 dbh:release()
+
+
+local event = freeswitch.Event("custom", "xui::record_complete");
+for k, v in pairs(data) do
+	event:addHeader(k, v)
+end
+event:fire();
