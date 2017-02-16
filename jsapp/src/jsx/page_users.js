@@ -453,6 +453,7 @@ class UsersPage extends React.Component {
 		let formClose = () => this.setState({ formShow: false });
 		let formClose1 = () => this.setState({ formShow1: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let hand = { cursor: "pointer"};
 	    var danger = this.state.danger ? "danger" : "";
 
 		var _this = this;
@@ -467,7 +468,7 @@ class UsersPage extends React.Component {
 					<td>{row.type}</td>
 					<td>{row.cid_name}</td>
 					<td>{row.cid_number}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
 
@@ -501,7 +502,7 @@ class UsersPage extends React.Component {
 					<th><T.span text="Type"/></th>
 					<th><T.span text="CID Name"/></th>
 					<th><T.span text="CID Number"/></th>
-					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>

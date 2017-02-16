@@ -604,6 +604,8 @@ class SIPProfilesPage extends React.Component {
 		const _this = this;
 
 		let rows = [];
+		let hand = { cursor: "pointer" };
+
 
 		this.state.rows.forEach(function(row) {
 			const disabled_class = dbfalse(row.disabled) ? "" : "disabled";
@@ -659,7 +661,7 @@ class SIPProfilesPage extends React.Component {
 					<th><T.span text="Description"/></th>
 					<th><T.span text="Enabled"/></th>
 					<th><T.span text="Status"/> / <T.span text="Control"/></th>
-					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>

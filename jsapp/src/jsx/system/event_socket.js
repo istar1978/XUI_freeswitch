@@ -121,6 +121,7 @@ class SettingEventSocket extends React.Component {
 
 	render() {
 		const _this = this;
+		let hand = {cursor : "pointer"};
 
 
 		const rows = this.state.rows.map((row) => {
@@ -128,7 +129,7 @@ class SettingEventSocket extends React.Component {
 			const disabled_class = dbfalse(row.disabled) ? null : "disabled";
 			return <Row key={row.id} className={disabled_class}>
 				<Col sm={2} title={T.translate("eventsocket-"+row.k)}>{row.k}</Col>
-				<Col sm={8}>
+				<Col sm={8} style={hand} >
 					<RIEInput value={row.v} change={_this.handleChange.bind(_this)}
 						propName={row.id}
 						className={_this.state.highlight ? "editable" : "editable2"}
