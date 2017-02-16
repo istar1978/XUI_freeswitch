@@ -569,6 +569,8 @@ class RoutesPage extends React.Component {
 	render() {
 	    let formClose = () => this.setState({ formShow: false });
 	    let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let hand = { cursor: "pointer" };
+
 	    var _this = this;
 	    var danger = this.state.danger ? "danger" : "";
 	    var styleSheet = {
@@ -593,7 +595,7 @@ class RoutesPage extends React.Component {
 					<td>{row.description}</td>
 					<td><T.span text={row.dest_type}/></td>
 					<td>{dest}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href="#"/></td>
 			</tr>;
 		})
 
@@ -615,13 +617,13 @@ class RoutesPage extends React.Component {
 				<tbody>
 				<tr>
 					<th>ID</th>
-					<th><T.span text="Context" onClick={this.handleSortClick.bind(this)} data="context"/></th>
-					<th><T.span text="Prefix" onClick={this.handleSortClick.bind(this)} data='prefix'/></th>
+					<th><T.span style={hand} text="Context" onClick={this.handleSortClick.bind(this)} data="context"/></th>
+					<th><T.span style={hand} text="Prefix" onClick={this.handleSortClick.bind(this)} data='prefix'/></th>
 					<th><T.span text="Name" /></th>
 					<th><T.span text="Description" /></th>
 					<th><T.span text="Dest Type" /></th>
 					<th><T.span text="Dest" /></th>
-					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>

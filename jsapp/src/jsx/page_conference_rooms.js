@@ -343,6 +343,7 @@ class ConferenceRooms extends React.Component {
 		const row = this.state.rows;
 		let formClose = () => this.setState({ formShow: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let hand = { cursor: "pointer" };
 	    var danger = this.state.danger ? "danger" : "";
 
 		var _this = this;
@@ -355,7 +356,7 @@ class ConferenceRooms extends React.Component {
 					<td>{row.nbr}</td>
 					<td>{row.realm}</td>
 					<td>{row.capacity}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href="#"/></td>
 			</tr>;
 		})
 
@@ -380,7 +381,7 @@ class ConferenceRooms extends React.Component {
 					<th><T.span text="Number" onClick={this.handleSortClick.bind(this)} data="number" /></th>
 					<th><T.span text="Realm" onClick={this.handleSortClick.bind(this)} data="realm" /></th>
 					<th><T.span text="Capacity"/></th>
-					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>
