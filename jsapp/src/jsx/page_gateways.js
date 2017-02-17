@@ -131,8 +131,8 @@ class NewGateway extends React.Component {
 				<FormGroup controlId="formRegister">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Register"/></Col>
 					<Col sm={10}>
-						<Radio name="register" value="true" inline>True</Radio>
-						<Radio name="register" value="false" inline>False</Radio>
+						<Radio name="register" value="yes" inline><T.span text="yes"/></Radio>
+						<Radio name="register" value="no" inline><T.span text="no"/></Radio>
 					</Col>
 				</FormGroup>
 
@@ -303,7 +303,7 @@ class GatewayPage extends React.Component {
 		const _this = this; 
 		let params = <tr></tr>;
 		let save_btn = "";
-		let register = gw.register == "true" ? "Yes" : "No";
+		let register = gw.register == "yes" ? "yes" : "no";
 
 		register = <FormControl.Static><T.span text={register}/></FormControl.Static>
 
@@ -333,15 +333,15 @@ class GatewayPage extends React.Component {
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
 
-			if (gw.register == "true") {
+			if (gw.register == "yes") {
 				register = <span>
-					<Radio name="register" value="true" inline defaultChecked><T.span text="Yes"/></Radio>
-					<Radio name="register" value="false" inline><T.span text="No"/></Radio>
+					<Radio name="register" value="yes" inline defaultChecked><T.span text="yes"/></Radio>
+					<Radio name="register" value="no" inline><T.span text="no"/></Radio>
 				</span>
 			} else {
 				register = <span>
-					<Radio name="register" value="true" inline defaultChecked="true"><T.span text="Yes"/></Radio>
-					<Radio name="register" value="false" inline defaultChecked="false"><T.span text="No"/></Radio>
+					<Radio name="register" value="yes" inline><T.span text="yes"/></Radio>
+					<Radio name="register" value="no" inline defaultChecked><T.span text="no"/></Radio>
 				</span>
 			}
 		}
@@ -584,7 +584,7 @@ class GatewaysPage extends React.Component {
 					<td><Link to={`/settings/gateways/${row.id}`}>{row.name}</Link></td>
 					<td>{row.realm}</td>
 					<td>{row.username}</td>
-					<td>{row.register}</td>
+					<td><T.span text={row.register}/></td>
 					<td>
 						<T.a onClick={_this.handleReg} data-name={row.name} text="Reg" href='#'/> |&nbsp;
 						<T.a onClick={_this.handleUnreg} data-name={row.name} text="Unreg" href='#'/> |&nbsp;

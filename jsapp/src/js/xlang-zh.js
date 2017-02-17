@@ -272,6 +272,8 @@ LANGUAGES["zh"] = {
 	FileShow: "文件预览",
 	HiddenFileShow: "关闭预览",
 	"days": "*{path}*天",
+	yes: "是",
+	no: "否",
 
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
