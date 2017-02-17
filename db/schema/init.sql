@@ -60,7 +60,7 @@ INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'eg-ring', '%(2000,1000,475,375)
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'es-ring', '%(1500,3000,425)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'fi-ring', '%(1000,4000,425)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'fr-ring', '%(1500,3500,440)');
-INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'hk-ring', '%(400,200,440,480);%(400,3000,440,480)';
+INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'hk-ring', '%(400,200,440,480);%(400,3000,440,480)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'hu-ring', '%(1250,3750,425)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'il-ring', '%(1000,3000,400)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'in-ring', '%(400,200,425,375);%(400,2000,425,375)');
