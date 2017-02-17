@@ -331,7 +331,7 @@ class GatewayPage extends React.Component {
 		}
 
 		if (this.state.edit) {
-			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit}><T.span onClick={this.handleSubmit} text="Save"/></Button>
 
 			if (gw.register == "yes") {
 				register = <span>
@@ -350,7 +350,7 @@ class GatewayPage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{ save_btn }
-				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -397,7 +397,7 @@ class GatewayPage extends React.Component {
 
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+				<Button onClick={this.toggleHighlight}><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 

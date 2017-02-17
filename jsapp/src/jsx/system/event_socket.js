@@ -149,7 +149,7 @@ class SettingEventSocket extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button><T.span onClick={this.handleReload} text="Reload"/></Button>
+				<Button onClick={this.handleReload}><T.span onClick={this.handleReload} text="Reload"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
