@@ -59,8 +59,8 @@ class LoginBox extends React.Component {
 	}
 
 	handleClick () {
-		let username = $('#username').val();
-		let password = $('#password').val();
+		let username = this.refs.username.value;
+		let password = this.refs.password.value;
 		localStorage.setItem('xui.username', username);
 		localStorage.setItem('xui.password', password);
 		verto.loginData(verto_params());
@@ -98,8 +98,8 @@ class LoginBox extends React.Component {
 		return <div id='loginbox'>
 			<br/><T.span text={errmsg} className="danger"/>
 			<h1><T.span text="Login with username and password"/></h1>
-			<p><input id='username' name='username' placeholder='username'/></p>
-			<p><input id='password' name='password' type='password' onKeyDown= {this.handleLogin} placeholder='password'/></p>
+			<p><input id='username' name='username' placeholder='username' ref="username"/></p>
+			<p><input id='password' name='password' type='password' onKeyDown= {this.handleLogin} placeholder='password' ref="password"/></p>
 			<Button bsStyle="primary" onClick={this.handleClick}><T.span text={{ key:"Login"}}/></Button>
 		</div>
 	}
