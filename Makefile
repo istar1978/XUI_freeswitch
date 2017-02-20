@@ -1,6 +1,9 @@
 all:
 	cd jsapp && make
 
+githash:
+	cd jsapp && make githash
+
 watch:
 	cd jsapp && make watch
 
