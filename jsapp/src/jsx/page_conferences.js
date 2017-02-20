@@ -79,9 +79,23 @@ class Member extends React.Component {
 					<td>{member.email}</td>
 			</tr>;
 		} else if (this.props.displayStyle == 'list') {
-			return <li className={className} data-member-id={member.memberID} onClick={this.handleClick}>
-				{member.cidNumber}
-			</li>
+			return  <div  className={className} data-member-id={member.memberID} onClick={this.handleClick} style={{width: "185px", height: "90px", marginTop:"30px", marginRight:"20px", border:"1px solid #c0c0c0", display:"inline-block"}}>
+				<div style={{float:"left"}}>
+					<div style={{width: "68px", height: "68px", backgroundImage: "url(/assets/img/z-2.jpg)"}}></div>
+					<div style={{textAlign: "center"}}>{member.memberID}</div>
+				</div>
+				<div style={{float: "left", marginLeft: "5px", marginTop: "5px"}}>
+					<div>王凯&nbsp;{member.memberID}</div>
+					<div>{member.cidNumber}</div>
+					<div style={{marginTop: "23px"}}>
+						{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.talking ? <i className="fa fa-volume-up" style={{color:"green"}} aria-hidden="true"></i> : <i className="fa fa-volume-off" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.deaf ? <i className="fa fa-bell-slash-o" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-bell-o" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.muted ? <i className="fa fa-microphone-slash" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-microphone" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
+						{member.status.audio.onHold ? <i className="fa fa-circle-o-notch" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-circle-o" style={{color:"#ffe200"}} aria-hidden="true"></i>}
+					</div>
+				</div>
+			</div>
 		}
 	}
 };
