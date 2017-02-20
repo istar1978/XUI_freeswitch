@@ -1,14 +1,15 @@
 var webpack = require('webpack');
+var fs = require('fs');
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var WebpackMd5Hash = require('webpack-md5-hash');
+var WebpackGitHash = require('webpack-git-hash');
 var config = {
     entry: {
-        "index": ["./src/jsx/index.jsx","./src/css/xui.css"],
+        "index": ["./src/jsx/index.jsx", "./src/css/xui.css"],
     },
     output: {
         path: '../www/assets',
-        filename: 'js/jsx/[name].[chunkhash:8].js'
+        filename: 'js/jsx/[name].[githash].js'
     },
     module: {
         loaders: [{
@@ -43,8 +44,16 @@ var config = {
             inject: true,
             chunks: ['index']
         }),
-        new WebpackMd5Hash(),
-        new ExtractTextPlugin("css/xui.[chunkhash:8].css"),
+        new ExtractTextPlugin("css/xui.[githash].css"),
+        new WebpackGitHash({
+            cleanup: true,
+            callback: function(versionHash) {
+                var indexHtml = fs.readFileSync('../www/index.html', 'utf8');
+                indexHtml = indexHtml.replace(/assets\/css\/xui\.\[githash]\.css/, "assets\/css\/xui\." + versionHash + ".css");
+                fs.writeFileSync('../www/index.html', indexHtml);
+                console.log("Changed output.css.filename to"+ "assets\/css\/xui\." + versionHash + ".css");
+            }
+        })
     ]
 };
 module.exports = config;

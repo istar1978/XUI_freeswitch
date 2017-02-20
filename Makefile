@@ -3,6 +3,9 @@ HASH=$(shell git rev-parse HEAD | cut -b 1-8)
 all:
 	cd jsapp && make
 
+githash:
+	cd jsapp && make githash
+
 watch:
 	cd jsapp && make watch
 

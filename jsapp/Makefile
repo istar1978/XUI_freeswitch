@@ -1,6 +1,9 @@
 all:
 	npm run build
 
+githash:
+	npm run githash
+
 watch:
 	npm run build:watch
 
