@@ -963,6 +963,8 @@ class BlocksPage extends React.Component {
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
 		var danger = this.state.danger ? "danger" : "";
 
+		let hand = { cursor: "pointer"};
+
 		let _this = this;
 
 		let rows = this.state.rows.map(function(row) {
@@ -971,7 +973,7 @@ class BlocksPage extends React.Component {
 					<td><Link to={`/settings/blocks/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.created_at}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href="#"/></td>
 			</tr>;
 		})
 
@@ -992,7 +994,7 @@ class BlocksPage extends React.Component {
 					<th><T.span text="Name"/></th>
 					<th><T.span text="Description"/></th>
 					<th><T.span text="Created At"/></th>
-					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+					<th><T.span text="Delete" style={hand} className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>

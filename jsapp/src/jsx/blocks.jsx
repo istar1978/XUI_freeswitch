@@ -130,8 +130,6 @@ var BlocksPage = React.createClass({
 		return <div><pre>Blah</pre></div>;
 	}
 });
-
-
 $(document).ready(function(){
 
 	var MENUS = [

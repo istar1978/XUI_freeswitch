@@ -608,6 +608,7 @@ class MediaFilesPage extends React.Component {
 	}
 
 	render() {
+		let hand = { cursor: "pointer" };
 		const formClose = () => this.setState({ formShow: false });
 		const toggleDanger = () => this.setState({ danger: !this.state.danger });
 	    const danger = this.state.danger ? "danger" : "";
@@ -666,7 +667,7 @@ class MediaFilesPage extends React.Component {
 					<th><T.span text="Type"/></th>
 					<th><T.span text="Description"/></th>
 					<th><T.span text="Size"/></th>
-					<th><T.span text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
 				</tbody>

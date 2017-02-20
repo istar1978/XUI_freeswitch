@@ -86,11 +86,12 @@ class SettingBaiduTTS extends React.Component {
 	}
 
 	render() {
+		let hand = { cursor : "pointer" };
 		const _this = this;
 		const rows = this.state.rows.map((row) => {
 			return <Row key={row.k}>
 				<Col sm={2}><T.span text={row.k}/></Col>
-				<Col>
+				<Col style={hand} >
 					<RIEInput value={row.v} change={_this.handleChange.bind(_this)}
 						propName={row.id}
 						className={_this.state.highlight ? "editable" : "editable2"}

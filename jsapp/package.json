@@ -26,11 +26,11 @@
     "jquery": "^3.1.1",
     "jshint": "latest",
     "jshint-stylish": "^1.0.0",
+    "live-reload": "latest",
+    "parallelshell": "latest",
     "react": "^15.4.1",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^15.4.1",
-    "live-reload": "latest",
-    "parallelshell": "latest",
     "react-dropzone": "^3.8.0",
     "react-hot-loader": "^1.3.1",
     "react-overlays": "^0.6.10",
@@ -41,8 +41,7 @@
     "webpack": "^1.14.0",
     "webpack-md5-hash": "0.0.5"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "scripts": {
     "build:js": "cat src/js/*.js > ../www/assets/js/xui.js",
     "lint": "jshint **.js",
