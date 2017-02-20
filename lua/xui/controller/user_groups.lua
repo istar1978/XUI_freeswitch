@@ -34,55 +34,35 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 
-get('/', function(params)
-
-	-- local check = xdb.checkPermission('7','users','get','/')
-	-- if check then
-		n, users = xdb.find_all("users")
-
-		if (users) then
-			return users
-		else
-			return "[]"
-		end
-	-- else
-		-- return '{}'
-	-- end
-end)
-
 get('/:id', function(params)
-	user = xdb.find("users", params.id)
-	if user then
-		return user
-	else
-		return 404
+	n, groups = xdb.find_all("groups")
+	local group_res = {}
+	for i, v in pairs(groups) do
+		local checkshow = ""
+		sql = "select * from user_groups where user_id = " .. params.id .. " and group_id = " .. v.id
+		checked = xdb.find_by_sql(sql,function(row)
+			if row then
+				checkshow = 'checked'
+			end
+		end)
+		v['checkshow'] = checkshow
+		table.insert(group_res,v)
 	end
-end)
-
-put('/:id', function(params)
-	print(serialize(params))
-	ret = xdb.update("users", params.request)
-	if ret then
-		return 200, "{}"
+	if (group_res) then
+		return group_res
 	else
-		return 500
+		return "[]"
 	end
 end)
 
 post('/', function(params)
-	print(serialize(params))
-
-	ret = xdb.create_return_id('users', params.request)
-
-	if ret then
-		return {id = ret}
-	else
-		return 500, "{}"
-	end
+		print(serialize(params))
+		ret = xdb.create_return_id("user_groups", params.request);
+		return "{}";
 end)
 
-delete('/:id', function(params)
-	ret = xdb.delete("users", params.id);
+delete('/', function(params)
+	ret = xdb.delete("user_groups", params.request);
 
 	if ret == 1 then
 		return 200, "{}"

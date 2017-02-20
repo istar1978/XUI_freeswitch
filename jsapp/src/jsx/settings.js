@@ -44,6 +44,9 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/users" key="M_OVERVIEW">
 				<NavItem eventKey="M_USER"><T.span text="Users"/></NavItem>
 			</LinkContainer>
+			<LinkContainer to="/settings/groups" key="M_GROUPS">
+				<NavItem eventKey="M_GROUP"><T.span text="Groups"/></NavItem>
+			</LinkContainer>
 			<LinkContainer to="/settings/gateways" key="M_GATEWAYS">
 				<NavItem eventKey="M_GATEWAYS"><T.span text="Gateways"/></NavItem>
 			</LinkContainer>

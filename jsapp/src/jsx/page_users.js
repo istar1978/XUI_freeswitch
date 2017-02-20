@@ -243,11 +243,12 @@ class UserPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', user: {}, edit: false};
+		this.state = {errmsg: '', user: {}, edit: false, group: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleGroup = this.handleGroup.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -281,6 +282,31 @@ class UserPage extends React.Component {
 	handleControlClick(e) {
 		this.setState({edit: !this.state.edit});
 	}
+	
+	handleGroup(e) {
+		var group_id = e.target.value;
+		var user_id = this.state.user.id;
+		if (e.target.checked) {
+			var gtype = "POST";
+		} else {
+			var gtype = "DELETE";
+		}
+		$.ajax({
+				type: gtype,
+				url: "/api/user_groups",
+				dataType: "json",
+				contentType: "application/json",
+				data: '{"user_id":"'+user_id+'","group_id":"'+group_id+'"}',
+				success: function (data) {
+					console.error("g", data);
+				},
+				error: function(msg) {
+					console.error("err", msg);
+				}
+			});
+		
+		
+	}
 
 	componentDidMount() {
 		var _this = this;
@@ -289,6 +315,13 @@ class UserPage extends React.Component {
 			_this.setState({user: data});
 		}, function(e) {
 			console.log("get users ERR");
+		});
+
+		$.getJSON("/api/user_groups/" + this.props.params.id, "", function(data) {
+			console.log("groups", data)
+			_this.setState({group: data});
+		}, function(e) {
+			console.log("get groups ERR");
 		});
 	}
 
@@ -303,7 +336,9 @@ class UserPage extends React.Component {
 				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
 			}
 		}
-
+		var group = this.state.group.map(function(row) {
+			return <Checkbox name="group" defaultChecked={row.checkshow} value={row.id}><T.span text={row.name}/></Checkbox>
+		})
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
@@ -361,7 +396,15 @@ class UserPage extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}></Col>
 					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
+
 			</Form>
+			
+			<br/>
+				<FormGroup onChange={this.handleGroup}>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Groups"/></Col>
+					<Col sm={10}>{group}</Col>
+				</FormGroup>
+			
 		</div>
 	}
 }

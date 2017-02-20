@@ -35,25 +35,19 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
+	n, groups = xdb.find_all("groups")
 
-	-- local check = xdb.checkPermission('7','users','get','/')
-	-- if check then
-		n, users = xdb.find_all("users")
-
-		if (users) then
-			return users
-		else
-			return "[]"
-		end
-	-- else
-		-- return '{}'
-	-- end
+	if (groups) then
+		return groups
+	else
+		return "[]"
+	end
 end)
 
 get('/:id', function(params)
-	user = xdb.find("users", params.id)
-	if user then
-		return user
+	group = xdb.find("groups", params.id)
+	if group then
+		return group
 	else
 		return 404
 	end
@@ -61,7 +55,7 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update("users", params.request)
+	ret = xdb.update("groups", params.request)
 	if ret then
 		return 200, "{}"
 	else
@@ -72,7 +66,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = xdb.create_return_id('users', params.request)
+	ret = xdb.create_return_id('groups', params.request)
 
 	if ret then
 		return {id = ret}
@@ -82,7 +76,7 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("users", params.id);
+	ret = xdb.delete("groups", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

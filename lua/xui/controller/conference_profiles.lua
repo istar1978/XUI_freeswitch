@@ -33,27 +33,24 @@
 content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
+require 'm_conference_profile'
 
 get('/', function(params)
+	n, conference_rooms = xdb.find_all("conference_rooms")
 
-	-- local check = xdb.checkPermission('7','users','get','/')
-	-- if check then
-		n, users = xdb.find_all("users")
-
-		if (users) then
-			return users
-		else
-			return "[]"
-		end
-	-- else
-		-- return '{}'
-	-- end
+	if (n > 0) then
+		return conference_rooms
+	else
+		return "[]"
+	end
 end)
 
 get('/:id', function(params)
-	user = xdb.find("users", params.id)
-	if user then
-		return user
+	profile = xdb.find("conference_rooms", params.id)
+	if profile then
+		p_params = m_conference_profile.params(params.id)
+		profile.params = p_params
+		return profile
 	else
 		return 404
 	end
@@ -61,18 +58,43 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update("users", params.request)
-	if ret then
-		return 200, "{}"
+
+	if params.request.action and params.request.action == "toggle" then
+		profile = m_conference_profile.toggle(params.id)
+
+		if (profile) then
+			return profile
+		end
 	else
-		return 500
+		ret = xdb.update("sip_profiles", params.request)
+
+		if ret then
+			return 200, "{}"
+		end
+	end
+
+	return 500
+end)
+
+put('/:id/params/:param_id', function(params)
+	print(serialize(params))
+	ret = nil;
+
+	if params.request.action and params.request.action == "toggle" then
+		ret = m_conference_profile.toggle_param(params.id, params.param_id)
+	else
+		ret = m_conference_profile.update_param(params.id, params.param_id, params.request)
+	end
+
+	if ret then
+		return ret
+	else
+		return 404
 	end
 end)
 
 post('/', function(params)
-	print(serialize(params))
-
-	ret = xdb.create_return_id('users', params.request)
+	ret = m_conference_profile.create(params.request)
 
 	if ret then
 		return {id = ret}
@@ -82,9 +104,9 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("users", params.id);
+	ret = m_conference_profile.delete(params.id)
 
-	if ret == 1 then
+	if ret >= 0 then
 		return 200, "{}"
 	else
 		return 500, "{}"

@@ -25,6 +25,7 @@ LANGUAGES["zh"] = {
 	Calls: "呼叫",
 	Channels: "通道",
 	Users: "用户",
+	Groups: "分组",
 	Sofia: "Sofia",
 
 	Call: "呼叫",

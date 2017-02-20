@@ -55,6 +55,7 @@ import SystemPage from './page_system';
 import Settings from './settings';
 import { ConferenceRooms, ConferenceRoom } from './page_conference_rooms';
 import { UsersPage, UserPage } from './page_users';
+import { GroupsPage, GroupPage } from './page_groups';
 import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
 import { GatewaysPage, GatewayPage } from './page_gateways';
@@ -149,6 +150,10 @@ class Home extends React.Component{
 					<Route path="users">
 						<IndexRoute components={{sidebar: Settings, main: UsersPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: UserPage}}/>
+					</Route>
+					<Route path="groups">
+						<IndexRoute components={{sidebar: Settings, main: GroupsPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: GroupPage}}/>
 					</Route>
 					<Route path="gateways">
 						<IndexRoute components={{sidebar: Settings, main: GatewaysPage}}/>
