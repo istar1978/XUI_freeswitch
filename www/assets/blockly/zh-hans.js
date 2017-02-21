@@ -425,6 +425,11 @@ Blockly.Msg.FS_BLOCK_TRANSFER = "转接";
 Blockly.Msg.FS_BLOCK_CONTEXT = "Context";
 Blockly.Msg.FS_BLOCK_DIALPLAN = "拨号计划";
 Blockly.Msg.FS_BLOCK_DESTINATION = "目标号码";
+Blockly.Msg.FS_BLOCK_FILENAME = "名称";
+Blockly.Msg.FS_BLOCK_INOROUT = "送入/取出";
+Blockly.Msg.FS_BLOCK_IMPORTANCENUM = "优先级";
+Blockly.Msg.FS_BLOCK_ANNOUNCE = "播报提示";
+Blockly.Msg.FS_BLOCK_MUSIC = "音乐";
 
 
 Blockly.Msg.tNow = "当前时间";

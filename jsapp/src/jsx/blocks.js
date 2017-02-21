@@ -196,6 +196,23 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		</value>
 	</block>
 	<block type="fsSessionExecute"></block>
+	<block type="fsFIFOS">
+		<value name="filename">
+			<shadow type="text">
+			<field name="TEXT">default</field>
+			</shadow>
+		</value>
+		<value name="Fifo">
+			<shadow type="text">
+			<field name="TEXT">undef</field>
+			</shadow>
+		</value>
+		<value name="music file">
+			<shadow type="text">
+			<field name="TEXT">local_stream://moh</field>
+			</shadow>
+		</value>
+	</block>
 </category>
 
 <category name="FSDB" colour="20">

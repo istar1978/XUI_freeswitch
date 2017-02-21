@@ -136,6 +136,15 @@ Blockly.Lua.fsSessionExecute = function(block) {
   return code;
 };
 
+Blockly.Lua.fsFIFOS = function(block) {
+  var filename = Blockly.Lua.valueToCode(block, 'filename', Blockly.Lua.ORDER_ATOMIC);
+  var method = block.getFieldValue('NAME');
+  var announce = Blockly.Lua.valueToCode(block, 'Fifo', Blockly.Lua.ORDER_ATOMIC);
+  var music = Blockly.Lua.valueToCode(block, 'music file', Blockly.Lua.ORDER_ATOMIC);
+  var code = 'session:execute("fifo","' + filename + ' ' +  method + ' ' + announce + ' ' + music + '")\n';
+  return code;
+};
+
 Blockly.Lua.IVR = function(block) {
   var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
   var text_max = Blockly.Lua.valueToCode(block, 'MAX', Blockly.Lua.ORDER_ATOMIC);
