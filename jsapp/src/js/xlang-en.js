@@ -7,6 +7,7 @@ LANGUAGES["en"] = {
 	FS_DEST_IVRBLOCK: "IVR Block",
 	Hangup: "Hup",
 	Transfer: "Xfer",
+	"days": "{day}days",
 
 	"Recording to": "Recording to *{path}*",
 	"Record completed": "Record complete *{path}*",

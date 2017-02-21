@@ -213,11 +213,11 @@ class CDRsPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<T.span text="Last"/> &nbsp;
-				<T.a onClick={this.handleQuery} text={{key:"days", path: 7}} data="7" href="#"/>&nbsp;|&nbsp;
-				<T.a onClick={this.handleQuery} text={{key:"days", path: 15}} data="15" href="#"/>&nbsp;|&nbsp;
-				<T.a onClick={this.handleQuery} text={{key:"days", path: 30}} data="30" href="#"/>&nbsp;|&nbsp;
-				<T.a onClick={this.handleQuery} text={{key:"days", path: 60}} data="60" href="#"/>&nbsp;|&nbsp;
-				<T.a onClick={this.handleQuery} text={{key:"days", path: 90}} data="90" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text={{key:"days", day: 7}} data="7" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text={{key:"days", day: 15}} data="15" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text={{key:"days", day: 30}} data="30" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text={{key:"days", day: 60}} data="60" href="#"/>&nbsp;|&nbsp;
+				<T.a onClick={this.handleQuery} text={{key:"days", day: 90}} data="90" href="#"/>&nbsp;|&nbsp;
 				<T.a onClick={this.handleMore} text="More" data="more" href="#"/>...
 			</ButtonToolbar>
 
