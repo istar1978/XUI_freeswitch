@@ -183,6 +183,20 @@ function xdb.find(t, id)
 	return r
 end
 
+-- find from table with start_stamp = start_stamp
+function xdb.find_by_start_stamp(t, start_stamp)
+    start_stamp = string.gsub(start_stamp, "%%20", " ") 
+	local sql = "SELECT * FROM " .. t .. " WHERE start_stamp = '" .. start_stamp .."'"
+	local found = 0
+	local r = nil
+
+	xdb.dbh:query(sql, function(row)
+		r = row
+	end)
+
+	return r
+end
+
 -- find from table
 -- if cb is nil, return count of rows and all rows
 -- if cb is a callback function, run cb(row) for each row

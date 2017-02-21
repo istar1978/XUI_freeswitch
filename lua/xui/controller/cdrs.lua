@@ -64,3 +64,12 @@ get('/', function(params)
 	end
 
 end)
+
+get('/:start_stamp', function(params)
+	cdrs = xdb.find_by_start_stamp("cdrs", params.start_stamp)
+	if cdrs then
+		return cdrs
+	else
+		return 404
+	end
+end)

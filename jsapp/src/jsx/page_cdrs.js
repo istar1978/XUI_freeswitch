@@ -33,6 +33,97 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Link } from 'react-router';
+import { EditControl } from './xtools';
+
+class CDRPage extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {cdr: {}, edit: false};
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+	}
+
+	componentDidMount() {
+		var _this = this;
+		$.getJSON("/api/cdrs/" + _this.props.params.start_stamp, "", function(data) {
+			console.log("cdr", data);
+			_this.setState({cdr: data});
+		}, function(e) {
+			console.log("get cdr ERR");
+		});
+	}
+
+	render() {
+		const cdr = this.state.cdr;
+
+		return <div>
+			<h1><T.span text="CDR"/> <small>{cdr.name} &lt;{cdr.extn}&gt;</small></h1>
+			<hr/>
+
+			<Form horizontal id="CDRForm">
+				<input type="hidden" name="id" defaultValue={cdr.id}/>
+				<FormGroup controlId="formCaller_id_name">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="caller_id_name" defaultValue={cdr.caller_id_name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formCaller_id_number">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="caller_id_number" defaultValue={cdr.caller_id_number}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDestination_number">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Number"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="destination_number" defaultValue={cdr.destination_number}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formContext">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={cdr.context}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formStart_stamp">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Start" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="start_stamp" defaultValue={cdr.start_stamp}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formAnswer_stamp">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Answer"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="answer_stamp" defaultValue={cdr.answer_stamp}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formEnd_stamp">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="End" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="end_stamp" defaultValue={cdr.end_stamp}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDuration">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Duration" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="duration" defaultValue={cdr.duration}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formBillsec">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Bill Sec" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="billsec" defaultValue={cdr.billsec}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formHangup_cause">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Cause" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="hangup_cause" defaultValue={cdr.hangup_cause}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formAccount_code">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Account Code" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="account_code" defaultValue={cdr.account_code}/></Col>
+				</FormGroup>
+			</Form>
+		</div>
+	}
+}
 
 class CDRsPage extends React.Component {
 	constructor(props) {
@@ -109,7 +200,7 @@ class CDRsPage extends React.Component {
 				<td>{row.caller_id_number}</td>
 				<td>{row.destination_number}</td>
 				<td>{row.context}</td>
-				<td>{row.start_stamp}</td>
+				<td><Link to={`/cdrs/${row.start_stamp}`}>{row.start_stamp}</Link></td>
 				<td>{row.answer_stamp}</td>
 				<td>{row.end_stamp}</td>
 				<td>{row.duration}</td>
@@ -163,4 +254,4 @@ class CDRsPage extends React.Component {
 	}
 };
 
-export default CDRsPage;
+export {CDRPage, CDRsPage};
