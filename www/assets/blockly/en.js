@@ -423,6 +423,11 @@ Blockly.Msg.FS_BLOCK_TRANSFER = "Transfer";
 Blockly.Msg.FS_BLOCK_DIALPLAN = "Dialplan";
 Blockly.Msg.FS_BLOCK_CONTEXT = "Context";
 Blockly.Msg.FS_BLOCK_DESTINATION = "Destination";
+Blockly.Msg.FS_BLOCK_FILENAME = "File name";
+Blockly.Msg.FS_BLOCK_INOROUT = "In/Out";
+Blockly.Msg.FS_BLOCK_IMPORTANCENUM = "Importance_number";
+Blockly.Msg.FS_BLOCK_ANNOUNCE = "Announce file";
+Blockly.Msg.FS_BLOCK_MUSIC = "Music file";
 
 
 Blockly.Msg.tNow = "Now";

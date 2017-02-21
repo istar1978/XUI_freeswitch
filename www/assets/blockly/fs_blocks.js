@@ -403,6 +403,29 @@ Blockly.Blocks['fsSessionExecute'] = {
     }
 };
 
+Blockly.Blocks['fsFIFOS'] = {
+    init: function() {
+        this.appendValueInput("filename")
+            .appendField(Blockly.Msg.FS_BLOCK_FIFO)
+            .appendField(Blockly.Msg.FS_BLOCK_FILENAME)
+        this.appendValueInput("Fifo")
+            .appendField(Blockly.Msg.FS_BLOCK_INOROUT)
+            .appendField(new Blockly.FieldDropdown([
+                        ["in", "in"],
+                        ["out wait", "out wait"],
+                        ["out nowait", "out nowait"]]),"NAME")
+            .appendField(Blockly.Msg.FS_BLOCK_ANNOUNCE);
+        this.appendValueInput("music file")
+            .appendField(Blockly.Msg.FS_BLOCK_MUSIC)
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(20);
+        this.setTooltip('');
+        this.setHelpUrl('http://www.example.com/');
+    }
+};
+
 Blockly.Blocks['IVR'] = {
     init: function() {
         this.appendDummyInput()
