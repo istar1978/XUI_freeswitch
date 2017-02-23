@@ -32,48 +32,86 @@
 
 content_type("application/json")
 
-function build_dial_params(var, val)
+function build_dial_params(var, val, quote)
+	if quote then
+		quote = "'"
+	else
+		quote = ""
+	end
+
+	if var == "earlyMedia" then
+		if val == "true" then
+			return ""
+		else
+			return "{ignore_early_media=true}"
+		end
+	end
+
 	if not val then return "" end
-	if var == "ignore_early_media" and val == "true" then
-		return ""
-	elseif var == "callback_url" then
+
+	if var == "callbackUrl" then
 		return "{x_httpd_callback_url='" .. val .. "'," ..
 			"session_in_hangup_hook=true," ..
 			"api_hangup_hook='lua do_callback.lua'}"
 	else
-		val = "true"
+		if not val then val = "true" end
 	end
 
-	return "{" .. var .. "=" .. "'" .. val .. "'}"
+	return "{" .. var .. "=" .. quote .. val .. quote .. "}"
+end
+
+function build_x_params(req)
+	local ret = ""
+	for k, v in pairs(req) do
+		if (k:sub(1,1) == 'x') then
+			ret = ret .. "{" .. k .. "=" .. "'" .. v .. "'}"
+		end
+	end
+	return ret
 end
 
 function build_dialstr(destNumber)
+	if (config.prefix_table) then
+		return "prefix/" .. config.prefix_table .. "/" .. destNumber
+	end
+
 	return "user/" .. destNumber
 end
 
 function build_application(params)
+	appstr = ""
+
+	if params.args then
+		if params.app == "speak" then
+			appstr = appstr .. params.app .. ":tts_commandline|alex|" .. params.args
+		elseif params.app == "transfer" then
+			cid = request.cidNumber2 or request.cidNumber
+
+			if cid then
+				appstr = "set:effective_caller_id_number=" .. cid .. ","
+			end
+			appstr = appstr .. params.app .. ":'" .. params.args .. " XML ecc'"
+		elseif params.app == "bridge" then
+			params.args = build_dial_params("origination_caller_id_number", request.cidNumber2 or request.cidNumber, false) ..
+				build_dialstr(params.args)
+			appstr = appstr .. params.app .. ":" .. params.args
+		else
+			appstr = appstr .. params.app .. ":" .. params.args
+		end
+	end
+
+	return appstr
+end
+
+function build_applications(params)
 	appstr = " "
 	if params.app then
-		appstr = appstr .. params.app
-
-		if params.args then
-			if params.app == "speak" then
-				params.args = "tts_commandline|alex|" .. params.args
-			end
-			appstr = appstr .. ":'" .. params.args .. "'"
-		end
+		appstr = appstr .. build_application(params)
 	elseif params.apps then
 		print(serialize(params.apps))
 		comma = ""
 		for i, v in pairs(params.apps) do
-			if v.app == "speak" then
-				v.args = "tts_commandline|alex|" .. v.args
-			elseif v.app == "say_number" then
-				v.app = "say"
-				v.args = "en NUMBER ITERATED " .. v.args
-			end
-
-			appstr = appstr .. comma .. v.app .. ":'" .. v.args .. "'"
+			appstr = appstr .. comma .. build_application(v)
 			comma = ","
 		end
 	else
@@ -113,16 +151,19 @@ post("/", function(params)
 		request = params.request
 	end
 
-	-- print(serialize(params))
+	print(serialize(params))
 
-	dialstr = build_dial_params("origination_caller_id_name", request.cidName) ..
-		build_dial_params("origination_caller_id_number", request.cidNumber) ..
-		build_dial_params("ignore_early_media", request.earlyMedia) ..
-		build_dial_params("sip_auto_answer", request.autoAnswer) ..
+	dialstr = build_dial_params("origination_caller_id_name", request.cidName, true) ..
+		build_dial_params("origination_caller_id_number", request.cidNumber, true) ..
+		build_dial_params("earlyMedia", request.earlyMedia, true) ..
+		build_dial_params("sip_auto_answer", request.autoAnswer, true) ..
+		build_x_params(request) ..
 		build_dialstr(request.destNumber) ..
-		build_application(request)
+		build_applications(request)
 
 	print(dialstr)
+	freeswitch.consoleLog('INFO', dialstr)
+
 	api = freeswitch.API()
 
 	if request.async == "true" then
@@ -153,9 +194,15 @@ delete("/:channel_uuid", function(params)
 	return execute(cmd, args)
 end)
 
-put("/:channel_uuid/:action", function(params)
+put("/:channel_uuid", function(params)
 	print(params.request.action)
-	return ""
+	local action = params.request.action
+	if action == "mediaOn" then
+		return execute("uuid_media", params.channel_uuid .. " on")
+	elseif action == "mediaOff" then
+		return execute("uuid_media", params.channel_uuid .. " off")
+	end
+	return {result = "ok", reason = params.request.action}
 end)
 
 get("/", function(params)
@@ -182,7 +229,7 @@ end)
 
 get("/:channel_uuid", function(params)
 	cmd = "uuid_dump"
-	args = params.request.channel_uuid .. " json"
+	args = params.channel_uuid .. " json"
 
 	api = freeswitch.API()
 	ret = api:execute(cmd, args)
