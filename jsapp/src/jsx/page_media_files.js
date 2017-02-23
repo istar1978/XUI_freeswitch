@@ -127,9 +127,10 @@ class NewMediaFile extends React.Component {
 class NewRecordFile extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {recordingMSG: null};
+		this.state = {recordingMSG: null, audio: null};
 
 		this.handleFSEvent = this.handleFSEvent.bind(this);
+		this.handleDeleteOneRecodring = this.handleDeleteOneRecodring.bind(this);
 	}
 
 	componentDidMount() {
@@ -144,15 +145,45 @@ class NewRecordFile extends React.Component {
 		verto.subscribe("FSevent.custom::xui::record_complete");
 	}
 
+	handleDeleteOneRecodring() {
+		var _this = this;
+
+		if (1) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+			if (!c) return;
+		}
+
+		$.getJSON("/api/media_files", "", function(data) {
+			console.log(data)
+			$.ajax({
+				type: "DELETE",
+				url: "/api/media_files/" + data[data.length-1].id,
+				success: function () {
+					console.log("delete success");
+				},
+				error: function(msg) {
+					console.error("route", msg);
+				}
+			});
+		}, function(e) {
+			console.log("get media_files ERR");
+		});
+
+		_this.setState({audio: null});
+	}
+
 	handleFSEvent(v, e) {
 		console.log("FSevent:", e);
 
 		if (e.eventChannel == "FSevent.record_start") {
 			const path = e.data["Record-File-Path"];
-			this.setState({recordingMSG: <T.span text={{key:"Recording to", path: path}}/>});
+			this.setState({recordingMSG: <T.span text={{key:"Recording to", path: path}}/>,audio: null});
 		} else if (e.eventChannel == "FSevent.record_stop") {
 			const path = e.data["Record-File-Path"];
-			this.setState({recordingMSG: <T.span text={{key:"Record completed", path: path}}/>});
+			let src = "/assets/upload/" + path.split('/')[6];
+			this.setState({recordingMSG: <T.span text={{key:"Record completed", path: path}}/>,
+			audio: <div><Col sm={2}>录音试听：</Col><Col sm={4}><audio src={src} controls="controls" /></Col>
+						<Col><Button  bsSize="small" onClick={this.handleDeleteOneRecodring}><T.span text="Delete"/></Button></Col></div>});
 		}
 	}
 
@@ -173,12 +204,17 @@ class NewRecordFile extends React.Component {
 
 	render() {
 		if (!this.props.show) return null;
+		// let audio = <audio src={this.state.path} controls="controls" />;
 
 		return <div aria-labelledby="contained-modal-title-lg">
 			<h1><T.span text="Record"/></h1>
 			<Form horizontal id="newRecordFileForm">
 				<FormGroup controlId="formMSG">
 					<Col sm={12}>{this.state.recordingMSG}</Col>
+					<br/>
+					<br/>
+					{this.state.audio}
+
 				</FormGroup>
 
 				<hr/>
