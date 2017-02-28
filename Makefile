@@ -30,6 +30,7 @@ release:
 
 clean:
 	rm -f www/assets/js/jsx/*
+	rm -rf www/assets/css/xui*.css
 	rm -f out/*
 
 
@@ -38,7 +39,7 @@ out:
 
 tar: out
 	echo $(HASH)
-	tar cvzf out/xui-1.0.0.$(HASH).tar.gz www lua
+	cd .. && tar cvzf xui/out/xui-1.0.0.$(HASH).tar.gz xui/www xui/lua xui/db/schema
 	ls out
 
 sync:
