@@ -211,11 +211,7 @@ LANGUAGES["zh"] = {
 	"FIFO CDRs": "FIFO话单",
 	"Bridged Number": "服务号码",
 	"FIFO Name": "队列",
-	"7days": "7天",
-	"15days": "15天",
-	"30days": "30天",
-	"60days": "60天",
-	"90days": "90天",
+	"days": "{day}天",
 	"Total Rows": "总行数",
 
 	"Terminal": "终端",
@@ -272,7 +268,6 @@ LANGUAGES["zh"] = {
 	channel_uuid: "路径识别码",
 	FileShow: "文件预览",
 	HiddenFileShow: "关闭预览",
-	"days": "{day}天",
 	yes: "是",
 	no: "否",
 
