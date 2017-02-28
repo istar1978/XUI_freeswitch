@@ -38,7 +38,7 @@ get('/', function(params)
 
 	if id == '0' or id == '1' then
 		last = env:getHeader('last')
-		if not last then last = "31" end
+		if not last then last = "7" end
 
 		n, cdrs = xdb.find_by_time("cdrs", last)
 
