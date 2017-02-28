@@ -219,6 +219,10 @@ class CDRsPage extends React.Component {
 				<T.a onClick={this.handleQuery} text={{key:"days", day: 60}} data="60" href="#"/>&nbsp;|&nbsp;
 				<T.a onClick={this.handleQuery} text={{key:"days", day: 90}} data="90" href="#"/>&nbsp;|&nbsp;
 				<T.a onClick={this.handleMore} text="More" data="more" href="#"/>...
+				<br/>
+				<div className="pull-right">
+					<T.span text="Total Rows"/>: {rows.length}
+				</div>
 			</ButtonToolbar>
 
 			<h1><T.span text="CDRs"/></h1>
@@ -247,6 +251,11 @@ class CDRsPage extends React.Component {
 					<th><T.span text="Account Code"/></th>
 				</tr>
 				{rows}
+				<tr>
+					<td colSpan="11" style={{textAlign: "right"}}>
+						<T.span text="Total Rows"/>: {rows.length}
+					</td>
+				</tr>
 				</tbody>
 				</table>
 			</div>

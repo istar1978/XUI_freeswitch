@@ -216,6 +216,7 @@ LANGUAGES["zh"] = {
 	"30days": "30天",
 	"60days": "60天",
 	"90days": "90天",
+	"Total Rows": "总行数",
 
 	"Terminal": "终端",
 
