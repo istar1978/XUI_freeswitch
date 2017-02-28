@@ -84,7 +84,7 @@ var callbacks = {
 			return;
 		}
 
-		document.cookie = "freeswitch_xtra_session_id=" + v.sessid;
+		setCookie("freeswitch_xtra_session_id", v.sessid);
 
 		// verto.subscribe("presence", {
 		// 	handler: function(v, e) {

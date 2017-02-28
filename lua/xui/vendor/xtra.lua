@@ -418,7 +418,7 @@ end
 
 -- functinon to insert to xtra to do custom auth
 local function controller_auth_function()
-	if (not config.is_auth) then return true end
+	if (not config.auth) then return true end
 	local api = freeswitch.API()
 	local sessionid = env:getHeader("X-Session-ID")
 	local user_id = env:getHeader("X-User-ID")
@@ -433,8 +433,8 @@ local function controller_auth_function()
 	end
 end
 
-function require_auth()
-	if controller_auth_function and ( not controller_auth_function()) then
+function xtra.require_auth()
+	if config.auth and controller_auth_function and ( not controller_auth_function()) then
 		get = function(path, func)
 			if xtra.response_state ~= 0 then return end
 			content_type("application/json")
@@ -448,8 +448,8 @@ function require_auth()
 	end
 end
 
-function require_login()
-	if not xtra.session.user_id then
+function xtra.require_login()
+	if config.auth and not xtra.session.user_id then
 		get = function(path, func)
 			if xtra.response_state ~= 0 then return end
 			content_type("application/json")
@@ -504,7 +504,12 @@ function xtra.start_session()
 	print "start session"
 	cookie = env:getHeader("Cookie")
 	if not cookie then
-		xtra.session_uuid = xtra.create_uuid()
+		local sessid = env:getHeader("X-XTRA-AUTH-ID")
+		if not sessid then
+			xtra.session_uuid = xtra.create_uuid()
+		else
+			xtra.session_uuid = sessid
+		end
 	else
 		xtra.session_uuid = cookie:match("freeswitch_xtra_session_id=([^;]*).*$")
 		print(xtra.session_uuid)
@@ -515,18 +520,32 @@ function xtra.start_session()
 
 	xtra.cookies["freeswitch_xtra_session_id"] = xtra.session_uuid
 
-	filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
-	conf = loadfile(filename)
-	if conf then conf() end
+	if config.auth == "hash" then
+		api = freeswitch.API()
+		xtra.session.user_id = api:execute("hash", "select/xui/" .. xtra.session_uuid)
+		if (xtra.session.user_id == "") then
+			xtra.session.user_id = nil
+		end
+		-- freeswitch.consoleLog("INFO", xtra.session.user_id .. "\n")
+	else
+		filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
+		conf = loadfile(filename)
+		if conf then conf() end
+	end
 end
 
 function xtra.save_session(k, v)
 	if k then xtra.session[k] = v end
 
-	filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
-	file = io.open(filename, "w")
-	file:write("xtra.session = " .. serialize(xtra.session))
-	file:close()
+	if config.auth == "hash" and k == "user_id" then
+		api = freeswitch.API()
+		api:execute("hash", "insert/xui/" .. xtra.k .. "/" .. v)
+	else
+		filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
+		file = io.open(filename, "w")
+		file:write("xtra.session = " .. serialize(xtra.session))
+		file:close()
+	end
 end
 
 function xtra.flash(msg)
