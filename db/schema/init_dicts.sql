@@ -1,9 +1,3 @@
--- XUI init data
-
--- Create the first user
-
-INSERT INTO users (extn, name, password) VALUES ('admin', 'Admin', 'admin');
-
 -- all reamls should have an entry
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'XUI', 'XUI');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'GLOBAL', 'GLOBAL');

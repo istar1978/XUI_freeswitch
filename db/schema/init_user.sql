@@ -1,3 +1,5 @@
+-- Create the first user
+INSERT INTO users (extn, name, password) VALUES ('admin', 'Admin', 'admin');
 INSERT INTO users (extn, name, password, context) VALUES ('1000', '1000', '1234', 'default');
 INSERT INTO users (extn, name, password, context) VALUES ('1001', '1001', '1234', 'default');
 INSERT INTO users (extn, name, password, context) VALUES ('1002', '1002', '1234', 'default');
