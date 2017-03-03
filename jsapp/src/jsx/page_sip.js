@@ -137,7 +137,7 @@ class SIPProfilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {profile: {}, edit: false, params:[], order: 'ASC'};
+		this.state = {profile: {}, edit: false, params:[], order: 'ASC', running: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -244,12 +244,89 @@ class SIPProfilePage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
-			console.log(data);
 			_this.setState({profile: data, params: data.params});
+			fsAPI("sofia", "xmlstatus", function(data) {
+				var msg = $(data.message);
+				msg.find("profile").each(function() {
+					var profile = this;
+					var name = $(profile).find("name").text();
+					if(_this.state.profile.name == name){
+						_this.setState({running: true});
+					}
+				});
+			});
 		}, function(e) {
-			console.log("get profile ERR");
+			console.log("get profile/sip_profiles ERR");
+		});
+		verto.subscribe("FSevent.custom::sofia::profile_start", {
+			handler: this.handleFSEvent.bind(this)
+		});
+		verto.subscribe("FSevent.custom::sofia::profile_stop", {
+			handler: this.handleFSEvent.bind(this)
 		});
 	}
+
+	componentWillUnmount() {
+		verto.unsubscribe("FSevent.custom::sofia::profile_start");
+		verto.unsubscribe("FSevent.custom::sofia::profile_stop");
+	}
+
+	handleFSEvent(v, e) {
+		const _this = this;
+		if (e.eventChannel == "FSevent.custom::sofia::profile_start") {
+			const profile_name = e.data["profile_name"];
+			console.log("profile_name",profile_name);
+			if(_this.state.profile.name == profile_name) {
+				_this.setState({ running : true});
+			}
+		} else if (e.eventChannel == "FSevent.custom::sofia::profile_stop") {
+			const profile_name = e.data["profile_name"];
+			if (_this.state.profile.name == profile_name) {
+				_this.setState({ running : false});
+			}
+		}
+	}
+
+	handleStart(e){
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " start");
+	}
+
+	handleStop(e){
+		const _this = this;
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " stop", function(ret) {
+			if (ret.message.match("stopping:")) {
+				// trick FS has no sofia::profile_stop event
+				var evt = {}
+				evt.eventChannel = "FSevent.custom::sofia::profile_stop";
+				evt.data = {profile_name: name}
+				_this.handleFSEvent(verto, evt);
+			} else {
+				notify(ret.message);
+			}
+		});
+	}
+
+	handleRestart(e){
+		const _this = this;
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " restart", function(ret) {
+			if (ret.message.match("restarting:")) {
+				notify("restarting profile ...");
+			} else {
+				notify(ret.message);
+			}
+		});
+	}
+
+	handleRescan(e){
+		let name = e.target.getAttribute("data-name");
+		fsAPI("sofia", "profile " + name + " rescan", function(ret) {
+			notify(ret.message);
+		});
+	}
+
 
 	handleSort(e){
 		const profile = this.state.profile;
@@ -277,6 +354,7 @@ class SIPProfilePage extends React.Component {
 		let save_btn = "";
 		let err_msg = "";
 		let params = <tr></tr>;
+		const running_state = this.state.running ? {background: "lime"} : {background: null};
 
 		if (this.state.params && Array.isArray(this.state.params)) {
 			// console.log(this.state.profile.params)
@@ -308,6 +386,12 @@ class SIPProfilePage extends React.Component {
 
 		return <div>
 			<ButtonToolbar className="pull-right">
+			<ButtonGroup style={running_state}>
+				<T.a onClick={_this.handleStart.bind(_this)} data-name={profile.name} text="Start" style={{cursor: "pointer"}}/> |&nbsp;
+				<T.a onClick={_this.handleStop.bind(_this)} data-name={profile.name} text="Stop" style={{cursor: "pointer"}}/> |&nbsp;
+				<T.a onClick={_this.handleRestart.bind(_this)} data-name={profile.name} text="Restart" style={{cursor: "pointer"}}/> |&nbsp;
+				<T.a onClick={_this.handleRescan.bind(_this)} data-name={profile.name} text="Rescan" style={{cursor: "pointer"}}/>
+			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
 				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
@@ -345,9 +429,9 @@ class SIPProfilePage extends React.Component {
 			<table className="table">
 				<tbody>
 				<tr>
-					<th onClick={this.handleSort.bind(this)} data="k"><T.span text="Name" data="k"/></th>
+					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="k"><T.span text="Name" data="k"/></th>
 					<th><T.span text="Value"/></th>
-					<th style={{textAlign: "right", paddingRight: 0}} onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
+					<th style={{textAlign: "right", paddingRight: 0, cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
 				</tr>
 				{params}
 				</tbody>
