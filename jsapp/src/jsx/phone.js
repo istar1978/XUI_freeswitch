@@ -236,9 +236,9 @@ class Phone extends React.Component {
 		var hangupButton = null;
 		var transferButton = null;
 		var answerButton = null;
-		var toggleDTMF = <Button bsStyle="info" bsSize="xsmall">
+		var toggleDTMF = <Button bsStyle="info" bsSize="xsmall" onClick={this.handleDTMF}>
 			<i className="fa fa-tty" aria-hidden="true"></i>&nbsp;
-			<T.span onClick={this.handleDTMF} text= "DTMF" /></Button>;
+			<T.span text= "DTMF" /></Button>;
 		var audioOrVideo = null;
 		var xtopDisplay = null;
 		var textDisplay = null;
@@ -293,22 +293,22 @@ class Phone extends React.Component {
 		}
 
 		if (this.state.curCall) {
-			hangupButton = <Button bsStyle="danger" bsSize="xsmall">
+			hangupButton = <Button bsStyle="danger" bsSize="xsmall" onClick={this.handleHangup}>
 				<i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;
-				<T.span onClick={this.handleHangup} text="Hangup" />
+				<T.span text="Hangup" />
 			</Button>
 		}
 
 		if (this.state.curCall) {
-			transferButton = <Button bsStyle="warning" bsSize="xsmall">
+			transferButton = <Button bsStyle="warning" bsSize="xsmall" onClick={this.handleTransfer}>
 				<i className="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;
-				<T.span onClick={this.handleTransfer} text="Transfer" />
+				<T.span text="Transfer" />
 			</Button>
 		}
 
-		audioOrVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall" disabled={this.state.curCall ? true : false}>
+		audioOrVideo = <Button bsStyle={this.state.useVideo ? 'warning' : 'primary'} bsSize="xsmall" disabled={this.state.curCall ? true : false} onClick={this.state.curCall ? null: this.toggleVideo}>
 			<i className={this.state.useVideo ? 'fa fa-video-camera' : 'fa fa-volume-up'} aria-hidden="true"></i>&nbsp;
-			<T.span text={this.state.useVideo ? 'Video' : 'Audio'} onClick={this.state.curCall ? null: this.toggleVideo}/>
+			<T.span text={this.state.useVideo ? 'Video' : 'Audio'}/>
 		</Button>
 
 		if (this.state.callState == "Ringing") {
@@ -321,9 +321,9 @@ class Phone extends React.Component {
 				<input id='top_dest_number' value={this.state.destNumber} onChange={this.handleDestNumberChange}
 					style={{color: "#776969", border: 0, backgroundColor: "#FFF", width: "80pt", textAlign: "right"}}/>
 				&nbsp;&nbsp;
-				<Button bsStyle="success" bsSize="xsmall">
+				<Button bsStyle="success" bsSize="xsmall" onClick={this.handleCall}>
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleCall} text="Call" />
+					<T.span text="Call" />
 				</Button>&nbsp;
 				{hangupButton}&nbsp;
 				{transferButton}
@@ -335,17 +335,17 @@ class Phone extends React.Component {
 			textDisplay = <span>
 				<span>188-6666-8888</span>
 				&nbsp;&nbsp;
-				<Button bsStyle="link" bsSize="xsmall">
+				<Button bsStyle="link" bsSize="xsmall" onClick={this.handleCall}>
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleCall} text="Answer" />
+					<T.span text="Answer" />
 				</Button>
-				<Button bsStyle="link" bsSize="xsmall">
+				<Button bsStyle="link" bsSize="xsmall" onClick={this.handleCall}>
 					<i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleCall} text="Reject" />
+					<T.span text="Reject" />
 				</Button>
-				<Button bsStyle="link" bsSize="xsmall">
+				<Button bsStyle="link" bsSize="xsmall" onClick={this.handleCall}>
 					<i className="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleCall} text="Transfer" />
+					<T.span text="Transfer" />
 				</Button>
 				&nbsp;&nbsp;
 			</span>
@@ -359,9 +359,9 @@ class Phone extends React.Component {
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;{this.state.cidname} <T.span text={this.state.callState}/></div>
 				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>&nbsp;&nbsp;
-				<Button bsStyle="success" bsSize="xsmall">
+				<Button bsStyle="success" bsSize="xsmall" onClick={this.handleCall}>
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
-					<T.span onClick={this.handleCall} text="Call" />
+					<T.span text="Call" />
 				</Button>
 				<br/>
 				{answerButton}
