@@ -95,7 +95,7 @@ xdb.find_by_sql(sql, function(row)
 			local t = csplit(v, ' ')
 			local app = table.remove(t, 1)
 			local data = table.concat(t, ' ')
-			if app and (not (app == '')) then
+			if app and (not (app == '') and (not (app:sub(1,1) == '#'))) then
 				table.insert(actions_table, {app = app,  data = data})
 			end
 		end
