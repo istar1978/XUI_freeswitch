@@ -288,13 +288,12 @@ class SIPProfilePage extends React.Component {
 	}
 
 	handleStart(e){
-		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " start");
+		fsAPI("sofia", "profile " + this.state.profile.name + " start");
 	}
 
 	handleStop(e){
 		const _this = this;
-		let name = e.target.getAttribute("data-name");
+		let name = this.state.profile.name;
 		fsAPI("sofia", "profile " + name + " stop", function(ret) {
 			if (ret.message.match("stopping:")) {
 				// trick FS has no sofia::profile_stop event
@@ -310,7 +309,7 @@ class SIPProfilePage extends React.Component {
 
 	handleRestart(e){
 		const _this = this;
-		let name = e.target.getAttribute("data-name");
+		let name = this.state.profile.name;
 		fsAPI("sofia", "profile " + name + " restart", function(ret) {
 			if (ret.message.match("restarting:")) {
 				notify("restarting profile ...");
@@ -321,8 +320,7 @@ class SIPProfilePage extends React.Component {
 	}
 
 	handleRescan(e){
-		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile " + name + " rescan", function(ret) {
+		fsAPI("sofia", "profile " + this.state.profile.name + " rescan", function(ret) {
 			notify(ret.message);
 		});
 	}
@@ -344,7 +342,6 @@ class SIPProfilePage extends React.Component {
 		params.sort(function(a,b) {
 			return a[field].toUpperCase() < b[field].toUpperCase() ? -1 * n : 1 * n;
 		});
-
 		this.setState({profile: profile});
 	}
 
@@ -354,7 +351,10 @@ class SIPProfilePage extends React.Component {
 		let save_btn = "";
 		let err_msg = "";
 		let params = <tr></tr>;
-		const running_state = this.state.running ? {background: "lime"} : {background: null};
+		let color = this.state.running ? "lime" : '#dadada';
+		const running_state = {
+			background : color,
+		} 
 
 		if (this.state.params && Array.isArray(this.state.params)) {
 			// console.log(this.state.profile.params)
@@ -386,11 +386,14 @@ class SIPProfilePage extends React.Component {
 
 		return <div>
 			<ButtonToolbar className="pull-right">
-			<ButtonGroup style={running_state}>
-				<T.a onClick={_this.handleStart.bind(_this)} data-name={profile.name} text="Start" style={{cursor: "pointer"}}/> |&nbsp;
-				<T.a onClick={_this.handleStop.bind(_this)} data-name={profile.name} text="Stop" style={{cursor: "pointer"}}/> |&nbsp;
-				<T.a onClick={_this.handleRestart.bind(_this)} data-name={profile.name} text="Restart" style={{cursor: "pointer"}}/> |&nbsp;
-				<T.a onClick={_this.handleRescan.bind(_this)} data-name={profile.name} text="Rescan" style={{cursor: "pointer"}}/>
+			<ButtonGroup className="block">
+				<div style={running_state}></div>
+			</ButtonGroup>
+			<ButtonGroup>
+				<Button onClick={_this.handleStart.bind(_this)}><T.span text="Start"/></Button>
+				<Button onClick={_this.handleStop.bind(_this)}><T.span text="Stop"/></Button>
+				<Button onClick={_this.handleRestart.bind(_this)}><T.span text="Restart"/></Button>
+				<Button onClick={_this.handleRescan.bind(_this)}><T.span text="Rescan"/></Button>
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
@@ -398,8 +401,9 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1>Profile <small>{profile.name}</small></h1>
+			<h1>Profile <small style={running_state}>{profile.name}</small></h1>
 			<hr/>
+
 
 			<Form horizontal id="newSIPProfileForm">
 				<input type="hidden" name="id" defaultValue={profile.id}/>
