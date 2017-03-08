@@ -133,7 +133,7 @@ class CDRsPage extends React.Component {
 	    	var r = 10000;
 	    	localStorage.setItem("theRows", r);
      	}
-     	this.state = {rows: [], query_visible: false};
+     	this.state = {rows: [], query_visible: false, loaded: false};
      	this.handleQuery = this.handleQuery.bind(this);
      	this.handleSearch = this.handleSearch.bind(this);
      	this.handleMore = this.handleMore.bind(this);
@@ -174,9 +174,8 @@ class CDRsPage extends React.Component {
 
 	componentDidMount () {
 		const _this = this;
-
 		$.getJSON("/api/cdrs?id=0", function(cdrs) {
-			_this.setState({rows: cdrs});
+			_this.setState({rows: cdrs, loaded : true});
 		})
 	}
 
@@ -193,6 +192,7 @@ class CDRsPage extends React.Component {
 
 	render () {
 		var _this = this;
+		let isShow;
 
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.uuid}>
@@ -209,6 +209,20 @@ class CDRsPage extends React.Component {
 				<td>{row.account_code}</td>
 			</tr>
 		})
+
+		if(this.state.loaded){
+			isShow = "none";
+		}
+
+		const loadSpinner = {
+			width : "200px",
+			height : "200px",
+			margin : "auto", 
+			clear : "both",
+			display : "block",
+			color : 'gray',
+			display : isShow
+		}
 
 		return <div>
 			<ButtonToolbar className="pull-right">
@@ -259,6 +273,9 @@ class CDRsPage extends React.Component {
 				</tbody>
 				</table>
 			</div>
+			<div style={{textAlign: "center"}}>
+				<img style={loadSpinner} src="assets/img/loading.gif"/>
+			</div>	
 		</div>
 	}
 };
