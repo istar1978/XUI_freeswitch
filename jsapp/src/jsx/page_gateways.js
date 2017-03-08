@@ -298,6 +298,19 @@ class GatewayPage extends React.Component {
 			}
 		});
 	}
+	handleReg (e) {
+		fsAPI("sofia", "profile public register " + this.state.gw.name);
+	}
+	handleUnreg (e) {
+		fsAPI("sofia", "profile public unregister " + this.state.gw.name);
+	}
+	handleStart (e) {
+		fsAPI("sofia", "profile public startgw " + this.state.gw.name);
+		fsAPI("sofia", "profile public rescan");
+	}
+	handleStop (e) {
+		fsAPI("sofia", "profile public killgw " + this.state.gw.name);
+	}
 
 	render() {
 		const gw = this.state.gw;
@@ -349,6 +362,12 @@ class GatewayPage extends React.Component {
 
 		return <div>
 			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
+				<Button onClick={_this.handleReg.bind(_this)} ><T.span text="Reg" /></Button>
+				<Button onClick={_this.handleUnreg.bind(_this)} ><T.span text="Unreg" /></Button>
+				<Button onClick={_this.handleStart.bind(_this)} ><T.span text="Start" /></Button>
+				<Button onClick={_this.handleStop.bind(_this)} ><T.span text="Stop" /></Button>
+			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
 				<Button onClick={this.handleControlClick}><T.span onClick={this.handleControlClick} text="Edit"/></Button>
@@ -406,9 +425,9 @@ class GatewayPage extends React.Component {
 			<table className="table">
 				<tbody>
 				<tr>
-					<th onClick={this.handleSort.bind(this)} data="d"><T.span text="Name" data="k"/></th>
+					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="d"><T.span text="Name" data="k"/></th>
 					<th><T.span text="Value"/></th>
-					<th onClick={this.handleSort.bind(this)} data='disabled'><T.span text="Enabled" data="disabled"/></th>
+					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data='disabled'><T.span text="Enabled" data="disabled"/></th>
 				</tr>
 				{params}
 				</tbody>
