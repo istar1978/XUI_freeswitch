@@ -8,7 +8,7 @@ function build_conference_conf(conference)
 
 return [[<settings>]] .. settings .. [[</settings>]]
 end
-freeswitch.consoleLog("ERR","aaaaaa\n");
+
 XML_STRING = [[<configuration name="conference.conf" description="Conference Server">
 		<caller-controls>
 			<group name="default">
@@ -31,6 +31,7 @@ XML_STRING = [[<configuration name="conference.conf" description="Conference Ser
 			<control action="hangup" digits="#"/>
 			</group>
 		</caller-controls>
-		]] ..
-                build_conference_conf(conference) .. [[</configuration>]]
+		]] .. build_conference_conf(conference) ..
+		[[</configuration>]]
 
+XML_STRING = nil
