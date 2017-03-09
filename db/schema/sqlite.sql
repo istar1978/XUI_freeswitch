@@ -304,4 +304,52 @@ CREATE TABLE fifo_cdrs (
 CREATE INDEX fifo_cdrs_start_epoch ON fifo_cdrs(start_epoch);
 CREATE INDEX fifo_cdrs_channel_uuid ON fifo_cdrs(channel_uuid);
 
+
+CREATE TABLE fifos (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR NOT NULL,
+	description VARCHAR,
+	importance INTEGER DEFAULT 0,
+	outbound_per_cycle INTEGER,
+	outbound_per_cycle_min INTEGER
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER tg_fifos AFTER UPDATE ON fifos
+BEGIN
+	UPDATE fifos set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE INDEX fifo_name ON fifos(name);
+
+
+
+CREATE TABLE fifo_members (
+	id INTEGER PRIMARY KEY,
+	fifo_id INTEGER,
+	name VARCHAR,
+	description VARCHAR,
+	fifo_name VARCHAR,
+	timeout INTEGER DEFAULT 60,
+	simo INTEGER DEFAULT 1,
+	lag INTEGER DEFAULT 2,
+	extn VARCHAR,
+	dial_string VARCHAR,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER tg_fifo_members AFTER UPDATE ON fifo_members
+BEGIN
+	UPDATE fifo_members set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE INDEX fifo_member_fifo_name ON fifo_members(fifo_name);
+
+
 -- END
