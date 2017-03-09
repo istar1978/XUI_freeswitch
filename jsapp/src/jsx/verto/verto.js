@@ -74,7 +74,7 @@ class Verto {
 	}
 
 	static init(obj, runtime) {
-		var verto = this;
+		var self = this;
 		var rtc = new VertoRtc();
 		if (!obj) {
 			obj = {};
@@ -82,10 +82,10 @@ class Verto {
 
 		if (!obj.skipPermCheck && !obj.skipDeviceCheck) {
 			rtc.checkPerms(function(status) {
-			  verto.checkDevices(runtime);
+			  self.checkDevices(runtime);
 			}, true, true);
 		} else if (obj.skipPermCheck && !obj.skipDeviceCheck) {
-			verto.checkDevices(runtime);
+			self.checkDevices(runtime);
 		} else if (!obj.skipPermCheck && obj.skipDeviceCheck) {
 			rtc.checkPerms(function(status) {
 			  runtime(status);
@@ -823,8 +823,8 @@ class Verto {
 		}
 	}
 
-	static checkDevices(runtime) {
-		var verto = this;
+	checkDevices(runtime) {
+		var self = this;
 		console.info("enumerating devices");
 		var aud_in = [], aud_out = [], vid = [];
 
@@ -838,11 +838,11 @@ class Verto {
 					}
 				}
 
-				verto.videoDevices = vid;
-				verto.audioInDevices = aud_in;
+				self.videoDevices = vid;
+				self.audioInDevices = aud_in;
 
-				console.info("Audio Devices", verto.audioInDevices);
-				console.info("Video Devices", verto.videoDevices);
+				console.info("Audio Devices", self.audioInDevices);
+				console.info("Video Devices", self.videoDevices);
 				runtime(true);
 			});
 		} else {
@@ -854,10 +854,9 @@ class Verto {
 			}
 
 			// List cameras and microphones.
-			navigator.mediaDevices.enumerateDevices()
-			.then(function(devices) {
+			navigator.mediaDevices.enumerateDevices().then(function(devices) {
 				devices.forEach(function(device) {
-					console.log(device);
+					console.log('device', device);
 
 					console.log(device.kind + ": " + device.label +
 						" id = " + device.deviceId);
@@ -871,23 +870,25 @@ class Verto {
 					}
 				});
 
+				self.videoDevices = vid;
+				self.audioInDevices = aud_in;
+				self.audioOutDevices = aud_out;
 
-				verto.videoDevices = vid;
-				verto.audioInDevices = aud_in;
-				verto.audioOutDevices = aud_out;
-
-				console.info("Audio IN Devices", verto.audioInDevices);
-				console.info("Audio Out Devices", verto.audioOutDevices);
-				console.info("Video Devices", verto.videoDevices);
+				console.info("Audio IN Devices", self.audioInDevices);
+				console.info("Audio Out Devices", self.audioOutDevices);
+				console.info("Video Devices", self.videoDevices);
 				runtime(true);
 
-			})
-			.catch(function(err) {
+			}).catch(function(err) {
 				console.log(" Device Enumeration ERROR: " + err.name + ": " + err.message);
 				runtime(false);
 			});
 		}
 	}
+
+	refreshDevices(runtime) {
+		this.checkDevices(runtime);
+    }
 
 	loginData(params) {
 		var verto = this;
