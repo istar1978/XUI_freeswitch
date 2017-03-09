@@ -804,6 +804,7 @@ class Verto {
 
 	videoParams(obj) {
 		console.log('videoParams', obj);
+		this.options.videoParams = Object.assign(obj);
 	}
 
 	logout(msg) {

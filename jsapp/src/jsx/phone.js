@@ -35,7 +35,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { NavItem,  Button } from 'react-bootstrap';
 import verto from './verto/verto';
-
+import { getXUIDeviceSettings } from './system/device';
 
 class Phone extends React.Component {
 	constructor(props) {
@@ -150,14 +150,42 @@ class Phone extends React.Component {
 			return;
 		}
 
-		localStorage.setItem("phone.destNumber", $('#dest_number').val());
+		localStorage.setItem("phone.destNumber", this.state.destNumber);
 
 		this.setState({callState: "Trying"});
 
 		let useVideo = this.state.useVideo;
 
+		const ds = getXUIDeviceSettings();
+		console.log('deviceSettings', ds);
+
+		if (useVideo) {
+			var vid_width = 640;
+			var vid_height = 360;
+
+			switch (ds.resolution) {
+				case "120p": vid_width = 160; vid_height = 120; break;
+				case "240p": vid_width = 320; vid_height = 240; break;
+				case "480p": vid_width = 640; vid_height = 480; break;
+				case "180p": vid_width = 320; vid_height = 180; break;
+				case "360p": vid_width = 640; vid_height = 360; break;
+				case "720p": vid_width =1280; vid_height = 720; break;
+				case "1080p":vid_width =1920; vid_height = 1080; break;
+			}
+
+			verto.videoParams({
+				"minWidth":  vid_width,
+				"minHeight": vid_height,
+				"maxWidth":  vid_width,
+				"maxHeight": vid_height,
+				"minFrameRate": ds.frameRate,
+				"vertoBestFrameRate": ds.frameRate
+			});
+		}
+
+		// return;
 		verto.newCall({
-			destination_number: $('#dest_number').val(),
+			destination_number: this.state.destNumber,
 			caller_id_name: '0000',
 			caller_id_number: '0000',
 			useVideo: useVideo,
@@ -165,9 +193,9 @@ class Phone extends React.Component {
 			outgoingBandwidth: 'default',
 			incomingBandwidth: 'default',
 			deviceParams: {
-				useMic: 'any',
-				useSpeak: 'any',
-				useVideo: 'any'
+				useMic: ds.audioInDevice,
+				useSpeak: ds.audioOutDevice,
+				useVideo: ds.videoDevice
 			}
 		});
 	}

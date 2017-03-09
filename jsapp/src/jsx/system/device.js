@@ -36,14 +36,43 @@ import { Modal, ButtonGroup, ButtonToolbar, Button, Form, FormGroup, FormControl
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import verto from '../verto/verto';
 
+export function getXUIDeviceSettings()
+{
+	var ds = {};
+
+	var aec = localStorage.getItem("xui.audio.aec") || false;
+	var agc = localStorage.getItem("xui.audio.agc") || false;
+	var ns = localStorage.getItem("xui.audio.ns") || false;
+	var highpass = localStorage.getItem("xui.audio.highpass") || false;
+	var stereo = localStorage.getItem("xui.audio.stereo") || false;
+	var stun = localStorage.getItem("xui.audio.stun") || false;
+	var audioInDevice = localStorage.getItem("xui.audio.inDevice") || "any";
+	var audioOutDevice = localStorage.getItem("xui.audio.outDevice") || "any";
+
+	ds.aec = aec == "true";
+	ds.agc = agc == "true";
+	ds.ns = ns == "true";
+	ds.highpass = highpass == "true";
+	ds.stereo = stereo == "true";
+	ds.stun = stun == "true";
+	ds.audioInDevice = audioInDevice;
+	ds.audioOutDevice = audioOutDevice;
+
+	ds.resolution = localStorage.getItem("xui.video.resolution");
+	ds.frameRate = localStorage.getItem("xui.video.frameRate") || 15;
+	ds.videoDevice = localStorage.getItem("xui.video.videoDevice") || "any";
+
+	return ds;
+};
+
 class SettingDevice extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleVideoSelChange = this.handleVideoSelChange.bind(this);
-		this.handleResSelChange = this.handleResSelChange.bind(this);
+		this.handleVideoFPSChange = this.handleVideoFPSChange.bind(this);
+		this.handleResChange = this.handleResChange.bind(this);
 		this.handleAuCheckChange = this.handleAuCheckChange.bind(this);
 		this.state = { cameras: [], microphones: [], speakers: [],
-			frameRate: null, audioInDevice: "", audioOutDevice: "", videoDevice: "",
+			frameRate: 15, audioInDevice: "any", audioOutDevice: "any", videoDevice: "any",
 			aec: false, agc: false, ns: false, highpass: false,
 			stereo: false, stun: false
 		};
@@ -54,38 +83,19 @@ class SettingDevice extends React.Component {
 
 	componentDidMount() {
 		const _this = this;
-
-
-		var aec = localStorage.getItem("xui.audio.aec") || false;
-		var agc = localStorage.getItem("xui.audio.agc") || false;
-		var ns = localStorage.getItem("xui.audio.ns") || false;
-		var highpass = localStorage.getItem("xui.audio.highpass") || false;
-		var stereo = localStorage.getItem("xui.audio.stereo") || false;
-		var stun = localStorage.getItem("xui.audio.stun") || false;
-		const audioInDevice = localStorage.getItem("xui.audio.audioInDevice") || "";
-		const audioOutDevice = localStorage.getItem("xui.audio.audioOutDevice") || "";
-
-		aec = aec == "true";
-		agc = agc == "true";
-		ns = ns == "true";
-		highpass = highpass == "true";
-		stereo = stereo == "true";
-		stun = stun == "true";
+		const ds = getXUIDeviceSettings();
 
 		this.setState({
-			aec: aec,
-			agc: agc,
-			ns: ns,
-			highpass: highpass,
-			audioInDevice: audioInDevice,
-			audioOutDevice: audioOutDevice,
-			stereo: stereo,
-			stun: stun
+			aec: ds.aec,
+			agc: ds.agc,
+			ns: ds.ns,
+			highpass: ds.highpass,
+			audioInDevice: ds.audioInDevice,
+			audioOutDevice: ds.audioOutDevice,
+			stereo: ds.stereo,
+			stun: ds.stun,
+			resolution: ds.resolution
 		});
-
-		const resolution = localStorage.getItem("xui.video.resolution");
-		const frameRate = localStorage.getItem("xui.video.frameRate");
-		const videoDevice = localStorage.getItem("xui.video.videoDevice");
 
 		var runtime = function(obj) {
 			console.log("refreshDevices runtime", obj);
@@ -93,22 +103,24 @@ class SettingDevice extends React.Component {
 				cameras: verto.videoDevices,
 				microphones: verto.audioInDevices,
 				speakers: verto.audioOutDevices,
-				videoDevice: videoDevice,
-				frameRate: frameRate
+				videoDevice: ds.videoDevice,
+				frameRate: ds.frameRate
 			});
 		}
 
 		verto.refreshDevices(runtime);
 	}
 
-	handleVideoSelChange(e){
-		this.state.framerate = e.target.value;
-		localStorage.setItem("xui.video.frameRate",e.target.value);
+	handleVideoFPSChange(e){
+		this.state.frameRate = e.target.value;
+		localStorage.setItem("xui.video.frameRate", e.target.value);
+		this.setState({frameRate: e.target.value});
 	}
 
-	handleResSelChange(e){
+	handleResChange(e){
 		this.state.resolution = e.target.value;
-		localStorage.setItem("xui.video.resolution",e.target.value);
+		localStorage.setItem("xui.video.resolution", e.target.value);
+		this.setState({resolution: e.target.value});
 	}
 
 	handleAuCheckChange(e){
@@ -134,12 +146,12 @@ class SettingDevice extends React.Component {
 	}
 
 	handleAudioInDeviceChange(e) {
-		localStorage.setItem("xui.audio.audioInDevice", e.target.value);
+		localStorage.setItem("xui.audio.inDevice", e.target.value);
 		this.setState({audioInDevice: e.target.value});
 	}
 
 	handleAudioOutDeviceChange(e) {
-		localStorage.setItem("xui.audio.audioOutDevice", e.target.value);
+		localStorage.setItem("xui.audio.outDevice", e.target.value);
 		this.setState({audioOutDevice: e.target.value});
 	}
 
@@ -161,26 +173,29 @@ class SettingDevice extends React.Component {
 					<div className="row">
 						<Col sm={2}><T.span text="Best frame rate" /></Col>
 						<Col sm={3}>
-							<FormControl onChange={this.handleVideoSelChange} defaultValue={this.state.framerate} componentClass="select" name="Video-select" placeholder="select">
-								<option value="default" selected={this.state.a} >{T.translate("default")}</option>
-								<option value="10" label="10 FPS" selected={this.state.b}></option>
-								<option value="20" label="20 FPS" selected={this.state.c}></option>
-								<option value="30" label="30 FPS" selected={this.state.d}></option>
+							<FormControl onChange={this.handleVideoFPSChange} value={this.state.frameRate} componentClass="select" name="Video-select">
+								<option value="default">{T.translate("default")}</option>
+								<option value="10">10 FPS</option>
+								<option value="15">15 FPS</option>
+								<option value="24">24 FPS</option>
+								<option value="25">25 FPS</option>
+								<option value="30">30 FPS</option>
+								<option value="60">60 FPS</option>
 							</FormControl>
 						</Col>
 					</div>
 					<div className="row">
 						<Col sm={2}><T.span text="Resolution" /></Col>
 						<Col sm={3}>
-							<FormControl onChange={this.handleResSelChange} defaultValue={this.state.resolution} componentClass="select" name="Resolution" placeholder="select">
+							<FormControl onChange={this.handleResChange} value={this.state.resolution} componentClass="select" name="Resolution">
 								<option value="default">{T.translate("default")}</option>
-								<option value="120P" label="120P 160x120 4:3"></option>
-								<option value="240P" label="240P 320x240 4:3"></option>
-								<option value="480P" label="640P 640x480 4:3"></option>
-								<option value="180P" label="180P 320x180 16:9"></option>
-								<option value="360P" label="360P 640x360 16:9"></option>
-								<option value="720P" label="720P 1280x720 16:9"></option>
-								<option value="1080P" label="1080P 1920x1080 16:9"></option>
+								<option value="120p" label="120p 160x120 4:3"></option>
+								<option value="240p" label="240p 320x240 4:3"></option>
+								<option value="480p" label="480p 640x480 4:3"></option>
+								<option value="180p" label="180p 320x180 16:9"></option>
+								<option value="360p" label="360p 640x360 16:9"></option>
+								<option value="720p" label="720p 1280x720 16:9"></option>
+								<option value="1080p" label="1080p 1920x1080 16:9"></option>
 							</FormControl>
 						</Col>
 					</div>
@@ -192,7 +207,7 @@ class SettingDevice extends React.Component {
 				<Col sm={3}>
 					<FormControl componentClass="select" id="microphone" name="Microphone" onChange={_this.handleAudioInDeviceChange.bind(this)} value={_this.state.audioInDevice}>
 						{_this.state.microphones.map(function(obj){
-							return <option key={obj.id}>{obj.label ? obj.label : obj.id}</option>
+							return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
 						})}
 					</FormControl>
 				</Col>
