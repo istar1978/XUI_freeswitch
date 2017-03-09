@@ -246,7 +246,7 @@ class SIPProfilePage extends React.Component {
 		var _this = this;
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
 			_this.setState({profile: data, params: data.params});
-			fsAPI("sofia", "xmlstatus", function(data) {
+			verto.fsAPI("sofia", "xmlstatus", function(data) {
 				var msg = $(data.message);
 				msg.find("profile").each(function() {
 					var profile = this;
@@ -289,13 +289,13 @@ class SIPProfilePage extends React.Component {
 	}
 
 	handleStart(e){
-		fsAPI("sofia", "profile " + this.state.profile.name + " start");
+		verto.fsAPI("sofia", "profile " + this.state.profile.name + " start");
 	}
 
 	handleStop(e){
 		const _this = this;
 		let name = this.state.profile.name;
-		fsAPI("sofia", "profile " + name + " stop", function(ret) {
+		verto.fsAPI("sofia", "profile " + name + " stop", function(ret) {
 			if (ret.message.match("stopping:")) {
 				// trick FS has no sofia::profile_stop event
 				var evt = {}
@@ -311,7 +311,7 @@ class SIPProfilePage extends React.Component {
 	handleRestart(e){
 		const _this = this;
 		let name = this.state.profile.name;
-		fsAPI("sofia", "profile " + name + " restart", function(ret) {
+		verto.fsAPI("sofia", "profile " + name + " restart", function(ret) {
 			if (ret.message.match("restarting:")) {
 				notify("restarting profile ...");
 			} else {
@@ -321,7 +321,7 @@ class SIPProfilePage extends React.Component {
 	}
 
 	handleRescan(e){
-		fsAPI("sofia", "profile " + this.state.profile.name + " rescan", function(ret) {
+		verto.fsAPI("sofia", "profile " + this.state.profile.name + " rescan", function(ret) {
 			notify(ret.message);
 		});
 	}

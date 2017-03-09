@@ -299,17 +299,17 @@ class GatewayPage extends React.Component {
 		});
 	}
 	handleReg (e) {
-		fsAPI("sofia", "profile public register " + this.state.gw.name);
+		verto.fsAPI("sofia", "profile public register " + this.state.gw.name);
 	}
 	handleUnreg (e) {
-		fsAPI("sofia", "profile public unregister " + this.state.gw.name);
+		verto.fsAPI("sofia", "profile public unregister " + this.state.gw.name);
 	}
 	handleStart (e) {
-		fsAPI("sofia", "profile public startgw " + this.state.gw.name);
-		fsAPI("sofia", "profile public rescan");
+		verto.fsAPI("sofia", "profile public startgw " + this.state.gw.name);
+		verto.fsAPI("sofia", "profile public rescan");
 	}
 	handleStop (e) {
-		fsAPI("sofia", "profile public killgw " + this.state.gw.name);
+		verto.fsAPI("sofia", "profile public killgw " + this.state.gw.name);
 	}
 
 	render() {
@@ -559,29 +559,29 @@ class GatewaysPage extends React.Component {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile public register " + name);
+		verto.fsAPI("sofia", "profile public register " + name);
 	}
 
 	handleUnreg(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile public unregister " + name);
+		verto.fsAPI("sofia", "profile public unregister " + name);
 	}
 
 	handleStart(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile public startgw " + name);
-		fsAPI("sofia", "profile public rescan");
+		verto.fsAPI("sofia", "profile public startgw " + name);
+		verto.fsAPI("sofia", "profile public rescan");
 	}
 
 	handleStop(e) {
 		e.preventDefault();
 
 		let name = e.target.getAttribute("data-name");
-		fsAPI("sofia", "profile public killgw " + name);
+		verto.fsAPI("sofia", "profile public killgw " + name);
 	}
 
 	handleGatewayAdded(route) {

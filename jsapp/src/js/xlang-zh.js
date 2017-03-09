@@ -164,6 +164,8 @@ LANGUAGES["zh"] = {
 	Server: "服务器",
 	Username: "用户名",
 	Register: "注册",
+	Reg: "注册",
+	Unreg: "注销",
 
 	Realm: "域",
 	Key: "键",
