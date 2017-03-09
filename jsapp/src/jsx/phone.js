@@ -93,7 +93,7 @@ class Phone extends React.Component {
 				callState: "Ringing",
 				cidNum: d.params.caller_id_number
 			});
-		} else if (d.state.name == "tring") {
+		} else if (d.state.name == "trying") {
 			this.setState({
 				curCall: d,
 				callState: "Trying"
