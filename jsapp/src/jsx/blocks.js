@@ -560,17 +560,21 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			return _this.fs_file_path_dropdown_data;
 		}
 
-		const fifos = new Array()
-		fifos.push({
-			name: "Default",
-			value: "default"
-		})
+		_this.fs_fifos_dropdown_data = new Array();
 
-		_this.fs_fifos_dropdown_data = fifos.map(function(row) {
-			return [row.name, row.value];
+		$.get('/api/fifos', function(obj) {
+			console.log("data", obj);
+
+			obj.forEach(function(row) {
+				_this.fs_fifos_dropdown_data.push([row.name, row.description]);
+			});
 		});
 
 		let get_fs_fifo_dropdown_data = function() {
+			if (_this.fs_fifos_dropdown_data.length == 0) {
+				return [['Default', 'default']];
+			}
+
 			return _this.fs_fifos_dropdown_data;
 		}
 
