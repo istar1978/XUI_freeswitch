@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import verto from './verto/verto';
 
 class ShowFSApplication extends React.Component{
@@ -45,15 +46,15 @@ class ShowFSApplication extends React.Component{
 			</tr>
 		});
 
-		return <div><h1>Applications</h1>
+		return <div><h1><T.span text="Applications"/></h1>
 			<div>
-				<table className="table">
+			I	<table className="table">
 				<tbody>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Syntax</th>
-					<th>iKey</th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="Description"/></th>
+					<th><T.span text="Syntax"/></th>
+					<th><T.span text="iKey"/></th>
 				</tr>
 				{rows}
 				</tbody>
@@ -80,10 +81,10 @@ class ShowFSAPI extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Syntax</th>
-					<th>iKey</th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="Description"/></th>
+					<th><T.span text="Syntax"/></th>
+					<th><T.span text="iKey"/></th>
 				</tr>
 				{rows}
 				</tbody>
@@ -156,10 +157,10 @@ class ShowFSModule extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Type</th>
-					<th>Name</th>
-					<th>iKey</th>
-					<th>FileName</th>
+					<th><T.span text="Type"/></th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="iKey"/></th>
+					<th><T.span text="FileName"/></th>
 				</tr>
 				{rows}
 				</tbody>
@@ -190,11 +191,11 @@ class ShowFSRegistration extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Reg User</th>
-					<th>Realm</th>
-					<th>Expires</th>
-					<th>Network IP</th>
-					<th>Network Port</th>
+					<th><T.span text="Reg User"/></th>
+					<th><T.span text="Realm"/></th>
+					<th><T.span text="Expires"/></th>
+					<th><T.span text="Network IP"/></th>
+					<th><T.span text="Network Port"/></th>
 					<th>Network Proto</th>
 					<th>Hostname</th>
 					<th>Metadata</th>
@@ -225,11 +226,11 @@ class ShowFSTasks extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Task ID</th>
-					<th>Task Desc</th>
-					<th>Task Group</th>
-					<th>Task SQL Manager</th>
-					<th>HostName</th>
+					<th><T.span text="Task ID"/></th>
+					<th><T.span text="Task Desc"/></th>
+					<th><T.span text="Task Group"/></th>
+					<th><T.span text="Task SQL Manager"/></th>
+					<th><T.span text="HostName"/></th>
 				</tr>
 				{rows}
 				</tbody>
@@ -256,10 +257,10 @@ class ShowFSAliases extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Alias</th>
-					<th>Command</th>
-					<th>HostName</th>
-					<th>Sticky</th>
+					<th><T.span text="Alias"/></th>
+					<th><T.span text="Command"/></th>
+					<th><T.span text="HostName"/></th>
+					<th><T.span text="Sticky"/></th>
 				</tr>
 				{rows}
 				</tbody>
@@ -285,9 +286,9 @@ class ShowFSCommon extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Type</th>
-					<th>Name</th>
-					<th>iKey</th>
+					<th><T.span text="Type"/></th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="iKey"/></th>
 				</tr>
 				{rows}
 				</tbody>
