@@ -34,6 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, ButtonToolbar, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
+import verto from '../verto/verto';
 
 class SettingDevice extends React.Component {
 	constructor(props) {
@@ -89,15 +90,15 @@ class SettingDevice extends React.Component {
 		var runtime = function(obj) {
 			console.log("refreshDevices runtime", obj);
 			_this.setState({
-				cameras: $.verto.videoDevices,
-				microphones: $.verto.audioInDevices,
-				speakers: $.verto.audioOutDevices,
+				cameras: verto.videoDevices,
+				microphones: verto.audioInDevices,
+				speakers: verto.audioOutDevices,
 				videoDevice: videoDevice,
 				frameRate: frameRate
 			});
 		}
 
-		$.verto.refreshDevices(runtime);
+		verto.refreshDevices(runtime);
 	}
 
 	handleVideoSelChange(e){

@@ -38,7 +38,7 @@ import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import Dropzone from 'react-dropzone';
 import { EditControl } from './xtools'
-// import verto from './verto/verto';
+import verto from './verto/verto';
 
 class NewMediaFile extends React.Component {
 	constructor(props) {
