@@ -48,10 +48,11 @@ var config = {
         new WebpackGitHash({
             cleanup: true,
             callback: function(versionHash) {
+                fs.rename("../www/assets/css/xui.[githash].css", "../www/assets/css/xui." + versionHash + ".css")
+                console.log("Changed output.css filename to assets/css/xui." + versionHash + ".css");
                 var indexHtml = fs.readFileSync('../www/index.html', 'utf8');
                 indexHtml = indexHtml.replace(/assets\/css\/xui\.\[githash]\.css/, "assets\/css\/xui\." + versionHash + ".css");
                 fs.writeFileSync('../www/index.html', indexHtml);
-                console.log("Changed output.css.filename to"+ "assets\/css\/xui\." + versionHash + ".css");
             }
         })
     ]
