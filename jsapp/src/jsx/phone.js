@@ -165,12 +165,16 @@ class Phone extends React.Component {
 
 			switch (ds.resolution) {
 				case "120p": vid_width = 160; vid_height = 120; break;
-				case "240p": vid_width = 320; vid_height = 240; break;
-				case "480p": vid_width = 640; vid_height = 480; break;
+				case "QVGA": vid_width = 320; vid_height = 240; break;
+				case "VGA":  vid_width = 640; vid_height = 480; break;
+				case "SVGA": vid_width = 800; vid_height = 600; break;
 				case "180p": vid_width = 320; vid_height = 180; break;
 				case "360p": vid_width = 640; vid_height = 360; break;
 				case "720p": vid_width =1280; vid_height = 720; break;
-				case "1080p":vid_width =1920; vid_height = 1080; break;
+				case "1080p":vid_width =1920; vid_height = 1080;break;
+				case "CIF":  vid_width = 176; vid_height = 144; break;
+				case "CIF":  vid_width = 352; vid_height = 288; break;
+				case "4CIF": vid_width = 704; vid_height = 576; break;
 			}
 
 			verto.videoParams({
@@ -189,13 +193,14 @@ class Phone extends React.Component {
 			caller_id_name: '0000',
 			caller_id_number: '0000',
 			useVideo: useVideo,
+			useCamera: ds.videoDevice,
 			useStereo: true,
 			outgoingBandwidth: 'default',
 			incomingBandwidth: 'default',
 			deviceParams: {
 				useMic: ds.audioInDevice,
 				useSpeak: ds.audioOutDevice,
-				useVideo: ds.videoDevice
+				useCamera: ds.videoDevice
 			}
 		});
 	}

@@ -68,6 +68,7 @@ export function getXUIDeviceSettings()
 class SettingDevice extends React.Component {
 	constructor(props) {
 		super(props);
+		this.handleVideoDeviceChange = this.handleVideoDeviceChange.bind(this);
 		this.handleVideoFPSChange = this.handleVideoFPSChange.bind(this);
 		this.handleResChange = this.handleResChange.bind(this);
 		this.handleAuCheckChange = this.handleAuCheckChange.bind(this);
@@ -94,6 +95,7 @@ class SettingDevice extends React.Component {
 			audioOutDevice: ds.audioOutDevice,
 			stereo: ds.stereo,
 			stun: ds.stun,
+			videoDevice: ds.videoDevice,
 			resolution: ds.resolution
 		});
 
@@ -109,6 +111,12 @@ class SettingDevice extends React.Component {
 		}
 
 		verto.refreshDevices(runtime);
+	}
+
+	handleVideoDeviceChange(e){
+		this.state.videoDevice = e.target.value;
+		localStorage.setItem("xui.video.videoDevice", e.target.value);
+		this.setState({videoDevice: e.target.value});
 	}
 
 	handleVideoFPSChange(e){
@@ -163,9 +171,9 @@ class SettingDevice extends React.Component {
 					<div className="row">
 						<Col sm={2}><T.span text="Camera" /></Col>
 						<Col sm={3}>
-							<FormControl componentClass="select" id="camera" name="Camera" placeholder="select">
+							<FormControl componentClass="select" onChange={this.handleVideoDeviceChange} value={this.state.videoDevice}>
 								{_this.state.cameras.map(function(obj){
-									return <option key={obj.id}>{obj.label ? obj.label : obj.id}</option>
+									return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
 								})}
 							</FormControl>
 						</Col>
@@ -173,7 +181,7 @@ class SettingDevice extends React.Component {
 					<div className="row">
 						<Col sm={2}><T.span text="Best frame rate" /></Col>
 						<Col sm={3}>
-							<FormControl onChange={this.handleVideoFPSChange} value={this.state.frameRate} componentClass="select" name="Video-select">
+							<FormControl onChange={this.handleVideoFPSChange} value={this.state.frameRate} componentClass="select">
 								<option value="default">{T.translate("default")}</option>
 								<option value="10">10 FPS</option>
 								<option value="15">15 FPS</option>
@@ -190,12 +198,16 @@ class SettingDevice extends React.Component {
 							<FormControl onChange={this.handleResChange} value={this.state.resolution} componentClass="select" name="Resolution">
 								<option value="default">{T.translate("default")}</option>
 								<option value="120p" label="120p 160x120 4:3"></option>
-								<option value="240p" label="240p 320x240 4:3"></option>
-								<option value="480p" label="480p 640x480 4:3"></option>
+								<option value="QVGA" label="QVGA 320x240 4:3"></option>
+								<option value="VGA"  label="VGA  640x480 4:3"></option>
+								<option value="SVGA" label="SVGA 800x600 4:3"></option>
 								<option value="180p" label="180p 320x180 16:9"></option>
 								<option value="360p" label="360p 640x360 16:9"></option>
 								<option value="720p" label="720p 1280x720 16:9"></option>
 								<option value="1080p" label="1080p 1920x1080 16:9"></option>
+								<option value="QCIF" label="QCIF 176x144 11:9"></option>
+								<option value="CIF"  label="CIF  352x288 11:9"></option>
+								<option value="4CIF" label="4CIF 704x576 11:9"></option>
 							</FormControl>
 						</Col>
 					</div>
