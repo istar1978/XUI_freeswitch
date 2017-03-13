@@ -1,5 +1,6 @@
 LANGUAGES["zh"] = {
 	Status: "状态",
+	State: "状态",
 	DashBoard: "首页",
 	Show: "Show",
 	Blocks: "Blocks",
@@ -23,6 +24,7 @@ LANGUAGES["zh"] = {
 
 	Overview: "状态",
 	Calls: "呼叫",
+	Callgroup: "呼叫组",
 	Channels: "通道",
 	Users: "用户",
 	Groups: "分组",
@@ -57,6 +59,9 @@ LANGUAGES["zh"] = {
 	Metadata: "元数据",
 	Group: "组",
 	Contact: "联系地址",
+	Reg: "注册",
+	Unreg: "注销",
+
 
 	Conference: "会议",
 	Mute: "静音",
@@ -129,6 +134,8 @@ LANGUAGES["zh"] = {
 	"VM Password": "VM密码",
 	Domain: "域",
 	Type: "类型",
+	Syntax: "语法",
+	Data: "数据地址",
 
 	Email: "电子邮件",
 	"Member ID": "成员ID",

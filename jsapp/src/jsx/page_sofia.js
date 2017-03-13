@@ -31,6 +31,7 @@
 'use strict';
 
 import React from 'react';
+import T from 'i18n-react';
 import verto from './verto/verto';
 
 class SofiaPage extends React.Component {
@@ -342,11 +343,11 @@ class SofiaPage extends React.Component {
 			<table className="table">
 			<tbody>
 			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Data</th>
-				<th>State</th>
-				<th>Action</th>
+				<th><T.span text="Name"/></th>
+				<th><T.span text="Type"/></th>
+				<th><T.span text="Data"/></th>
+				<th><T.span text="State"/></th>
+				<th><T.span text="Control"/></th>
 			</tr>
 			{rows}
 			</tbody>
