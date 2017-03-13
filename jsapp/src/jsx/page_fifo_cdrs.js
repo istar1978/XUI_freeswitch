@@ -38,6 +38,9 @@ class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {rows: [], query_visible: false};
+		this.handleMore = this.handleMore.bind(this);
+		this.handleSearch = this.handleSearch.bind(this);
+		this.handleQuery = this.handleQuery.bind(this);
 	}
 
 	handleClick (x) {
@@ -58,6 +61,7 @@ class FifoCDRsPage extends React.Component {
 			"&endDate=" + this.endDate.value +
 			"&ani=" + this.ani.value +
 			"&dest_number=" + this.dest_number.value +
+			"&bridged_number=" + this.bridged_number.value +
 			"&id=2";
 
 		console.log(qs);
@@ -93,6 +97,7 @@ class FifoCDRsPage extends React.Component {
 	}
 
 	render () {
+		var _this = this;
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 				<td>{row.channel_uuid}</td>
@@ -124,6 +129,7 @@ class FifoCDRsPage extends React.Component {
 					<input type="date" defaultValue="2017-02-02" ref={(input) => { _this.endDate = input; }}/> &nbsp;
 					<T.span text="CID Number"/><input ref={(input) => { _this.ani = input; }}/> &nbsp;
 					<T.span text="Dest Number"/><input ref={(input) => { _this.dest_number = input; }}/> &nbsp;
+					<T.span text="Bridged Number"/><input ref={(input) => { _this.bridged_number = input; }}/> &nbsp;
 					<T.button text="Search" onClick={this.handleSearch}/>
 				</div>}
 

@@ -278,8 +278,16 @@ function  xdb.find_by_time(t, time)
 	
 	local sql = "SELECT * FROM " .. t .. " WHERE  strftime('%s', start_stamp) -" .. theTargetTime ..  " > 0"
 
-	-- local sql = "SELECT * FROM " .. t .. " WHERE " .. os.time(year = os.date("%Y",tonumber(end_stamp)), month = os.date("%m",tonumber(end_stamp)), day = os.date("%d",tonumber(end_stamp))) .. " > " .. theTargetTime
-	freeswitch.consoleLog("err",sql)
+	return xdb.find_by_sql(sql, cb)
+end
+
+--query fifo-cdrs
+function  xdb.find_by_time_of_fifo(t, time)
+	-- body
+	local theTime = os.time()
+	local theTargetTime = theTime - time*24*60*60
+	
+	local sql = "SELECT * FROM " .. t .. " WHERE  strftime('%s', start_epoch) -" .. theTargetTime ..  " > 0"
 
 	return xdb.find_by_sql(sql, cb)
 end
@@ -297,6 +305,24 @@ function xdb.find_by_time_by_calender(t, startDate, endDate, cidNumber, destNumb
 	end
 
 	freeswitch.consoleLog("err",sql)
+	return xdb.find_by_sql(sql, cb)
+end
+
+-- query fifocdrs by calender
+function xdb.find_by_time_by_calender_of_fifo(t, startDate, endDate, ani, dest_number, bridged_number)
+
+	local sql = " SELECT * FROM " .. t .. " where start_epoch - strftime('%s', '" .. startDate .. "') > 0 AND start_epoch - strftime('%s', '" .. endDate .. "') < 0 ";
+
+	if ani then
+		sql = sql .. " AND ani = '" .. ani .. "'"
+	end
+	if dest_number then
+		sql = sql .. " AND dest_number = '" .. dest_number .. "'"
+	end
+	if bridged_number then
+		sql = sql .. " AND bridged_number = '" .. bridged_number .. "'"
+	end
+
 	return xdb.find_by_sql(sql, cb)
 end
 
