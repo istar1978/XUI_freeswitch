@@ -38,6 +38,9 @@ class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {rows: [], query_visible: false};
+		this.handleMore = this.handleMore.bind(this);
+		this.handleSearch = this.handleSearch.bind(this);
+		this.handleQuery = this.handleQuery.bind(this);
 	}
 
 	handleClick (x) {
@@ -93,6 +96,7 @@ class FifoCDRsPage extends React.Component {
 	}
 
 	render () {
+		var _this = this;
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 				<td>{row.channel_uuid}</td>
