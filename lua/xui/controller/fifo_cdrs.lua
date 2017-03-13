@@ -38,9 +38,9 @@ get('/', function(params)
 
 	if id == '0' or id == '1' then
 		last = env:getHeader('last')
-		if not last then last = "31" end
+		if not last then last = "7" end
 
-		n, cdrs = xdb.find_by_time("fifo_cdrs", last)
+		n, cdrs = xdb.find_by_time_of_fifo("fifo_cdrs", last)
 
 		if (n > 0) then
 			return cdrs
@@ -53,8 +53,9 @@ get('/', function(params)
 		startDate = env:getHeader('startDate')
 		endDate = env:getHeader('endDate')
 		ani = env:getHeader('ani')
-		dest_number = env:dest_number('destNumber')
-		n, cdrs = xdb.find_by_time_by_calender("fifo_cdrs", startDate, endDate, ani, dest_number)
+		dest_number = env:getHeader('dest_number')
+		bridged_number = env:getHeader('bridged_number')
+		n, cdrs = xdb.find_by_time_by_calender_of_fifo("fifo_cdrs", startDate, endDate, ani, dest_number, bridged_number)
 
 		if (n > 0) then
 			return cdrs
