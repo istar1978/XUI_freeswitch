@@ -2,11 +2,10 @@
 function build_members(fifo_id)
 	member = ""
 	xdb.find_by_cond("fifo_members", {fifo_id = fifo_id}, id, function(row)
-
-		if row.dial_string then
-			dial_string = row.dial_string
+		if row.dial_string == "" then
+			dial_string = [[{fifo_member_wait = nowait,fifo_record_template = $${base_dir}/recordings/]] .. "fifo-record-" .. '$${strftime(%Y%m%d-%H%M%S)}' .. "-" .. '${create_uuid()}' .. '.mp3' .. [[}]] .. [[user/]] .. row.extn			
 		else
-			dial_string = "user/" .. row.extn
+			dial_string = row.dial_string
 		end
 
 		member = member .. [[<member timeout="]] .. row.timeout .. [[" simo="]] ..
@@ -31,7 +30,7 @@ XML_STRING=[[
 <settings>
 	<param name="delete-all-outbound-member-on-startup" value="false"/>
 	<param name="outbound-strategy" value="ringall"/>
-	<param name="outbound_per_cycle" value="2"/>
+	<param name="outbound_per_cycle" value="6"/>
 </settings>
 <fifos> ]] ..
 	build_fifos() ..

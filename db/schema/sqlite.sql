@@ -295,7 +295,8 @@ CREATE TABLE fifo_cdrs (
 	ani VARCHAR,                -- the original caller id number
 	dest_number VARCHAR,        -- the original dest number
 	bridged_number VARCHAR,     -- bridged_number
-
+	media_file_id INTEGER,
+	
 	start_epoch INTEGER,
 	bridge_epoch INTEGER,
 	end_epoch INTEGER
