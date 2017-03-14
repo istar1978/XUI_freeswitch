@@ -183,7 +183,20 @@ function xdb.find(t, id)
 	return r
 end
 
--- find from table with start_stamp = start_stamp
+-- find from fifo_cdrs table with channel_uuid = channel_uuid
+function xdb.find_by_channel_uuid(t, channel_uuid)
+	local sql = "SELECT * FROM " .. t .. " WHERE channel_uuid = '" .. channel_uuid .."'"
+	local found = 0
+	local r = nil
+
+	xdb.dbh:query(sql, function(row)
+		r = row
+	end)
+
+	return r
+end
+
+-- find from fifo_cdrs table with start_stamp = start_stamp
 function xdb.find_by_start_stamp(t, start_stamp)
     start_stamp = string.gsub(start_stamp, "%%20", " ") 
 	local sql = "SELECT * FROM " .. t .. " WHERE start_stamp = '" .. start_stamp .."'"

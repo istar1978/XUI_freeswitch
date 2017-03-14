@@ -33,6 +33,88 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Link } from 'react-router';
+import { EditControl } from './xtools';
+
+class FifoCDRPage extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {fifocdr: {}, edit: false};
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+	}
+
+	componentDidMount() {
+		var _this = this;
+		$.getJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid, "", function(data) {
+			console.log("fifocdr", data);
+			_this.setState({fifocdr: data});
+			console.log(_this.state.fifocdr)
+		}, function(e) {
+			console.log("get cdr ERR");
+		});
+	}
+
+	render() {
+		const fifocdr = this.state.fifocdr;
+
+		return <div>
+			<h1><T.span text="FIFO CDR"/> <small>{fifocdr.channel_uuid}</small></h1>
+			<hr/>
+
+			<Form horizontal id="FIFOCDRForm">
+				<input type="hidden" name="id" defaultValue={fifocdr.channel_uuid}/>
+				<FormGroup controlId="formCaller_id_name">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
+					<Col sm={10}><audio src="" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formUUID">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="UUID"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.channel_uuid}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formFIFOName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="FIFO Name"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.fifo_name}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formCID">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.ani}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDest">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Number"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.dest_number}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formBridged">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Bridged Number"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.bridged_number}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formStart">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Start"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.start_epoch)}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formAnswer">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Answer"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.bridge_epoch)}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formEnd">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="End"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.end_epoch)}/></Col>
+				</FormGroup>
+			</Form>
+		</div>
+	}
+}
 
 class FifoCDRsPage extends React.Component {
 	constructor(props) {
@@ -100,7 +182,7 @@ class FifoCDRsPage extends React.Component {
 		var _this = this;
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
-				<td>{row.channel_uuid}</td>
+				<td><Link to={`/fifocdrs/${row.channel_uuid}`}>{row.channel_uuid}</Link></td>
 				<td>{row.fifo_name}</td>
 				<td>{row.ani}</td>
 				<td>{row.dest_number}</td>
@@ -153,4 +235,4 @@ class FifoCDRsPage extends React.Component {
 	}
 };
 
-export default FifoCDRsPage;
+export {FifoCDRsPage, FifoCDRPage};
