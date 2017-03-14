@@ -41,7 +41,7 @@ import Languages from "./languages";
 import MainMenu from './main-menu';
 import FSShow from "./fs_show";
 import { CDRsPage, CDRPage } from "./page_cdrs";
-import FifoCDRsPage from "./page_fifo_cdrs";
+import { FifoCDRsPage, FifoCDRPage } from "./page_fifo_cdrs";
 import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
 import OverViewPage from "./page_overview";
@@ -138,7 +138,10 @@ class Home extends React.Component{
 					<Route path=":start_stamp" component={CDRPage} />
 				</Route>
 
-				<Route path="fifocdrs" component={FifoCDRsPage} />
+				<Route path="fifocdrs">
+					<IndexRoute components={FifoCDRsPage} />
+					<Route path=":channel_uuid" component={FifoCDRPage} />
+				</Route>
 
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>

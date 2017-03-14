@@ -65,3 +65,12 @@ get('/', function(params)
 	end
 
 end)
+
+get('/:channel_uuid', function(params)
+	fifocdrs = xdb.find_by_channel_uuid("fifo_cdrs", params.channel_uuid)
+	if fifocdrs then
+		return fifocdrs
+	else
+		return 404
+	end
+end)
