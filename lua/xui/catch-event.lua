@@ -42,8 +42,11 @@ destNumber=event:getHeader("Other-Leg-Destination-Number") or event:getHeader("C
 fifoAction = event:getHeader("FIFO-Action")
 httpFifoNotificationURL = nil -- "http://localhost:9999/"
 
-
-if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction == "bridge-caller-stop" then
+if fifoAction == "push" or
+	fifoAction == "abort" or
+	fifoAction == "pre-dial" or
+	fifoAction == "bridge-caller-start" or
+	fifoAction == "bridge-caller-stop" then
 
 	local cur_dir = debug.getinfo(1).source;
 	cur_dir = string.gsub(debug.getinfo(1).source, "^@(.+/)[^/]+$", "%1")
@@ -61,7 +64,7 @@ if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction
 	uuid = event:getHeader("Unique-ID")
 	fifo_name = event:getHeader("Fifo-Name")
 
-	if fifoAction == "pre-dial" then
+	if fifoAction == "push" then
 		rec = {}
 		rec.channel_uuid = uuid
 		rec.fifo_name = fifo_name
@@ -70,6 +73,7 @@ if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction
 		rec.start_epoch = "" .. os.time() + config.tz*60*60
 
 		xdb.create('fifo_cdrs', rec)
+	elseif fifoAction == "pre-dial" then
 	elseif fifoAction == "bridge-caller-start" then
 		rec = {}
 		rec.bridged_number = destNumber
@@ -77,6 +81,11 @@ if fifoAction == "pre-dial" or fifoAction == "bridge-caller-start" or fifoAction
 
 		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, rec)
 	elseif fifoAction == "bridge-caller-stop" then
+		rec = {}
+		rec.end_epoch = "" .. os.time() + config.tz*60*60
+
+		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, rec)
+	elseif fifoAction == "abort" then
 		rec = {}
 		rec.end_epoch = "" .. os.time() + config.tz*60*60
 
