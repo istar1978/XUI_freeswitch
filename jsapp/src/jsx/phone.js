@@ -230,7 +230,10 @@ class Phone extends React.Component {
 	}
 
 	toggleVideo() {
-		this.setState({useVideo: !this.state.useVideo});
+		let useVideo = null;
+		useVideo = !this.state.useVideo;
+		this.setState({useVideo: useVideo});
+		localStorage.setItem('phone.useVideo', useVideo);
 	}
 
 	componentDidMount () {
@@ -241,9 +244,17 @@ class Phone extends React.Component {
 
 		if (verto_loginState) this.handleVertoLogin();
 
+		let phoneUseVideo = localStorage.getItem('phone.useVideo');
+		if (phoneUseVideo == 'true') {
+			phoneUseVideo = true;
+		} else {
+			phoneUseVideo = false;
+		}
+
 		this.setState({
 			displayStyle: localStorage.getItem('phone.displayStyle'),
-			destNumber: localStorage.getItem('phone.destNumber') || ''
+			destNumber: localStorage.getItem('phone.destNumber') || '',
+			useVideo: phoneUseVideo
 		});
 
 		// hack ringer
