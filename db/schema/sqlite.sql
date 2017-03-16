@@ -351,5 +351,30 @@ END;
 
 CREATE INDEX fifo_member_fifo_name ON fifo_members(fifo_name);
 
+CREATE TABLE mcasts (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR NOT NULL,
+	source VARCHAR,
+	codec_name VARCHAR,
+	codec_ms INTEGER,
+	channels VARCHAR DEFAULT '1',
+	maddress VARCHAR,
+	mport VARCHAR,
+	sample_rate VARCHAR,
+	enable BOOLEAN,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE UNIQUE INDEX mcasts_name ON mcasts(name);
+CREATE UNIQUE INDEX mcasts_maddress_mport ON mcasts(maddress, mport);
+
+CREATE INDEX mcasts_deleted_epoch ON mcasts(deleted_epoch);
+
+CREATE TRIGGER tg_mcasts AFTER UPDATE ON mcasts
+BEGIN
+	UPDATE mcasts set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 
 -- END

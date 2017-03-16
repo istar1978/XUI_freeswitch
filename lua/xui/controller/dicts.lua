@@ -6,7 +6,11 @@ get('/', function(params)
 
 	realm = env:getHeader('realm')
 
-	if realm then
+	k = env:getHeader('k')
+
+	if realm and k then
+		n, dicts = xdb.find_by_cond("dicts", {realm = realm, k = k})
+	elseif realm then
 		n, dicts = xdb.find_by_cond("dicts", {realm = realm})
 	else
 		n, dicts = xdb.find_all("dicts")

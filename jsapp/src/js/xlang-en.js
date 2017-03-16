@@ -12,6 +12,8 @@ LANGUAGES["en"] = {
 	"Recording to": "Recording to *{path}*",
 	"Record completed": "Record complete *{path}*",
 
+	"Saved at": "Saved at *{time}*",
+
 
 
 	Copyright: "Copyright 2016-" + new Date().getFullYear() + " Yantai Xiaoyingtao Co., LTD., ALL RIGHTS RESERVED",

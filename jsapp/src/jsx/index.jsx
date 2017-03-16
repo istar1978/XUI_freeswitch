@@ -42,6 +42,7 @@ import MainMenu from './main-menu';
 import FSShow from "./fs_show";
 import { CDRsPage, CDRPage } from "./page_cdrs";
 import { FifoCDRsPage, FifoCDRPage } from "./page_fifo_cdrs";
+import {McastsPage, McastPage} from "./page_mcasts";
 import AboutPage from "./page_about";
 import DashBoard from "./dashboard";
 import OverViewPage from "./page_overview";
@@ -193,6 +194,10 @@ class Home extends React.Component{
 					<Route path="fifo_members">
 						<IndexRoute components={{sidebar: Settings, main: FifoPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: FifoMemberPage}}/>
+					</Route>
+					<Route path="mcasts">
+						<IndexRoute components={{sidebar: Settings, main: McastsPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: McastPage}}/>
 					</Route>
 					<Route path="system" components={{sidebar: Settings, main: SystemPage}}/>
 					<Route path="term" components={{sidebar: Settings, main: Terminal}}/>

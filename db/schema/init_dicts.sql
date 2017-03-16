@@ -6,6 +6,8 @@ INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'CONTEXT', 'CONTEXT');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'DEST', 'DEST');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'GROUP', 'GROUP');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'BAIDU', 'BAIDU');
+INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'MCAST_CODEC_NAME', 'MCAST_CODEC_NAME');
+INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'MCAST_SAMPLE_RATE', 'MCAST_SAMPLE_RATE');
 
 -- k,v to each realm
 INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'NAME', 'XUI');
@@ -70,5 +72,15 @@ INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'tr-ring', '%(2000,4000,450)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'uk-ring', '%(400,200,400,450);%(400,2000,400,450)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'us-ring', '%(2000,4000,440,480)');
 INSERT INTO dicts (realm, k, v) VALUES ('TONE', 'beep', '%(1000,0,640)');
+
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_CODEC_NAME', 'PCMU', 'PCMU');
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_CODEC_NAME', 'PCMA', 'PCMA');
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_CODEC_NAME', 'G722', 'G722');
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_CODEC_NAME', 'CELT', 'CELT');
+
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '8000', '8000');
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '16000', '16000');
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '32000', '32000');
+INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '48000', '48000');
 
 -- END

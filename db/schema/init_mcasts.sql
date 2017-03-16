@@ -1,0 +1,5 @@
+INSERT INTO mcasts (name, source, codec_name, codec_ms, channels, maddress, mport, sample_rate, enable) VALUES ('mpcmu', 'file_string:///tmp/test.wav', 'PCMU', '20', '1', '224.222.222.222', '4598', '8000', 'true');
+INSERT INTO mcasts (name, source, codec_name, codec_ms, channels, maddress, mport, sample_rate, enable) VALUES ('mpcma', 'local_stream://test', 'PCMA', '20', '1', '239.1.2.1', '5497', '8000', 'true');
+INSERT INTO mcasts (name, source, codec_name, codec_ms, channels, maddress, mport, sample_rate, enable) VALUES ('mg722', 'local_stream://mcast/16000', 'G722', '20', '1', '239.1.3.1', '16384', '16000', 'true');
+INSERT INTO mcasts (name, source, codec_name, codec_ms, channels, maddress, mport, sample_rate, enable) VALUES ('mcelt', 'local_stream://mcast/48000', 'CELT', '20', '1', '239.1.3.2', '16385', '48000', 'true');
+INSERT INTO mcasts (name, source, codec_name, codec_ms, channels, maddress, mport, sample_rate, enable) VALUES ('ml16', 'local_stream://mcast/32000', 'CELT', '20', '1', '239.1.3.2', '16385', '32000', 'true');

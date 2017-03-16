@@ -237,6 +237,15 @@ LANGUAGES["zh"] = {
 	"days": "{day}天",
 	"Total Rows": "总行数",
 
+	"Multicasts": "组播",
+	"Source": "源",
+	"Codec Name": "编码",
+	"Codec Ms": "打包时间间隔",
+	"Channels": "通道数",
+	"Multicast Address": "组播地址",
+	"Multicast Port": "组播端口",
+	"Sample Rate": "采样频率",
+
 	"Terminal": "终端",
 
 	"System Settings": "系统设置",
