@@ -68,7 +68,7 @@ class Member extends React.Component {
 		// console.log('props', this.props);
 
 		if (this.props.displayStyle == 'table') {
-			return <tr className={className} data-member-id={member.memberID} onClick={this.handleClick}>
+			return <tr className={className} data-member-id={member.memberID} onClick={this.handleClick} key={member.uuid}>
 					<td>{member.memberID}</td>
 					<td>"{member.cidName}" &lt;{member.cidNumber}&gt;</td>
 					<td><div className='inlineleft'>{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
