@@ -119,7 +119,7 @@ class ShowFSComplete extends React.Component{
 				<table className="table">
 				<tbody>
 				<tr>
-					<th>Sticky</th>
+					<th><T.span text="Sticky"/></th>
 					<th>A1</th>
 					<th>A2</th>
 					<th>A3</th>
@@ -196,10 +196,10 @@ class ShowFSRegistration extends React.Component{
 					<th><T.span text="Expires"/></th>
 					<th><T.span text="Network IP"/></th>
 					<th><T.span text="Network Port"/></th>
-					<th>Network Proto</th>
-					<th>Hostname</th>
-					<th>Metadata</th>
-					<th>Token / Url</th>
+					<th><T.span text="Network Proto"/></th>
+					<th><T.span text="Hostname"/></th>
+					<th><T.span text="Metadata"/></th>
+					<th><T.span text="Token / Url"/></th>
 				</tr>
 				{rows}
 				</tbody>

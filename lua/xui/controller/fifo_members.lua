@@ -34,34 +34,34 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 
-get('/', function(params)
+get('/members/', function(params)
 
-	-- local check = xdb.checkPermission('7','users','get','/')
-	-- if check then
-		n, fifos = xdb.find_all("fifos")
+		n, fifo_members = xdb.find_all("fifo_members")
 
-		if (fifos) then
-			return fifos
+		if (fifo_members) then
+			return fifo_members
 		else
 			return "[]"
 		end
-	-- else
-		-- return '{}'
-	-- end
 end)
 
-get('/:id', function(params)
-	fifo = xdb.find("fifos", params.id)
-	if fifo then
-		return fifo
+
+get('/members/:id', function(params)
+
+	fifo_members = xdb.find("fifo_members", params.id)
+
+	if fifo_members then
+		
+		return fifo_members
 	else
 		return 404
 	end
 end)
 
-put('/:id', function(params)
+
+put('/members/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update("users", params.request)
+	ret = xdb.update("fifo_members", params.request)
 	if ret then
 		return 200, "{}"
 	else
@@ -69,9 +69,11 @@ put('/:id', function(params)
 	end
 end)
 
-post('/', function(params)
+post('/members/', function(params)
 	print(serialize(params))
-	ret = xdb.create_return_id('fifos', params.request)
+
+	ret = xdb.create_return_id("fifo_members",params.request)
+
 	if ret then
 		return {id = ret}
 	else
@@ -79,8 +81,8 @@ post('/', function(params)
 	end
 end)
 
-delete('/:id', function(params)
-	ret = xdb.delete("fifos", params.id);
+delete('/members/:id', function(params)
+	ret = xdb.delete("fifo_members", params.id);
 
 	if ret == 1 then
 		return 200, "{}"

@@ -61,7 +61,19 @@ LANGUAGES["zh"] = {
 	Contact: "联系地址",
 	Reg: "注册",
 	Unreg: "注销",
+	FileName: "文件名",
+	"Token / Url": "令牌/网址",
+	URL: "网址",
 
+	Alias: "别名",
+	Command: "命令",
+	HostName: "主机名",
+	Sticky: "粘性",
+
+	Task: "任务",
+        "Task Desc": "任务描述",
+        "Task Group": "任务组",
+        "Task SQL Manager": "SQL管理器",
 
 	Conference: "会议",
 	Mute: "静音",
