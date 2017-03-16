@@ -80,7 +80,6 @@ const MENUS = [
 const RMENUS = [
 	{id: "MM_SETTINGS", description: <T.span text="Settings" />, data: "/settings/users"},
 	// {id: "MM_PROFILE", description: <T.span text={{ key: "Profiles"}} />, data:"/profiles"},
-	{id: "MM_LOGOUT", description: <T.span text="Logout"/>, data: "/logout"}
 ];
 
 class App extends React.Component{

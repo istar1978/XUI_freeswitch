@@ -88,7 +88,7 @@ class Member extends React.Component {
 					<div style={{textAlign: "center"}}>{member.memberID}</div>
 				</div>
 				<div style={{float: "left", marginLeft: "5px", marginTop: "5px"}}>
-					<div>王凯&nbsp;{member.memberID}</div>
+					<div>"{member.cidName}"</div>
 					<div>{member.cidNumber}</div>
 					<div style={{marginTop: "23px"}}>
 						{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;

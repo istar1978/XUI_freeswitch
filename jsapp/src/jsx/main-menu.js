@@ -93,6 +93,20 @@ class MainMenu extends React.Component {
 			</LinkContainer>
 		});
 
+       const navbarInstance = (
+			<Nav pullRight>
+				<NavDropdown eventKey={3} title={<img src="/assets/img/sit.png" />} noCaret>
+					<IndexLinkContainer to="/settings/users/1">
+						<MenuItem eventKey={3.1}><T.span text="User settings"/></MenuItem>
+					</IndexLinkContainer>
+					<MenuItem divider />
+					<IndexLinkContainer to="/logout">
+						<MenuItem eventKey={3.2}><T.span text="Logout"/></MenuItem>
+					</IndexLinkContainer>
+				</NavDropdown>
+			</Nav>
+		);
+
 		const phone = this.props.rmenus.length > 0 ? <Phone /> : null;
 
 		return <Navbar inverse fixedTop staticTop>
@@ -109,6 +123,7 @@ class MainMenu extends React.Component {
 					</IndexLinkContainer>
 					{ menus }
 				</Nav>
+				{ navbarInstance }
 				<Nav pullRight>{ rmenus }</Nav>
 				<Nav pullRight>{ phone }</Nav>
 				<Nav pullRight><Notice/></Nav>

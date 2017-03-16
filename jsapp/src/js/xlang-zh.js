@@ -155,6 +155,7 @@ LANGUAGES["zh"] = {
 
 	Login: "登录",
 	Logout: "退出",
+	"User settings": "用户设置",
 	"Login with username and password": "输入用户名和密码登录",
 	"Invalid username or password": "用户名/密码错误",
 
