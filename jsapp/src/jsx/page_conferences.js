@@ -137,9 +137,9 @@ class ConferencePage extends React.Component {
 		console.log("data", data);
 
 		if (data == "lock") {
-			fsAPI("conference", this.props.name + " lock");
+			verto.fsAPI("conference", this.props.name + " lock");
 		} else if (data == "unlock") {
-			fsAPI("conference", this.props.name + " unlock");
+			verto.fsAPI("conference", this.props.name + " unlock");
 		} else if (data == "select") {
 			var rows = [];
 			var _this = this;
@@ -185,8 +185,6 @@ class ConferencePage extends React.Component {
 			rows.unshift(member);
 			this.setState({outcall_rows: rows});
 
-			// fsAPI("bgapi", "conference " + this.state.name + " dial user/1007");
-
 			$.ajax({
 				type: "POST",
 				url: "/api/conferences/" + this.state.name,
@@ -213,15 +211,14 @@ class ConferencePage extends React.Component {
 		for(var member in this.activeMembers) {
 			if (this.activeMembers[member] == true) {
 				var args = this.props.name + " " + data + " " + member;
-				console.log("args", args);
-				fsAPI("conference", args);
+				// console.log("args", args);
+				verto.fsAPI("conference", args);
 			}
 		}
 	}
 
 	handleMemberClick (member_id, isActive) {
-		console.log("member_id", member_id);
-		// this.activeMembers[member_id] = isActive;
+		this.activeMembers[member_id] = isActive;
 
 		var rows = [];
 		if (this.state.rows.length > 0) {
@@ -232,7 +229,6 @@ class ConferencePage extends React.Component {
 					row.active = isActive;
 				}
 				rows.push(row);
-				console.log("row", row.active);
 			});
 			this.setState({rows: rows});
 		}
@@ -250,7 +246,7 @@ class ConferencePage extends React.Component {
 		console.log("conference name:", this.props.name);
 		window.addEventListener("verto-login", this.handleVertoLogin);
 
-		const use_livearray = true;
+		const use_livearray = false;
 
 		if (use_livearray) {
 			this.la = new VertoLiveArray(verto, this.getChannelName("liveArray"), this.props.name, {
@@ -291,6 +287,8 @@ class ConferencePage extends React.Component {
 	handleConferenceEvent (la, a) {
 		console.log("onChange FSevent:", a.action, a);
 
+		if (a.hashKey) a.key = a.hashKey;
+
 		switch (a.action) {
 
 		case "init":
@@ -306,7 +304,7 @@ class ConferencePage extends React.Component {
 
 		case "add":
 			var found = 0;
-			var member = translateMember([a.hashKey, a.data]);
+			var member = translateMember([a.key, a.data]);
 
 			if (member.cidName == "Outbound Call") {
 				var outcall_rows = this.state.outcall_rows.filter(function(row) {
@@ -331,8 +329,8 @@ class ConferencePage extends React.Component {
 			var _this = this;
 
 			this.state.rows = this.state.rows.map(function(row) {
-				if (row.uuid == a.hashKey ) {
-					var member = translateMember([a.hashKey, a.data]);
+				if (row.uuid == a.key ) {
+					var member = translateMember([a.key, a.data]);
 					member.active = _this.activeMembers[member.memberID];
 					return member;
 				} else {
@@ -345,8 +343,8 @@ class ConferencePage extends React.Component {
 
 		case "del":
 			var rows = this.state.rows.filter(function(row) {
-				console.log(row.uuid, a.hashKey);
-				return row.uuid != a.hashKey;
+				console.log(row.id, a.key);
+				return row.uuid != a.key;
 			});
 
 			this.setState({rows: rows});
