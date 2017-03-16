@@ -246,6 +246,7 @@ LANGUAGES["zh"] = {
 	"Best frame rate": "最佳帧率",
 	"Resolution": "分辨率",
 	Camera: "摄像头",
+	"No Camera": "无",
 	"Audio Settings": "音频设置",
 	"Echo Cancellation": "回声消除",
 	"Noise Suppression": "噪音抑制",
