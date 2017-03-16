@@ -146,6 +146,7 @@ class ConferencePage extends React.Component {
 			if (this.state.rows.length > 0) {
 				var active = !this.state.rows[0].active;
 
+if (0) { // I don't see why we actually need this.
 				this.state.rows.forEach(function(row) {
 					row.active = active;
 					rows.push(row);
@@ -154,6 +155,7 @@ class ConferencePage extends React.Component {
 				});
 				this.setState({rows: rows});
 			}
+}
 			return;
 		} else if (data == "call") {
 			if (!this.state.outcallNumberShow) {
