@@ -274,10 +274,7 @@ class McastPage extends React.Component {
 			success: function () {
 				_this.setState({mcast: mcast, edit: false})
 				_this.handleCodecNameChange({target: {value: _this.state.mcast.codec_name}});
-				T.setTexts({
-				  savedAt: "Saved at {time}"
-				});
-				notify(<T.span text={{key:"savedAt", time: Date()}}/>, {globalPosition:"top", position:"left"});
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 			},
 			error: function(msg) {
 				console.error("mcast", msg);
