@@ -52,6 +52,7 @@ import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
 import Conferences from './conferences';
 import SystemPage from './page_system';
+import { FifoPage, FifoMemberPage } from './page_fifos';
 import Settings from './settings';
 import { ConferenceRooms, ConferenceRoom } from './page_conference_rooms';
 import { UsersPage, UserPage } from './page_users';
@@ -188,6 +189,11 @@ class Home extends React.Component{
 					<Route path="media_files">
 						<IndexRoute components={{sidebar: Settings, main: MediaFilesPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: MediaFilePage}}/>
+					</Route>
+					<Route path="fifo" components={{sidebar: Settings, main: FifoPage}} />
+					<Route path="fifo_members">
+						<IndexRoute components={{sidebar: Settings, main: FifoPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: FifoMemberPage}}/>
 					</Route>
 					<Route path="system" components={{sidebar: Settings, main: SystemPage}}/>
 					<Route path="term" components={{sidebar: Settings, main: Terminal}}/>
