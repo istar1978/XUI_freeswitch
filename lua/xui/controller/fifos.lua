@@ -59,9 +59,39 @@ get('/:id', function(params)
 	end
 end)
 
+get('/:id/members', function(params)
+	n, fifo_members = xdb.find_by_cond("fifo_members", { fifo_id = params.id })
+	if fifo_members then
+		return fifo_members
+	else
+		return 404
+	end
+end)
+
+get('/:id/members/:members_id', function(params)
+	n, fifo_members = xdb.find_by_cond("fifo_members", { fifo_id = params.id ,id = params.members_id})
+	if fifo_members then
+		return fifo_members
+	else
+		return 404
+	end
+end)
+
+
+
 put('/:id', function(params)
 	print(serialize(params))
 	ret = xdb.update("users", params.request)
+	if ret then
+		return 200, "{}"
+	else
+		return 500
+	end
+end)
+
+put('/:id/members/:members_id', function(params)
+	print(serialize(params))
+	ret = xdb.update_by_cond("fifo_members", { fifo_id = params.id, id = params.members_id})
 	if ret then
 		return 200, "{}"
 	else
@@ -79,6 +109,16 @@ post('/', function(params)
 	end
 end)
 
+post('/:id/members', function(params)
+	print(serialize(params))
+	ret = xdb.create('fifo_members', {fifo_id = params.id})
+	if  ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
+
 delete('/:id', function(params)
 	ret = xdb.delete("fifos", params.id);
 
@@ -88,3 +128,14 @@ delete('/:id', function(params)
 		return 500, "{}"
 	end
 end)
+
+delete('/:id/members/:members_id', function(params)
+	ret = xdb.delete("fifo_members",{ fifo_id = params.id, id = params.members_id});
+
+	if ret == 1 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
+
