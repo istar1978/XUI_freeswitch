@@ -243,7 +243,7 @@ class UserPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', user: {}, edit: false, group: []};
+		this.state = {user: {}, edit: false, group: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -259,7 +259,7 @@ class UserPage extends React.Component {
 		console.log("user", user);
 
 		if (!user.extn || !user.name) {
-			this.setState({errmsg: "Mandatory fields left blank"});
+			notify(<T.span text="Mandatory fields left blank"/>, "error");
 			return;
 		}
 
@@ -271,7 +271,8 @@ class UserPage extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(user),
 			success: function () {
-				_this.setState({user: user, errmsg: {key: "Saved at", time: Date()}})
+				_this.setState({user: user, edit: false})
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -332,10 +333,8 @@ class UserPage extends React.Component {
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
-			if (this.state.errmsg) {
-				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
-			}
 		}
+
 		var group = this.state.group.map(function(row) {
 			return <Checkbox name="group" defaultChecked={row.checkshow} value={row.id}><T.span text={row.name}/></Checkbox>
 		})
@@ -390,6 +389,11 @@ class UserPage extends React.Component {
 				<FormGroup controlId="formCIDR">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="CIDR" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="user_cidr" defaultValue={user.user_cidr}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formType">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Type" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="type" defaultValue={user.type}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formSave">
