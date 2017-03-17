@@ -34,6 +34,10 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 
+get('/', function(params)
+	return '[]'
+end)
+
 get('/:id', function(params)
 	n, groups = xdb.find_all("groups")
 	local group_res = {}

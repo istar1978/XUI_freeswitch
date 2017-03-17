@@ -320,7 +320,7 @@ class UserPage extends React.Component {
 
 		$.getJSON("/api/user_groups/" + this.props.params.id, "", function(data) {
 			console.log("groups", data)
-			_this.setState({group: data});
+			// _this.setState({group: data});
 		}, function(e) {
 			console.log("get groups ERR");
 		});
