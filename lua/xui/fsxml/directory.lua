@@ -74,8 +74,15 @@ if user then
 		cid_name = row.cid_name or row.name
 		cid_number = row.cid_number or row.extn
 
+		local dial_string = "{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}";
+
+		if row.type == 'HK' then -- Hai Kang
+			dial_string = "{^^!sip_h_Subject=" .. user .. ":0,34020000001320009999:0!absolute_codec_string=PCMU,PS}" .. dial_string
+		end
+
 		pars= '<param name="password" value="' .. row.password .. '"/>' ..
-				'<param name="vm-password" value="' .. row.vm_password .. '"/>'
+				'<param name="vm-password" value="' .. row.vm_password .. '"/>' ..
+				'<param name="dial-string" value="' .. dial_string .. '"/>'
 
 		vars =  '<variable name="user_context" value="' .. row.context .. '"/>' ..
 				'<variable name="effective_caller_id_name" value="' .. cid_name .. '"/>' ..
@@ -85,10 +92,10 @@ if user then
 end
 
 if (found) then
+
 	XML_STRING = [[<domain name="]] .. domain .. [[">
 		<user id="]] .. user .. [[">
 			<params>
-				<param name="dial-string" value="{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}"/>
 				<!-- These are required for Verto to function properly -->
 				<param name="jsonrpc-allowed-methods" value="verto.subscribe,verto,txtapi,jsapi,xmlapi,makeCall,callcenter_config"/>
 				<param name="jsonrpc-allowed-jsapi" value="cti,mips,fsapi,show,status,jsjson,lua,luarun"/>
