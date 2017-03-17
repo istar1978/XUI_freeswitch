@@ -470,7 +470,7 @@ class RoutePage extends React.Component {
 class RoutesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false,isSysRouterShow: false, ifShowBtName: "Show SysRoute"};
+		this.state = { formShow: false, rows: [], danger: false, isSysRouterShow: false, ifShowBtName: "Show SysRoute"};
 
 	    // This binding is necessary to make `this` work in the callback
 	    this.handleControlClick = this.handleControlClick.bind(this);
@@ -514,9 +514,14 @@ class RoutesPage extends React.Component {
 			}
 		});
 	}
+
 	handleSysRouterShow(e){
-		this.setState({isSysRouterShow:!this.state.isSysRouterShow});
+		var routershow = null;
+		routershow = !this.state.isSysRouterShow;
+		this.setState({isSysRouterShow: routershow});
+		localStorage.setItem('routershow', routershow);
 		var ifShowBtName = (this.state.ifShowBtName == "Show SysRoute") ? "Hide SysRoute" : "Show SysRoute";
+		localStorage.setItem('ifShowBtName', ifShowBtName);
 		this.setState({ifShowBtName:ifShowBtName});
 	}
 
@@ -536,6 +541,13 @@ class RoutesPage extends React.Component {
 		}, function(e) {
 			console.log("get routes ERR");
 		});
+
+		let routershow = localStorage.getItem('routershow') || false;
+		routershow = routershow == 'true';
+		_this.setState({
+			isSysRouterShow: routershow,
+			ifShowBtName: localStorage.getItem('ifShowBtName')
+		});	
 	}
 
 	handleFSEvent(v, e) {
