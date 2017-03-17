@@ -224,6 +224,24 @@ class CDRsPage extends React.Component {
 			display : isShow
 		}
 
+		var now = new Date();
+		var nowdate = Date.parse(now);
+		var sevenDaysBeforenowtime = nowdate - 7*24*60*60*1000;
+		var sevenDaysBeforenowdate = new Date(sevenDaysBeforenowtime);
+
+		function getTime(time){
+			var month = (time.getMonth() + 1);
+			var day = time.getDate();
+			if (month < 10) 
+				month = "0" + month;
+			if (day < 10)
+				day = "0" + day;
+			return time.getFullYear() + '-' + month + '-' + day;
+		}
+
+		var today = getTime(now);
+		var sevenDaysBeforeToday = getTime(sevenDaysBeforenowdate);
+
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<T.span text="Last"/> &nbsp;
@@ -242,8 +260,8 @@ class CDRsPage extends React.Component {
 			<h1><T.span text="CDRs"/></h1>
 			<div>
 				{this.state.query_visible && <div style={{padding: "5px"}} className="pull-right">
-					<input type="date" defaultValue="2017-01-01" ref={(input) => { _this.startDate = input; }}/> -&nbsp;
-					<input type="date" defaultValue="2017-02-02" ref={(input) => { _this.endDate = input; }}/> &nbsp;
+					<input type="date" defaultValue={sevenDaysBeforeToday} ref={(input) => { _this.startDate = input; }}/> -&nbsp;
+					<input type="date" defaultValue={today} ref={(input) => { _this.endDate = input; }}/> &nbsp;
 					<T.span text="CID Number"/><input ref={(input) => { _this.cidNumber = input; }}/> &nbsp;
 					<T.span text="Dest Number"/><input ref={(input) => { _this.destNumber = input; }}/> &nbsp;
 					<T.button text="Search" onClick={this.handleSearch}/>
