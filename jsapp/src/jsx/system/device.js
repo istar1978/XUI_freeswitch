@@ -49,6 +49,7 @@ export function getXUIDeviceSettings()
 	var audioInDevice = localStorage.getItem("xui.audio.inDevice") || "any";
 	var audioOutDevice = localStorage.getItem("xui.audio.outDevice") || "any";
 
+	// localStorage is string only so convert them into boolean
 	ds.aec = aec == "true";
 	ds.agc = agc == "true";
 	ds.ns = ns == "true";
