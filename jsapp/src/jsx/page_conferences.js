@@ -43,46 +43,84 @@ class Member extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {active: false};
 		this.handleClick = this.handleClick.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
 	}
 
 	// allow the parent to set my state
-	componentWillReceiveProps (props) {
+	componentWillReceiveProps(props) {
 		// console.log("props", props);
 		this.setState(props.member);
 	}
 
-	handleClick (member_id) {
-		this.state.active = !this.state.active;
-		this.setState(this.state);
-		this.props.onMemberClick(member_id, this.state.active);
+	handleClick(member_id) {
+		const active = !this.state.active;
+		this.setState({active: active});
+		this.props.onMemberClick(member_id, active);
 	}
 
-	render () {
+	handleControlClick(e, data) {
+		console.log("data", data);
+		e.stopPropagation();
+		const member = this.props.member;
+
+		if (data == "call") {
+			$.ajax({
+				type: "POST",
+				url: "/api/conferences/" + member.conference_name,
+				dataType: "json",
+				contentType: "application/json",
+				data: JSON.stringify({
+					from: member.cidNumber,
+					to: member.cidNumber}),
+				success: function (obj) {
+				},
+				error: function(msg) {
+					console.error("err call", msg);
+				}
+			});
+
+			return;
+		}
+
+		verto.fsAPI("conference", member.conference_name + " " + data + " " + member.memberID);
+	}
+
+	render() {
 		const _this = this;
 		const member = this.props.member;
 		console.log("member", member);
-		var className = member.active ? "member active selected" : "member";
+		var className = this.state.active ? "member active selected" : "member";
 
-		const floor_color   = member.status.audio.floor   ? "blue"  : "#777";
-		const muted_color   = member.status.audio.muted   ? "#777"  : "green";
-		const talking_color = member.status.audio.talking ? "green" : "#777" ;
-		const deaf_color    = member.status.audio.deaf    ? "#777"  : "green";
-		const hold_color    = member.status.audio.onHold  ? "#ffe200": "#777";
+		const floor_color   = member.status.audio.floor   ? "blue"   : "#777" ;
+		const muted_color   = member.status.audio.muted   ? "red"    : "green";
+		const talking_color = member.status.audio.talking ? "green"  : "#777" ;
+		const deaf_color    = member.status.audio.deaf    ? "red"    : "green";
+		const hold_color    = member.status.audio.onHold  ? "red":   "#ccc" ;
+
+		const muted_class   = member.status.audio.muted   ? "conf-control fa fa-microphone-slash" : "conf-control fa fa-microphone";
+		const deaf_class    = member.status.audio.deaf    ? "conf-control fa fa-bell-slash-o" : "conf-control fa fa-bell-o";
+		const hold_class    = member.status.audio.onHold  ? "fa fa-pause" : "fa fa-circle-thin";
 
 		if (this.props.displayStyle == 'table') {
 
-			return <tr className={className} onClick={() => _this.handleClick(member.memberID)} key={member.uuid}>
+			return <tr className={className} onClick={(e) => _this.handleClick(e, member.memberID)} key={member.uuid}>
 					<td>{member.memberID}</td>
 					<td>"{member.cidName}" &lt;{member.cidNumber}&gt;</td>
 					<td><div className='inlineleft'><i className="fa fa-star" style={{color: floor_color}} aria-hidden="true"></i> |&nbsp;
 						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i> |&nbsp;
-						<i className="fa fa-bell-slash-o" style={{color: deaf_color}} aria-hidden="true"></i> |&nbsp;
-						<i className="fa fa-microphone-slash" style={{color: muted_color}} aria-hidden="true"></i> |&nbsp;
-						<i className="fa fa-circle-o-notch" style={{color: hold_color}} aria-hidden="true"></i> |&nbsp;
+						<a className={deaf_class} style={{color: deaf_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.deaf ? "undeaf" : "deaf")}></a> |&nbsp;
+						<a className={muted_class} style={{color: muted_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.muted ? "unmute" : "mute")}></a> |&nbsp;
+						<i className={hold_class} style={{color: hold_color}} aria-hidden="true"></i> |&nbsp;
+						{
+							member.memberID > 0 ?
+								<a className="conf-control fa fa-close" style={{color: "green"}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, "hup")}></a> :
+								<a className="conf-control fa fa-phone" style={{color: "green"}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, "call")}></a>
+						}
+						&nbsp;|&nbsp;
 						</div>
-						<div className="inline"> <ProgressBar active bsStyle="success" now={member.status.audio.energyScore/50} /></div>
+						<div className="inline"><ProgressBar active bsStyle="success" now={member.status.audio.energyScore/50} /></div>
 					</td>
 					<td>{member.email}</td>
 			</tr>;
@@ -98,9 +136,10 @@ class Member extends React.Component {
 					<div style={{marginTop: "23px"}}>
 						<i className="fa fa-star" style={{color: floor_color}} aria-hidden="true"></i>&nbsp;
 						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i>&nbsp;
-						<i className="fa fa-bell-slash-o" style={{color: deaf_color}} aria-hidden="true"></i>&nbsp;
-						<i className="fa fa-microphone-slash" style={{color: muted_color}} aria-hidden="true"></i>&nbsp;
-						<i className="fa fa-circle-o-notch" style={{color: hold_color}} aria-hidden="true"></i>
+						<a className={deaf_class} style={{color: deaf_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.deaf ? "undeaf" : "deaf")}></a>&nbsp;
+						<a className={muted_class} style={{color: muted_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.muted ? "unmute" : "mute")}></a>&nbsp;
+						<i className={hold_class} style={{color: hold_color}} aria-hidden="true"></i>&nbsp;
+						<a className="conf-control fa fa-phone" style={{color: "green"}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, "call")}></a>
 					</div>
 				</div>
 			</div>
@@ -129,11 +168,11 @@ class ConferencePage extends React.Component {
 		this.handleMemberClick = this.handleMemberClick.bind(this);
 	}
 
-	getChannelName (what) { // liveArray chat mod
+	getChannelName(what) { // liveArray chat mod
 		return "conference-" + what + "." + this.props.name + "@" + domain;
 	}
 
-	handleOutcallNumberChange (e) {
+	handleOutcallNumberChange(e) {
 		this.setState({outcallNumber: e.target.value});
 	}
 
@@ -145,21 +184,18 @@ class ConferencePage extends React.Component {
 		} else if (data == "unlock") {
 			verto.fsAPI("conference", this.props.name + " unlock");
 		} else if (data == "select") {
-			var rows = [];
 			var _this = this;
 			if (this.state.rows.length > 0) {
 				var active = !this.state.rows[0].active;
 
-if (0) { // I don't see why we actually need this.
-				this.state.rows.forEach(function(row) {
+				const rows = this.state.rows.map(function(row) {
 					row.active = active;
-					rows.push(row);
-					console.log("row", row.active);
 					_this.activeMembers[row.memberID] = active;
+					return row
 				});
+
 				this.setState({rows: rows});
 			}
-}
 			return;
 		} else if (data == "call") {
 			if (!this.state.outcallNumberShow) {
@@ -223,21 +259,9 @@ if (0) { // I don't see why we actually need this.
 		}
 	}
 
-	handleMemberClick (member_id, isActive) {
+	handleMemberClick(member_id, isActive) {
+		console.log('isActive', isActive)
 		this.activeMembers[member_id] = isActive;
-
-		var rows = [];
-		if (this.state.rows.length > 0) {
-			var active = !this.state.rows[0].active;
-
-			this.state.rows.forEach(function(row) {
-				if (row.memberID == member_id) {
-					row.active = isActive;
-				}
-				rows.push(row);
-			});
-			this.setState({rows: rows});
-		}
 	}
 
 	componentWillMount () {
@@ -399,6 +423,7 @@ if (0) { // I don't see why we actually need this.
 		const rows = this.state.outcall_rows.concat(this.state.rows);
 
 		const members = rows.map(function(member) {
+			member.conference_name = _this.props.name;
 			return <Member member={member} key={member.uuid} onMemberClick={_this.handleMemberClick} displayStyle={_this.state.displayStyle}/>
 		});
 
