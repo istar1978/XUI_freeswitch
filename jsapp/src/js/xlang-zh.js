@@ -184,7 +184,7 @@ LANGUAGES["zh"] = {
 	Gateways: "网关",
 	Gateway: "网关",
 	Server: "服务器",
-	Username: "用户名",
+	UserName: "用户名",
 	Register: "注册",
 	Reg: "注册",
 	Unreg: "注销",

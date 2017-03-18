@@ -148,6 +148,7 @@ CREATE TABLE gateways (
 	username VARCHAR,
 	password VARCHAR,
 	register VARCHAR NOT NULL DEFAULT 'true',
+	profile_id INTEGER,
 	description VARCHAR,
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),

@@ -81,11 +81,17 @@ class NewGateway extends React.Component {
 
 		const props = Object.assign({}, this.props);
 		const gateways = props.gateways;
+		const sip_profiles = props.sip_profiles;
 		delete props.gateways;
+		delete props.sip_profiles;
 		delete props.handleNewGatewayAdded;
 
 		const gateways_options = gateways.map(gw => {
 			return <option value={gw.id} key={gw.id}>Gateway[{gw.name}]</option>
+		});
+
+		const sip_profile_options = sip_profiles.map(sip_profile => {
+			return <option value={sip_profile.id} key={sip_profile.id}>{sip_profile.name}</option>
 		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
@@ -104,8 +110,8 @@ class NewGateway extends React.Component {
 					<Col sm={10}><FormControl type="input" name="realm" placeholder="example.com" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formUsername">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Username" className="mandatory"/></Col>
+				<FormGroup controlId="formUserName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="UserName" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="username" placeholder="username" /></Col>
 				</FormGroup>
 
@@ -117,6 +123,15 @@ class NewGateway extends React.Component {
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
 					<Col sm={10}><FormControl type="input" name="description" placeholder="Description ..." /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSipProfile">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="SipProfile"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="profile_id">
+							{sip_profile_options}
+						</FormControl>
+					</Col>
 				</FormGroup>
 
 				<FormGroup controlId="formTemplate">
@@ -440,7 +455,7 @@ class GatewaysPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.gwstatus = {};
-		this.state = { formShow: false, rows: [], danger: false};
+		this.state = { formShow: false, rows: [], sip_profiles: [], danger: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -506,6 +521,10 @@ class GatewaysPage extends React.Component {
 			})});
 		}, function(e) {
 			console.log("get gateways ERR");
+		});
+
+		$.getJSON("/api/sip_profiles", function(data) {
+			_this.setState({sip_profiles: data});
 		});
 
 		verto.subscribe("FSevent.custom::sofia::gateway_delete", {handler: this.handleFSEvent});
@@ -642,7 +661,7 @@ class GatewaysPage extends React.Component {
 				</table>
 			</div>
 
-			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
+			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} sip_profiles = {this.state.sip_profiles} handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
 		</div>
 	}
 }
