@@ -516,13 +516,9 @@ class RoutesPage extends React.Component {
 	}
 
 	handleSysRouterShow(e){
-		var routershow = null;
-		routershow = !this.state.isSysRouterShow;
+		var routershow = !this.state.isSysRouterShow;
 		this.setState({isSysRouterShow: routershow});
-		localStorage.setItem('routershow', routershow);
-		var ifShowBtName = (this.state.ifShowBtName == "Show SysRoute") ? "Hide SysRoute" : "Show SysRoute";
-		localStorage.setItem('ifShowBtName', ifShowBtName);
-		this.setState({ifShowBtName:ifShowBtName});
+		localStorage.setItem('xui.isSysRouterShow', routershow);
 	}
 
 	handleClick(x) {
@@ -536,21 +532,15 @@ class RoutesPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
+
+		let routershow = localStorage.getItem('xui.isSysRouterShow') || false;
+		routershow = routershow == 'true';
+
 		$.getJSON("/api/routes", "", function(data) {
-			_this.setState({rows: data});
+			_this.setState({rows: data, isSysRouterShow: routershow});
 		}, function(e) {
 			console.log("get routes ERR");
 		});
-
-		let routershow = localStorage.getItem('routershow') || false;
-		routershow = routershow == 'true';
-		_this.setState({
-			isSysRouterShow: routershow,
-			ifShowBtName: localStorage.getItem('ifShowBtName')
-		});	
-	}
-
-	handleFSEvent(v, e) {
 	}
 
 	handleRouteAdded(route) {
@@ -589,6 +579,8 @@ class RoutesPage extends React.Component {
 			"display" : "none"
 		}
 
+		const isSysRouterShowText = this.state.isSysRouterShow ? 'Hide SysRoute' : 'Show SysRoute';
+
 		var rows = this.state.rows.map(function(row) {
 			let dest = row.body;
 			let sysStyle = row.dest_type == 'FS_DEST_SYSTEM' && !_this.state.isSysRouterShow ? styleSheet : null;
@@ -614,11 +606,11 @@ class RoutesPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={this.handleControlClick} data="new">
-					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="new" text="New" />
+					<i className="fa fa-plus" aria-hidden="true" data="new"></i>&nbsp;
+					<T.span data="new" text="New" />
 				</Button>
 				<Button onClick={this.handleSysRouterShow} data="sysRoute">
-					<T.span onClick={this.handleSysRouterShow} data="sysRoute" text={this.state.ifShowBtName} />
+					<T.span data="sysRoute" text={isSysRouterShowText} />
 				</Button>
 			</ButtonToolbar>
 
