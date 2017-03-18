@@ -53,10 +53,32 @@ get('/:id', function(params)
 	end
 end)
 
+get('/:id/members', function(params)
+	n, members = xdb.find_by_cond("conference_members", {room_id = params.id })
+	if n > 0 then
+		return members
+	else
+		return '[]'
+	end
+end)
+
 post('/', function(params)
 	print(serialize(params))
 
 	ret = xdb.create_return_id('conference_rooms', params.request)
+
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
+
+post('/:id/members', function(params)
+	print(serialize(params))
+	local member = params.request
+	member.room_id = params.id
+	ret = xdb.create_return_id('conference_members', member)
 
 	if ret then
 		return {id = ret}
@@ -76,6 +98,16 @@ end)
 
 delete('/:id', function(params)
 	ret = xdb.delete("conference_rooms", params.id);
+
+	if ret == 1 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
+
+delete('/:id/members/:member_id', function(params)
+	ret = xdb.delete("conference_members", {id = params.member_id, room_id = params.id});
 
 	if ret == 1 then
 		return 200, "{}"

@@ -89,6 +89,9 @@ LANGUAGES["zh"] = {
 
 	"Conference Rooms": "会议室",
 	"Create New Room": "创建新会议室",
+	"Add New Member": "添加与会者",
+	"Add Member": "添加与会者",
+	"Members": "与会者",
 
 	"Display as Table": "以表格形式显示",
 	"Display as List": "以列表形式显示",

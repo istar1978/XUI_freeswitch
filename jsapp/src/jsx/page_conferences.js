@@ -107,7 +107,7 @@ class ConferencePage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: this.props.name, rows: [], la: null,
+			name: this.props.name, rows: [], static_rows: [], la: null,
 			last_outcall_member_id: 0, outcall_rows: [],
 			outcallNumber: '', outcallNumberShow: false,
 			displayStyle: 'table', toolbarText: false
@@ -245,23 +245,47 @@ if (0) { // I don't see why we actually need this.
 	}
 
 	componentDidMount () {
+		const _this = this;
 		console.log("conference name:", this.props.name);
 		window.addEventListener("verto-login", this.handleVertoLogin);
 
-		const use_livearray = false;
+		$.getJSON("/api/conference_rooms/" + this.props.room_id + "/members", function(members) {
+			_this.state.static_rows = members.map(function(m) {
+				const audio = {
+					talking: false,
+					deaf: false,
+					muted: false,
+					onHold: false,
+					energyScore: 0
+				}
 
-		if (use_livearray) {
-			this.la = new VertoLiveArray(verto, this.getChannelName("liveArray"), this.props.name, {
-				onChange: this.handleConferenceEvent
-			});
-		} else {
-			this.binding = verto.subscribe(this.getChannelName("liveArray"), {handler: this.handleFSEvent.bind(this),
-				userData: verto,
-				subParams: {}
+				return {
+					'uuid': m.id - 10000,
+					'memberID': m.id - 10000,
+					'cidNumber': m.num,
+					'cidName': m.name,
+					'codec': null,
+					'status': {audio: audio},
+					'email': null,
+					'active': false
+				};
 			});
 
-			this.laBootstrap(this.getChannelName("liveArray"), {});
-		}
+			const use_livearray = false;
+
+			if (use_livearray) {
+				_this.la = new VertoLiveArray(verto, _this.getChannelName("liveArray"), this.props.name, {
+					onChange: _this.handleConferenceEvent
+				});
+			} else {
+				_this.binding = verto.subscribe(_this.getChannelName("liveArray"), {handler: _this.handleFSEvent.bind(_this),
+					userData: verto,
+					subParams: {}
+				});
+
+				_this.laBootstrap(_this.getChannelName("liveArray"), {});
+			}
+		});
 	}
 
 	laBootstrap(context, obj) {
@@ -297,7 +321,7 @@ if (0) { // I don't see why we actually need this.
 			break;
 
 		case "bootObj":
-			var rows = [];
+			var rows = this.state.static_rows;
 			a.data.forEach(function(member) {
 				rows.push(translateMember(member));
 			})
@@ -353,7 +377,7 @@ if (0) { // I don't see why we actually need this.
 			break;
 
 		case "clear":
-			this.setState({rows: []});
+			this.setState({rows: this.state.static_rows});
 			break;
 
 		case "reorder":

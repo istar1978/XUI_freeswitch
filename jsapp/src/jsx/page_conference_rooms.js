@@ -40,6 +40,187 @@ import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './xtools'
 
+class NewMember extends React.Component {
+	propTypes: {handleNewRoomAdded: React.PropTypes.func}
+
+	constructor(props) {
+		super(props);
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var member = form2json('#newMember');
+		console.log("member", member);
+
+		if (!member.name || !member.num) {
+			notify(<T.span text="Mandatory fields left blank"/>);
+			return;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: "/api/conference_rooms/" + this.props.room_id + '/members',
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(member),
+			success: function (obj) {
+				console.log(obj);
+				member.id = obj.id;
+				_this.props.onNewMemberAdded(member);
+			},
+			error: function(msg) {
+				console.error("member", msg);
+			}
+		});
+	}
+
+	render() {
+		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.onNewMemberAdded;
+		delete props.room_id;
+
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Add New Member" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newMember">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="Seven Du" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
+					<Col sm={10}><FormControl type="input" name="description" placeholder="Seven Du" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="fromNumber">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="num" placeholder="7777" /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
+class RoomMembers extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {members: [], memberFormShow: false, danger: false}
+	}
+
+	handleMemberAdded(member) {
+		var members = this.state.members;
+		members.unshift(member);
+		this.setState({members: members, memberFormShow: false});
+	}
+
+	handleDelete(e) {
+		e.preventDefault();
+
+		var id = e.target.getAttribute("data-id");
+		console.log("deleting id", id);
+		var _this = this;
+
+		if (!_this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
+
+		$.ajax({
+			type: "DELETE",
+			url: "/api/conference_rooms/" + this.props.room_id + "/members/" + id,
+			success: function () {
+				console.log("deleted")
+				var members = _this.state.members.filter(function(m) {
+					return m.id != id;
+				});
+
+				_this.setState({members: members});
+			},
+			error: function(msg) {
+				console.error("conference membe", msg);
+			}
+		});
+	}
+
+	componentDidMount() {
+		const _this = this;
+
+		$.getJSON("/api/conference_rooms/" + _this.props.room_id + "/members", function(data) {
+			_this.setState({members: data});
+		});
+	}
+
+	render() {
+		const memberFormClose = () => this.setState({ memberFormShow: false });
+		const toggleDanger = () => this.setState({ danger: !this.state.danger });
+		const danger = this.state.danger ? "danger" : null
+		const _this = this;
+
+		return <div>
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
+				<Button onClick={() => this.setState({ memberFormShow: true })}>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="Add Member" />
+				</Button>
+			</ButtonGroup>
+			</ButtonToolbar>
+			<h2><T.span text="Members"/></h2>
+			<table className="table">
+				<tbody>
+				<tr>
+					<th><T.span text="Name" data="k"/></th>
+					<th><T.span text="Number"/></th>
+					<th style={{textAlign: "right"}}>
+						<T.span style={{cursor: "pointer"}} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/>
+					</th>
+				</tr>
+				{
+					this.state.members.map(function (m){
+						return <tr key={m.id}>
+							<td>{m.name}</td>
+							<td>{m.num}</td>
+							<td style={{textAlign: "right"}}>
+								<T.a onClick={_this.handleDelete.bind(_this)} data-id={m.id} text="Delete" className={danger} href="#"/>
+							</td>
+						</tr>
+					})
+				}
+				</tbody>
+			</table>
+
+			<NewMember room_id = {this.props.room_id}
+				show={this.state.memberFormShow} onHide={memberFormClose}
+				onNewMemberAdded={this.handleMemberAdded.bind(this)}/>
+		</div>
+	}
+}
+
 class NewRoom extends React.Component {
 	propTypes: {handleNewRoomAdded: React.PropTypes.func}
 
@@ -238,22 +419,28 @@ class ConferenceRoom extends React.Component {
 			}
 		});
 	}
+
 	handleControlClick(e) {
 		this.setState({edit: !this.state.edit});
 	}
+
 	isStringAcceptable() {
 		return true;
 	}
+
 	toggleHighlight() {
 		this.setState({highlight: !this.state.highlight});
 	}
+
 	componentDidMount() {
 		const _this = this;
+
 		$.getJSON("/api/conference_rooms/" + this.props.params.id, "", function(data) {
 			_this.setState({room: data});
 		}, function(e) {
 			console.log("get gw ERR");
 		});
+
 		$.getJSON("/api/conference_profiles/" + this.props.params.id, "", function(data) {
 			const params = data.params;
 			_this.setState({cr: data, params: params});
@@ -290,17 +477,22 @@ class ConferenceRoom extends React.Component {
 				</tr>
 			});
 		}
-		
-		
+
 		if (this.state.edit) {
-			save_btn = <Button><T.span onClick={this.handleSubmit.bind(this)} text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit.bind(this)}>
+				<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+				<T.span text="Save"/>
+			</Button>
 		}
 
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{ save_btn }
-				<Button><T.span onClick={this.handleControlClick.bind(this)} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick.bind(this)}>
+					<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
+					<T.span text="Edit"/>
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -344,10 +536,17 @@ class ConferenceRoom extends React.Component {
 					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
 			</Form>
-			
+
+			{
+				room.id ? <RoomMembers room_id={this.state.room.id} /> : null
+			}
+
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+				<Button onClick={this.toggleHighlight}>
+					<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
+					<T.span text="Edit"/>
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 			<h2><T.span text="Params"/></h2>
@@ -382,6 +581,8 @@ class ConferenceRooms extends React.Component {
 	}
 
 	handleDelete(e) {
+		e.preventDefault();
+
 		var id = e.target.getAttribute("data-id");
 		console.log("deleting id", id);
 		var _this = this;

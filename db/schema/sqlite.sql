@@ -256,6 +256,23 @@ BEGIN
 	UPDATE conference_rooms set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
+CREATE TABLE conference_members (
+	id INTEGER PRIMARY KEY,
+	room_id INTEGER NOT NULL,
+	name VARCHAR,
+	description VARCHAR,
+	num VARCHAR,  -- conference number
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER tg_conference_members AFTER UPDATE ON conference_members
+BEGIN
+	UPDATE conference_members set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
 CREATE TABLE devices (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR,
