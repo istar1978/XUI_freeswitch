@@ -603,10 +603,12 @@ class GatewaysPage extends React.Component {
 		verto.fsAPI("sofia", "profile public killgw " + name);
 	}
 
-	handleGatewayAdded(route) {
+	handleGatewayAdded(gateway) {
 		var rows = this.state.rows;
-		rows.unshift(route);
+		gateway.class_name = 'NONE';
+		rows.unshift(gateway);
 		this.setState({rows: rows, formShow: false});
+
 	}
 
 	render() {
