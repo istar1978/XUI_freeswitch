@@ -65,17 +65,22 @@ class Member extends React.Component {
 		console.log("member", member);
 		var className = member.active ? "member active selected" : "member";
 
-		// console.log('props', this.props);
+		const floor_color   = member.status.audio.floor   ? "blue"  : "#777";
+		const muted_color   = member.status.audio.muted   ? "#777"  : "green";
+		const talking_color = member.status.audio.talking ? "green" : "#777" ;
+		const deaf_color    = member.status.audio.deaf    ? "#777"  : "green";
+		const hold_color    = member.status.audio.onHold  ? "#ffe200": "#777";
 
 		if (this.props.displayStyle == 'table') {
+
 			return <tr className={className} onClick={() => _this.handleClick(member.memberID)} key={member.uuid}>
 					<td>{member.memberID}</td>
 					<td>"{member.cidName}" &lt;{member.cidNumber}&gt;</td>
-					<td><div className='inlineleft'>{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.talking ? <i className="fa fa-volume-up" style={{color:"green"}} aria-hidden="true"></i> : <i className="fa fa-volume-off" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.deaf ? <i className="fa fa-bell-slash-o" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-bell-o" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.muted ? <i className="fa fa-microphone-slash" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-microphone" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.onHold ? <i className="fa fa-circle-o-notch" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-circle-o" style={{color:"#ffe200"}} aria-hidden="true"></i>} |&nbsp;
+					<td><div className='inlineleft'><i className="fa fa-star" style={{color: floor_color}} aria-hidden="true"></i> |&nbsp;
+						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i> |&nbsp;
+						<i className="fa fa-bell-slash-o" style={{color: deaf_color}} aria-hidden="true"></i> |&nbsp;
+						<i className="fa fa-microphone-slash" style={{color: muted_color}} aria-hidden="true"></i> |&nbsp;
+						<i className="fa fa-circle-o-notch" style={{color: hold_color}} aria-hidden="true"></i> |&nbsp;
 						</div>
 						<div className="inline"> <ProgressBar active bsStyle="success" now={member.status.audio.energyScore/50} /></div>
 					</td>
@@ -91,11 +96,11 @@ class Member extends React.Component {
 					<div>"{member.cidName}"</div>
 					<div>{member.cidNumber}</div>
 					<div style={{marginTop: "23px"}}>
-						{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.talking ? <i className="fa fa-volume-up" style={{color:"green"}} aria-hidden="true"></i> : <i className="fa fa-volume-off" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.deaf ? <i className="fa fa-bell-slash-o" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-bell-o" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.muted ? <i className="fa fa-microphone-slash" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-microphone" style={{color:"green"}} aria-hidden="true"></i>} |&nbsp;
-						{member.status.audio.onHold ? <i className="fa fa-circle-o-notch" style={{color:"#777"}} aria-hidden="true"></i> : <i className="fa fa-circle-o" style={{color:"#ffe200"}} aria-hidden="true"></i>}
+						<i className="fa fa-star" style={{color: floor_color}} aria-hidden="true"></i>&nbsp;
+						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i>&nbsp;
+						<i className="fa fa-bell-slash-o" style={{color: deaf_color}} aria-hidden="true"></i>&nbsp;
+						<i className="fa fa-microphone-slash" style={{color: muted_color}} aria-hidden="true"></i>&nbsp;
+						<i className="fa fa-circle-o-notch" style={{color: hold_color}} aria-hidden="true"></i>
 					</div>
 				</div>
 			</div>
