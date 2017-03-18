@@ -495,7 +495,7 @@ class GatewaysPage extends React.Component {
 				_this.setState({rows: rows});
 			},
 			error: function(msg) {
-				console.error("route", msg);
+				console.error("gateway", msg);
 			}
 		});
 	}
@@ -633,7 +633,7 @@ class GatewaysPage extends React.Component {
 						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;
 						<span>{row.class_name}</span>
 					</td>
-					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href='#'/></td>
+					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
 
