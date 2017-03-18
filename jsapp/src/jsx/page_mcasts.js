@@ -260,7 +260,7 @@ class McastPage extends React.Component {
 		console.log("mcast", mcast);
 
 		if (!mcast.name || !mcast.source || !mcast.codec_ms || !mcast.channels || !mcast.mcast_ip || !mcast.mcast_port) {
-			this.setState({errmsg: "Mandatory fields left blank"});
+			notify(<T.span text="Mandatory fields left blank"/>, "error");
 			return;
 		}
 
@@ -312,9 +312,6 @@ class McastPage extends React.Component {
 
 		if (this.state.edit) {
 			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
-			if (this.state.errmsg) {
-				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
-			}
 		}
 
 		const codec_name_options = this.state.codec_name.map(function(row) {
