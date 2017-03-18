@@ -84,7 +84,7 @@ class NewMcast extends React.Component {
 		var mcast = form2json('#newMcastForm');
 		console.log("mcast", mcast);
 
-		if (!mcast.name || !mcast.source || !mcast.codec_ms || !mcast.channels || !mcast.maddress || !mcast.mport) {
+		if (!mcast.name || !mcast.source || !mcast.codec_ms || !mcast.channels || !mcast.mcast_ip || !mcast.mcast_port) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
@@ -97,7 +97,7 @@ class NewMcast extends React.Component {
 			data: JSON.stringify(mcast),
 			success: function (obj) {
 				mcast.id = obj.id;
-				_this.props.handleNewmcastAdded(mcast);
+				_this.props.handleNewMcastAdded(mcast);
 			},
 			error: function(msg) {
 				console.error("mcast", msg);
@@ -119,7 +119,7 @@ class NewMcast extends React.Component {
 
 	render() {
 		const props = Object.assign({}, this.props);
-		delete props.handleNewmcastAdded;
+		delete props.handleNewMcastAdded;
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -169,22 +169,22 @@ class NewMcast extends React.Component {
 					<Col sm={10}><FormControl type="input" name="channels" placeholder="1"/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formMaddress">
+				<FormGroup controlId="formMcastIP">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Multicast Address" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="maddress" placeholder="224.222.222.222"/></Col>
+					<Col sm={10}><FormControl type="input" name="mcast_ip" placeholder="224.222.222.222"/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formMport">
+				<FormGroup controlId="formMcastPort">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Multicast Port" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="mport" placeholder="4598"/></Col>
+					<Col sm={10}><FormControl type="input" name="mcast_port" placeholder="4598"/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formEnable">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Enabled" /></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="enable">
-							<option value="true">true</option>
-							<option value="false">false</option>
+							<option value="1">1</option>
+							<option value="0">0</option>
 						</FormControl>
 					</Col>
 				</FormGroup>
@@ -259,7 +259,7 @@ class McastPage extends React.Component {
 		var mcast = form2json('#newMcastForm');
 		console.log("mcast", mcast);
 
-		if (!mcast.name || !mcast.source || !mcast.codec_ms || !mcast.channels || !mcast.maddress || !mcast.mport) {
+		if (!mcast.name || !mcast.source || !mcast.codec_ms || !mcast.channels || !mcast.mcast_ip || !mcast.mcast_port) {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
@@ -325,7 +325,7 @@ class McastPage extends React.Component {
 			return [row.k, row.k];
 		});
 
-		const enable_options = [['true', 'true'], ['false', 'false']];
+		const enable_options = [[0, 0], [1, 1]];
 
 		return <div>
 			<ButtonToolbar className="pull-right">
@@ -372,14 +372,14 @@ class McastPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="channels" defaultValue={mcast.channels}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formMaddress">
+				<FormGroup controlId="formmcast_ip">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Multicast Address" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="maddress" defaultValue={mcast.maddress}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="mcast_ip" defaultValue={mcast.mcast_ip}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formMport">
+				<FormGroup controlId="formmcast_port">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Multicast Port" className="mandatory"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="mport" defaultValue={mcast.mport}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="mcast_port" defaultValue={mcast.mcast_port}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formEnabled">
@@ -446,23 +446,112 @@ class McastsPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
+		verto.subscribe("FSevent.custom::mcast::start", {
+			handler: this.handleFSEvent.bind(this)
+		});
+		verto.subscribe("FSevent.custom::mcast::stop", {
+			handler: this.handleFSEvent.bind(this)
+		});
+
 		$.getJSON("/api/mcasts", "", function(data) {
 			var rows = [];
-			for (var i = 0; i < data.length; i++) {
-				rows.push(data[i]);
-			}
+			_this.setState({rows: data});
+			verto.fsAPI("rtp_mcast", "xmllist", function(data) {
+				var rows = _this.state.rows;
+				var msg = $(data.message);
 
-			_this.setState({rows: rows});
+				msg.find("mcast").each(function() {
+					var mcast = this;
+					var name = $(mcast).find("name").text();
+					var running = $(mcast).find("running").text();
+
+					rows = rows.map(function(row) {
+						if (row.name == name) {
+							row.running = dbtrue(running);
+						}
+						return row;
+					});
+				});
+
+				_this.setState({rows: rows});
+			});
 		}, function(e) {
 			console.log("get mcasts ERR");
 		});
+	}
+
+	componentWillUnmount() {
+		verto.unsubscribe("FSevent.custom::mcast::start");
+		verto.unsubscribe("FSevent.custom::mcast::stop");
+	}
+
+	handleFSEvent(v, e) {
+		const _this = this;
+		if (e.eventChannel == "FSevent.custom::mcast::start") {
+			const mcast_name = e.data["mcast_name"];
+
+			const rows = _this.state.rows.map(function(row) {
+				if (row.name == mcast_name) {
+					row.running = true;
+				}
+				return row;
+			});
+
+			_this.setState({rows: rows});
+		} else if (e.eventChannel == "FSevent.custom::mcast::stop") {
+			const mcast_name = e.data["mcast_name"];
+
+			const rows = _this.state.rows.map(function(row) {
+				if (row.name == mcast_name) {
+					row.running = false;
+				}
+				return row;
+			});
+
+			_this.setState({rows: rows});
+		}
 	}
 
 	handleMcastAdded(mcast) {
 		var rows = this.state.rows;
 		rows.unshift(mcast);
 		this.setState({rows: rows, formShow: false});
-    }
+	}
+
+	HandleToggleMcast(e) {
+		const mcast_id = e.target.getAttribute("data");
+		const _this = this;
+
+		$.ajax({
+			type: "POST",
+			headers: {"X-HTTP-Method-Override": "PUT"},
+			url: "/api/mcasts/" + mcast_id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({action: 'toggle'}),
+			success: function (mcast) {
+				const rows = _this.state.rows.map(function(row) {
+					if (row.id == mcast.id) row.enable = mcast.enable;
+					return row;
+				});
+				_this.setState({rows: rows});
+			},
+			error: function(msg) {
+				console.error("mcast", msg);
+			}
+		});
+	}
+
+	handleMcastAction(e) {
+		e.preventDefault();
+
+		let mcast_name = e.target.getAttribute("data-name");
+		let action = e.target.getAttribute("data-action");
+
+		verto.fsAPI("rtp_mcast", action + " " + mcast_name, function(ret) {
+			notify(ret.message);
+		});
+	}
 
 	render() {
 		let formClose = () => this.setState({ formShow: false });
@@ -472,16 +561,23 @@ class McastsPage extends React.Component {
 	    var _this = this;
 		var rows = [];
 		this.state.rows.forEach(function(row) {
-			rows.push(<tr key={row.id}>
+
+			const enabled_class = dbtrue(row.enable) ? "" : "disabled";
+			const enabled_style = dbtrue(row.enable) ? "success" : "default";
+			const running_class = row.running ? "running" : null;
+
+			rows.push(<tr key={row.id} className={enabled_class}>
 					<td><Link to={`/settings/mcasts/${row.id}`}>{row.name}</Link></td>
-					<td>{row.source}</td>
 					<td>{row.codec_name}</td>
-					<td>{row.codec_ms}</td>
-					<td>{row.channels}</td>
-					<td>{row.maddress}</td>
-					<td>{row.mport}</td>
+					<td>{row.mcast_ip}</td>
+					<td>{row.mcast_port}</td>
 					<td>{row.sample_rate}</td>
-					<td>{row.enable}</td>
+					<td><Button onClick={_this.HandleToggleMcast.bind(_this)} bsStyle={enabled_style} data={row.id}>{dbtrue(row.enable) ? T.translate("Yes") : T.translate("No")}</Button></td>
+					<td className={running_class}>
+						<T.a onClick={_this.handleMcastAction.bind(_this)} data-name={row.name} data-action="start" text="Start" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleMcastAction.bind(_this)} data-name={row.name} data-action="stop" text="Stop" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleMcastAction.bind(_this)} data-name={row.name} data-action="restart" text="Restart" href='#'/>
+					</td>
 					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>);
 		})
@@ -503,14 +599,12 @@ class McastsPage extends React.Component {
 				<tbody>
 				<tr>
 					<th><T.span text="Name"/></th>
-					<th><T.span text="Source"/></th>
 					<th><T.span text="Codec Name"/></th>
-					<th><T.span text="Codec Ms"/></th>
-					<th><T.span text="Channels"/></th>
 					<th><T.span text="Multicast Address"/></th>
 					<th><T.span text="Multicast Port"/></th>
 					<th><T.span text="Sample Rate"/></th>
 					<th><T.span text="Enabled"/></th>
+					<th><T.span text="Status"/> / <T.span text="Control"/></th>
 					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
@@ -518,7 +612,7 @@ class McastsPage extends React.Component {
 				</table>
 			</div>
 
-			<NewMcast show={this.state.formShow} onHide={formClose} handleNewmcastAdded={this.handleMcastAdded.bind(this)}/>
+			<NewMcast show={this.state.formShow} onHide={formClose} handleNewMcastAdded={this.handleMcastAdded.bind(this)}/>
 		</div>
 	}
 };

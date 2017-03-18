@@ -358,17 +358,17 @@ CREATE TABLE mcasts (
 	codec_name VARCHAR,
 	codec_ms INTEGER,
 	channels VARCHAR DEFAULT '1',
-	maddress VARCHAR,
-	mport VARCHAR,
+	mcast_ip VARCHAR,
+	mcast_port VARCHAR,
 	sample_rate VARCHAR,
-	enable BOOLEAN,
+	enable BOOLEAN NOT NULL DEFAULT 0 CHECK(enable IN (0, 1, '0', '1')),
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
 
 CREATE UNIQUE INDEX mcasts_name ON mcasts(name);
-CREATE UNIQUE INDEX mcasts_maddress_mport ON mcasts(maddress, mport);
+CREATE UNIQUE INDEX mcasts_maddress_mport ON mcasts(mcast_ip, mcast_port);
 
 CREATE INDEX mcasts_deleted_epoch ON mcasts(deleted_epoch);
 
