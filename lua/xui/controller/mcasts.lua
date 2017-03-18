@@ -32,6 +32,7 @@
 
 content_type("application/json")
 require 'xdb'
+require 'm_mcast'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
@@ -55,12 +56,22 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update("mcasts", params.request)
-	if ret then
-		return 200, "{}"
+
+	if params.request.action == "toggle" then
+		mcast = m_mcast.toggle(params.id)
+
+		if (mcast) then
+			return mcast
+		end
 	else
-		return 500
+		ret = xdb.update("mcasts", params.request)
+
+		if ret then
+			return 200, "{}"
+		end
 	end
+
+	return 500
 end)
 
 post('/', function(params)

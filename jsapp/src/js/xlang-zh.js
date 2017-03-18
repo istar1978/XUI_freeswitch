@@ -245,6 +245,7 @@ LANGUAGES["zh"] = {
 	"Multicast Address": "组播地址",
 	"Multicast Port": "组播端口",
 	"Sample Rate": "采样频率",
+	"Create New mcast": "新建组播",
 
 	"Terminal": "终端",
 

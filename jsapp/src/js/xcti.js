@@ -324,7 +324,7 @@ function detect_language()
 
 function dbtrue(s)
 {
-	return s ? s : (s == "true" || s == "1");
+	return s ? (s == "true" || s == "1") : false;
 }
 
 function dbfalse(s)
