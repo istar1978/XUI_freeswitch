@@ -53,14 +53,14 @@ class Member extends React.Component {
 		this.setState(props.member);
 	}
 
-	handleClick (e) {
-		var member_id = e.currentTarget.getAttribute("data-member-id");
+	handleClick (member_id) {
 		this.state.active = !this.state.active;
 		this.setState(this.state);
 		this.props.onMemberClick(member_id, this.state.active);
 	}
 
 	render () {
+		const _this = this;
 		const member = this.props.member;
 		console.log("member", member);
 		var className = member.active ? "member active selected" : "member";
@@ -68,7 +68,7 @@ class Member extends React.Component {
 		// console.log('props', this.props);
 
 		if (this.props.displayStyle == 'table') {
-			return <tr className={className} data-member-id={member.memberID} onClick={this.handleClick} key={member.uuid}>
+			return <tr className={className} onClick={() => _this.handleClick(member.memberID)} key={member.uuid}>
 					<td>{member.memberID}</td>
 					<td>"{member.cidName}" &lt;{member.cidNumber}&gt;</td>
 					<td><div className='inlineleft'>{member.status.audio.floor ? <i className="fa fa-star" style={{color:"blue"}} aria-hidden="true"></i> : <i className="fa fa-star-o" style={{color:"#777"}} aria-hidden="true"></i>} |&nbsp;
@@ -132,8 +132,7 @@ class ConferencePage extends React.Component {
 		this.setState({outcallNumber: e.target.value});
 	}
 
-	handleControlClick (e) {
-		var data = e.target.getAttribute("data");
+	handleControlClick(data) {
 		console.log("data", data);
 
 		if (data == "lock") {
@@ -428,57 +427,54 @@ if (0) { // I don't see why we actually need this.
 
 
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="call">
-					<i className="fa fa-phone" aria-hidden="true" data="call"></i>&nbsp;
-					<T.span text= "Call" data="call" style={toolbarTextStyle}/>
+				<Button onClick={() => _this.handleControlClick("call")}>
+					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
+					<T.span text= "Call" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="select">
-					<i className="fa fa-check-square-o" aria-hidden="true" data="select"></i>&nbsp;
-					<T.span text= "Select" data="select" style={toolbarTextStyle}/>
+				<Button onClick={() => _this.handleControlClick("select")}>
+					<i className="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;
+					<T.span text= "Select" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="mute">
-					<i className="fa fa-microphone-slash" aria-hidden="true" data="mute"></i>&nbsp;
-					<T.span text= "Mute" data="mute"  style={toolbarTextStyle}/>
+				<Button onClick={() => _this.handleControlClick("mute")}>
+					<i className="fa fa-microphone-slash" aria-hidden="true"></i>&nbsp;
+					<T.span text= "Mute" style={toolbarTextStyle}/>
 				</Button>
-				<Button onClick={this.handleControlClick} data="unmute">
-					<i className="fa fa-microphone" aria-hidden="true" data="unmute"></i>&nbsp;
-					<T.span text= "unMute" data="unmute" style={toolbarTextStyle}/>
+				<Button onClick={() => _this.handleControlClick("unmute")}>
+					<i className="fa fa-microphone" aria-hidden="true"></i>&nbsp;
+					<T.span text= "unMute" style={toolbarTextStyle}/>
 				</Button>
-				<Button onClick={this.handleControlClick} data="hup">
-					<i className="fa fa-power-off" aria-hidden="true" data="hup"></i>&nbsp;
-					<T.span text= "Hangup" data="hup" style={toolbarTextStyle}/>
-				</Button>
-			</ButtonGroup>
-
-			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="lock">
-					<i className="fa fa-lock" aria-hidden="true" data="lock"></i>&nbsp;
-					<T.span text= "Lock" data="lock" style={toolbarTextStyle}/>
-				</Button>
-				<Button onClick={this.handleControlClick} data="unlock">
-					<i className="fa fa-unlock-alt" aria-hidden="true" data="unlock"></i>&nbsp;
-					<T.span text= "unLock" data="unlock" style={toolbarTextStyle}/>
+				<Button onClick={() => _this.handleControlClick("hup")}>
+					<i className="fa fa-power-off" aria-hidden="true"></i>&nbsp;
+					<T.span text= "Hangup" style={toolbarTextStyle}/>
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="table" title={T.translate("Display as Table")}>
-					<i className="fa fa-table" aria-hidden="true" data="table"></i>
-					<T.span data="table"/>
+				<Button onClick={() => _this.handleControlClick("lock")}>
+					<i className="fa fa-lock" aria-hidden="true"></i>&nbsp;
+					<T.span text= "Lock" style={toolbarTextStyle}/>
 				</Button>
-				<Button onClick={this.handleControlClick} data="list" title={T.translate("Display as List")}>
+				<Button onClick={() => _this.handleControlClick("unLock")}>
+					<i className="fa fa-unlock-alt" aria-hidden="true"></i>&nbsp;
+					<T.span text= "unLock" style={toolbarTextStyle}/>
+				</Button>
+			</ButtonGroup>
+
+			<ButtonGroup>
+				<Button onClick={() => _this.handleControlClick("table")} title={T.translate("Display as Table")}>
+					<i className="fa fa-table" aria-hidden="true"></i>
+				</Button>
+				<Button onClick={() => _this.handleControlClick("list")} title={T.translate("Display as List")}>
 					<i className="fa fa-list" aria-hidden="true" data="list"></i>
-					<T.span data="list"/>
 				</Button>
-				<Button onClick={this.handleControlClick} data="toolbarText" title={T.translate("Toggle Toolbar Text")}>
-					<i className="fa fa-text-width" aria-hidden="true" data="toolbarText"></i>
-					<T.span data="toolbarText"/>
+				<Button onClick={() => _this.handleControlClick("toolbarText")} title={T.translate("Toggle Toolbar Text")}>
+					<i className="fa fa-text-width" aria-hidden="true"></i>
 				</Button>
 			</ButtonGroup>
 
