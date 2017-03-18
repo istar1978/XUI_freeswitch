@@ -66,6 +66,11 @@
 	color: red;
 }
 
+tr.selected {
+	border: 2px dashed grey;
+	background-color: red !important;
+}
+
 tr.disabled {
 	color: #CCC !important;
 }
