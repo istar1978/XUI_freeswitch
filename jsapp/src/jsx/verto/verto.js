@@ -3,7 +3,7 @@
 import VertoLiveArray from './verto-livearray';
 import VertoConfMan from './verto-confman';
 import VertoDialog from './verto-dialog';
-import VertoRtc from './verto-rtc';
+import VertoRTC from './verto-rtc';
 
 function drop_bad(verto, channel) {
 	console.error("drop unauthorized channel: " + channel);
@@ -75,7 +75,7 @@ class Verto {
 
 	static init(obj, runtime) {
 		var self = this;
-		var rtc = new VertoRtc();
+		var rtc = new VertoRTC();
 		if (!obj) {
 			obj = {};
 		}

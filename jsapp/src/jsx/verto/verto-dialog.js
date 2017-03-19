@@ -1,6 +1,6 @@
 'use strict';
 
-import VertoRtc from './verto-rtc';
+import VertoRTC from './verto-rtc';
 import { Verto } from './verto';
 
 export default class VertoDialog {
@@ -146,7 +146,7 @@ export default class VertoDialog {
 			dialog.hangup({cause: "Device or Permission Error"});
 		};
 
-		dialog.rtc = new VertoRtc({
+		dialog.rtc = new VertoRTC({
 			callbacks: RTCcallbacks,
 			localVideo: dialog.screenShare ? null : dialog.localVideo,
 			useVideo: dialog.params.useVideo ? dialog.videoStream : null,

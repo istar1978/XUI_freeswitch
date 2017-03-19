@@ -526,7 +526,7 @@ var resI = 0;
 var ttl = 0;
 
 
-export default class VertoRtc {
+export default class VertoRTC {
 	constructor(options) {
 		this.validRes = [];
 
