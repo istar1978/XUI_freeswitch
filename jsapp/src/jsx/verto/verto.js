@@ -172,7 +172,7 @@ class Verto {
 		console.error("verto_params", params);
 
 		if (this.options.deviceParams.useCamera) {
-			// $.FSRTC.getValidRes(verto.options.deviceParams.useCamera, verto.options.deviceParams.onResCheck);
+			// $.FSRTC.getValidRes(this.options.deviceParams.useCamera, this.options.deviceParams.onResCheck);
 		}
 
 		if (!this.options.deviceParams.useMic) {
@@ -925,40 +925,85 @@ class Verto {
 
 	static refreshDevices(runtime) {
 		this.checkDevices(runtime);
-    }
+	}
+
+	speedTest (bytes, cb) {
+		var socket = this._ws_socket;
+
+		if (socket) {
+			this.speedCB = cb;
+			this.speedBytes = bytes;
+			socket.send("#SPU " + bytes);
+
+			var loops = bytes / 1024;
+			var rem = bytes % 1024;
+			var i;
+			var data = new Array(1024).join(".");
+			for (i = 0; i < loops; i++) {
+				socket.send("#SPB " + data);
+			}
+
+			if (rem) {
+				socket.send("#SPB " + data);
+			}
+
+			socket.send("#SPE");
+		}
+	}
+
+	deviceParams(obj) {
+		for (var i in obj) {
+			this.options.deviceParams[i] = obj[i];
+		}
+
+		if (obj.useCamera) {
+			var rtc = new VertoRTC();
+			rtc.getValidRes(this.options.deviceParams.useCamera, obj ? obj.onResCheck : undefined);
+		}
+	};
+
+	videoParams(obj) {
+		for (var i in obj) {
+			this.options.videoParams[i] = obj[i];
+		}
+	};
+
+	iceServers(obj) {
+		this.options.iceServers = obj;
+	};
+
 
 	loginData(params) {
-		var verto = this;
-		verto.options.login = params.login;
-		verto.options.passwd = params.passwd;
-		verto.options.login = params.login;
-		verto.options.passwd = params.passwd;
-		verto.options.loginParams = params.loginParams;
-		verto.options.userVariables = params.userVariables;
+		this.options.login = params.login;
+		this.options.passwd = params.passwd;
+		this.options.login = params.login;
+		this.options.passwd = params.passwd;
+		this.options.loginParams = params.loginParams;
+		this.options.userVariables = params.userVariables;
 	}
 
 	login(msg) {
-		var verto = this;
-		// verto.logout();
-		verto.call('login', {});
+		// this.logout();
+		this.call('login', {});
 	}
 
 	hangup(callID) {
 		var verto = this;
 		if (callID) {
-			var dialog = verto.dialogs[callID];
+			var dialog = this.dialogs[callID];
 
 			if (dialog) {
 				dialog.hangup();
 			}
 		} else {
-			for (var i in verto.dialogs) {
-				verto.dialogs[i].hangup();
+			for (var i in this.dialogs) {
+				this.dialogs[i].hangup();
 			}
 		}
 	}
 }
 
+Verto.unloadJobs = [];
 
 Verto.enum = {
 	state: ENUM("new requesting trying recovering ringing answering early active held hangup destroy purge"),
@@ -1025,12 +1070,12 @@ var singleton = new Verto(null);
 export default singleton;
 
 if (window && typeof exports == 'undefined' && typeof module == 'undefined') {
-	window.verto = Verto;
+	window.Verto = Verto;
 	// window.verto = singleton;
 }
 
-// window.verto = singleton;
 // window.Verto = Verto;
+// window.verto = singleton;
 
 /* For Emacs:
  * Local Variables:

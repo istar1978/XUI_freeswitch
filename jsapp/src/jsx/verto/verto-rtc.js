@@ -562,7 +562,7 @@ export default class VertoRTC {
 	constructor(options) {
 		this.validRes = [];
 
-		this.options = $.extend({
+		this.options = Object.assign({
 			useVideo: null,
 			useStereo: false,
 			userData: null,
@@ -953,9 +953,9 @@ export default class VertoRTC {
 		var w = 0, h = 0;
 
 		for (var i in FSRTC.validRes) {
-			if ($.FSRTC.validRes[i][0] >= w && FSRTC.validRes[i][1] >= h) {
-				w = $.FSRTC.validRes[i][0];
-				h = $.FSRTC.validRes[i][1];
+			if (FSRTC.validRes[i][0] >= w && FSRTC.validRes[i][1] >= h) {
+				w = FSRTC.validRes[i][0];
+				h = FSRTC.validRes[i][1];
 			}
 		}
 
@@ -968,7 +968,7 @@ export default class VertoRTC {
 		var cached = localStorage.getItem("res_" + cam);
 
 		if (cached) {
-			var cache = $.parseJSON(cached);
+			var cache = JSON.parse(cached);
 
 			if (cache) {
 				FSRTC.validRes = cache.validRes;
@@ -982,7 +982,7 @@ export default class VertoRTC {
 		FSRTC.validRes = [];
 		resI = 0;
 
-		checkRes(cam, func);
+		this.checkRes(cam, func);
 	}
 
 	checkPerms(runtime, check_audio, check_video) {
@@ -1023,7 +1023,7 @@ export default class VertoRTC {
 				'bestResSupported': FSRTC.bestResSupported()
 			};
 
-			localStorage.setItem("res_" + cam, $.toJSON(res));
+			localStorage.setItem("res_" + cam, JSON.stringify(res));
 
 			if (func) return func(res);
 			return;
@@ -1039,13 +1039,13 @@ export default class VertoRTC {
 			video.deviceId = {exact: cam};
 		}
 
-		w = resList[resI][0];
-		h = resList[resI][1];
+		const w = resList[resI][0];
+		const h = resList[resI][1];
 		resI++;
 
 		video = {
-			width: w,
-			height: h
+			width: {exact: w},
+			height: {exact: h}
 			//"minWidth": w,
 			//"minHeight": h,
 			//"maxWidth": w,
@@ -1059,9 +1059,9 @@ export default class VertoRTC {
 			},
 			onsuccess: function(e) {
 				e.getTracks().forEach(function(track) {track.stop();});
-				console.info(w + "x" + h + " supported."); FSRTC.validRes.push([w, h]); checkRes(cam, func);
+				console.info(w + "x" + h + " supported."); FSRTC.validRes.push([w, h]); FSRTC.checkRes(cam, func);
 			},
-			onerror: function(e) {console.warn( w + "x" + h + " not supported."); checkRes(cam, func);}
+			onerror: function(e) {console.warn( w + "x" + h + " not supported."); FSRTC.checkRes(cam, func);}
 		});
 	}
 
