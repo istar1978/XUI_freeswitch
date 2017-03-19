@@ -95,9 +95,13 @@ class Verto {
 		}
 	}
 
-	connect(video_params, callbacks) {
+	connect(params, callbacks) {
 		console.log("verto connect", this.options.socketUrl);
-		if (video_params.socketUrl == null) {
+
+		if (!params) params = this.params;
+		if (!callbacks) callbacks = this.callbacks;
+
+		if (!params.socketUrl) {
 			return;
 		}
 
@@ -130,10 +134,10 @@ class Verto {
 			onWSClose: function(verto, success) {
 				_this.purge();
 			}
-		}, video_params, callbacks);
+		}, params, callbacks);
 
 		console.error("options", this.options);
-		console.error("video_params", video_params);
+		console.error("verto_params", params);
 
 		if (this.options.deviceParams.useCamera) {
 			// $.FSRTC.getValidRes(verto.options.deviceParams.useCamera, verto.options.deviceParams.onResCheck);
@@ -824,7 +828,7 @@ class Verto {
 		}
 	}
 
-	checkDevices(runtime) {
+	static checkDevices(runtime) {
 		var self = this;
 		console.info("enumerating devices");
 		var aud_in = [], aud_out = [], vid = [];
@@ -887,7 +891,7 @@ class Verto {
 		}
 	}
 
-	refreshDevices(runtime) {
+	static refreshDevices(runtime) {
 		this.checkDevices(runtime);
     }
 
@@ -994,4 +998,3 @@ if (window && typeof exports == 'undefined' && typeof module == 'undefined') {
 
 // window.verto = singleton;
 // window.Verto = Verto;
-

@@ -185,7 +185,7 @@ export class VertoLiveArray extends VertoHashArray {
 	}
 
 	clear() {
-		// this._clear();
+		this._clear();
 		this.lastSerno = 0;
 
 		if (this.onChange) {
@@ -251,7 +251,7 @@ export class VertoLiveArray extends VertoHashArray {
 	bootObj(serno, val) {
 		if (this.checkSerno(serno)) {
 
-			//this.clear();
+			this.clear();
 			for (var i in val) {
 				this._add(val[i][0], val[i][1]);
 			}

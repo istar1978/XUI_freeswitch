@@ -35,6 +35,7 @@ import T from 'i18n-react';
 import { Modal, ButtonGroup, ButtonToolbar, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import verto from '../verto/verto';
+import { Verto } from '../verto/verto';
 
 export function getXUIDeviceSettings()
 {
@@ -103,15 +104,15 @@ class SettingDevice extends React.Component {
 		var runtime = function(obj) {
 			console.log("refreshDevices runtime", obj);
 			_this.setState({
-				cameras: verto.videoDevices,
-				microphones: verto.audioInDevices,
-				speakers: verto.audioOutDevices,
+				cameras: Verto.videoDevices,
+				microphones: Verto.audioInDevices,
+				speakers: Verto.audioOutDevices,
 				videoDevice: ds.videoDevice,
 				frameRate: ds.frameRate
 			});
 		}
 
-		verto.refreshDevices(runtime);
+		Verto.refreshDevices(runtime);
 	}
 
 	handleVideoDeviceChange(e){

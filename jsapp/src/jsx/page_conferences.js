@@ -302,7 +302,7 @@ class ConferencePage extends React.Component {
 			const use_livearray = false;
 
 			if (use_livearray) {
-				_this.la = new VertoLiveArray(verto, _this.getChannelName("liveArray"), this.props.name, {
+				_this.la = new VertoLiveArray(verto, _this.getChannelName("liveArray"), _this.props.name, {
 					onChange: _this.handleConferenceEvent
 				});
 			} else {
@@ -349,13 +349,18 @@ class ConferencePage extends React.Component {
 			break;
 
 		case "bootObj":
-			var rows = this.state.static_rows;
+			var rows = [];
+
+			this.state.static_rows.forEach((row) => {
+				rows.push(row);
+			});
+
 			a.data.forEach(function(member) {
 				rows.push(translateMember(member));
 			})
+
 			this.setState({rows: rows});
 			break;
-
 		case "add":
 			var found = 0;
 			var member = translateMember([a.key, a.data]);
@@ -405,7 +410,13 @@ class ConferencePage extends React.Component {
 			break;
 
 		case "clear":
-			this.setState({rows: this.state.static_rows});
+			var rows = [];
+
+			this.state.static_rows.forEach((row) => {
+				rows.push(row);
+			});
+
+			this.setState({rows: rows});
 			break;
 
 		case "reorder":
