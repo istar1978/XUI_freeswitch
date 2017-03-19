@@ -93,7 +93,7 @@ if (found) then
 				<param name="jsonrpc-allowed-methods" value="verto.subscribe,verto,txtapi,jsapi,xmlapi,makeCall,callcenter_config"/>
 				<param name="jsonrpc-allowed-jsapi" value="cti,mips,fsapi,show,status,jsjson,lua,luarun"/>
 				<param name="jsonrpc-allowed-fsapi" value="console_complete,log,version,help,conference,unload,reload,load,bgapi,uuid_phone_event,status,show,fsapi,jsapi,sofia,list_users,callcenter_config,jsjson,conference,originate,rtp_mcast"/>
-				<param name="jsonrpc-allowed-event-channels" value="demo,conference,conference-liveArray,presence,cti,FSevent,FSLog"/>
+				<param name="jsonrpc-allowed-event-channels" value="demo,conference,conference-liveArray,conference-chat,conference-mod,presence,cti,FSevent,FSLog"/>
 				]] .. pars .. [[
 			</params>
 			<variables>

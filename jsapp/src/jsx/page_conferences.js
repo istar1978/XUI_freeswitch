@@ -35,6 +35,7 @@ import T from 'i18n-react';
 import { ButtonToolbar, ButtonGroup, Button, ProgressBar, Thumbnail } from 'react-bootstrap';
 import verto from './verto/verto';
 import { VertoLiveArray } from './verto/verto-livearray';
+import VertoConfMan from './verto/verto-confman';
 
 class Member extends React.Component {
 	propTypes: {
@@ -54,7 +55,7 @@ class Member extends React.Component {
 		this.setState(props.member);
 	}
 
-	handleClick(member_id) {
+	handleClick(e, member_id) {
 		const active = !this.state.active;
 		this.setState({active: active});
 		this.props.onMemberClick(member_id, active);
@@ -90,7 +91,6 @@ class Member extends React.Component {
 	render() {
 		const _this = this;
 		const member = this.props.member;
-		console.log("member", member);
 		var className = this.state.active ? "member active selected" : "member";
 
 		const floor_color   = member.status.audio.floor   ? "blue"   : "#777" ;
@@ -250,11 +250,12 @@ class ConferencePage extends React.Component {
 			return;
 		}
 
-		for(var member in this.activeMembers) {
-			if (this.activeMembers[member] == true) {
-				var args = this.props.name + " " + data + " " + member;
+		for(var memberID in this.activeMembers) {
+			if (this.activeMembers[memberID] == true) {
+				var args = this.props.name + " " + data + " " + memberID;
 				// console.log("args", args);
 				verto.fsAPI("conference", args);
+				// this.cman.modCommand(data, memberID);
 			}
 		}
 	}
@@ -269,6 +270,7 @@ class ConferencePage extends React.Component {
 
 	componentWillUnmount () {
 		if (this.la) this.la.destroy();
+		if (this.cman) this.cman.destroy();
 		if (this.binding) verto.unsubscribe(this.binding);
 	}
 
@@ -305,24 +307,49 @@ class ConferencePage extends React.Component {
 				_this.la = new VertoLiveArray(verto, _this.getChannelName("liveArray"), _this.props.name, {
 					onChange: _this.handleConferenceEvent
 				});
+
+				const laData = {
+					canvasCount: 1,
+					chatChannel: _this.getChannelName("chat"),
+					chatID: "conf+" + _this.props.name + '@' + domain,
+					conferenceMemberID: 0,
+					infoChannel: _this.getChannelName("info"),
+					modChannel: _this.getChannelName("mod"),
+					laChannel: _this.getChannelName("liveArray"),
+					laName: _this.props.name + '@' + domain,
+					role: "moderator" // participant
+				}
+
+				const chatCallback = function(v, e) {
+					console.log('got chat message', e);
+				}
+
+				if (_this.cman) {
+					_this.cman.destroy();
+					_this.cman = null;
+				}
+
+				_this.cman = new VertoConfMan(verto, {
+					dialog: null, // dialog,
+					hasVid: true, // check_vid(),
+					laData: laData,
+					chatCallback: chatCallback
+				});
 			} else {
-				_this.binding = verto.subscribe(_this.getChannelName("liveArray"), {handler: _this.handleFSEvent.bind(_this),
+				const laChannelName = _this.getChannelName("liveArray");
+				_this.binding = verto.subscribe(laChannelName, {handler: _this.handleFSEvent.bind(_this),
 					userData: verto,
 					subParams: {}
 				});
 
-				_this.laBootstrap(_this.getChannelName("liveArray"), {});
-			}
-		});
-	}
-
-	laBootstrap(context, obj) {
-		verto.broadcast(context, {
-			liveArray: {
-				command: "bootstrap",
-				context: context,
-				name: this.props.name,
-				obj: obj
+				verto.broadcast(laChannelName, {
+					liveArray: {
+						command: "bootstrap",
+						context: laChannelName,
+						name: _this.props.name,
+						obj: {}
+					}
+				});
 			}
 		});
 	}
@@ -340,6 +367,7 @@ class ConferencePage extends React.Component {
 
 	handleConferenceEvent (la, a) {
 		console.log("onChange FSevent:", a.action, a);
+		const _this = this;
 
 		if (a.hashKey) a.key = a.hashKey;
 
@@ -385,7 +413,6 @@ class ConferencePage extends React.Component {
 			break;
 		case "modify":
 			var rows = [];
-			var _this = this;
 
 			this.state.rows = this.state.rows.map(function(row) {
 				if (row.uuid == a.key ) {
@@ -402,7 +429,10 @@ class ConferencePage extends React.Component {
 
 		case "del":
 			var rows = this.state.rows.filter(function(row) {
-				console.log(row.id, a.key);
+				if (row.uuid == a.key) {
+					delete _this.activeMembers[row.memberID];
+				}
+
 				return row.uuid != a.key;
 			});
 

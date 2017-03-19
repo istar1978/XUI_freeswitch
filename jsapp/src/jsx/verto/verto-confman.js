@@ -15,36 +15,36 @@ export default class VertoConfMan {
 
         this.verto = verto;
         this.serno = CONFMAN_SERNO++;
-        this.canvasCount = confMan.params.laData.canvasCount;
+        this.canvasCount = this.params.laData.canvasCount;
+        const _this = this;
 
-        verto.subscribe(conf.params.laData.modChannel, {
+        verto.subscribe(this.params.laData.modChannel, {
             handler: function(v, e) {
-                if (conf.params.onBroadcast) {
-                    conf.params.onBroadcast(verto, conf, e.data);
+                if (_this.params.onBroadcast) {
+                    _this.params.onBroadcast(verto, _this, e.data);
                 }
             }
         });
 
-        verto.subscribe(conf.params.laData.chatChannel, {
+        verto.subscribe(this.params.laData.chatChannel, {
             handler: function(v, e) {
-                if (typeof(conf.params.chatCallback) === "function") {
-                    conf.params.chatCallback(v,e);
+                if (typeof(_this.params.chatCallback) === "function") {
+                    _this.params.chatCallback(v,e);
                 }
             }
         });
 
-
-        if (confMan.params.laData.role === "moderator") {
-            verto.subscribe(confMan.params.laData.modChannel, {
+        if (this.params.laData.role === "moderator") {
+            verto.subscribe(this.params.laData.modChannel, {
                 handler: function(v, e) {
                     console.error("MODDATA:", e.data);
-                    if (confMan.params.onBroadcast) {
-                        confMan.params.onBroadcast(verto, confMan, e.data);
+                    if (_this.params.onBroadcast) {
+                        _this.params.onBroadcast(verto, _this, e.data);
                     }
 
                     if (e.data["conf-command"] === "list-videoLayouts") {
 
-                        for (var j = 0; j < confMan.canvasCount; j++) {
+                        for (var j = 0; j < this.canvasCount; j++) {
                             if (e.data.responseData) {
                             }
                         }
@@ -52,17 +52,16 @@ export default class VertoConfMan {
                 }
             });
 
-            if (confMan.params.hasVid) {
-                confMan.modCommand("list-videoLayouts", null, null);
+            if (this.params.hasVid) {
+                this.modCommand("list-videoLayouts", null, null);
             }
         }
-        // if (confMan.params.laData.role === "moderator")
+        // if (this.params.laData.role === "moderator")
     }
 
     modCommand(cmd, id, value) {
-        var confMan = this;
-        confMan.verto.call("verto.broadcast", {
-            "eventChannel": confMan.params.laData.modChannel,
+       this.verto.call("verto.broadcast", {
+            "eventChannel": this.params.laData.modChannel,
             "data": {
                 "application": "conf-control",
                 "command": cmd,
@@ -73,9 +72,8 @@ export default class VertoConfMan {
     }
 
     sendChat(message, type) {
-        var confMan = this;
-        confMan.verto.call("verto.broadcast", {
-            "eventChannel": confMan.params.laData.chatChannel,
+        this.verto.call("verto.broadcast", {
+            "eventChannel": this.params.laData.chatChannel,
             "data": {
                 "action": "send",
                 "message": message,
@@ -88,10 +86,10 @@ export default class VertoConfMan {
         this.destroyed = true;
 
         if (this.params.laData.chatChannel) {
-            this.verto.unsubscribe(confMan.params.laData.chatChannel);
+            this.verto.unsubscribe(this.params.laData.chatChannel);
         }
         if (this.params.laData.modChannel) {
-            this.verto.unsubscribe(confMan.params.laData.modChannel);
+            this.verto.unsubscribe(this.params.laData.modChannel);
         }
     }
 

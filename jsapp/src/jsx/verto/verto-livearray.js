@@ -389,19 +389,8 @@ export class VertoLiveArray extends VertoHashArray {
 	}
 
 	destroy() {
-		var la = this;
-
-		la.clear();
-
-		if (la.context) {
-			la.binding = la.verto.subscribe(la.context, {
-				handler: la.eventHandler,
-				userData: la,
-				subParams: la.config.subParams
-			});
-		}
-
-		la.verto.unsubscribe(la.binding);
+		this._clear();
+		this.verto.unsubscribe(this.binding);
 	}
 
 	sendCommand(cmd, obj) {
