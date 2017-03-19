@@ -1,3 +1,35 @@
+/*
+ * Verto HTML5/Javascript Telephony Signaling and Control Protocol Stack for FreeSWITCH
+ * Copyright (C) 2005-2017, Anthony Minessale II <anthm@freeswitch.org>
+ *
+ * Version: MPL 1.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is Verto HTML5/Javascript Telephony Signaling and Control Protocol Stack for FreeSWITCH
+ *
+ * The Initial Developer of the Original Code is
+ * Anthony Minessale II <anthm@freeswitch.org>
+ * Portions created by the Initial Developer are Copyright (C)
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Seven Du <dujinfang@x-y-t.cn>
+ * Xueyun Jiang <jiangxueyun@x-y-t.cn>
+ *
+ * verto-rtc.js - Verto RTC
+ *
+ */
+
 'use strict';
 
 // Find the line in sdpLines that starts with |prefix|, and, if specified,
@@ -1034,3 +1066,14 @@ export default class VertoRTC {
 	}
 
 }
+
+/* For Emacs:
+ * Local Variables:
+ * mode:c
+ * indent-tabs-mode:t
+ * tab-width:4
+ * c-basic-offset:4
+ * End:
+ * For VIM:
+ * vim:set softtabstop=4 shiftwidth=4 tabstop=4 noet:
+ */
