@@ -232,7 +232,6 @@ class FifoMember extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = { rows:[], propId: '', danger: false, formShow: false};
-		this.handleMemberAdd = this.handleMemberAdd.bind(this);
 		this.handleNewMemberAdded = this.handleNewMemberAdded.bind(this);
 	}
 
@@ -245,10 +244,6 @@ class FifoMember extends React.Component {
 				console.log("get FIFO ERR");
 			});
 		}
-	}
-
-	handleMemberAdd () {
-		this.setState({ formShow: true});
 	}
 
 	handleNewMemberAdded (member) {
@@ -310,7 +305,7 @@ class FifoMember extends React.Component {
 		return <div>
 			<NewMember fifoData={fifoData} show={this.state.formShow} onHide={formClose} handleNewMemberAdded={ this.handleNewMemberAdded }/>
 			<ButtonToolbar className="pull-right">
-				<Button onClick={this.handleMemberAdd}>
+				<Button onClick={() => this.setState({formShow: true})}>
 					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
 					<T.span text="New" />
 				</Button>
