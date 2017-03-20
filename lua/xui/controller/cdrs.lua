@@ -40,10 +40,10 @@ xtra.require_login()
 -- freeswitch.consoleLog("INFO", xtra.session.user_id .. "\n")
 
 get('/', function(params)
-	id = env:getHeader('id')
+	startDate = env:getHeader('startDate')
+	last = env:getHeader('last')
 
-	if id == '0' or id == '1' then
-		last = env:getHeader('last')
+	if not startDate then
 		if not last then last = "7" end
 
 		n, cdrs = xdb.find_by_time("cdrs", last)
@@ -53,14 +53,27 @@ get('/', function(params)
 		else
 			return "[]"
 		end
-	end
 
-	if id == '2' then
-		startDate = env:getHeader('startDate')
-		endDate = env:getHeader('endDate')
-		cidNumber = env:getHeader('cidNumber')
-		destNumber = env:getHeader('destNumber')
-		n, cdrs = xdb.find_by_time_by_calender("cdrs", startDate, endDate, cidNumber, destNumber)
+	else
+		local endDate = env:getHeader('endDate')
+		local cidNumber = env:getHeader('cidNumber')
+		local destNumber = env:getHeader('destNumber')
+
+		local escape = sqlescape.EscapeFunction()
+		startDate = escape(startDate)
+		endDate = escape(endDate)
+
+		cond = "start_stamp between " .. startDate .. " AND DATE(" .. endDate .. ", '+1 day')"
+
+		if cidNumber then
+			cond = cond .. " AND caller_id_number = " .. escape(cidNumber)
+		end
+		if destNumber then
+			cond = cond .. " AND destination_number = " .. escape(destNumber)
+		end
+
+
+		n, cdrs = xdb.find_by_cond("cdrs", cond)
 
 		if (n > 0) then
 			return cdrs
@@ -68,7 +81,6 @@ get('/', function(params)
 			return "[]"
 		end
 	end
-
 end)
 
 get('/:uuid', function(params)
