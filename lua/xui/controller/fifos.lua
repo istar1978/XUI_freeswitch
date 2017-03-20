@@ -111,7 +111,9 @@ end)
 
 post('/:id/members', function(params)
 	print(serialize(params))
-	ret = xdb.create('fifo_members', {fifo_id = params.id})
+	member = params.request
+	member.fifo_name = nil
+	ret = xdb.create('fifo_members', member)
 	if  ret then
 		return {id = ret}
 	else

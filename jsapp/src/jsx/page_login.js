@@ -119,6 +119,8 @@ class Login extends React.Component {
 				<Route path="/:any" component={LoginBox}/>
 				<Route path="/:any/:more" component={LoginBox}/>
 				<Route path="/:any/:more/:more" component={LoginBox}/>
+				<Route path="/:any/:more/:more/:more" component={LoginBox}/>
+				<Route path="/:any/:more/:more/:more/:more" component={LoginBox}/>
 			</Route>
 		</Router>
 	}
