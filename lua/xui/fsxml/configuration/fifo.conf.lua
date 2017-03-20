@@ -60,7 +60,14 @@ function build_fifos()
 	local fifos = ""
 
 	xdb.find_all("fifos", 'id', function(row)
-		fifos = fifos .. '<fifo name="' .. row.name .. '" importance="' .. row.importance .. [[">]] ..
+		fifos = fifos .. '<fifo name="' .. row.name ..
+			'" importance="' .. row.importance ..
+			'" outbound_per_cycle="' .. row.outbound_per_cycle ..
+			'" outbound_per_cycle_min="' .. row.outbound_per_cycle_min ..
+			'" outbound_name="' .. row.outbound_name ..
+			'" outbound_strategy="' .. row.outbound_strategy ..
+			'" outbound_priority="' .. row.outbound_priority ..
+			'">' ..
 			build_members(row) .. '</fifo>\n'
 	end)
 

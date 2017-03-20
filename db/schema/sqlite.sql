@@ -329,8 +329,12 @@ CREATE TABLE fifos (
 	name VARCHAR NOT NULL,
 	description VARCHAR,
 	importance INTEGER DEFAULT 0,
-	outbound_per_cycle INTEGER,
-	outbound_per_cycle_min INTEGER,
+	outbound_per_cycle INTEGER DEFAULT 1,
+	outbound_per_cycle_min INTEGER DEFAULT 1,
+	outbound_name VARCHAR,
+	outbound_strategy VARCHAR DEFAULT 'ringall',
+	outbound_priority INTEGER DEFAULT 5,
+	retry_delay INTEGER DEFAULT 0,
 	auto_record BOOLEAN NOT NULL DEFAULT 0 CHECK(auto_record IN (0, 1, '0', '1')),
 	record_template VARCHAR,
 
@@ -357,6 +361,7 @@ CREATE TABLE fifo_members (
 	timeout INTEGER DEFAULT 60,
 	simo INTEGER DEFAULT 1,
 	lag INTEGER DEFAULT 2,
+	wait VARCHAR DEFAULT 'nowait',
 	extn VARCHAR,
 	dial_string VARCHAR,
 
