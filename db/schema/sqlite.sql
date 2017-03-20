@@ -331,7 +331,7 @@ CREATE TABLE fifos (
 	importance INTEGER DEFAULT 0,
 	outbound_per_cycle INTEGER,
 	outbound_per_cycle_min INTEGER,
-	auto_record BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
+	auto_record BOOLEAN NOT NULL DEFAULT 0 CHECK(auto_record IN (0, 1, '0', '1')),
 	record_template VARCHAR,
 
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
