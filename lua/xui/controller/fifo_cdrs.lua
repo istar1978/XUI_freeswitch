@@ -68,8 +68,12 @@ end)
 
 get('/:channel_uuid', function(params)
 	fifocdrs = xdb.find_by_channel_uuid("fifo_cdrs", params.channel_uuid)
-	if fifocdrs then
-		return fifocdrs
+
+	sql = "select name from media_files where channel_uuid = '" .. params.channel_uuid .. "'"
+	n, result = xdb.find_by_sql(sql)
+
+	if n > 0 then
+		return {fifocdrs = fifocdrs, result = result}
 	else
 		return 404
 	end
