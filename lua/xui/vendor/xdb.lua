@@ -311,6 +311,15 @@ function xdb.find_by_time_by_calender_of_fifo(t, startDate, endDate, ani, dest_n
 	return xdb.find_by_sql(sql, cb)
 end
 
+function xdb.date_cond(field, date1, date2)
+	return field .. " BETWEEN " .. escape(date1) .. " AND DATE(" .. escape(date2) .. ", '+1 day')"
+end
+
+function xdb.if_cond(field, val)
+	if not val then return '' end
+	return ' AND ' .. field  .. '=' .. escape(val)
+end
+
 -- return the last affacted rows
 function xdb.affected_rows()
 	return xtra.dbh:affected_rows()

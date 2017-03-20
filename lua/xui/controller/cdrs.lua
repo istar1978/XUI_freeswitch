@@ -58,18 +58,10 @@ get('/', function(params)
 		local endDate = env:getHeader('endDate')
 		local cidNumber = env:getHeader('cidNumber')
 		local destNumber = env:getHeader('destNumber')
-		local escape = xdb.escape
 
-		cond = "start_stamp between " .. escape(startDate) .. " AND DATE(" .. escape(endDate) .. ", '+1 day')"
-
-		if cidNumber then
-			cond = cond .. " AND caller_id_number = " .. escape(cidNumber)
-		end
-
-		if destNumber then
-			cond = cond .. " AND destination_number = " .. escape(destNumber)
-		end
-
+		local cond = xdb.date_cond("start_stamp", startDate, endDate) ..
+					xdb.if_cond("caller_id_number", cidNumber) ..
+					xdb.if_cond("destination_number", destNumber)
 
 		n, cdrs = xdb.find_by_cond("cdrs", cond)
 
