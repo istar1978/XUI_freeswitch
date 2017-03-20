@@ -87,7 +87,10 @@ function build_profile(profile)
 	local gateways = ""
 
 	-- only works on public for now
-	if profile.name == "public" then gateways = build_gateways() end
+	-- if profile.name == "public" then gateways = build_gateways() end
+
+	--	works on all profiles for now
+		gateways = build_gateways({profile_id = profile.id})
 
 	xdb.find_by_cond("params", cond, 'id', function(row)
 		settings = settings .. '<param name="' .. row.k .. '" value="' .. expand(row.v) .. '"/>'

@@ -81,11 +81,17 @@ class NewGateway extends React.Component {
 
 		const props = Object.assign({}, this.props);
 		const gateways = props.gateways;
+		const sip_profiles = props.sip_profiles;
 		delete props.gateways;
+		delete props.sip_profiles;
 		delete props.handleNewGatewayAdded;
 
 		const gateways_options = gateways.map(gw => {
 			return <option value={gw.id} key={gw.id}>Gateway[{gw.name}]</option>
+		});
+
+		const sip_profile_options = sip_profiles.map(sip_profile => {
+			return <option value={sip_profile.id} key={sip_profile.id}>{sip_profile.name}</option>
 		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
@@ -117,6 +123,15 @@ class NewGateway extends React.Component {
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
 					<Col sm={10}><FormControl type="input" name="description" placeholder="Description ..." /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSipProfile">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="SipProfile"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="profile_id">
+							{sip_profile_options}
+						</FormControl>
+					</Col>
 				</FormGroup>
 
 				<FormGroup controlId="formTemplate">
@@ -162,7 +177,7 @@ class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false, params:[]};
+		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -212,8 +227,18 @@ class GatewayPage extends React.Component {
 			const params = data.params;
 			delete data.params;
 			_this.setState({gw: data, params: params});
+
+			if (data.profile_id) {
+				$.getJSON("/api/sip_profiles/" + data.profile_id, function(data) {
+					_this.setState({sip_profile: data});
+				});
+			}
 		}, function(e) {
 			console.log("get gw ERR");
+		});
+
+		$.getJSON("/api/sip_profiles", function(data) {
+			_this.setState({sip_profiles: data});
 		});
 	}
 
@@ -319,6 +344,10 @@ class GatewayPage extends React.Component {
 		let save_btn = "";
 		let register = gw.register == "yes" ? "yes" : "no";
 
+		const sip_profile_options = this.state.sip_profiles.map(function(row) {
+			return [row.id, row.name];
+		});
+
 		register = <FormControl.Static><T.span text={register}/></FormControl.Static>
 
 		if (this.state.params && Array.isArray(this.state.params)) {
@@ -404,6 +433,13 @@ class GatewayPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={gw.description}/></Col>
 				</FormGroup>
 
+				<FormGroup controlId="formProfileID">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Sip Profile"/></Col>
+					<Col sm={10}>
+						<EditControl edit={this.state.edit} componentClass="select" name="profile_id" options={sip_profile_options} text={_this.state.sip_profile.name} defaultValue={gw.profile_id}/>
+					</Col>
+				</FormGroup>
+
 				<FormGroup controlId="formRegister">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Register" /> ?</Col>
 					<Col sm={10}>{register}</Col>
@@ -440,7 +476,7 @@ class GatewaysPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.gwstatus = {};
-		this.state = { formShow: false, rows: [], danger: false};
+		this.state = { formShow: false, rows: [], sip_profiles: [], danger: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -480,7 +516,7 @@ class GatewaysPage extends React.Component {
 				_this.setState({rows: rows});
 			},
 			error: function(msg) {
-				console.error("route", msg);
+				console.error("gateway", msg);
 			}
 		});
 	}
@@ -506,6 +542,10 @@ class GatewaysPage extends React.Component {
 			})});
 		}, function(e) {
 			console.log("get gateways ERR");
+		});
+
+		$.getJSON("/api/sip_profiles", function(data) {
+			_this.setState({sip_profiles: data});
 		});
 
 		verto.subscribe("FSevent.custom::sofia::gateway_delete", {handler: this.handleFSEvent});
@@ -584,10 +624,12 @@ class GatewaysPage extends React.Component {
 		verto.fsAPI("sofia", "profile public killgw " + name);
 	}
 
-	handleGatewayAdded(route) {
+	handleGatewayAdded(gateway) {
 		var rows = this.state.rows;
-		rows.unshift(route);
+		gateway.class_name = 'NONE';
+		rows.unshift(gateway);
 		this.setState({rows: rows, formShow: false});
+
 	}
 
 	render() {
@@ -612,7 +654,7 @@ class GatewaysPage extends React.Component {
 						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;
 						<span>{row.class_name}</span>
 					</td>
-					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href='#'/></td>
+					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>;
 		})
 
@@ -642,7 +684,7 @@ class GatewaysPage extends React.Component {
 				</table>
 			</div>
 
-			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
+			<NewGateway show={this.state.formShow} onHide={formClose} gateways = {this.state.rows} sip_profiles = {this.state.sip_profiles} handleNewGatewayAdded={this.handleGatewayAdded.bind(this)}/>
 		</div>
 	}
 }
