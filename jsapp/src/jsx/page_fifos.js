@@ -597,7 +597,7 @@ class FifoPage extends React.Component {
 					<T.span text="New" />
 				</Button>
 			</ButtonToolbar>
-			<h1>FIFO</h1>
+			<h1><T.span text="FIFO"/></h1>
 			<div>
 				<table className="table">
 				<tbody>
