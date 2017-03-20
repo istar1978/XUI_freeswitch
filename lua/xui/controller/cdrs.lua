@@ -60,14 +60,13 @@ get('/', function(params)
 		local destNumber = env:getHeader('destNumber')
 
 		local escape = sqlescape.EscapeFunction()
-		startDate = escape(startDate)
-		endDate = escape(endDate)
 
-		cond = "start_stamp between " .. startDate .. " AND DATE(" .. endDate .. ", '+1 day')"
+		cond = "start_stamp between " .. escape(startDate) .. " AND DATE(" .. escape(endDate) .. ", '+1 day')"
 
 		if cidNumber then
 			cond = cond .. " AND caller_id_number = " .. escape(cidNumber)
 		end
+
 		if destNumber then
 			cond = cond .. " AND destination_number = " .. escape(destNumber)
 		end
