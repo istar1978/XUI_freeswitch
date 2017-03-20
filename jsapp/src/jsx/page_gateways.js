@@ -110,8 +110,8 @@ class NewGateway extends React.Component {
 					<Col sm={10}><FormControl type="input" name="realm" placeholder="example.com" /></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formUserName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="UserName" className="mandatory"/></Col>
+				<FormGroup controlId="formUsername">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Username" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="username" placeholder="username" /></Col>
 				</FormGroup>
 
@@ -177,7 +177,7 @@ class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false, params:[]};
+		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -227,8 +227,18 @@ class GatewayPage extends React.Component {
 			const params = data.params;
 			delete data.params;
 			_this.setState({gw: data, params: params});
+
+			if (data.profile_id) {
+				$.getJSON("/api/sip_profiles/" + data.profile_id, function(data) {
+					_this.setState({sip_profile: data});
+				});
+			}
 		}, function(e) {
 			console.log("get gw ERR");
+		});
+
+		$.getJSON("/api/sip_profiles", function(data) {
+			_this.setState({sip_profiles: data});
 		});
 	}
 
@@ -334,6 +344,10 @@ class GatewayPage extends React.Component {
 		let save_btn = "";
 		let register = gw.register == "yes" ? "yes" : "no";
 
+		const sip_profile_options = this.state.sip_profiles.map(function(row) {
+			return [row.id, row.name];
+		});
+
 		register = <FormControl.Static><T.span text={register}/></FormControl.Static>
 
 		if (this.state.params && Array.isArray(this.state.params)) {
@@ -417,6 +431,13 @@ class GatewayPage extends React.Component {
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={gw.description}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formProfileID">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Sip Profile"/></Col>
+					<Col sm={10}>
+						<EditControl edit={this.state.edit} componentClass="select" name="profile_id" options={sip_profile_options} text={_this.state.sip_profile.name} defaultValue={gw.profile_id}/>
+					</Col>
 				</FormGroup>
 
 				<FormGroup controlId="formRegister">
