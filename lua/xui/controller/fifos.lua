@@ -61,10 +61,10 @@ end)
 
 get('/:id/members', function(params)
 	n, fifo_members = xdb.find_by_cond("fifo_members", { fifo_id = params.id })
-	if fifo_members then
+	if n > 0 then
 		return fifo_members
 	else
-		return 404
+		return '[]'
 	end
 end)
 
