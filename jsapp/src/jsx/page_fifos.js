@@ -373,6 +373,7 @@ class NewFifo extends React.Component {
 			},
 			error: function(msg) {
 				console.error("new FIFO Err", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}
