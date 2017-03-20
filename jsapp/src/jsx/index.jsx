@@ -136,7 +136,7 @@ class Home extends React.Component{
 
 				<Route path="cdrs">
 					<IndexRoute component={CDRsPage} />
-					<Route path=":start_stamp" component={CDRPage} />
+					<Route path=":uuid" component={CDRPage} />
 				</Route>
 
 				<Route path="fifocdrs">

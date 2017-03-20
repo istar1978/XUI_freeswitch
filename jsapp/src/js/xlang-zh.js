@@ -129,8 +129,7 @@ LANGUAGES["zh"] = {
 	"Local User": "本地用户",
 	System: "系统",
 	"IVR Block": "IVR积木",
-	default: "默认",
-	public: "公开",
+	"Detail": "详细",
 
 	FS_DEST_USER: "本地用户",
 	FS_DEST_GATEWAY: "网关",

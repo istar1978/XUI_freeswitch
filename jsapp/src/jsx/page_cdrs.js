@@ -49,7 +49,7 @@ class CDRPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/cdrs/" + _this.props.params.start_stamp, "", function(data) {
+		$.getJSON("/api/cdrs/" + _this.props.params.uuid, "", function(data) {
 			console.log("cdr", data);
 			_this.setState({cdr: data});
 		}, function(e) {
@@ -61,7 +61,7 @@ class CDRPage extends React.Component {
 		const cdr = this.state.cdr;
 
 		return <div>
-			<h1><T.span text="CDR"/> <small>{cdr.name} &lt;{cdr.extn}&gt;</small></h1>
+			<h1><T.span text="CDR"/> <small>{cdr.uuid}</small></h1>
 			<hr/>
 
 			<Form horizontal id="CDRForm">
@@ -200,13 +200,14 @@ class CDRsPage extends React.Component {
 				<td>{row.caller_id_number}</td>
 				<td>{row.destination_number}</td>
 				<td>{row.context}</td>
-				<td><Link to={`/cdrs/${row.start_stamp}`}>{row.start_stamp}</Link></td>
+				<td>{row.start_stamp}</td>
 				<td>{row.answer_stamp}</td>
 				<td>{row.end_stamp}</td>
 				<td>{row.duration}</td>
 				<td>{row.billsec}</td>
 				<td>{row.hangup_cause}</td>
 				<td>{row.account_code}</td>
+				<td><Link to={`/cdrs/${row.uuid}`}><T.span text="Detail"/></Link></td>
 			</tr>
 		})
 
@@ -281,6 +282,7 @@ class CDRsPage extends React.Component {
 					<th><T.span text="Bill Sec"/></th>
 					<th><T.span text="Cause"/></th>
 					<th><T.span text="Account Code"/></th>
+					<th><T.span text="Detail"/></th>
 				</tr>
 				{rows}
 				<tr>

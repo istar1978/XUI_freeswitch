@@ -196,20 +196,6 @@ function xdb.find_by_channel_uuid(t, channel_uuid)
 	return r
 end
 
--- find from fifo_cdrs table with start_stamp = start_stamp
-function xdb.find_by_start_stamp(t, start_stamp)
-    start_stamp = string.gsub(start_stamp, "%%20", " ") 
-	local sql = "SELECT * FROM " .. t .. " WHERE start_stamp = '" .. start_stamp .."'"
-	local found = 0
-	local r = nil
-
-	xdb.dbh:query(sql, function(row)
-		r = row
-	end)
-
-	return r
-end
-
 -- find from table
 -- if cb is nil, return count of rows and all rows
 -- if cb is a callback function, run cb(row) for each row
@@ -228,20 +214,22 @@ end
 -- if cb is a callback function, run cb(row) for each row
 -- if sort is not nil, ORDER BY sort string
 
-function xdb.find_by_cond(t, cond, sort, cb)
+function xdb.find_by_cond(t, cond, sort, cb, limit, offset)
 	local cstr = _cond_string(cond)
 	local sql = "SELECT * FROM " .. t
 
 	if cstr then sql = sql .. cstr end
 	if sort then sql = sql .. " ORDER BY " .. sort end
-
-	return xdb.find_by_sql(sql, cb)
+	return xdb.find_by_sql(sql, cb, limit, offset)
 end
 
 -- find from table
 -- if cb is nil, return count of rows and all rows
 -- if cb is a callback function, run cb(row) for each row
-function xdb.find_by_sql(sql, cb)
+function xdb.find_by_sql(sql, cb, limit, offset)
+	if limit then sql = sql .. " LIMIT " .. limit end
+	if offset then sql = sql .. " OFFSET " .. offset end
+
 	if (cb) then
 		return xdb.dbh:query(sql, cb)
 	end

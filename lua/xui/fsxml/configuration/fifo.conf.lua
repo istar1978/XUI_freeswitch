@@ -25,7 +25,7 @@ function build_fifos()
 	return fifos
 end
 
-XML_STRING=[[
+xXML_STRING=[[
 <configuration name="fifo.conf" description="FIFO Configuration">
 <settings>
 	<param name="delete-all-outbound-member-on-startup" value="false"/>
@@ -34,6 +34,14 @@ XML_STRING=[[
 </settings>
 <fifos> ]] ..
 	build_fifos() ..
-	[[</fifos>
+	[[
+
+    <fifo name="test" importance="0">
+      <member timeout="60" simo="2" lag="2">{member_wait=nowait,fifo_record_template=/tmp/a-${uuid}-$caller_id_name-$uuid.wav}sofia/public/807@192.168.3.30:5080</member>
+      <member timeout="60" simo="2" lag="2">{member_wait=nowait,fifo_record_template=/tmp/a-${uuid}.wav}sofia/public/819@192.168.3.30:5080</member>
+    </fifo>
+
+
+	</fifos>
 </configuration>
 ]]

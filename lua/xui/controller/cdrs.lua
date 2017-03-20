@@ -30,6 +30,8 @@
  */
 ]]
 
+content_type("application/json")
+
 require 'xdb'
 xdb.bind(xtra.dbh)
 
@@ -69,10 +71,12 @@ get('/', function(params)
 
 end)
 
-get('/:start_stamp', function(params)
-	cdrs = xdb.find_by_start_stamp("cdrs", params.start_stamp)
-	if cdrs then
-		return cdrs
+get('/:uuid', function(params)
+	freeswitch.consoleLog("err", serialize(params))
+	n, cdrs = xdb.find_by_cond("cdrs", {uuid = params.uuid}, "start_stamp", nil, 1)
+	if n > 0 then
+	freeswitch.consoleLog("err", serialize(cdrs))
+		return cdrs[1]
 	else
 		return 404
 	end
