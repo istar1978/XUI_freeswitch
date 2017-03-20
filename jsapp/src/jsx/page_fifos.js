@@ -66,7 +66,7 @@ class FifoMemberPage extends React.Component {
 			<ButtonToolbar className="pull-right">
 				<Button><T.span onClick={ _this.handleEdit } text={ _this.state.editText } /></Button>
 			</ButtonToolbar>
-			<h1>FifoMember Info</h1>
+			<h1><T.span text="FIFO Member Info"/></h1>
 			<hr />
 			<Form horizontal id="editMemberForm">
 				<input type="hidden" name="id" defaultValue={row.id}/>
@@ -80,27 +80,27 @@ class FifoMemberPage extends React.Component {
 					<Col sm={10}><EditControl  name="description" edit={_this.state.editable} defaultValue={row.description}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formFifoName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="fifo Name"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="FIFO Name"/></Col>
 					<Col sm={10}><EditControl name="fifo_name" defaultValue={row.fifo_name}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formTimeout">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="timeout" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Timeout" /></Col>
 					<Col sm={10}><EditControl name="timeout" edit={_this.state.editable} defaultValue={row.timeout}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formSimo">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="simo" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Simo" /></Col>
 					<Col sm={10}><EditControl name="simo" edit={_this.state.editable} defaultValue={row.simo}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formextn">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="lag" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Lag" /></Col>
 					<Col sm={10}><EditControl name="lag" edit={_this.state.editable} defaultValue={row.lag}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="extn" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Extn" /></Col>
 					<Col sm={10}><EditControl name="extn" edit={_this.state.editable} defaultValue={row.extn}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formDialString">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="dial_string" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Dial String" /></Col>
 					<Col sm={10}><EditControl name="dial_string" edit={_this.state.editable} defaultValue={row.dial_string}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formUpdateEpoch">
@@ -139,7 +139,7 @@ class NewMember extends React.Component {
 				_this.props.handleNewMemberAdded(member);
 			},
 			error: function(msg) {
-				console.error("new fifo Err", msg);
+				console.error("new FIFO Err", msg);
 			}
 		});
 	}
@@ -151,37 +151,37 @@ class NewMember extends React.Component {
 		delete props.fifoData;
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Fifo Member" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New FIFO Member" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Form horizontal id="newMemberForm">
 					<FormGroup controlId="formName">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={10}><FormControl type="input" name="name" defaultValue="name"/></Col>
+						<Col sm={10}><FormControl type="input" name="name" placeholder="name"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formDescription">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
-						<Col sm={10}><FormControl type="input"  name="description" defaultValue="description"/></Col>
+						<Col sm={10}><FormControl type="input"  name="description" placeholder="description"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formTimeout">
-						<Col componentClass={ControlLabel} sm={2}><T.span text="timeout" /></Col>
-						<Col sm={10}><FormControl type="input" name="timeout" defaultValue="timeout"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Timeout" /></Col>
+						<Col sm={10}><FormControl type="input" name="timeout" placeholder="timeout"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formSimo">
-						<Col componentClass={ControlLabel} sm={2}><T.span text="simo" /></Col>
-						<Col sm={10}><FormControl type="input" name="simo" defaultValue="simo"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Simo" /></Col>
+						<Col sm={10}><FormControl type="input" name="simo" placeholder="simo"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formextn">
-						<Col componentClass={ControlLabel} sm={2}><T.span text="lag" /></Col>
-						<Col sm={10}><FormControl type="input" name="lag" defaultValue="lag"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Lag" /></Col>
+						<Col sm={10}><FormControl type="input" name="lag" placeholder="lag"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formName">
-						<Col componentClass={ControlLabel} sm={2}><T.span text="extn" /></Col>
-						<Col sm={10}><FormControl type="input" name="extn" defaultValue="extn"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Extn" /></Col>
+						<Col sm={10}><FormControl type="input" name="extn" placeholder="extn"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formDialString">
-						<Col componentClass={ControlLabel} sm={2}><T.span text="dial_string" /></Col>
-						<Col sm={10}><FormControl type="input" name="dial_string" defaultValue="{member_wait=nowait}user/1001"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Dial String" /></Col>
+						<Col sm={10}><FormControl type="input" name="dial_string" placeholder="{member_wait=nowait}user/1001"/></Col>
 					</FormGroup>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
@@ -195,7 +195,7 @@ class NewMember extends React.Component {
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button>
+				<Button onClick={this.props.onHide}>
 					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
 					<T.span text="Close" />
 				</Button>
@@ -218,7 +218,7 @@ class FifoMember extends React.Component {
 		$.getJSON("/api/fifo_members/members", function(data) {
 			_this.setState({ rows: data, propId: nextProps.fifoData.fifoId });
 		}, function(e) {
-			console.log("get fifos ERR");
+			console.log("get FIFO ERR");
 		});
 	}
 
@@ -290,20 +290,20 @@ class FifoMember extends React.Component {
 					<T.span text="New" />
 				</Button>
 			</ButtonToolbar>
-			<h3>Fifo Member</h3>
+			<h3><T.span text="FIFO Member"/></h3>
 			<div>
 				<table className="table">
 				<tbody>
 				<tr>
 					<th><T.span text="ID"/></th>
-					<th><T.span text="name"/></th>
-					<th><T.span text="description"/></th>
-					<th><T.span text="timeout"/></th>
-					<th><T.span text="simo"/></th>
-					<th><T.span text="lag"/></th>
-					<th><T.span text="extn"/></th>
-					<th><T.span text="dial_string"/></th>
-					<th><T.span text="delete"/></th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="Description"/></th>
+					<th><T.span text="Timeout"/></th>
+					<th><T.span text="Simo"/></th>
+					<th><T.span text="Lag"/></th>
+					<th><T.span text="Extn"/></th>
+					<th><T.span text="Dial String"/></th>
+					<th><T.span text="Delete"/></th>
 				</tr>
 				{rows}
 				</tbody>
@@ -340,7 +340,7 @@ class NewFifo extends React.Component {
 				_this.props.handleNewFifoAdded(fifo);
 			},
 			error: function(msg) {
-				console.error("new fifo Err", msg);
+				console.error("new FIFO Err", msg);
 			}
 		});
 	}
@@ -357,15 +357,15 @@ class NewFifo extends React.Component {
 				<Form horizontal id="newFifoForm">
 					<FormGroup controlId="formName">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={7}><FormControl type="input" name="name" defaultValue="name"/></Col>
+						<Col sm={7}><FormControl type="input" name="name" placeholder="name"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formDescription">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Description" /></Col>
-						<Col sm={7}><FormControl type="input"  name="description" defaultValue="description"/></Col>
+						<Col sm={7}><FormControl type="input"  name="description" placeholder="description"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formImportance">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="importance" /></Col>
-						<Col sm={7}><FormControl type="input" name="importance" defaultValue="0"/></Col>
+						<Col componentClass={ControlLabel} sm={4}><T.span text="Importance" /></Col>
+						<Col sm={7}><FormControl type="input" name="importance" placeholder="0"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle" /></Col>
@@ -387,7 +387,7 @@ class NewFifo extends React.Component {
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button>
+				<Button onClick={this.props.onHide}>
 					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
 					<T.span text="Close" />
 				</Button>
@@ -443,23 +443,23 @@ class EditFifo extends React.Component {
 				<Form horizontal id="newFifoEditForm">
 					<FormGroup controlId="formName">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={7}><FormControl type="input" name="name" defaultValue={editData.name} /></Col>
+						<Col sm={7}><FormControl type="input" name="name" placeholder={editData.name} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formDescription">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Description" /></Col>
-						<Col sm={7}><FormControl type="input"  name="description" defaultValue={editData.description} /></Col>
+						<Col sm={7}><FormControl type="input"  name="description" placeholder={editData.description} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formImportance">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="importance" /></Col>
-						<Col sm={7}><FormControl type="input" name="importance" defaultValue={editData.importance} /></Col>
+						<Col componentClass={ControlLabel} sm={4}><T.span text="Importance" /></Col>
+						<Col sm={7}><FormControl type="input" name="importance" placeholder={editData.importance} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue={editData.outbound_per_cycle} /></Col>
+						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" placeholder={editData.outbound_per_cycle} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPCM">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle_min" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue={editData.outbound_per_cycle_min} /></Col>
+						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" placeholder={editData.outbound_per_cycle_min} /></Col>
 					</FormGroup>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
@@ -473,7 +473,7 @@ class EditFifo extends React.Component {
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button>
+				<Button onClick={this.props.onHide}>
 					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
 					<T.span text="Close" />
 				</Button>
@@ -500,7 +500,7 @@ class FifoPage extends React.Component {
 		$.getJSON("/api/fifos", function(data) {
 			_this.setState({rows: data});
 		}, function(e) {
-			console.log("get fifo ERR");
+			console.log("get FIFO ERR");
 		});
 	}
 
@@ -597,7 +597,7 @@ class FifoPage extends React.Component {
 					<T.span text="New" />
 				</Button>
 			</ButtonToolbar>
-			<h1>Fifos</h1>
+			<h1>FIFO</h1>
 			<div>
 				<table className="table">
 				<tbody>
@@ -605,7 +605,7 @@ class FifoPage extends React.Component {
 					<th><T.span text="ID"/></th>
 					<th><T.span text="Name"/></th>
 					<th><T.span text="Description"/></th>
-					<th><T.span text="importance"/></th>
+					<th><T.span text="Importance"/></th>
 					<th><T.span text="outbound_per_cycle"/></th>
 					<th><T.span text="outbound_per_cycle_min"/></th>
 					<th><T.span text="updated_epoch"/></th>
