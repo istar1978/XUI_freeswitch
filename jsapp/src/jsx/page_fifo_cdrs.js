@@ -119,7 +119,7 @@ class FifoCDRPage extends React.Component {
 class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {rows: [], query_visible: false};
+		this.state = {rows: [], hiddendiv: 'none'};
 		this.handleMore = this.handleMore.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);
@@ -134,7 +134,7 @@ class FifoCDRsPage extends React.Component {
 
 	handleMore (e) {
 		e.preventDefault();
-		this.setState({query_visible: !this.state.query_visible})
+		this.setState({hiddendiv: this.state.hiddendiv == 'none' ? 'block' : 'none'});
 	}
 
 	handleSearch (e) {
@@ -224,14 +224,14 @@ class FifoCDRsPage extends React.Component {
 
 			<h1><T.span text="FIFO CDRs"/></h1>
 			<div>
-				{this.state.query_visible && <div style={{padding: "5px"}} className="pull-right">
+				<div style={{padding: "5px", display: _this.state.hiddendiv}} className="pull-right">
 					<input type="date" defaultValue={sevenDaysBeforeToday} ref={(input) => { _this.startDate = input; }}/> -&nbsp;
 					<input type="date" defaultValue={today} ref={(input) => { _this.endDate = input; }}/> &nbsp;
 					<T.span text="CID Number"/><input ref={(input) => { _this.ani = input; }}/> &nbsp;
 					<T.span text="Dest Number"/><input ref={(input) => { _this.dest_number = input; }}/> &nbsp;
 					<T.span text="Bridged Number"/><input ref={(input) => { _this.bridged_number = input; }}/> &nbsp;
 					<T.button text="Search" onClick={this.handleSearch}/>
-				</div>}
+				</div>
 
 				<table className="table">
 				<tbody>
