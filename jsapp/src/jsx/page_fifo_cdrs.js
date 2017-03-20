@@ -40,7 +40,7 @@ class FifoCDRPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {fifocdr: {}, edit: false};
+		this.state = {fifocdr: {}, edit: false, result: ''};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -50,9 +50,9 @@ class FifoCDRPage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid, "", function(data) {
-			console.log("fifocdr", data);
-			_this.setState({fifocdr: data});
-			console.log(_this.state.fifocdr)
+			console.log("result", data.result[0].name);
+			console.log(typeof(data.result[0].name))
+			_this.setState({fifocdr: data.fifocdrs, result: data.result[0].name});
 		}, function(e) {
 			console.log("get cdr ERR");
 		});
@@ -60,7 +60,7 @@ class FifoCDRPage extends React.Component {
 
 	render() {
 		const fifocdr = this.state.fifocdr;
-
+		const src = "/recordings/" + this.state.result;
 		return <div>
 			<h1><T.span text="FIFO CDR"/> <small>{fifocdr.channel_uuid}</small></h1>
 			<hr/>
@@ -69,7 +69,7 @@ class FifoCDRPage extends React.Component {
 				<input type="hidden" name="id" defaultValue={fifocdr.channel_uuid}/>
 				<FormGroup controlId="formCaller_id_name">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
-					<Col sm={10}><audio src="" /></Col>
+					<Col sm={10}><audio src={src} controls="controls" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formUUID">
