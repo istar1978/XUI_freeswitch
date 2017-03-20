@@ -156,9 +156,7 @@ class CDRsPage extends React.Component {
 		const qs = "startDate=" + this.startDate.value +
 			"&endDate=" + this.endDate.value +
 			"&cidNumber=" + this.cidNumber.value +
-			"&destNumber=" + this.destNumber.value +
-			"&id=2";
-
+			"&destNumber=" + this.destNumber.value;
 		console.log(qs);
 
 		$.getJSON("/api/cdrs?" + qs, function(cdrs) {
@@ -174,7 +172,7 @@ class CDRsPage extends React.Component {
 
 	componentDidMount () {
 		const _this = this;
-		$.getJSON("/api/cdrs?id=0", function(cdrs) {
+		$.getJSON("/api/cdrs", function(cdrs) {
 			_this.setState({rows: cdrs, loaded : true});
 		})
 	}
@@ -185,7 +183,7 @@ class CDRsPage extends React.Component {
 
 		e.preventDefault();
 
-		$.getJSON("/api/cdrs?last=" + data + "&id=1", function(cdrs) {
+		$.getJSON("/api/cdrs?last=" + data, function(cdrs) {
 			_this.setState({rows: cdrs});
 		})
 	}

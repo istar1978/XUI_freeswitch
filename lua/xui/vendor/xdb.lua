@@ -47,7 +47,7 @@ end
 
 -- escapek("aaaa")
 -- escapek("aaaa'")
-
+xdb.escape = escape
 
 -- connect to database, dsn should be a valid FS dsn
 function xdb.connect(dsn, user, pass)

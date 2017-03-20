@@ -58,8 +58,7 @@ get('/', function(params)
 		local endDate = env:getHeader('endDate')
 		local cidNumber = env:getHeader('cidNumber')
 		local destNumber = env:getHeader('destNumber')
-
-		local escape = sqlescape.EscapeFunction()
+		local escape = xdb.escape
 
 		cond = "start_stamp between " .. escape(startDate) .. " AND DATE(" .. escape(endDate) .. ", '+1 day')"
 
