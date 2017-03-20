@@ -405,7 +405,7 @@ Blockly.Blocks['fsSessionExecute'] = {
 
 Blockly.Blocks['fsFIFOS'] = {
     init: function() {
-        this.appendValueInput("filename")
+        this.appendValueInput("fifoname")
             .appendField(Blockly.Msg.FS_BLOCK_FIFO)
             .appendField(Blockly.Msg.FS_BLOCK_FILENAME)
         this.appendValueInput("Fifo")

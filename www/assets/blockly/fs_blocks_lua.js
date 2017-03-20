@@ -137,11 +137,11 @@ Blockly.Lua.fsSessionExecute = function(block) {
 };
 
 Blockly.Lua.fsFIFOS = function(block) {
-  var filename = Blockly.Lua.valueToCode(block, 'filename', Blockly.Lua.ORDER_ATOMIC);
+  var fifoname = Blockly.Lua.valueToCode(block, 'fifoname', Blockly.Lua.ORDER_ATOMIC);
   var method = block.getFieldValue('NAME');
   var announce = Blockly.Lua.valueToCode(block, 'Fifo', Blockly.Lua.ORDER_ATOMIC);
   var music = Blockly.Lua.valueToCode(block, 'music file', Blockly.Lua.ORDER_ATOMIC);
-  var code = 'session:execute("fifo","' + filename + ' ' +  method + ' ' + announce + ' ' + music + '")\n';
+  var code = 'session:execute("fifo", ' + fifoname + ' .. " ' +  method + ' ' + announce + ' ' + music + '")\n';
   return code;
 };
 

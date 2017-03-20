@@ -197,7 +197,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	</block>
 	<block type="fsSessionExecute"></block>
 	<block type="fsFIFOS">
-		<value name="filename">
+		<value name="fifoname">
 			<shadow type="text">
 			<field name="TEXT">default</field>
 			</shadow>
