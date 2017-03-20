@@ -112,6 +112,7 @@ end)
 post('/:id/members', function(params)
 	print(serialize(params))
 	member = params.request
+	member.fifo_id = params.id
 	member.fifo_name = nil
 	ret = xdb.create('fifo_members', member)
 	if  ret then
