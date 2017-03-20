@@ -426,7 +426,7 @@ class SIPProfilePage extends React.Component {
 
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+				<Button onClick={this.toggleHighlight}><T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
