@@ -40,7 +40,7 @@ get('/', function(params)
 	-- if check then
 		n, fifos = xdb.find_all("fifos")
 
-		if (fifos) then
+		if n > 0 then
 			return fifos
 		else
 			return "[]"
