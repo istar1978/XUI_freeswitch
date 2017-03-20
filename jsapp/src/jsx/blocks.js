@@ -566,7 +566,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			console.log("data", obj);
 
 			obj.forEach(function(row) {
-				_this.fs_fifos_dropdown_data.push([row.name, row.description]);
+				_this.fs_fifos_dropdown_data.push([row.description, row.name]);
 			});
 		});
 
