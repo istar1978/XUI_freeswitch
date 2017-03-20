@@ -133,7 +133,7 @@ class CDRsPage extends React.Component {
 	    	var r = 10000;
 	    	localStorage.setItem("theRows", r);
      	}
-     	this.state = {rows: [], query_visible: false, loaded: false};
+     	this.state = {rows: [], loaded: false, hiddendiv: 'none'};
      	this.handleQuery = this.handleQuery.bind(this);
      	this.handleSearch = this.handleSearch.bind(this);
      	this.handleMore = this.handleMore.bind(this);
@@ -146,9 +146,9 @@ class CDRsPage extends React.Component {
 		console.log("clicked", e.target);
 	}
 
-	handleMore (e){
+	handleMore (e) {
 		e.preventDefault();
-		this.setState({query_visible: !this.state.query_visible})
+		this.setState({hiddendiv: this.state.hiddendiv == 'none' ? 'block' : 'none'});
 	}
 
 	handleSearch (e) {
@@ -258,13 +258,13 @@ class CDRsPage extends React.Component {
 
 			<h1><T.span text="CDRs"/></h1>
 			<div>
-				{this.state.query_visible && <div style={{padding: "5px"}} className="pull-right">
+				<div style={{padding: "5px", display: _this.state.hiddendiv}} className="pull-right">
 					<input type="date" defaultValue={sevenDaysBeforeToday} ref={(input) => { _this.startDate = input; }}/> -&nbsp;
 					<input type="date" defaultValue={today} ref={(input) => { _this.endDate = input; }}/> &nbsp;
 					<T.span text="CID Number"/><input ref={(input) => { _this.cidNumber = input; }}/> &nbsp;
 					<T.span text="Dest Number"/><input ref={(input) => { _this.destNumber = input; }}/> &nbsp;
 					<T.button text="Search" onClick={this.handleSearch}/>
-				</div>}
+				</div>
 
 				<table className="table">
 				<tbody>
