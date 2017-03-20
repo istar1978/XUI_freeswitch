@@ -100,17 +100,19 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		rec.name = filename
 		if ext == ".wav" then
 			rec.mime = "audio/wave"
+			rec.ext = "wav"
 		else
 			rec.mime = "audio/mp3"
+			rec.ext = "mp3"
 		end
 		rec.abs_path = record_path
 		rec.file_size = "" .. size
-		rec.description = 'fiforecord'
+		rec.description = fifo_name
 		rec.dir_path = config.fiforecord_path
 		rec.channel_uuid = uuid
 		rec.created_epoch = "" .. os.time()
 		rec.original_file_name = filename
-		rec.ext = ext
+		rec.rel_path = filename
 		
 		xdb.create('media_files', rec)
 
