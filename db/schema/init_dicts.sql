@@ -83,4 +83,8 @@ INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '16000', '16000');
 INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '32000', '32000');
 INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '48000', '48000');
 
+INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'outbound_per_cycle', '2');
+INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'delete-all-outbound-member-on-startup', 'false');
+INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'outbound-strategy', 'ringall');
+
 -- END

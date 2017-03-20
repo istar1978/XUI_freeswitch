@@ -5,6 +5,7 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import { EditControl } from './xtools';
+import verto from './verto/verto';
 
 class FifoMemberPage extends React.Component {
 	constructor(props) {
@@ -550,6 +551,10 @@ class FifoPage extends React.Component {
 		});
 	}
 
+	handleReparseClick() {
+		verto.fsAPI("fifo", "reparse");
+	}
+
 	handleFifoEdited (fifo){
 		var id = fifo.id;
 		var rows = this.state.rows;
@@ -628,6 +633,10 @@ class FifoPage extends React.Component {
 				<Button onClick={this.handleNewFifoAdd}>
 					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
 					<T.span text="New" />
+				</Button>
+				<Button onClick={this.handleReparseClick}>
+					<i className="fa fa-refresh" aria-hidden="true" ></i>&nbsp;
+					<T.span text="Reparse" />
 				</Button>
 			</ButtonToolbar>
 			<h1><T.span text="FIFO"/></h1>

@@ -247,6 +247,7 @@ LANGUAGES["zh"] = {
 	"Timeout": "超时",
 	"Lag": "延迟",
 	"Extn": "分机号",
+	"Reparse": "重载队列设置",
 
 	"Multicasts": "组播",
 	"Source": "源",
