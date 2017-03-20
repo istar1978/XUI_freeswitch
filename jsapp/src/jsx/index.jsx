@@ -190,11 +190,12 @@ class Home extends React.Component{
 						<IndexRoute components={{sidebar: Settings, main: MediaFilesPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: MediaFilePage}}/>
 					</Route>
-					<Route path="fifo" components={{sidebar: Settings, main: FifoPage}} />
-					<Route path="fifo_members">
+
+					<Route path="fifos">
 						<IndexRoute components={{sidebar: Settings, main: FifoPage}}/>
-						<Route path=":id" components={{sidebar: Settings, main: FifoMemberPage}}/>
+						<Route path=":fifo_id/members/:id" components={{sidebar: Settings, main: FifoMemberPage}} />
 					</Route>
+
 					<Route path="mcasts">
 						<IndexRoute components={{sidebar: Settings, main: McastsPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: McastPage}}/>

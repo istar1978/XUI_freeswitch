@@ -9,16 +9,15 @@ import { EditControl } from './xtools';
 class FifoMemberPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { row: [], editText: "Edit", editable: false, params: [] };
+		this.state = { row: [], editText: "Edit", editable: false};
 		this.handleEdit = this.handleEdit.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	componentDidMount() {
 		const _this = this;
-		console.log(this.props);
-		$.getJSON("/api/fifo_members/members/" + _this.props.params.id , function(data) {
-			_this.setState({ row: data });
+		$.getJSON("/api/fifos/"+_this.props.params.fifo_id+"/members/" + _this.props.params.id , function(data) {
+			_this.setState({ row: data[0] });
 		}, function(e) {
 			console.log("get ERR");
 		});
@@ -45,7 +44,7 @@ class FifoMemberPage extends React.Component {
 		member.updated_epoch = _this.state.row.updated_epoch;
 		$.ajax({
 			type: "PUT",
-			url: "/api/fifo_members/members/" + member.id ,
+			url: "/api/fifos/"+_this.state.row.fifo_id+"/members/" + member.id ,
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(member),
@@ -118,19 +117,24 @@ class NewMember extends React.Component {
 		this.state = { errmsg: "" };
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
+	componentWillReceiveProps(nextProps){
+		console.log("nextProps",nextProps);
+	}
 
 	handleSubmit (){
 		const _this = this;
 		var member = form2json('#newMemberForm');
 		if (!member.name) {
-			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
 		member.fifo_id = this.props.fifoData.fifoId;
 		member.fifo_name = this.props.fifoData.fifoName;
+		console.log("/api/fifos/" + this.props.fifoData.fifoId + "/members");
+		console.log(member);
 		$.ajax({
 			type: "POST",
-			url: "/api/fifo_members",
+			url: "/api/fifos/" + member.fifo_id + "/members",
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(member),
@@ -215,11 +219,13 @@ class FifoMember extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		const _this = this;
-		$.getJSON("/api/fifo_members/members", function(data) {
-			_this.setState({ rows: data, propId: nextProps.fifoData.fifoId });
-		}, function(e) {
-			console.log("get FIFO ERR");
-		});
+		if(nextProps.fifoData.fifoId) {
+			$.getJSON("/api/fifos/"+nextProps.fifoData.fifoId+"/members", function(data) {
+				_this.setState({ rows: data, propId: nextProps.fifoData.fifoId });
+			}, function(e) {
+				console.log("get FIFO ERR");
+			});
+		}
 	}
 
 	handleMemberAdd () {
@@ -227,9 +233,10 @@ class FifoMember extends React.Component {
 	}
 
 	handleNewMemberAdded (member) {
-		var rows = this.state.rows;
-		rows.push(member);
-		this.setState({ formShow: false, rows: rows });
+		const _this = this;
+		$.getJSON("/api/fifos/"+_this.props.fifoData.fifoId+"/members", function(data) {
+			_this.setState({rows: data, formShow: false});
+		});
 	}
 
 	handleDelete (e) {
@@ -242,7 +249,7 @@ class FifoMember extends React.Component {
 		}
 		$.ajax({
 			type: "DELETE",
-			url: "/api/fifo_members/members/" + id,
+			url: "/api/fifos/" + _this.props.fifoData.fifoId + "/members/" + id,
 			success: function () {
 				console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {
@@ -261,16 +268,15 @@ class FifoMember extends React.Component {
 		const _this = this;
 		const props = Object.assign({}, this.props);
 		delete props.fifoData;
-
+	    let fifoId = _this.props.fifoData.fifoId;
 	    let fifoData = {fifoId: fifoId, fifoName: _this.props.fifoData.fifoName}
 	    let formClose = () => this.setState({ formShow: false });
-	    let fifoId = _this.state.propId;
 	    let danger = this.state.danger ? "danger" : "";
 	   	let rows = this.state.rows.map ( function (row) {
 	    	if( fifoId == row.fifo_id ) {
 	    		return <tr key={row.id} >
 					<td> {row.id} </td>
-					<td> <Link to={`/settings/fifo_members/${row.id}`}>{row.name}</Link> </td>
+					<td> <Link to={`/settings/fifos/${fifoId}/members/${row.id}`}>{row.name}</Link> </td>
 					<td> {row.description} </td>
 					<td> {row.timeout} </td>
 					<td> {row.simo} </td>
@@ -283,7 +289,7 @@ class FifoMember extends React.Component {
 	    });
 
 		return <div>
-			<NewMember fifoData={fifoData} show={this.state.formShow} onHide={formClose} handleNewMemberAdded={this.handleNewMemberAdded}/>
+			<NewMember fifoData={fifoData} show={this.state.formShow} onHide={formClose} handleNewMemberAdded={ this.handleNewMemberAdded }/>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={this.handleMemberAdd}>
 					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
@@ -326,7 +332,7 @@ class NewFifo extends React.Component {
 		const _this = this;
 		var fifo = form2json('#newFifoForm');
 		if (!fifo.name) {
-			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
 		$.ajax({
@@ -404,15 +410,38 @@ class EditFifo extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	getNowTime () {
+		Date.prototype.Format = function (fmt) { //author: meizz 
+		    var o = {
+		        "M+": this.getMonth() + 1, //月份 
+		        "d+": this.getDate(), //日 
+		        "h+": this.getHours(), //小时 
+		        "m+": this.getMinutes(), //分 
+		        "s+": this.getSeconds(), //秒 
+		        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+		        "S": this.getMilliseconds() //毫秒 
+		    };
+		    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    for (var k in o)
+		    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		    return fmt;
+		}
+		var time = new Date().Format("yyyy-MM-dd hh:mm:ss");  
+	    return time;
+	}
+
 	handleSubmit (){
 		console.log("submit...");
 		const _this = this;
 		var fifo = form2json('#newFifoEditForm');
+		console.log(fifo.name);
 		if (!fifo.name) {
-			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			this.setState({ errmsg: "Mandatory fields left blank"})
 			return;
 		}
 		fifo.id = _this.props.editData.id;
+		fifo.updated_epoch = _this.getNowTime();
+		console.log(fifo);
 		$.ajax({
 			type: "PUT",
 			url: "/api/fifos/" + _this.props.editData.id,
@@ -420,6 +449,7 @@ class EditFifo extends React.Component {
 			contentType: "application/json",
 			data: JSON.stringify(fifo),
 			success: function (obj) {
+				console.log(obj);
 				_this.props.handleFifoEdited(fifo);
 			},
 			error: function(msg) {
@@ -443,23 +473,23 @@ class EditFifo extends React.Component {
 				<Form horizontal id="newFifoEditForm">
 					<FormGroup controlId="formName">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={7}><FormControl type="input" name="name" placeholder={editData.name} /></Col>
+						<Col sm={7}><FormControl type="input" name="name" defaultValue={editData.name} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formDescription">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Description" /></Col>
-						<Col sm={7}><FormControl type="input"  name="description" placeholder={editData.description} /></Col>
+						<Col sm={7}><FormControl type="input"  name="description" defaultValue={editData.description} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formImportance">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Importance" /></Col>
-						<Col sm={7}><FormControl type="input" name="importance" placeholder={editData.importance} /></Col>
+						<Col sm={7}><FormControl type="input" name="importance" defaultValue={editData.importance} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" placeholder={editData.outbound_per_cycle} /></Col>
+						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue={editData.outbound_per_cycle} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPCM">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle_min" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" placeholder={editData.outbound_per_cycle_min} /></Col>
+						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue={editData.outbound_per_cycle_min} /></Col>
 					</FormGroup>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
@@ -514,20 +544,23 @@ class FifoPage extends React.Component {
 	}
 
 	handleNewFifoAdded(fifo) {
-		var rows = this.state.rows;
-		rows.push(fifo);
-		this.setState({rows: rows, formShow: false});
+		const _this = this;
+		$.getJSON("/api/fifos", function(data) {
+			_this.setState({rows: data, formShow: false});
+		});
 	}
 
 	handleFifoEdited (fifo){
 		var id = fifo.id;
 		var rows = this.state.rows;
+		console.log("row",rows);
 		let change = [];
 		rows.map(function(row){
 			if(row.id == id){
 				rows[id-1] = fifo;
 			}
 		});
+
 		this.setState({ editFormShow: false, rows: this.state.rows });
 	}
 
