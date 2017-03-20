@@ -74,10 +74,9 @@ get('/', function(params)
 end)
 
 get('/:uuid', function(params)
-	freeswitch.consoleLog("err", serialize(params))
 	n, cdrs = xdb.find_by_cond("cdrs", {uuid = params.uuid}, "start_stamp", nil, 1)
+
 	if n > 0 then
-	freeswitch.consoleLog("err", serialize(cdrs))
 		return cdrs[1]
 	else
 		return 404
