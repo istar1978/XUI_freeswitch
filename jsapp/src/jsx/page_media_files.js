@@ -410,7 +410,8 @@ class MediaFilePage extends React.Component {
 			save_btn = <Button onClick={this.handleSubmit}><T.span onClick={this.handleSubmit} text="Save"/></Button>
 		}
 
-		let src = "/assets/upload/" + mfile.rel_path;
+		let src1 = "/assets/upload/" + mfile.rel_path;
+		let src2 = "/recordings/" + mfile.rel_path;
 
 		if (mfile.ext == 'jpg' || (mfile.ext == 'png' || mfile.ext == 'jpeg')) {
 			var adiv =  <div id = "showThing">
@@ -419,7 +420,7 @@ class MediaFilePage extends React.Component {
 		}
 		if (mfile.ext == 'mp3' || mfile.ext == 'wav'){
 			var adiv =  <div id = "showThing">
-							<audio src={src} controls="controls" />
+							<audio src={src1} src={src2}  controls="controls" />
 						</div>;
 		}
 		if (mfile.ext == 'mp4') {

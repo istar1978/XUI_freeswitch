@@ -110,6 +110,7 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		rec.channel_uuid = uuid
 		rec.created_epoch = "" .. os.time()
 		rec.original_file_name = filename
+		rec.ext = ext
 		
 		xdb.create('media_files', rec)
 
@@ -119,7 +120,6 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		end)
 	
 		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, id)
-		
 	end
 end
 
