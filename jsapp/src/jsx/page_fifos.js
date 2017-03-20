@@ -174,7 +174,7 @@ class NewMember extends React.Component {
 		delete props.fifoData;
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New FIFO Member" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Add FIFO Member" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Form horizontal id="newMemberForm">
@@ -307,7 +307,7 @@ class FifoMember extends React.Component {
 			<ButtonToolbar className="pull-right">
 				<Button onClick={() => this.setState({formShow: true})}>
 					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
-					<T.span text="New" />
+					<T.span text="Add" />
 				</Button>
 			</ButtonToolbar>
 			<h3><T.span text="FIFO Member"/></h3>
@@ -397,11 +397,11 @@ class NewFifo extends React.Component {
 						<Col sm={7}><FormControl type="input" name="importance" defaultValue="0"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle" /></Col>
+						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle" /></Col>
 						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue="1"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPCM">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle_min" /></Col>
+						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle Min" /></Col>
 						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue="1"/></Col>
 					</FormGroup>
 					<Col sm={4}></Col>
@@ -509,11 +509,11 @@ class EditFifo extends React.Component {
 						<Col sm={7}><FormControl type="input" name="importance" defaultValue={editData.importance} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle" /></Col>
+						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle" /></Col>
 						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue={editData.outbound_per_cycle} /></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPCM">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle_min" /></Col>
+						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle Min" /></Col>
 						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue={editData.outbound_per_cycle_min} /></Col>
 					</FormGroup>
 					<FormGroup>
@@ -647,7 +647,6 @@ class FifoPage extends React.Component {
 				<td> {row.outbound_per_cycle} </td>
 				<td> {row.outbound_per_cycle_min} </td>
 				<td><T.span text={autoRecord}/></td>
-				<td> {row.updated_epoch} </td>
 				<td><T.a onClick={_this.handleEdit} data-id={row.id} text={_this.state.editText} style={{cursor:"pointer"}}/></td>
 				<td><T.a onClick={_this.handleDelete.bind(_this)} data-id={row.id} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>
@@ -655,13 +654,13 @@ class FifoPage extends React.Component {
 		let fifoData = { fifoId: this.state.fifoId, fifoName: this.state.fifoName }
 		return <div>
 			<ButtonToolbar className="pull-right">
-				<Button onClick={this.handleNewFifoAdd}>
-					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
-					<T.span text="New" />
-				</Button>
 				<Button onClick={this.handleReparseClick}>
 					<i className="fa fa-refresh" aria-hidden="true" ></i>&nbsp;
 					<T.span text="Reparse" />
+				</Button>
+				<Button onClick={this.handleNewFifoAdd}>
+					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
+					<T.span text="New" />
 				</Button>
 			</ButtonToolbar>
 			<h1><T.span text="FIFO"/></h1>
@@ -673,10 +672,9 @@ class FifoPage extends React.Component {
 					<th><T.span text="Name"/></th>
 					<th><T.span text="Description"/></th>
 					<th><T.span text="Importance"/></th>
-					<th><T.span text="outbound_per_cycle"/></th>
-					<th><T.span text="outbound_per_cycle_min"/></th>
+					<th><T.span text="OB Per Cycle"/></th>
+					<th><T.span text="OB Per Cycle Min"/></th>
 					<th><T.span text="Auto Record"/></th>
-					<th><T.span text="updated_epoch"/></th>
 					<th><T.span text={_this.state.editText}/></th>
 					<th><T.span style={{cursor: "pointer" }} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
