@@ -91,19 +91,25 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		uuid = event:getHeader("variable_bridge_uuid")
 		rec = {}
 		id = {}
-		local a, b, c, d, e, f, g, h, i = string.match(record_path, "(%a+)-(%a+)-(%d+)-(%d+)-(%w+)-(%w+)-(%w+)-(%w+)-(%w+)")
-		original_name = a .. '-' .. b ..'-'.. c .. '-'.. d .. '-' .. e .. '-' .. f .. '-' .. g .. '-' .. h .. '-' .. i .. ".mp3"
+		freeswitch.consoleLog('err', record_path .. "\n")
+		filename = string.match(record_path, ".*/(fifo%-record%-.*)$")
+		ext = filename:match("^.+(%..+)$")
+
 		local f = assert(io.open(record_path),"rb")
-	        local size = assert(f:seek("end"))
-        	rec.name = "fifo-record-" .. record_name
-        	rec.mime = "audio/mp3"
-        	rec.abs_path = record_path
-        	rec.file_size = "" .. size
-        	rec.description = 'fiforecord'
-        	rec.dir_path = config.fiforecord_path
-        	rec.channel_uuid = uuid
-        	rec.created_epoch = "" .. os.time()
-		rec.original_file_name = original_name
+		local size = assert(f:seek("end"))
+		rec.name = filename
+		if ext == ".wav" then
+			rec.mime = "audio/wave"
+		else
+			rec.mime = "audio/mp3"
+		end
+		rec.abs_path = record_path
+		rec.file_size = "" .. size
+		rec.description = 'fiforecord'
+		rec.dir_path = config.fiforecord_path
+		rec.channel_uuid = uuid
+		rec.created_epoch = "" .. os.time()
+		rec.original_file_name = filename
 		
 		xdb.create('media_files', rec)
 
