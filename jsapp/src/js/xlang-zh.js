@@ -239,7 +239,9 @@ LANGUAGES["zh"] = {
 	FIFO: "队列",
 	"days": "{day}天",
 	"Total Rows": "总行数",
-	"Create New FIFO": "创建新的FIFO",
+	"Create New FIFO": "创建新的队列",
+	"Create New FIFO Member": "创建新的队列成员",
+	"Edit FIFO": "编辑队列",
 	"FIFO Member": "队列成员",
 	"FIFO Member Info": "队列成员信息",
 	"Importance": "重要等级",
@@ -248,6 +250,7 @@ LANGUAGES["zh"] = {
 	"Lag": "延迟",
 	"Extn": "分机号",
 	"Reparse": "重载队列设置",
+	"Auto Record": "自动录音",
 
 	"Multicasts": "组播",
 	"Source": "源",

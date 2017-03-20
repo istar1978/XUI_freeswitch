@@ -1,7 +1,7 @@
 'use strict';
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Row, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import { EditControl } from './xtools';
@@ -24,6 +24,26 @@ class FifoMemberPage extends React.Component {
 		});
 	}
 
+	getNowTime () {
+		Date.prototype.Format = function (fmt) {
+		    var o = {
+		        "M+": this.getMonth() + 1,
+		        "d+": this.getDate(),
+		        "h+": this.getHours(),
+		        "m+": this.getMinutes(),
+		        "s+": this.getSeconds(),
+		        "q+": Math.floor((this.getMonth() + 3) / 3),
+		        "S": this.getMilliseconds()
+		    };
+		    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    for (var k in o)
+		    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		    return fmt;
+		}
+		var time = new Date().Format("yyyy-MM-dd hh:mm:ss");  
+	    return time;
+	}
+
 	handleEdit () {
 		const _this = this;
 		if( _this.state.editText === "Save" ){
@@ -42,7 +62,7 @@ class FifoMemberPage extends React.Component {
 			return;
 		}
 		member.fifo_name = _this.state.row.fifo_name;
-		member.updated_epoch = _this.state.row.updated_epoch;
+		member.updated_epoch = this.getNowTime();
 		$.ajax({
 			type: "PUT",
 			url: "/api/fifos/"+_this.state.row.fifo_id+"/members/" + member.id ,
@@ -131,8 +151,6 @@ class NewMember extends React.Component {
 		}
 		member.fifo_id = this.props.fifoData.fifoId;
 		member.fifo_name = this.props.fifoData.fifoName;
-		console.log("/api/fifos/" + this.props.fifoData.fifoId + "/members");
-		console.log(member);
 		$.ajax({
 			type: "POST",
 			url: "/api/fifos/" + member.fifo_id + "/members",
@@ -324,14 +342,21 @@ class NewFifo extends React.Component {
 
 	constructor (props) {
 		super(props);
-		this.state = { errmsg: "" };
+		this.state = { errmsg: "", auto_record: "0"};
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChecked = this.handleChecked.bind(this);
 	}
 
-	handleSubmit (){
+	handleChecked(e) {
+		var auto_record = e.target.checked ? "1" : "0";
+		this.setState({ auto_record: auto_record });
+	}
+
+	handleSubmit () {
 		console.log("submit...");
 		const _this = this;
 		var fifo = form2json('#newFifoForm');
+		fifo.auto_record = _this.state.auto_record;
 		if (!fifo.name) {
 			this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
@@ -356,9 +381,10 @@ class NewFifo extends React.Component {
 		const _this = this;
 		const props = Object.assign({}, this.props);
 		delete props.handleNewFifoAdded;
+
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Fifo" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New FIFO" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Form horizontal id="newFifoForm">
@@ -372,23 +398,27 @@ class NewFifo extends React.Component {
 					</FormGroup>
 					<FormGroup controlId="formImportance">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Importance" /></Col>
-						<Col sm={7}><FormControl type="input" name="importance" placeholder="0"/></Col>
+						<Col sm={7}><FormControl type="input" name="importance" defaultValue="0"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" /></Col>
+						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue="1"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPCM">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="outbound_per_cycle_min" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" /></Col>
+						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue="1"/></Col>
 					</FormGroup>
+					<Col sm={4}></Col>
+					<Checkbox name="auto_record" value="auto_record" inline onChange={_this.handleChecked}>
+						<T.span text="Auto Record" />
+					</Checkbox>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
 							<Button type="button" bsStyle="primary" onClick={ _this.handleSubmit }>
 								<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
 								<T.span text="Save" />
 							</Button>
-							&nbsp;&nbsp;<T.span className="danger" text={ this.state.errmsg }/>
+							&nbsp;&nbsp;<T.span className="danger" text={ _this.state.errmsg }/>
 						</Col>
 					</FormGroup>
 				</Form>
@@ -412,15 +442,15 @@ class EditFifo extends React.Component {
 	}
 
 	getNowTime () {
-		Date.prototype.Format = function (fmt) { //author: meizz 
+		Date.prototype.Format = function (fmt) {
 		    var o = {
-		        "M+": this.getMonth() + 1, //月份 
-		        "d+": this.getDate(), //日 
-		        "h+": this.getHours(), //小时 
-		        "m+": this.getMinutes(), //分 
-		        "s+": this.getSeconds(), //秒 
-		        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-		        "S": this.getMilliseconds() //毫秒 
+		        "M+": this.getMonth() + 1,
+		        "d+": this.getDate(),
+		        "h+": this.getHours(),
+		        "m+": this.getMinutes(),
+		        "s+": this.getSeconds(),
+		        "q+": Math.floor((this.getMonth() + 3) / 3),
+		        "S": this.getMilliseconds()
 		    };
 		    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
 		    for (var k in o)
@@ -435,14 +465,12 @@ class EditFifo extends React.Component {
 		console.log("submit...");
 		const _this = this;
 		var fifo = form2json('#newFifoEditForm');
-		console.log(fifo.name);
 		if (!fifo.name) {
 			this.setState({ errmsg: "Mandatory fields left blank"})
 			return;
 		}
 		fifo.id = _this.props.editData.id;
 		fifo.updated_epoch = _this.getNowTime();
-		console.log(fifo);
 		$.ajax({
 			type: "PUT",
 			url: "/api/fifos/" + _this.props.editData.id,
@@ -468,7 +496,7 @@ class EditFifo extends React.Component {
 		delete props.editData;
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Edit Fifo" /></Modal.Title>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Edit FIFO" /></Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Form horizontal id="newFifoEditForm">
@@ -558,7 +586,6 @@ class FifoPage extends React.Component {
 	handleFifoEdited (fifo){
 		var id = fifo.id;
 		var rows = this.state.rows;
-		console.log("row",rows);
 		let change = [];
 		rows.map(function(row){
 			if(row.id == id){
@@ -615,6 +642,7 @@ class FifoPage extends React.Component {
 	    let editFormClose = () => this.setState({ editFormShow: false });
 	    let toggleDanger = () => this.setState({ danger: !this.state.danger });
 		let rows = this.state.rows.map( function(row) {
+			let  autoRecord = row.auto_record == "1" ? "Yes" : "No" ;
 			return <tr key={row.id} >
 				<td> {row.id} </td>
 				<td><a onClick = {_this.handleMemberClick} style={{cursor: "pointer"}} data-fifoId={row.id}>{ row.name }</a></td>
@@ -622,6 +650,7 @@ class FifoPage extends React.Component {
 				<td> {row.importance} </td>
 				<td> {row.outbound_per_cycle} </td>
 				<td> {row.outbound_per_cycle_min} </td>
+				<td><T.span text={autoRecord}/></td>
 				<td> {row.updated_epoch} </td>
 				<td><T.a onClick={_this.handleEdit} data-id={row.id} text={_this.state.editText} style={{cursor:"pointer"}}/></td>
 				<td><T.a onClick={_this.handleDelete.bind(_this)} data-id={row.id} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
@@ -650,6 +679,7 @@ class FifoPage extends React.Component {
 					<th><T.span text="Importance"/></th>
 					<th><T.span text="outbound_per_cycle"/></th>
 					<th><T.span text="outbound_per_cycle_min"/></th>
+					<th><T.span text="Auto Record"/></th>
 					<th><T.span text="updated_epoch"/></th>
 					<th><T.span text={_this.state.editText}/></th>
 					<th><T.span style={{cursor: "pointer" }} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>

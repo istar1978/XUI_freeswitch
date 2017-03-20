@@ -81,7 +81,7 @@ end)
 
 put('/:id', function(params)
 	print(serialize(params))
-	ret = xdb.update("users", params.request)
+	ret = xdb.update("fifos", params.request)
 	if ret then
 		return 200, "{}"
 	else
@@ -94,7 +94,7 @@ put('/:id/members/:members_id', function(params)
 	member = params.request
 	member.fifo_id = nil
 	member.id = nil
-	ret = xdb.update_by_cond("fifo_members", { fifo_id = params.id, id = params.members_id}, member)
+	ret = xdb.update_by_cond("fifo_members", { fifo_id = params.id, id = params.members_id}, params.request)
 	if ret then
 		return 200, "{}"
 	else
