@@ -138,8 +138,7 @@ class Conferences extends React.Component {
 		};
 	}
 
-	handleControlClick(e) {
-		var data = e.target.getAttribute("data");
+	handleControlClick(data) {
 
 		if (data == "new") {
 			this.setState({ formShow: true});
@@ -183,9 +182,9 @@ class Conferences extends React.Component {
 
 					<hr/>
 
-					<Button onClick={this.handleControlClick.bind(this)} data="new">
-						<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick.bind(this)} data="new"></i>&nbsp;
-						<T.span onClick={this.handleControlClick.bind(this)} data="new" text="New" />
+					<Button onClick={() => this.handleControlClick("new")}>
+						<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+						<T.span text="New" />
 					</Button>
 
 					<NewRoom show={this.state.formShow} onHide={formClose} onNewRoomAdded={this.handleNewRoomAdded.bind(this)}/>

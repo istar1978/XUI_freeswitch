@@ -675,9 +675,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 		}
 	}
 
-	handleControlClick(e) {
+	handleControlClick(data) {
 		let _this = this;
-		let data = e.target.getAttribute("data");
 
 		let toLua = function() {
 			let code = Blockly.Lua.workspaceToCode(_this.workspace);
@@ -830,17 +829,17 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			<div id='blocks'>
 			<ButtonToolbar className="pull-right">
 				<ButtonGroup>
-				<Button onClick={this.handleControlClick.bind(this)} data="exportXML"><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<Button onClick={() => this.handleControlClick("exportXML")}><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
 				<T.span text="Export XML" /></Button>
-				<Button onClick={this.handleControlClick.bind(this)} data="exportSVG"><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<Button onClick={() => this.handleControlClick("exportSVG")}><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
 				<T.span text="Export SVG" /></Button>
-				<Button onClick={this.handleControlClick.bind(this)} data="export"><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<Button onClick={() => this.handleControlClick("export")}><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
 				<T.span text="Export Lua" /></Button>
-				<Button onClick={this.handleControlClick.bind(this)} data="save"><i className="fa fa-save" aria-hidden="true"></i>&nbsp;
+				<Button onClick={() => this.handleControlClick("save")}data="save"><i className="fa fa-save" aria-hidden="true"></i>&nbsp;
 				<T.span text="Save" /></Button>
 				</ButtonGroup>
 				<ButtonGroup>
-				<Button onClick={this.handleControlClick.bind(this)} data="import"><i className="fa fa-reply" aria-hidden="true"></i>&nbsp;
+				<Button onClick={() => this.handleControlClick("import")}><i className="fa fa-reply" aria-hidden="true"></i>&nbsp;
 				<T.span text="Import" /></Button>
 				</ButtonGroup>
 			</ButtonToolbar>
@@ -938,7 +937,7 @@ class BlocksPage extends React.Component {
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
-	handleControlClick(e) {
+	handleControlClick(data) {
 		this.setState({ formShow: true});
 	}
 
@@ -948,8 +947,7 @@ class BlocksPage extends React.Component {
 		this.setState({rows: rows, formShow: false});
 	}
 
-	handleDelete(e) {
-		var id = e.target.getAttribute("data-id");
+	handleDelete(id) {
 		console.log("deleting id", id);
 		var _this = this;
 
@@ -999,15 +997,15 @@ class BlocksPage extends React.Component {
 					<td><Link to={`/settings/blocks/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.created_at}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href="#"/></td>
+					<td><T.a onClick={() => _this.handleDelete(row.id)}  text="Delete" className={danger} href="#"/></td>
 			</tr>;
 		})
 
 		return <div>
 			<ButtonToolbar className="pull-right">
-				<Button onClick={this.handleControlClick} data="new">
-					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="new" text="New" />
+				<Button onClick={() => this.handleControlClick("new")}>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="New" />
 				</Button>
 			</ButtonToolbar>
 
