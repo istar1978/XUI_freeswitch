@@ -24,26 +24,6 @@ class FifoMemberPage extends React.Component {
 		});
 	}
 
-	getNowTime () {
-		Date.prototype.Format = function (fmt) {
-		    var o = {
-		        "M+": this.getMonth() + 1,
-		        "d+": this.getDate(),
-		        "h+": this.getHours(),
-		        "m+": this.getMinutes(),
-		        "s+": this.getSeconds(),
-		        "q+": Math.floor((this.getMonth() + 3) / 3),
-		        "S": this.getMilliseconds()
-		    };
-		    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-		    for (var k in o)
-		    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-		    return fmt;
-		}
-		var time = new Date().Format("yyyy-MM-dd hh:mm:ss");  
-	    return time;
-	}
-
 	handleEdit () {
 		const _this = this;
 		if( _this.state.editText === "Save" ){
@@ -62,7 +42,6 @@ class FifoMemberPage extends React.Component {
 			return;
 		}
 		member.fifo_name = _this.state.row.fifo_name;
-		member.updated_epoch = this.getNowTime();
 		$.ajax({
 			type: "PUT",
 			url: "/api/fifos/"+_this.state.row.fifo_id+"/members/" + member.id ,
@@ -437,36 +416,18 @@ class EditFifo extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	getNowTime () {
-		Date.prototype.Format = function (fmt) {
-		    var o = {
-		        "M+": this.getMonth() + 1,
-		        "d+": this.getDate(),
-		        "h+": this.getHours(),
-		        "m+": this.getMinutes(),
-		        "s+": this.getSeconds(),
-		        "q+": Math.floor((this.getMonth() + 3) / 3),
-		        "S": this.getMilliseconds()
-		    };
-		    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-		    for (var k in o)
-		    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-		    return fmt;
-		}
-		var time = new Date().Format("yyyy-MM-dd hh:mm:ss");  
-	    return time;
-	}
-
 	handleSubmit (){
 		console.log("submit...");
 		const _this = this;
 		var fifo = form2json('#newFifoEditForm');
+
 		if (!fifo.name) {
 			this.setState({ errmsg: "Mandatory fields left blank"})
 			return;
 		}
+
 		fifo.id = _this.props.editData.id;
-		fifo.updated_epoch = _this.getNowTime();
+
 		$.ajax({
 			type: "PUT",
 			url: "/api/fifos/" + _this.props.editData.id,
