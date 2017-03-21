@@ -451,7 +451,7 @@ class DictsPage extends React.Component {
 					</td>
 					<td>{row.d}</td>
 					<td>{row.o}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href="#"/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>;
 		})
 
