@@ -997,7 +997,7 @@ class BlocksPage extends React.Component {
 					<td><Link to={`/settings/blocks/${row.id}`}>{row.name}</Link></td>
 					<td>{row.description}</td>
 					<td>{row.created_at}</td>
-					<td><T.a onClick={() => _this.handleDelete(row.id)}  text="Delete" className={danger} href="#"/></td>
+					<td><T.a onClick={() => _this.handleDelete(row.id)}  text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>;
 		})
 

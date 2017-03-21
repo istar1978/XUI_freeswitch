@@ -599,7 +599,7 @@ class RoutesPage extends React.Component {
 					<td>{row.description}</td>
 					<td><T.span text={row.dest_type}/></td>
 					<td>{dest}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} href="#"/></td>
+					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}  style={{cursor:"pointer"}}/></td>
 			</tr>;
 		})
 
