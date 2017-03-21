@@ -386,7 +386,7 @@ function xdatetime(dt) {
 		+ ':' + pad(date.getUTCSeconds());
 }
 
-currentTime () {
+function currentTime () {
 	Date.prototype.Format = function (fmt) {
 	var o = {
 		"M+": this.getMonth() + 1,
