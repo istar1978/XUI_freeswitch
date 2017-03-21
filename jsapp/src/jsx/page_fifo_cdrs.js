@@ -50,8 +50,6 @@ class FifoCDRPage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid, "", function(data) {
-			console.log("result", data.result[0].name);
-			console.log(typeof(data.result[0].name))
 			_this.setState({fifocdr: data.fifocdrs, result: data.result[0].name});
 		}, function(e) {
 			console.log("get cdr ERR");
@@ -143,10 +141,7 @@ class FifoCDRsPage extends React.Component {
 			"&endDate=" + this.endDate.value +
 			"&ani=" + this.ani.value +
 			"&dest_number=" + this.dest_number.value +
-			"&bridged_number=" + this.bridged_number.value +
-			"&id=2";
-
-		console.log(qs);
+			"&bridged_number=" + this.bridged_number.value;
 
 		$.getJSON("/api/fifo_cdrs?" + qs, function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
@@ -162,7 +157,7 @@ class FifoCDRsPage extends React.Component {
 	componentDidMount () {
 		const _this = this;
 
-		$.getJSON("/api/fifo_cdrs?id=0", function(fifocdrs) {
+		$.getJSON("/api/fifo_cdrs", function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
 		})
 	}
@@ -173,7 +168,7 @@ class FifoCDRsPage extends React.Component {
 
 		e.preventDefault();
 
-		$.getJSON("/api/fifo_cdrs?last=" + data + "&id=1", function(fifocdrs) {
+		$.getJSON("/api/fifo_cdrs?last=" + data, function(fifocdrs) {
 			_this.setState({rows: fifocdrs});
 		})
 	}
