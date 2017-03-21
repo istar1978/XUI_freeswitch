@@ -194,7 +194,7 @@ class DictPage extends React.Component {
 		let register = dt.register == "true" ? "Yes" : "No";
 
 		if (this.state.edit) {
-			save_btn = <Button onClick={this.handleSubmit}><T.span text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit}><i className="fa fa-save" aria-hidden="true"></i>&nbsp;<T.span text="Save"/></Button>
 
 			if (dt.register == "true") {
 				register = <span>
@@ -217,7 +217,7 @@ class DictPage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{err_msg} { save_btn }
-				<Button onClick={this.handleControlClick}><T.span text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -466,6 +466,7 @@ class DictsPage extends React.Component {
 
 			<ButtonGroup>
 				<Button onClick={this.toggleHighlight}>
+					<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
 					<T.span onClick={this.toggleHighlight} text="Edit" />
 				</Button>
 			</ButtonGroup>

@@ -391,14 +391,14 @@ class SIPProfilePage extends React.Component {
 				<div style={running_state}></div>
 			</ButtonGroup>
 			<ButtonGroup>
-				<Button onClick={_this.handleStart.bind(_this)}><T.span text="Start"/></Button>
-				<Button onClick={_this.handleStop.bind(_this)}><T.span text="Stop"/></Button>
-				<Button onClick={_this.handleRestart.bind(_this)}><T.span text="Restart"/></Button>
-				<Button onClick={_this.handleRescan.bind(_this)}><T.span text="Rescan"/></Button>
+				<Button onClick={_this.handleStart.bind(_this)}><i className="fa fa-play" aria-hidden="true"></i>&nbsp;<T.span text="Start"/></Button>
+				<Button onClick={_this.handleStop.bind(_this)}><i className="fa fa-pause" aria-hidden="true"></i>&nbsp;<T.span text="Stop"/></Button>
+				<Button onClick={_this.handleRestart.bind(_this)}><i className="fa fa-forward" aria-hidden="true"></i>&nbsp;<T.span text="Restart"/></Button>
+				<Button onClick={_this.handleRescan.bind(_this)}><i className="fa fa-search" aria-hidden="true"></i>&nbsp;<T.span text="Rescan"/></Button>
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><T.span text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -426,7 +426,7 @@ class SIPProfilePage extends React.Component {
 
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={this.toggleHighlight}><T.span text="Edit"/></Button>
+				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 

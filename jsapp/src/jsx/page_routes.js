@@ -388,7 +388,7 @@ class RoutePage extends React.Component {
 		let err_msg = "";
 
 		if (this.state.edit) {
-			save_btn = <Button onClick={this.handleSubmit}><T.span text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit}><i className="fa fa-save" aria-hidden="true"></i>&nbsp;<T.span text="Save"/></Button>
 
 			if (this.state.errmsg) {
 				err_msg  = <Button><T.span text={this.state.errmsg} className="danger"/></Button>
@@ -407,7 +407,7 @@ class RoutePage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><T.span text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -610,6 +610,7 @@ class RoutesPage extends React.Component {
 					<T.span data="new" text="New" />
 				</Button>
 				<Button onClick={this.handleSysRouterShow} data="sysRoute">
+					<i className="fa fa-expand" aria-hidden="true" data="sysRoute"></i>&nbsp;
 					<T.span data="sysRoute" text={isSysRouterShowText} />
 				</Button>
 			</ButtonToolbar>

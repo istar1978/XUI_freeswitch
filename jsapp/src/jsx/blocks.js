@@ -830,13 +830,18 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			<div id='blocks'>
 			<ButtonToolbar className="pull-right">
 				<ButtonGroup>
-				<Button onClick={this.handleControlClick.bind(this)} data="exportXML"><T.span text="Export XML" /></Button>
-				<Button onClick={this.handleControlClick.bind(this)} data="exportSVG"><T.span text="Export SVG" /></Button>
-				<Button onClick={this.handleControlClick.bind(this)} data="export"><T.span text="Export Lua" /></Button>
-				<Button onClick={this.handleControlClick.bind(this)} data="save"><T.span text="Save" /></Button>
+				<Button onClick={this.handleControlClick.bind(this)} data="exportXML"><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<T.span text="Export XML" /></Button>
+				<Button onClick={this.handleControlClick.bind(this)} data="exportSVG"><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<T.span text="Export SVG" /></Button>
+				<Button onClick={this.handleControlClick.bind(this)} data="export"><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<T.span text="Export Lua" /></Button>
+				<Button onClick={this.handleControlClick.bind(this)} data="save"><i className="fa fa-save" aria-hidden="true"></i>&nbsp;
+				<T.span text="Save" /></Button>
 				</ButtonGroup>
 				<ButtonGroup>
-				<Button onClick={this.handleControlClick.bind(this)} data="import"><T.span text="Import" /></Button>
+				<Button onClick={this.handleControlClick.bind(this)} data="import"><i className="fa fa-reply" aria-hidden="true"></i>&nbsp;
+				<T.span text="Import" /></Button>
 				</ButtonGroup>
 			</ButtonToolbar>
 			<h1><T.span text="Blocks"/> {this.state.block.name} <small>{this.state.block.description}</small></h1>

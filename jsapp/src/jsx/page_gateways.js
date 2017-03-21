@@ -392,14 +392,14 @@ class GatewayPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={_this.handleReg.bind(_this)} ><T.span text="Reg" /></Button>
-				<Button onClick={_this.handleUnreg.bind(_this)} ><T.span text="Unreg" /></Button>
-				<Button onClick={_this.handleStart.bind(_this)} ><T.span text="Start" /></Button>
-				<Button onClick={_this.handleStop.bind(_this)} ><T.span text="Stop" /></Button>
+				<Button onClick={_this.handleReg.bind(_this)} ><i className="fa fa-unlock" aria-hidden="true"></i>&nbsp;<T.span text="Reg" /></Button>
+				<Button onClick={_this.handleUnreg.bind(_this)} ><i className="fa fa-lock" aria-hidden="true"></i>&nbsp;<T.span text="Unreg" /></Button>
+				<Button onClick={_this.handleStart.bind(_this)} ><i className="fa fa-play" aria-hidden="true"></i>&nbsp;<T.span text="Start" /></Button>
+				<Button onClick={_this.handleStop.bind(_this)} ><i className="fa fa-pause" aria-hidden="true"></i>&nbsp;<T.span text="Stop" /></Button>
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -453,7 +453,7 @@ class GatewayPage extends React.Component {
 
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={this.toggleHighlight}><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.toggleHighlight} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 

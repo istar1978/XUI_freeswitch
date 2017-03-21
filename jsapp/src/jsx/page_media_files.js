@@ -435,7 +435,8 @@ class MediaFilePage extends React.Component {
 				<Button onClick={this.handleFileShow}><T.span onClick={this.handleFileShow} text="FileShow"/></Button>
 				<Button onClick={this.handleHiddenFileShow}><T.span onClick={this.handleHiddenFileShow} text="HiddenFileShow"/></Button>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
+				<T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 

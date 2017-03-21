@@ -63,7 +63,7 @@ class FifoMemberPage extends React.Component {
 		let row = this.state.row;
 		return <div>
 			<ButtonToolbar className="pull-right">
-				<Button onClick={ _this.handleEdit }><T.span text={ _this.state.editText } /></Button>
+				<Button onClick={ _this.handleEdit }><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text={ _this.state.editText } /></Button>
 			</ButtonToolbar>
 			<h1><T.span text="FIFO Member Info"/></h1>
 			<hr />
