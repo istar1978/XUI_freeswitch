@@ -46,6 +46,7 @@ class NewMember extends React.Component {
 	constructor(props) {
 		super(props);
 		// This binding is necessary to make `this` work in the callback
+		this.state = {errmsg: ''};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -57,7 +58,7 @@ class NewMember extends React.Component {
 		console.log("member", member);
 
 		if (!member.name || !member.num) {
-			notify(<T.span text="Mandatory fields left blank"/>);
+			_this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
 
@@ -111,6 +112,7 @@ class NewMember extends React.Component {
 							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
 							<T.span text="Save" />
 						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
 					</Col>
 				</FormGroup>
 			</Form>
@@ -241,7 +243,7 @@ class NewRoom extends React.Component {
 		console.log("room", room);
 
 		if (!room.name || !room.nbr) {
-			notify(<T.span text="Mandatory fields left blank"/>);
+			_this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
 

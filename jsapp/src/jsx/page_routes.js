@@ -123,7 +123,7 @@ class NewRoute extends React.Component {
 		console.log("route", route);
 
 		if (!route.name || !route.prefix) {
-			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			_this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
 
