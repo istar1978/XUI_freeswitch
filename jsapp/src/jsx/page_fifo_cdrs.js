@@ -173,6 +173,25 @@ class FifoCDRsPage extends React.Component {
 		})
 	}
 
+	handleSortClick(bridged_number) {
+		var rows = this.state.rows;
+
+		var n = 1;
+
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
+		}
+
+		rows.sort(function(a,b) {
+			return a[bridged_number] < b[bridged_number] ? -1 * n : 1 * n;
+		});
+
+		this.setState({rows: rows});
+	}
+
 	render () {
 		var _this = this;
 		var rows = this.state.rows.map(function(row) {
@@ -235,7 +254,7 @@ class FifoCDRsPage extends React.Component {
 					<th><T.span text="FIFO Name"/></th>
 					<th><T.span text="CID Number"/></th>
 					<th><T.span text="Dest Number"/></th>
-					<th><T.span text="Bridged Number"/></th>
+					<th><T.span text="Bridged Number" onClick={() => this.handleSortClick("bridged_number")} className="cursor-hand"/></th>
 					<th><T.span text="Start"/></th>
 					<th><T.span text="Answer"/></th>
 					<th><T.span text="End"/></th>
