@@ -41,6 +41,7 @@ class FifoMemberPage extends React.Component {
 			notify(<T.span text="Mandatory fields left blank"/>, 'error');
 			return;
 		}
+
 		member.fifo_name = _this.state.row.fifo_name;
 		$.ajax({
 			type: "PUT",
@@ -102,10 +103,6 @@ class FifoMemberPage extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Dial String" /></Col>
 					<Col sm={10}><EditControl name="dial_string" edit={_this.state.editable} defaultValue={row.dial_string}/></Col>
 				</FormGroup>
-				<FormGroup controlId="formUpdateEpoch">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="updated_epoch" /></Col>
-					<Col sm={10}><EditControl name="updated_epoch" defaultValue={row.updated_epoch}/></Col>
-				</FormGroup>
 			</Form>
 		</div>
 	}
@@ -116,9 +113,6 @@ class NewMember extends React.Component {
 		super(props);
 		this.state = { errmsg: "" };
 		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-	componentWillReceiveProps(nextProps){
-		console.log("nextProps",nextProps);
 	}
 
 	handleSubmit (){
@@ -167,15 +161,15 @@ class NewMember extends React.Component {
 					</FormGroup>
 					<FormGroup controlId="formTimeout">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Timeout" /></Col>
-						<Col sm={10}><FormControl type="input" name="timeout" placeholder="timeout"/></Col>
+						<Col sm={10}><FormControl type="input" name="timeout" defaultValue="60"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formSimo">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Simo" /></Col>
-						<Col sm={10}><FormControl type="input" name="simo" placeholder="simo"/></Col>
+						<Col sm={10}><FormControl type="input" name="simo" defaultValue="2"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formextn">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Lag" /></Col>
-						<Col sm={10}><FormControl type="input" name="lag" placeholder="lag"/></Col>
+						<Col sm={10}><FormControl type="input" name="lag" defaultValue="5"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formName">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Extn" /></Col>
@@ -206,29 +200,81 @@ class NewMember extends React.Component {
 	}
 }
 
-class FifoMember extends React.Component {
+class FifoInfo extends React.Component {
 
 	constructor (props) {
 		super(props);
-		this.state = { rows:[], propId: '', danger: false, formShow: false};
+		this.state = { 
+			fifoRows: [], memberRows:[], danger: false, formShow: false, 
+			editable: false, editText: "Edit", auto_record:"0", ifChecked: false};
+
+		this.handleEdit = this.handleEdit.bind(this);
+		this.handleChecked = this.handleChecked.bind(this);
 		this.handleNewMemberAdded = this.handleNewMemberAdded.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
+	componentDidMount() {
 		const _this = this;
-		if(nextProps.fifoData.fifoId) {
-			$.getJSON("/api/fifos/"+nextProps.fifoData.fifoId+"/members", function(data) {
-				_this.setState({ rows: data, propId: nextProps.fifoData.fifoId });
+		$.getJSON("/api/fifos/" + _this.props.params.fifo_id, function(data) {
+			let ifChecked = data.auto_record == "1" ? true : false ;
+			_this.setState({ fifoRows: data, ifChecked: ifChecked});
+		},function(e) {
+			console.log("get Fifo ERR");
+		});
+
+		$.getJSON("/api/fifos/" + _this.props.params.fifo_id + "/members", function(data) {
+				_this.setState({ memberRows: data });
 			}, function(e) {
-				console.log("get FIFO ERR");
-			});
+				console.log("get Member ERR");
+		});
+	}
+
+	handleEdit () {
+		const _this = this;
+		if( _this.state.editText === "Save" ){
+			_this.handleSubmit();
 		}
+		let text = _this.state.editText === "Edit" ? "Save" : "Edit";
+		this.setState({ editText: text, editable: !this.state.editable});
+	}
+
+	handleSubmit (){
+		let _this = this;
+		console.log("submit...");
+		let fifo = form2json('#editFifoForm');
+		if (!fifo.name ) {
+			notify(<T.span text="Mandatory fields left blank"/>, 'error');
+			return;
+		}
+
+		fifo.id = _this.props.params.fifo_id;
+		fifo.auto_record = _this.state.auto_record;
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/fifos/"+ fifo.id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify(fifo),
+			success: function (obj) {
+				_this.setState({ editable: false, fifoRows: fifo})
+				notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+			},
+			error: function(msg) {
+				console.error("fifo", msg);
+			}
+		});
+	}
+
+	handleChecked(e) {
+		var auto_record = e.target.checked ? "1" : "0";
+		this.setState({ auto_record: auto_record, ifChecked: e.target.checked });
 	}
 
 	handleNewMemberAdded (member) {
 		const _this = this;
-		$.getJSON("/api/fifos/"+_this.props.fifoData.fifoId+"/members", function(data) {
-			_this.setState({rows: data, formShow: false});
+		$.getJSON("/api/fifos/"+ _this.props.params.fifo_id +"/members", function(data) {
+			_this.setState({memberRows: data, formShow: false});
 		});
 	}
 
@@ -242,14 +288,14 @@ class FifoMember extends React.Component {
 		}
 		$.ajax({
 			type: "DELETE",
-			url: "/api/fifos/" + _this.props.fifoData.fifoId + "/members/" + id,
+			url: "/api/fifos/" + _this.props.params.fifo_id + "/members/" + id,
 			success: function () {
 				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
+				var memberRows = _this.state.memberRows.filter(function(row) {
 					return row.id != id;
 				});
-				console.log("delete row", rows);
-				_this.setState({rows: rows});
+				console.log("delete row", memberRows);
+				_this.setState({memberRows: memberRows});
 			},
 			error: function(msg) {
 				console.error("route", msg);
@@ -260,28 +306,97 @@ class FifoMember extends React.Component {
 	render() {
 		const _this = this;
 		const props = Object.assign({}, this.props);
-		delete props.fifoData;
-	    let fifoId = _this.props.fifoData.fifoId;
-	    let fifoData = {fifoId: fifoId, fifoName: _this.props.fifoData.fifoName}
-	    let formClose = () => this.setState({ formShow: false });
-	    let danger = this.state.danger ? "danger" : "";
-	   	let rows = this.state.rows.map ( function (row) {
-	    	if( fifoId == row.fifo_id ) {
-	    		return <tr key={row.id} >
-					<td> {row.id} </td>
-					<td> <Link to={`/settings/fifos/${fifoId}/members/${row.id}`}>{row.name}</Link> </td>
-					<td> {row.description} </td>
-					<td> {row.timeout} </td>
-					<td> {row.simo} </td>
-					<td> {row.lag} </td>
-					<td> {row.extn} </td>
-					<td> {row.dial_string}  </td>
-					<td> { <T.a onClick={_this.handleDelete.bind(_this)} data-id={row.id} text="Delete" className={danger} style= {{cursor:"pointer"}}/>} </td>
+
+		let formClose = () => this.setState({ formShow: false });
+		let danger = this.state.danger ? "danger" : ""; 
+		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let frow = this.state.fifoRows;
+		let fifoData = {fifoId: frow.id, fifoName: frow.name};
+		let autoRecord = frow.auto_record == "1" ? "Yes" : "No" ;
+		let colEdit = _this.state.editable ?  { display: "none"} : { display: "block" };
+		let colCheck = _this.state.editable ? { display: "block"} : { display: "none" };
+
+		let fifoRow = <div>
+			<h1><T.span text="FIFO Info"/></h1>
+			<ButtonToolbar className="pull-right">
+				<Button><T.span onClick={ _this.handleEdit } text={ _this.state.editText } /></Button>
+			</ButtonToolbar>
+			<hr />
+			<Form horizontal id="editFifoForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={9}><EditControl  name="name" edit={_this.state.editable} defaultValue={frow.name}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formDescription">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
+					<Col sm={9}><EditControl  name="description" edit={_this.state.editable} defaultValue={frow.description}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formImportance">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Importance" /></Col>
+					<Col sm={9}><EditControl name="importance" edit={_this.state.editable} defaultValue={frow.importance}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formOPC">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Per Cycle" /></Col>
+					<Col sm={9}><EditControl name="outbound_per_cycle" edit={_this.state.editable} defaultValue={frow.outbound_per_cycle}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formOPCM">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Per Cycle Min" /></Col>
+					<Col sm={9}><EditControl name="outbound_per_cycle_min" edit={_this.state.editable} defaultValue={frow.outbound_per_cycle_min}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formOName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Name" /></Col>
+					<Col sm={9}><EditControl name="outbound_name" edit={_this.state.editable} defaultValue={frow.outbound_name}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formOStrategy">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Strategy" /></Col>
+					<Col sm={9}><EditControl name="outbound_strategy" edit={_this.state.editable} defaultValue={frow.outbound_strategy}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formOPriority">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Priority" /></Col>
+					<Col sm={9}><EditControl name="outbound_priority" edit={_this.state.editable} defaultValue={frow.outbound_priority}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formRetryDelay">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Retry Delay" /></Col>
+					<Col sm={9}><EditControl name="retry_delay" edit={_this.state.editable} defaultValue={frow.retry_delay}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formAutoRecord">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Auto Record" /></Col>
+					<Col sm={9} style={colEdit}> <EditControl name="record_template" defaultValue={autoRecord}/></Col>
+					<Col sm={9} style={colCheck}>
+						<Checkbox name="auto_record" value="auto_record" inline onChange={_this.handleChecked} checked={_this.stateifChecked}>
+							<T.span text="Auto Record"/>
+						</Checkbox>
+					</Col>
+				</FormGroup>
+
+					<FormGroup controlId="formRecordTemplate">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Record Template" /></Col>
+						<Col sm={9}><EditControl name="record_template" edit={_this.state.editable} defaultValue={frow.record_template}/></Col>
+					</FormGroup>
+				</Form>
+			</div>;
+
+		let memberRows = this.state.memberRows.map ( function (memberRow) {
+			if( frow.id == memberRow.fifo_id ) {
+				return <tr key={memberRow.id} >
+					<td> {memberRow.id} </td>
+					<td> <Link to={`/settings/fifos/${frow.id}/members/${memberRow.id}`}>{memberRow.name}</Link> </td>
+					<td> {memberRow.description} </td>
+					<td> {memberRow.timeout} </td>
+					<td> {memberRow.simo} </td>
+					<td> {memberRow.lag} </td>
+					<td> {memberRow.extn} </td>
+					<td> {memberRow.dial_string}  </td>
+					<td> { <T.a onClick={_this.handleDelete.bind(_this)} data-id={memberRow.id} text="Delete" className={danger} style= {{cursor:"pointer"}}/>} </td>
 				</tr>;
 	    	}
 	    });
 
 		return <div>
+			{fifoRow}
+
+			<br/><br/>
 			<NewMember fifoData={fifoData} show={this.state.formShow} onHide={formClose} handleNewMemberAdded={ this.handleNewMemberAdded }/>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={() => this.setState({formShow: true})}>
@@ -302,9 +417,9 @@ class FifoMember extends React.Component {
 					<th><T.span text="Lag"/></th>
 					<th><T.span text="Extn"/></th>
 					<th><T.span text="Dial String"/></th>
-					<th><T.span text="Delete"/></th>
+					<th><T.span style={{cursor: "pointer" }} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
-				{rows}
+				{memberRows}
 				</tbody>
 				</table>
 			</div>
@@ -330,11 +445,12 @@ class NewFifo extends React.Component {
 		console.log("submit...");
 		const _this = this;
 		var fifo = form2json('#newFifoForm');
-		fifo.auto_record = _this.state.auto_record;
 		if (!fifo.name) {
 			this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
+
+		fifo.auto_record = _this.state.auto_record;
 		$.ajax({
 			type: "POST",
 			url: "/api/fifos",
@@ -408,107 +524,13 @@ class NewFifo extends React.Component {
 	}
 }
 
-class EditFifo extends React.Component {
-
-	constructor (props) {
-		super(props);
-		this.state = { errmsg: "" };
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-
-	handleSubmit (){
-		console.log("submit...");
-		const _this = this;
-		var fifo = form2json('#newFifoEditForm');
-
-		if (!fifo.name) {
-			this.setState({ errmsg: "Mandatory fields left blank"})
-			return;
-		}
-
-		fifo.id = _this.props.editData.id;
-
-		$.ajax({
-			type: "PUT",
-			url: "/api/fifos/" + _this.props.editData.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(fifo),
-			success: function (obj) {
-				console.log(obj);
-				_this.props.handleFifoEdited(fifo);
-			},
-			error: function(msg) {
-				console.error("new fifo Err", msg);
-			}
-		});
-	}
-
-	render () {
-		const _this = this;
-		
-		let editData = this.props.editData;
-		const props = Object.assign({}, this.props);
-		delete props.handleFifoEdited;
-		delete props.editData;
-		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
-			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-lg"><T.span text="Edit FIFO" /></Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<Form horizontal id="newFifoEditForm">
-					<FormGroup controlId="formName">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={7}><FormControl type="input" name="name" defaultValue={editData.name} /></Col>
-					</FormGroup>
-					<FormGroup controlId="formDescription">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="Description" /></Col>
-						<Col sm={7}><FormControl type="input"  name="description" defaultValue={editData.description} /></Col>
-					</FormGroup>
-					<FormGroup controlId="formImportance">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="Importance" /></Col>
-						<Col sm={7}><FormControl type="input" name="importance" defaultValue={editData.importance} /></Col>
-					</FormGroup>
-					<FormGroup controlId="formOPC">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue={editData.outbound_per_cycle} /></Col>
-					</FormGroup>
-					<FormGroup controlId="formOPCM">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle Min" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue={editData.outbound_per_cycle_min} /></Col>
-					</FormGroup>
-					<FormGroup>
-						<Col smOffset={2} sm={10}>
-							<Button type="button" bsStyle="primary" onClick={ _this.handleSubmit }>
-								<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
-								<T.span text="Save" />
-							</Button>
-							&nbsp;&nbsp;<T.span className="danger" text={ this.state.errmsg }/>
-						</Col>
-					</FormGroup>
-				</Form>
-			</Modal.Body>
-			<Modal.Footer>
-				<Button onClick={this.props.onHide}>
-					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
-					<T.span text="Close" />
-				</Button>
-			</Modal.Footer>
-		</Modal>
-	}
-}
-
 class FifoPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { rows: [], fifoId: "", fifoName:"", danger: "", formShow: false, 
-			editFormShow: false, editText: "Edit", editable: false, editData: []};
+		this.state = { rows: [], fifoId: "", fifoName:"", danger: "", formShow: false};
 		this.handleMemberClick = this.handleMemberClick.bind(this);
-		this.handleNewFifoAdd = this.handleNewFifoAdd.bind(this);
 		this.handleNewFifoAdded = this.handleNewFifoAdded.bind(this);
-		this.handleEdit = this.handleEdit.bind(this);
-		this.handleFifoEdited = this.handleFifoEdited.bind(this);
 	}
 
 	componentDidMount() {
@@ -525,10 +547,6 @@ class FifoPage extends React.Component {
 		this.setState({ fifoId: fifoId, fifoName: e.target.text });
 	}
 
-	handleNewFifoAdd(e) {
-		this.setState({ formShow: true });
-	}
-
 	handleNewFifoAdded(fifo) {
 		const _this = this;
 		$.getJSON("/api/fifos", function(data) {
@@ -540,31 +558,6 @@ class FifoPage extends React.Component {
 		verto.fsAPI("fifo", "reparse", function(data) {
 			notify(<T.span text="FIFO Reparsed"/>);
 		});
-	}
-
-	handleFifoEdited (fifo){
-		var id = fifo.id;
-		var rows = this.state.rows;
-		let change = [];
-		rows.map(function(row){
-			if(row.id == id){
-				rows[id-1] = fifo;
-			}
-		});
-
-		this.setState({ editFormShow: false, rows: this.state.rows });
-	}
-
-	handleEdit (e) {
-		const _this = this;
-		let fifoId = e.target.getAttribute("data-id");
-		let editData =[] ;
-		this.state.rows.map(function(row){
-			if( row.id == fifoId ){
-				editData = row;
-			}
-		})
-		this.setState({ editFormShow: true, editData:editData}); 
 	}
 
 	handleDelete (e){
@@ -594,34 +587,31 @@ class FifoPage extends React.Component {
 
 	render() {
 		const _this = this;
-		/*用来控制fifo memeber是否显示的那一条*/
 		let memberStyle = _this.state.fifoId ? { display: "block" } : { display: "none"};
-	    let danger = this.state.danger ? "danger" : "";
-	    let formClose = () => this.setState({ formShow: false });
-	    let editFormClose = () => this.setState({ editFormShow: false });
-	    let toggleDanger = () => this.setState({ danger: !this.state.danger });
-		let rows = this.state.rows.map( function(row) {
-			let  autoRecord = row.auto_record == "1" ? "Yes" : "No" ;
+		let danger = this.state.danger ? "danger" : "";
+		let formClose = () => this.setState({ formShow: false });
+		let editFormClose = () => this.setState({ editFormShow: false });
+		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let rows = this.state.rows.map(function(row) {
+			let autoRecord = row.auto_record == "1" ? "Yes" : "No" ;
 			return <tr key={row.id} >
 				<td> {row.id} </td>
-				<td><a onClick = {_this.handleMemberClick} style={{cursor: "pointer"}} data-fifoId={row.id}>{ row.name }</a></td>
+				<td> <Link to={`/settings/fifos/${row.id}`}>{row.name}</Link></td>
 				<td> {row.description} </td>
 				<td> {row.importance} </td>
 				<td> {row.outbound_per_cycle} </td>
 				<td> {row.outbound_per_cycle_min} </td>
 				<td><T.span text={autoRecord}/></td>
-				<td><T.a onClick={_this.handleEdit} data-id={row.id} text={_this.state.editText} style={{cursor:"pointer"}}/></td>
 				<td><T.a onClick={_this.handleDelete.bind(_this)} data-id={row.id} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>
 		});
-		let fifoData = { fifoId: this.state.fifoId, fifoName: this.state.fifoName }
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={this.handleReparseClick}>
 					<i className="fa fa-refresh" aria-hidden="true" ></i>&nbsp;
 					<T.span text="Reparse" />
 				</Button>
-				<Button onClick={this.handleNewFifoAdd}>
+				<Button onClick={()=>{_this.setState({formShow: true})}}>
 					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
 					<T.span text="New" />
 				</Button>
@@ -638,7 +628,6 @@ class FifoPage extends React.Component {
 					<th><T.span text="OB Per Cycle"/></th>
 					<th><T.span text="OB Per Cycle Min"/></th>
 					<th><T.span text="Auto Record"/></th>
-					<th><T.span text={_this.state.editText}/></th>
 					<th><T.span style={{cursor: "pointer" }} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
@@ -646,13 +635,9 @@ class FifoPage extends React.Component {
 				</table>
 			</div>
 			<br />
-			<div style={memberStyle}>
-				<FifoMember fifoData={fifoData} />
-			</div>
 			<NewFifo show={this.state.formShow} onHide={formClose} handleNewFifoAdded={this.handleNewFifoAdded}/>
-			<EditFifo show={this.state.editFormShow} onHide={editFormClose} handleFifoEdited={this.handleFifoEdited} editData={this.state.editData}/>
 		</div>
 	}
 }
 
-export { FifoPage, FifoMemberPage };
+export { FifoPage, FifoInfo, FifoMemberPage };

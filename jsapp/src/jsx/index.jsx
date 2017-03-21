@@ -53,7 +53,7 @@ import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
 import Conferences from './conferences';
 import SystemPage from './page_system';
-import { FifoPage, FifoMemberPage } from './page_fifos';
+import { FifoPage, FifoInfo, FifoMemberPage } from './page_fifos';
 import Settings from './settings';
 import { ConferenceRooms, ConferenceRoom } from './page_conference_rooms';
 import { UsersPage, UserPage } from './page_users';
@@ -193,6 +193,7 @@ class Home extends React.Component{
 
 					<Route path="fifos">
 						<IndexRoute components={{sidebar: Settings, main: FifoPage}}/>
+						<Route path=":fifo_id" components={{sidebar: Settings, main: FifoInfo}} /> 
 						<Route path=":fifo_id/members/:id" components={{sidebar: Settings, main: FifoMemberPage}} />
 					</Route>
 

@@ -255,7 +255,13 @@ LANGUAGES["zh"] = {
 	"Auto Record": "自动录音",
 	"OB Per Cycle": "同时外呼数",
 	"OB Per Cycle Min": "最小同时外呼数",
+	"OB Name": "外呼名称",
+	"OB Strategy": "外呼策略",
+	"OB Priority": "外呼优先级",
+	"Retry Delay": "重拨延时",
+	"Record Template": "录音模板",
 	"FIFO Reparsed": "队列设置重载成功",
+	"FIFO Info": "队列信息",
 
 	"Multicasts": "组播",
 	"Source": "源",
