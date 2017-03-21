@@ -311,7 +311,7 @@ class McastPage extends React.Component {
 		let err_msg = "";
 
 		if (this.state.edit) {
-			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit}><T.span text="Save"/></Button>
 		}
 
 		const codec_name_options = this.state.codec_name.map(function(row) {
@@ -328,7 +328,7 @@ class McastPage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{err_msg} { save_btn }
-				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><T.span onClick={this.handleControlClick} text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 

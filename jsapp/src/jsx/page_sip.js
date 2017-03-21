@@ -382,7 +382,7 @@ class SIPProfilePage extends React.Component {
 		}
 
 		if (this.state.edit) {
-			save_btn = <Button><T.span onClick={this.handleSubmit} text="Save"/></Button>
+			save_btn = <Button onClick={this.handleSubmit}><T.span text="Save"/></Button>
 		}
 
 		return <div>
@@ -398,7 +398,7 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
-				<Button><T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick}><T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
