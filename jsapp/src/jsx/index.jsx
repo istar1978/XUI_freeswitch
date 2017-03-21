@@ -103,7 +103,7 @@ class App extends React.Component{
 			</Row></div>
 		}
 
-		return <div>
+		return <div id = 'main_area'>
 			<MainMenu menus = {MENUS} rmenus = {RMENUS}/>
 			{ main }
 			<Footer/>
@@ -119,6 +119,11 @@ class Home extends React.Component{
 			localStorage.removeItem("xui.username");
 			localStorage.removeItem("xui.password");
 			ReactDOM.render(<Login/>, document.getElementById('body'));
+		}
+
+		const ensureVisible = function () {
+			const top = document.getElementById('main_area');
+			if (top) top.scrollIntoView(true);
 		}
 
 		return <Router history={hashHistory}>
@@ -192,16 +197,16 @@ class Home extends React.Component{
 					</Route>
 
 					<Route path="fifos">
-						<IndexRoute components={{sidebar: Settings, main: FifoPage}}/>
+						<IndexRoute components={{sidebar: Settings, main: FifoPage}} onEnter={ensureVisible}/>
 						<Route path=":fifo_id" components={{sidebar: Settings, main: FifoInfo}} /> 
 						<Route path=":fifo_id/members/:id" components={{sidebar: Settings, main: FifoMemberPage}} />
 					</Route>
 
 					<Route path="mcasts">
-						<IndexRoute components={{sidebar: Settings, main: McastsPage}}/>
+						<IndexRoute components={{sidebar: Settings, main: McastsPage}} onEnter={ensureVisible}/>
 						<Route path=":id" components={{sidebar: Settings, main: McastPage}}/>
 					</Route>
-					<Route path="system" components={{sidebar: Settings, main: SystemPage}}/>
+					<Route path="system" components={{sidebar: Settings, main: SystemPage}} onEnter={ensureVisible}/>
 					<Route path="term" components={{sidebar: Settings, main: Terminal}}/>
 				</Route>
 			</Route>

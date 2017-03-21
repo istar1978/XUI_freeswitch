@@ -77,11 +77,13 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/term" key="M_TERM">
 				<NavItem eventKey="M_TERM"><T.span text="Terminal"/></NavItem>
 			</LinkContainer>
-			<LinkContainer to="/settings/system" key="M_SYSTEM">
-				<NavItem eventKey="M_SYSTEM"><T.span text="System"/></NavItem>
-			</LinkContainer>
 			<LinkContainer to="/settings/fifos" key="M_FIFO">
 				<NavItem eventKey="M_FIFO"><T.span text="FIFO"/></NavItem>
+			</LinkContainer>
+
+
+			<LinkContainer to="/settings/system" key="M_SYSTEM">
+				<NavItem eventKey="M_SYSTEM"><T.span text="System"/></NavItem>
 			</LinkContainer>
 		</Nav>
 	}
