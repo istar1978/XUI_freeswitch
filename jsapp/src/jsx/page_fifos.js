@@ -576,7 +576,9 @@ class FifoPage extends React.Component {
 	}
 
 	handleReparseClick() {
-		verto.fsAPI("fifo", "reparse");
+		verto.fsAPI("fifo", "reparse", function(data) {
+			notify(<T.span text="FIFO Reparsed"/>);
+		});
 	}
 
 	handleFifoEdited (fifo){

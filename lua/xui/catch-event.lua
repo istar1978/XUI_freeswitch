@@ -91,7 +91,7 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		uuid = event:getHeader("variable_bridge_uuid")
 		rec = {}
 		id = {}
-		freeswitch.consoleLog('err', record_path .. "\n")
+
 		filename = string.match(record_path, ".*/(fifo%-record%-.*)$")
 		ext = filename:match("^.+(%..+)$")
 

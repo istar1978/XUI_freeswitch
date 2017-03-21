@@ -255,6 +255,7 @@ LANGUAGES["zh"] = {
 	"Auto Record": "自动录音",
 	"OB Per Cycle": "同时外呼数",
 	"OB Per Cycle Min": "最小同时外呼数",
+	"FIFO Reparsed": "队列设置重载成功",
 
 	"Multicasts": "组播",
 	"Source": "源",
