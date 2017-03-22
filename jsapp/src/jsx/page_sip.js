@@ -71,6 +71,7 @@ class NewSIPProfile extends React.Component {
 			},
 			error: function(msg) {
 				console.error("sip_profile", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}

@@ -262,6 +262,7 @@ class NewRoom extends React.Component {
 			},
 			error: function(msg) {
 				console.error("room", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}
