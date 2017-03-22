@@ -220,6 +220,7 @@ function xdb.find_by_cond(t, cond, sort, cb, limit, offset)
 
 	if cstr then sql = sql .. cstr end
 	if sort then sql = sql .. " ORDER BY " .. sort end
+	freeswitch.consoleLog('err',sql)
 	return xdb.find_by_sql(sql, cb, limit, offset)
 end
 
@@ -293,26 +294,12 @@ function  xdb.find_by_time_of_fifo(t, time)
 	return xdb.find_by_sql(sql, cb)
 end
 
--- query fifocdrs by calender
-function xdb.find_by_time_by_calender_of_fifo(t, startDate, endDate, ani, dest_number, bridged_number)
-
-	local sql = " SELECT * FROM " .. t .. " where start_epoch - strftime('%s', '" .. startDate .. "') > 0 AND start_epoch - strftime('%s', '" .. endDate .. "') < 0 ";
-
-	if ani then
-		sql = sql .. " AND ani = '" .. ani .. "'"
-	end
-	if dest_number then
-		sql = sql .. " AND dest_number = '" .. dest_number .. "'"
-	end
-	if bridged_number then
-		sql = sql .. " AND bridged_number = '" .. bridged_number .. "'"
-	end
-
-	return xdb.find_by_sql(sql, cb)
-end
-
 function xdb.date_cond(field, date1, date2)
 	return field .. " BETWEEN " .. escape(date1) .. " AND DATE(" .. escape(date2) .. ", '+1 day')"
+end
+
+function xdb.date_cond_of_fifo(field, date1, date2)
+	return field .. " BETWEEN " .. "strftime('%s'," .. escape(date1) .. ") AND DATE(strftime('%s'," .. escape(date2) .. "), '+1 day')"
 end
 
 function xdb.if_cond(field, val)
