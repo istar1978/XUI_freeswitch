@@ -72,6 +72,7 @@ class NewGateway extends React.Component {
 			},
 			error: function(msg) {
 				console.error("gateway", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}

@@ -70,6 +70,7 @@ class NewGroup extends React.Component {
 			},
 			error: function(msg) {
 				console.error("route", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}

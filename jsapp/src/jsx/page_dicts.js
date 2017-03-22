@@ -72,6 +72,7 @@ class NewDict extends React.Component {
 			},
 			error: function(msg) {
 				console.error("dict", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}

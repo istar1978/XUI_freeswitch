@@ -58,7 +58,7 @@ class NewRoom extends React.Component {
 		console.log("room", room);
 
 		if (!room.name || !room.nbr) {
-			notify(<T.span text="Mandatory fields left blank"/>);
+			this.setState({ errmsg: "Mandatory fields left blank" });
 			return;
 		}
 
@@ -77,6 +77,7 @@ class NewRoom extends React.Component {
 			},
 			error: function(msg) {
 				console.error("room", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 			}
 		});
 	}
