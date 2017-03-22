@@ -271,6 +271,7 @@ class DictsPage extends React.Component {
 		this.handleDelete = this.handleDelete.bind(this);
 		this.toggleHighlight = this.toggleHighlight.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.handleSortClick = this.handleSortClick.bind(this);
 	}
 
 	handleControlClick(e) {
@@ -328,15 +329,6 @@ class DictsPage extends React.Component {
 		});
 
 		this.setState({rows: rows});
-	}
-
-	handleClick(x) {
-	}
-
-	componentWillMount() {
-	}
-
-	componentWillUnmount() {
 	}
 
 	componentDidMount() {
@@ -479,11 +471,11 @@ class DictsPage extends React.Component {
 				<tbody>
 				<tr>
 					<th><T.span text="ID"/></th>
-					<th><T.span style={hand} text="Realm" onClick={this.handleSortClick.bind(this)} data="realm" /></th>
-					<th><T.span style={hand} text="Key" onClick={this.handleSortClick.bind(this)} data="key" /></th>
+					<th><T.span style={hand} text="Realm" onClick={this.handleSortClick} data="realm" /></th>
+					<th><T.span style={hand} text="Key" onClick={this.handleSortClick} data="k" /></th>
 					<th><T.span text="Value"/></th>
 					<th><T.span text="Description"/></th>
-					<th><T.span text="Order" onClick={this.handleSortClick.bind(this)} data="order" /></th>
+					<th><T.span style={hand} text="Order" onClick={this.handleSortClick} data="o" /></th>
 					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}
