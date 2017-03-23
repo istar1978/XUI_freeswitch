@@ -435,7 +435,10 @@ Blockly.Blocks['IVR'] = {
         this.appendDummyInput()
         this.appendValueInput("MAX")
             .appendField(Blockly.Msg.FS_BLOCK_MAX)
-        this.appendStatementInput("entries");
+	this.appendDummyInput()
+            .appendField(Blockly.Msg.FS_BLOCK_TERMINATOR)
+            .appendField(new Blockly.FieldTextInput("#"), "terminator");
+	this.appendStatementInput("entries");
         this.appendDummyInput()
             .appendField(Blockly.Msg.FS_BLOCK_DEFAULT);
         this.appendStatementInput("default");
@@ -460,6 +463,20 @@ Blockly.Blocks['IVREntry'] = {
         this.setHelpUrl('http://www.example.com/');
     }
 };
+
+Blockly.Blocks['IVRreturn'] = {
+  init: function() {
+	this.appendValueInput("return")
+            .appendField(Blockly.Msg.FS_BLOCK_RETURN)
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(40);
+        this.setTooltip('');
+        this.setHelpUrl('http://www.example.com/');
+    }
+};
+
 
 Blockly.Blocks['fsDBH'] = {
   init: function() {

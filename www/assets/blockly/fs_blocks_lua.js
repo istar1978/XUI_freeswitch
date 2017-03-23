@@ -114,7 +114,7 @@ Blockly.Lua.fsSessionRead = function(block) {
   }
 
   var code = variable_digits + ' = session:read(' + text_min + ', ' +
-    text_max + ', ' +
+    text_max + ',' +
     text_sound + ', ' +
     text_timeout + ', "' +
     text_terminator + '");\n';
@@ -153,12 +153,18 @@ Blockly.Lua.IVR = function(block) {
   var timeout = 5000;
 
   if (!(text_sound.indexOf(".") >= 0 || text_sound.indexOf("/") >= 0 || text_sound.indexOf("\\\\") >= 0)) {
-    text_sound = 'say:' + text_sound;
+
+   if(text_sound.substring(text_sound.length-1)=="\'")
+      {
+        text_sound = text_sound.substr(1,text_sound.length-2)
+      }
+
+   text_sound = 'say:' + text_sound;
   }
 
-  var code = 'digits = session:read(1, ' + text_max + ', ' +
-    text_sound + ', ' +
-    timeout + ', "#")\n\n'
+  var code = 'digits = session:read(1, ' + text_max + '," ' +
+    text_sound + '", ' +
+    timeout + ', "#")\n\n' 
   code = code + statements_entries;
   code = code + '  else\n  ' + statements_default + '  end\n';
   Blockly.Lua.globalIVREntryStart = 0;
@@ -171,7 +177,27 @@ Blockly.Lua.IVREntry = function(block) {
   var statements_actions = Blockly.Lua.statementToCode(block, 'actions');
   var the_else = Blockly.Lua.globalIVREntryStart ? "else" : "";
   Blockly.Lua.globalIVREntryStart = 1;
-  var code = the_else + 'if (digits == ' + text_digit + ') then\n' + statements_actions
+  var value = text_digit;
+
+  if(value.substring(value.length-1)=="\'"){
+     value = value.substr(1,value.length-2)
+     value = '::digit' + value + '::' + '\n';
+  }
+
+  var code = the_else + 'if (digits == ' + text_digit + ') then\n' + value + statements_actions
+  return code;
+};
+
+Blockly.Lua.IVRreturn = function(block) {
+  var text_digit = Blockly.Lua.valueToCode(block, 'return', Blockly.Lua.ORDER_ATOMIC);
+
+  if(text_digit.substring(text_digit.length-1)=="\'"){
+  
+   text_digit = text_digit.substr(1,text_digit.length-2)
+     
+  }
+  
+  var code = 'goto' + ' ' + 'digit' + text_digit + '\n' 
   return code;
 };
 
