@@ -6,20 +6,13 @@ m_conference_profile = {}
 function create(kvp)
 	template = kvp.template
 	kvp.template = nil
-
-	id = xdb.create_return_id("sip_profiles", kvp)
+	id = xdb.create_return_id("conference_profiles", kvp)
 	-- print(id)
 	if id then
-		local realm = 'SOFIA'
+		local realm = 'conference'
 		local ref_id = 0
-		if not (template == "default") then
-			realm = 'conference' -- the table name
-			ref_id = template
-		end
-
-		local sql = "INSERT INTO params (realm, k, v, ref_id, disabled) SELECT 'sip_profile', k, v, " ..
-			id .. ", disabled From params" ..
-			xdb.cond({realm = realm, ref_id = ref_id})
+		local sql = "INSERT INTO params (realm, k, v, ref_id, disabled) SELECT 'conference', k, v, " ..
+			id .. ", disabled From params where realm = 'conference' and ref_id = 0"
 
 		xdb.execute(sql)
 	end
@@ -69,7 +62,7 @@ function update_param(profile_id, param_id, kvp)
 end
 
 m_conference_profile.delete = function(profile_id)
-	xdb.delete("sip_profiles", profile_id);
+	xdb.delete("conference_profiles", profile_id);
 	if (xdb.affected_rows() == 1) then
 		local sql = "DELETE FROM params WHERE " .. xdb.cond({realm = 'conference', ref_id = profile_id})
 		xdb.execute(sql)

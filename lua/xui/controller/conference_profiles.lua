@@ -36,17 +36,17 @@ xdb.bind(xtra.dbh)
 require 'm_conference_profile'
 
 get('/', function(params)
-	n, conference_rooms = xdb.find_all("conference_rooms")
+	n, conference_profiles = xdb.find_all("conference_profiles")
 
 	if (n > 0) then
-		return conference_rooms
+		return conference_profiles
 	else
 		return "[]"
 	end
 end)
 
 get('/:id', function(params)
-	profile = xdb.find("conference_rooms", params.id)
+	profile = xdb.find("conference_profiles", params.id)
 	if profile then
 		p_params = m_conference_profile.params(params.id)
 		profile.params = p_params
@@ -66,7 +66,7 @@ put('/:id', function(params)
 			return profile
 		end
 	else
-		ret = xdb.update("sip_profiles", params.request)
+		ret = xdb.update("conference_profiles", params.request)
 
 		if ret then
 			return 200, "{}"

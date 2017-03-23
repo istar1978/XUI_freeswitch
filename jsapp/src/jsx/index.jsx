@@ -55,6 +55,7 @@ import Conferences from './conferences';
 import SystemPage from './page_system';
 import { FifoPage, FifoInfo, FifoMemberPage } from './page_fifos';
 import Settings from './settings';
+import { ConferenceProfilePage, ConferenceProfilesPage } from './page_conference_profiles';
 import { ConferenceRooms, ConferenceRoom } from './page_conference_rooms';
 import { UsersPage, UserPage } from './page_users';
 import { GroupsPage, GroupPage } from './page_groups';
@@ -174,6 +175,10 @@ class Home extends React.Component{
 					</Route>
 					<Route path="module">
 						<IndexRoute components={{sidebar: Settings, main: ModulePage}}/>
+					</Route>
+					<Route path="conference_profiles">
+						<IndexRoute components={{sidebar: Settings, main: ConferenceProfilesPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: ConferenceProfilePage}}/>
 					</Route>
 					<Route path="conference_rooms">
 						<IndexRoute components={{sidebar: Settings, main: ConferenceRooms}}/>
