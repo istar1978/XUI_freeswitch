@@ -479,8 +479,7 @@ class RoutesPage extends React.Component {
 	    this.handleSysRouterShow=this.handleSysRouterShow.bind(this);
 	}
 
-	handleControlClick(e) {
-		var data = e.target.getAttribute("data");
+	handleControlClick(data) {
 		console.log("data", data);
 
 		if (data == "new") {
@@ -488,8 +487,7 @@ class RoutesPage extends React.Component {
 		}
 	}
 
-	handleDelete(e) {
-		var id = e.target.getAttribute("data-id");
+	handleDelete(id) {
 		console.log("deleting id", id);
 		var _this = this;
 
@@ -516,7 +514,7 @@ class RoutesPage extends React.Component {
 		});
 	}
 
-	handleSysRouterShow(e){
+	handleSysRouterShow(data){
 		var routershow = !this.state.isSysRouterShow;
 		this.setState({isSysRouterShow: routershow});
 		localStorage.setItem('xui.isSysRouterShow', routershow);
@@ -549,8 +547,7 @@ class RoutesPage extends React.Component {
 		rows.unshift(route);
 		this.setState({rows: rows, formShow: false});
     }
-    handleSortClick(e){
-    	var field = e.target.getAttribute("data");
+    handleSortClick(field){
 		var rows = this.state.rows;
 
 		var n = 1;
@@ -600,18 +597,18 @@ class RoutesPage extends React.Component {
 					<td>{row.description}</td>
 					<td><T.span text={row.dest_type}/></td>
 					<td>{dest}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}  style={{cursor:"pointer"}}/></td>
+					<td><T.a onClick={() => _this.handleDelete(row.id)} text="Delete" className={danger}  style={{cursor:"pointer"}}/></td>
 			</tr>;
 		})
 
 		return <div>
 			<ButtonToolbar className="pull-right">
-				<Button onClick={this.handleControlClick} data="new">
-					<i className="fa fa-plus" aria-hidden="true" data="new"></i>&nbsp;
-					<T.span data="new" text="New" />
+				<Button onClick={() => this.handleControlClick("new")}>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="New" />
 				</Button>
-				<Button onClick={this.handleSysRouterShow} data="sysRoute">
-					<i className="fa fa-expand" aria-hidden="true" data="sysRoute"></i>&nbsp;
+				<Button onClick={() => this.handleSysRouterShow("sysRoute")}>
+					<i className="fa fa-expand" aria-hidden="true"></i>&nbsp;
 					<T.span data="sysRoute" text={isSysRouterShowText} />
 				</Button>
 			</ButtonToolbar>
@@ -623,8 +620,8 @@ class RoutesPage extends React.Component {
 				<tbody>
 				<tr>
 					<th>ID</th>
-					<th><T.span style={hand} text="Context" onClick={this.handleSortClick.bind(this)} data="context"/></th>
-					<th><T.span style={hand} text="Prefix" onClick={this.handleSortClick.bind(this)} data='prefix'/></th>
+					<th><T.span style={hand} text="Context" onClick={() => this.handleSortClick("context")}/></th>
+					<th><T.span style={hand} text="Prefix" onClick={() => this.handleSortClick("prefix")}/></th>
 					<th><T.span text="Name" /></th>
 					<th><T.span text="Description" /></th>
 					<th><T.span text="Dest Type" /></th>

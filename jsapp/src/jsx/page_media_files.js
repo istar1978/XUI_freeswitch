@@ -299,9 +299,8 @@ class MediaFilePage extends React.Component {
 		this.setState({edit: !this.state.edit});
 	}
 
-	handleToggleParam(e) {
+	handleToggleParam(data) {
 		const _this = this;
-		const data = e.target.getAttribute("data");
 
 		$.ajax({
 			type: "PUT",
@@ -402,7 +401,7 @@ class MediaFilePage extends React.Component {
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
-					<td><Button onClick={_this.handleToggleParam} data={param.id}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
+					<td><Button onClick={() => _this.handleToggleParam(param.id)}>{dbfalse(param.disabled) ? "Yes" : "No"}</Button></td>
 				</tr>
 			});
 		}
@@ -526,8 +525,7 @@ class MediaFilesPage extends React.Component {
 		this.onDrop = this.onDrop.bind(this);
 	}
 
-	handleControlClick(e) {
-		var data = e.target.getAttribute("data");
+	handleControlClick(data) {
 		console.log("data", data);
 
 		if (data == "new") {
@@ -540,8 +538,7 @@ class MediaFilesPage extends React.Component {
 		}
 	}
 
-	handleDelete(e) {
-		var id = e.target.getAttribute("data-id");
+	handleDelete(id) {
 		console.log("deleting id", id);
 		var _this = this;
 
@@ -663,7 +660,7 @@ class MediaFilesPage extends React.Component {
 					<td>{row.mime}</td>
 					<td>{row.description}</td>
 					<td>{row.file_size}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+					<td><T.a onClick={() => _this.handleDelete(row.id)} text="Delete" className={danger}/></td>
 			</tr>;
 		})
 
@@ -672,23 +669,23 @@ class MediaFilesPage extends React.Component {
 
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="new">
-					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="new" text="Upload" />
+				<Button onClick={() => this.handleControlClick("new")}>
+					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("new")}></i>&nbsp;
+					<T.span onClick={() => this.handleControlClick("new")} text="Upload" />
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="ivr">
-					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="ivr"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="ivr" text="TTS" />
+				<Button onClick={() => this.handleControlClick("ivr")}>
+					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("ivr")}></i>&nbsp;
+					<T.span onClick={() => this.handleControlClick("ivr")} text="TTS" />
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="record">
-					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="record"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="record" text="Record" />
+				<Button onClick={() => this.handleControlClick("record")}>
+					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("record")}></i>&nbsp;
+					<T.span onClick={() => this.handleControlClick("record")} text="Record" />
 				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>

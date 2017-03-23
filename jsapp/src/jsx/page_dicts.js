@@ -215,7 +215,7 @@ class DictPage extends React.Component {
 		}
 
 		return <div>
-			<ButtonToolbar className="pull-right">
+			<ButtonToolbar className="pull-right" onClick={this.handleControlClick}>
 			<ButtonGroup>
 				{err_msg} { save_btn }
 				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
@@ -274,8 +274,7 @@ class DictsPage extends React.Component {
 		this.handleSortClick = this.handleSortClick.bind(this);
 	}
 
-	handleControlClick(e) {
-		var data = e.target.getAttribute("data");
+	handleControlClick(data) {
 		console.log("data", data);
 
 		if (data == "new") {
@@ -283,8 +282,7 @@ class DictsPage extends React.Component {
 		}
 	}
 
-	handleDelete(e) {
-		var id = e.target.getAttribute("data-id");
+	handleDelete(id) {
 		console.log("deleting id", id);
 		var _this = this;
 
@@ -311,8 +309,7 @@ class DictsPage extends React.Component {
 		});
 	}
 
-	handleSortClick(e) {
-		var field = e.target.getAttribute("data");
+	handleSortClick(field) {
 		var rows = this.state.rows;
 
 		var n = 1;
@@ -348,10 +345,9 @@ class DictsPage extends React.Component {
 		});
 	}
 
-	handleRealmClick(e) {
+	handleRealmClick(realm) {
 		const _this = this;
-		console.log("realm clicked", e.target);
-		var realm = e.target.getAttribute("data");
+		console.log("realm clicked", realm);
 
 		console.log(realm);
 		let url = "/api/dicts";
@@ -432,7 +428,7 @@ class DictsPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={_this.handleRealmClick.bind(_this)} data={row.realm}>{row.realm}</Link></td>
+					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={() => _this.handleRealmClick(row.realm)}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
 					<td>
 						<RIEInput value={_this.state.highlight ? (row.v ? row.v : '--NULL--') : row.v} change={_this.handleChange}
@@ -444,16 +440,16 @@ class DictsPage extends React.Component {
 					</td>
 					<td>{row.d}</td>
 					<td>{row.o}</td>
-					<td><T.a onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
+					<td><T.a onClick={() => _this.handleDelete(row.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>;
 		})
 
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="new">
-					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
-					<T.span onClick={this.handleControlClick} data="new" text="New" />
+				<Button onClick={() => this.handleControlClick("new")}>
+					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("new")}></i>&nbsp;
+					<T.span onClick={() => this.handleControlClick("new")} text="New" />
 				</Button>
 			</ButtonGroup>
 
@@ -471,11 +467,11 @@ class DictsPage extends React.Component {
 				<tbody>
 				<tr>
 					<th><T.span text="ID"/></th>
-					<th><T.span style={hand} text="Realm" onClick={this.handleSortClick} data="realm" /></th>
-					<th><T.span style={hand} text="Key" onClick={this.handleSortClick} data="k" /></th>
+					<th><T.span style={hand} text="Realm" onClick={() => this.handleSortClick("realm")}/></th>
+					<th><T.span style={hand} text="Key" onClick={() => this.handleSortClick("k")}/></th>
 					<th><T.span text="Value"/></th>
 					<th><T.span text="Description"/></th>
-					<th><T.span style={hand} text="Order" onClick={this.handleSortClick} data="o" /></th>
+					<th><T.span style={hand} text="Order" onClick={() => this.handleSortClick("o")}/></th>
 					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}

@@ -278,8 +278,7 @@ class FifoInfo extends React.Component {
 		});
 	}
 
-	handleDelete (e) {
-		var id = e.target.getAttribute("data-id");
+	handleDelete (id) {
 		console.log("deleting id", id);
 		var _this = this;
 		if (!this.state.danger) {
@@ -319,7 +318,7 @@ class FifoInfo extends React.Component {
 		let fifoRow = <div>
 			<h1><T.span text="FIFO Info"/></h1>
 			<ButtonToolbar className="pull-right">
-				<Button><T.span onClick={ _this.handleEdit } text={ _this.state.editText } /></Button>
+				<Button onClick={ _this.handleEdit } ><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text={ _this.state.editText } /></Button>
 			</ButtonToolbar>
 			<hr />
 			<Form horizontal id="editFifoForm">
@@ -388,7 +387,7 @@ class FifoInfo extends React.Component {
 					<td> {memberRow.lag} </td>
 					<td> {memberRow.extn} </td>
 					<td> {memberRow.dial_string}  </td>
-					<td> { <T.a onClick={_this.handleDelete.bind(_this)} data-id={memberRow.id} text="Delete" className={danger} style= {{cursor:"pointer"}}/>} </td>
+					<td> { <T.a onClick={() => _this.handleDelete(memberRow.id)} text="Delete" className={danger} style= {{cursor:"pointer"}}/>} </td>
 				</tr>;
 	    	}
 	    });
@@ -542,9 +541,8 @@ class FifoPage extends React.Component {
 		});
 	}
 
-	handleMemberClick (e) {
-		let fifoId = e.target.getAttribute("data-fifoId");
-		this.setState({ fifoId: fifoId, fifoName: e.target.text });
+	handleMemberClick (fifoId) {
+		this.setState({ fifoId: fifoId, fifoName: fifoId.text });
 	}
 
 	handleNewFifoAdded(fifo) {
@@ -560,8 +558,7 @@ class FifoPage extends React.Component {
 		});
 	}
 
-	handleDelete (e){
-		var id = e.target.getAttribute("data-id");
+	handleDelete (id){
 		console.log("deleting id", id);
 		var _this = this;
 		if (!this.state.danger) {
@@ -602,7 +599,7 @@ class FifoPage extends React.Component {
 				<td> {row.outbound_per_cycle} </td>
 				<td> {row.outbound_per_cycle_min} </td>
 				<td><T.span text={autoRecord}/></td>
-				<td><T.a onClick={_this.handleDelete.bind(_this)} data-id={row.id} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
+				<td><T.a onClick={() => _this.handleDelete(row.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>
 		});
 		return <div>
