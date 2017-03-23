@@ -73,12 +73,12 @@ get('/', function(params)
 end)
 
 get('/:channel_uuid', function(params)
-	n, fifocdrs = xdb.find_by_cond("fifo_cdrs", {channel_uuid = params.channel_uuid}, "start_epoch", nil, 1)
+	n1, fifocdrs = xdb.find_by_cond("fifo_cdrs", {channel_uuid = params.channel_uuid}, "start_epoch", nil, 1)
 
 	sql = "select name from media_files where channel_uuid = '" .. params.channel_uuid .. "'"
-	n, result = xdb.find_by_sql(sql)
+	n2, result = xdb.find_by_sql(sql)
 
-	if n > 0 then
+	if n1 > 0 then
 		return {fifocdrs = fifocdrs, result = result}
 	else
 		return 404
