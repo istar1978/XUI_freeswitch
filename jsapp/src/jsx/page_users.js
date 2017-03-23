@@ -307,8 +307,6 @@ class UserPage extends React.Component {
 					console.error("err", msg);
 				}
 			});
-		
-		
 	}
 
 	componentDidMount() {

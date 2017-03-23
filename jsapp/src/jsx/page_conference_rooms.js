@@ -34,7 +34,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import ReactDOM from 'react-dom';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Checkbox } from 'react-bootstrap';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
@@ -318,11 +318,10 @@ class ConferenceRoom extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {room: {}, params:[], edit: false};
+		this.state = {room: {}, params:[], cr:[], edit: false};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSort = this.handleSort.bind(this);
-		this.handleToggleParam = this.handleToggleParam.bind(this);
-		this.toggleHighlight = this.toggleHighlight.bind(this);
+		this.handleProfiles = this.handleProfiles.bind(this);
 	}
 	
 	handleSort(e){
@@ -423,18 +422,54 @@ class ConferenceRoom extends React.Component {
 		});
 	}
 
+	handleProfiles(e) {
+		var profile_id = e.target.value;
+		var room_id = this.state.room.id;
+		$.ajax({
+				type: "POST",
+				url: "/api/conference_room_profiles/",
+				dataType: "json",
+				contentType: "application/json",
+				data: '{"profile_id":"'+profile_id+'","room_id":"'+room_id+'"}',
+				success: function (data) {
+					console.error("g", data);
+				},
+				error: function(msg) {
+					console.error("err", msg);
+				}
+			});
+	}
+	handleChange(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+		console.log("change", obj);
+		$.ajax({
+			type: "PUT",
+			url: "/api/conference_profiles/" + this.state.cr.id + "/params/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({v: obj[id]}),
+			success: function (param) {
+				console.log("success!!!!", param);
+				_this.state.params = _this.state.params.map(function(p) {
+					if (p.id == id) {
+						return param;
+					}
+					return p;
+				});
+				_this.setState({params: _this.state.params});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
+			}
+		});
+	}
 	handleControlClick(e) {
 		this.setState({edit: !this.state.edit});
 	}
-
 	isStringAcceptable() {
 		return true;
 	}
-
-	toggleHighlight() {
-		this.setState({highlight: !this.state.highlight});
-	}
-
 	componentDidMount() {
 		const _this = this;
 
@@ -443,10 +478,8 @@ class ConferenceRoom extends React.Component {
 		}, function(e) {
 			console.log("get gw ERR");
 		});
-
-		$.getJSON("/api/conference_profiles/" + this.props.params.id, "", function(data) {
-			const params = data.params;
-			_this.setState({cr: data, params: params});
+		$.getJSON("/api/conference_room_profiles/" + this.props.params.id, "", function(data) {
+			_this.setState({cr: data});
 		}, function(e) {
 			console.log("get re ERR");
 		});
@@ -456,31 +489,10 @@ class ConferenceRoom extends React.Component {
 		const room = this.state.room;
 		let save_btn = null;
 		let err_msg = null;
-		let params = <tr></tr>;
 		var _this = this;
-		if (this.state.params && Array.isArray(this.state.params)) {
-			params = this.state.params.map(function(param) {
-				const enabled_style = dbfalse(param.disabled) ? "success" : "default";
-				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
-
-				return <tr key={param.id} className={disabled_class}>
-					<td>{param.k}</td>
-					<td><RIEInput value={param.v} change={_this.handleChange}
-						propName={param.id}
-						className={_this.state.highlight ? "editable" : ""}
-						validate={_this.isStringAcceptable}
-						classLoading="loading"
-						classInvalid="invalid"/>
-					</td>
-					<td>
-						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
-							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
-						</Button>
-					</td>
-				</tr>
-			});
-		}
-
+		var cr = this.state.cr.map(function(row) {
+			return <Radio name="group" defaultChecked={row.checkshow} value={row.id}><T.span text={row.name}/></Radio>
+		})
 		if (this.state.edit) {
 			save_btn = <Button onClick={this.handleSubmit.bind(this)}>
 				<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
@@ -539,30 +551,12 @@ class ConferenceRoom extends React.Component {
 					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
 			</Form>
-
-			{
-				room.id ? <RoomMembers room_id={this.state.room.id} /> : null
-			}
-
-			<ButtonToolbar className="pull-right">
-			<ButtonGroup>
-				<Button onClick={this.toggleHighlight}>
-					<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
-					<T.span text="Edit"/>
-				</Button>
-			</ButtonGroup>
-			</ButtonToolbar>
-			<h2><T.span text="Params"/></h2>
-			<table className="table">
-				<tbody>
-				<tr>
-					<th onClick={this.handleSort.bind(this)} data="d"><T.span text="Name" data="k"/></th>
-					<th><T.span text="Value"/></th>
-					<th onClick={this.handleSort.bind(this)} data='disabled'><T.span text="Enabled" data="disabled"/></th>
-				</tr>
-				{params}
-				</tbody>
-			</table>
+			
+			<br/>
+				<FormGroup onChange={this.handleProfiles}>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Profiles"/></Col>
+					<Col sm={10}>{cr}</Col>
+				</FormGroup>
 		</div>
 	}
 }

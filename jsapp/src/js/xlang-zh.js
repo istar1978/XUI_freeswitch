@@ -11,6 +11,7 @@ LANGUAGES["zh"] = {
 	"About XUI": "关于XUI",
 	"XUI is a FreeSWITCH UI framework and implementation": "XUI是一个FreeSWITCH图形界面框架和实现",
 	"More info": "详见",
+	"Conference Profiles": "会议模板",
 	Author: "作者",
 	Version: "版本",
 	Phone: "电话",

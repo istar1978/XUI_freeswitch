@@ -323,7 +323,6 @@ CREATE TABLE fifo_cdrs (
 CREATE INDEX fifo_cdrs_start_epoch ON fifo_cdrs(start_epoch);
 CREATE INDEX fifo_cdrs_channel_uuid ON fifo_cdrs(channel_uuid);
 
-
 CREATE TABLE fifos (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR NOT NULL,
@@ -388,6 +387,7 @@ CREATE TABLE mcasts (
 	mcast_port VARCHAR,
 	sample_rate VARCHAR,
 	enable BOOLEAN NOT NULL DEFAULT 0 CHECK(enable IN (0, 1, '0', '1')),
+	
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
@@ -403,4 +403,31 @@ BEGIN
 	UPDATE mcasts set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
+CREATE TABLE "permissions"(
+	id INTEGER PRIMARY KEY,
+	action VARCHAR,
+	method VARCHAR,
+	param VARCHAR,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+CREATE TRIGGER tg_permissions AFTER UPDATE ON permissions
+BEGIN
+	UPDATE permissions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE group_permissions(
+	id INTEGER PRIMARY KEY,
+	group_id INTEGER,
+	permission_id INTEGER,
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+CREATE TRIGGER tg_group_permissions AFTER UPDATE ON group_permissions
+BEGIN
+	UPDATE group_permissions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
 -- END

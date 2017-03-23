@@ -62,6 +62,9 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/conference_rooms" key="M_CONFERECE_ROOMS">
 				<NavItem eventKey="M_CONFERECE_ROOMS"><T.span text="Conference Rooms"/></NavItem>
 			</LinkContainer>
+			<LinkContainer to="/settings/conference_profiles" key="M_CONFERECE_PROFILES">
+				<NavItem eventKey="M_CONFERECE_PROFILES"><T.span text="Conference Profiles"/></NavItem>
+			</LinkContainer>
 			<LinkContainer to="/settings/media_files" key="M_MEDIA_FILES">
 				<NavItem eventKey="M_MEDIA_FILES"><T.span text="Media Files"/></NavItem>
 			</LinkContainer>
@@ -77,13 +80,11 @@ class Settings extends React.Component {
 			<LinkContainer to="/settings/term" key="M_TERM">
 				<NavItem eventKey="M_TERM"><T.span text="Terminal"/></NavItem>
 			</LinkContainer>
-			<LinkContainer to="/settings/fifos" key="M_FIFO">
-				<NavItem eventKey="M_FIFO"><T.span text="FIFO"/></NavItem>
-			</LinkContainer>
-
-
 			<LinkContainer to="/settings/system" key="M_SYSTEM">
 				<NavItem eventKey="M_SYSTEM"><T.span text="System"/></NavItem>
+			</LinkContainer>
+			<LinkContainer to="/settings/fifo" key="M_FIFO">
+				<NavItem eventKey="M_FIFO"><T.span text="Fifo"/></NavItem>
 			</LinkContainer>
 		</Nav>
 	}
