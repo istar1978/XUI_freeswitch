@@ -38,14 +38,14 @@ get('/:id', function(params)
 	n, profiles = xdb.find_all("conference_profiles")
 	local group_res = {}
 	for i, v in pairs(profiles) do
-		local checkshow = ""
+		local selectshow = ""
 		sql = "select * from room_profiles where room_id = " .. params.id .. " and profile_id = " .. v.id
-		checked = xdb.find_by_sql(sql,function(row)
+		selected = xdb.find_by_sql(sql,function(row)
 			if row then
-				checkshow = 'checked'
+				selectshow = 'selected'
 			end
 		end)
-		v['checkshow'] = checkshow
+		v['selectshow'] = selectshow
 		table.insert(group_res,v)
 	end
 	if (profiles) then

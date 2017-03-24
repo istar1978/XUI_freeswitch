@@ -34,7 +34,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import ReactDOM from 'react-dom';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Checkbox } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
@@ -491,7 +491,7 @@ class ConferenceRoom extends React.Component {
 		let err_msg = null;
 		var _this = this;
 		var cr = this.state.cr.map(function(row) {
-			return <Radio name="group" defaultChecked={row.checkshow} value={row.id}><T.span text={row.name}/></Radio>
+			return <option value={row.id} selected={row.selectshow}><T.span text={row.name}/></option>
 		})
 		if (this.state.edit) {
 			save_btn = <Button onClick={this.handleSubmit.bind(this)}>
@@ -545,17 +545,16 @@ class ConferenceRoom extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={room.realm}/></Col>
 				</FormGroup>
-
-				<FormGroup controlId="formSave">
-					<Col componentClass={ControlLabel} sm={2}></Col>
-					<Col sm={10}>{save_btn}</Col>
-				</FormGroup>
 			</Form>
 			
 			<br/>
-				<FormGroup onChange={this.handleProfiles}>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Profiles"/></Col>
-					<Col sm={10}>{cr}</Col>
+				<FormGroup>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Profiles"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="group" onChange={this.handleProfiles}>
+							{cr}
+						</FormControl>
+					</Col>
 				</FormGroup>
 		</div>
 	}
