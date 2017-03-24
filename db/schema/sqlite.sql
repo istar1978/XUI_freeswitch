@@ -246,6 +246,7 @@ CREATE TABLE conference_rooms (
 	capacity integer,
 	realm VARCHAR,
 	pin VARCHAR,
+	profile_id INTEGER,
 
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
@@ -403,7 +404,7 @@ BEGIN
 	UPDATE mcasts set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
-CREATE TABLE "permissions"(
+CREATE TABLE permissions (
 	id INTEGER PRIMARY KEY,
 	action VARCHAR,
 	method VARCHAR,
@@ -436,6 +437,7 @@ CREATE TABLE conference_profiles (
 	name VARCHAR NOT NULL,
 	description VARCHAR,
 	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
+
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
@@ -445,20 +447,6 @@ CREATE INDEX conference_profiles_deleted_epoch ON conference_profiles(deleted_ep
 CREATE TRIGGER tg_conference_profiles AFTER UPDATE ON conference_profiles
 BEGIN
 	UPDATE conference_profiles set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
-END;
-
-CREATE TABLE room_profiles (
-	id INTEGER PRIMARY KEY,
-	room_id INTEGER NOT NULL,
-	profile_id INTEGER NOT NULL,
-	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
-	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
-	deleted_epoch INTEGER
-);
-CREATE INDEX room_profiles_u_g_id ON room_profiles(room_id, profile_id);
-CREATE TRIGGER tg_room_profiles AFTER UPDATE ON room_profiles
-BEGIN
-	UPDATE room_profiles set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
 -- END

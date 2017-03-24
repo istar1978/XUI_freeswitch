@@ -318,10 +318,8 @@ class ConferenceRoom extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {room: {}, params:[], cr:[], edit: false};
-		this.handleChange = this.handleChange.bind(this);
+		this.state = {room: {}, params:[], profiles:[], edit: false};
 		this.handleSort = this.handleSort.bind(this);
-		this.handleProfiles = this.handleProfiles.bind(this);
 	}
 	
 	handleSort(e){
@@ -371,105 +369,14 @@ class ConferenceRoom extends React.Component {
 		});
 	}
 	
-	handleToggleParam(e) {
-		const _this = this;
-		const data = e.target.getAttribute("data");
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_profiles/" + this.state.cr.id + "/params/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				// console.log("success!!!!", param);
-				const params = _this.state.params.map(function(p) {
-					if (p.id == data) {
-						p.disabled = param.disabled;
-					}
-					return p;
-				});
-				_this.setState({params: params});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
-		});
-	}
-	
-	handleChange(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-		console.log("change", obj);
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_profiles/" + this.state.cr.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.params = _this.state.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({params: _this.state.params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
-		});
-	}
-
-	handleProfiles(e) {
-		var profile_id = e.target.value;
-		var room_id = this.state.room.id;
-		$.ajax({
-				type: "POST",
-				url: "/api/conference_room_profiles/",
-				dataType: "json",
-				contentType: "application/json",
-				data: '{"profile_id":"'+profile_id+'","room_id":"'+room_id+'"}',
-				success: function (data) {
-					console.error("g", data);
-				},
-				error: function(msg) {
-					console.error("err", msg);
-				}
-			});
-	}
-	handleChange(obj) {
-		const _this = this;
-		const id = Object.keys(obj)[0];
-		console.log("change", obj);
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_profiles/" + this.state.cr.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.params = _this.state.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({params: _this.state.params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
-		});
-	}
 	handleControlClick(e) {
 		this.setState({edit: !this.state.edit});
 	}
+
 	isStringAcceptable() {
 		return true;
 	}
+
 	componentDidMount() {
 		const _this = this;
 
@@ -478,8 +385,9 @@ class ConferenceRoom extends React.Component {
 		}, function(e) {
 			console.log("get gw ERR");
 		});
+
 		$.getJSON("/api/conference_room_profiles/" + this.props.params.id, "", function(data) {
-			_this.setState({cr: data});
+			_this.setState({profiles: data});
 		}, function(e) {
 			console.log("get re ERR");
 		});
@@ -490,9 +398,13 @@ class ConferenceRoom extends React.Component {
 		let save_btn = null;
 		let err_msg = null;
 		var _this = this;
-		var cr = this.state.cr.map(function(row) {
-			return <option value={row.id} selected={row.selectshow}><T.span text={row.name}/></option>
-		})
+		var current_profile = null;
+
+		var profile_options = this.state.profiles.map(function(row) {
+			if (row.id == room.profile_id) current_profile = row.name;
+			return [row.id, row.name];
+		});
+
 		if (this.state.edit) {
 			save_btn = <Button onClick={this.handleSubmit.bind(this)}>
 				<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
@@ -545,17 +457,17 @@ class ConferenceRoom extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={room.realm}/></Col>
 				</FormGroup>
-			</Form>
-			
-			<br/>
+
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Profiles"/></Col>
 					<Col sm={10}>
-						<FormControl componentClass="select" name="group" onChange={this.handleProfiles}>
-							{cr}
-						</FormControl>
+						<EditControl edit={this.state.edit} componentClass="select" name="profile_id"
+							text={current_profile} defaultValue={room.profile_id}
+							options={profile_options}></EditControl>
 					</Col>
 				</FormGroup>
+
+			</Form>
 		</div>
 	}
 }
