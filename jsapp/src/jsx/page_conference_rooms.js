@@ -229,7 +229,7 @@ class NewRoom extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: ''};
+		this.state = {errmsg: '', profiles: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -267,10 +267,24 @@ class NewRoom extends React.Component {
 		});
 	}
 
+	componentDidMount() {
+		const _this = this;
+		$.getJSON("/api/conference_profiles", "", function(data) {
+			_this.setState({profiles: data});
+		}, function(e) {
+			console.error("get conference profile ERR", e);
+			_this.setState({errmsg: 'Get conference profile ERR'});
+		});
+	}
+
 	render() {
 		console.log(this.props);
 		const props = Object.assign({}, this.props);
 		delete props.onNewRoomAdded;
+
+		const profiles_options = this.state.profiles.map(profile => {
+			return <option value={profile.id} key={profile.id}>[{profile.name}] {profile.description}</option>
+		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -291,6 +305,16 @@ class NewRoom extends React.Component {
 				<FormGroup controlId="fromNumber">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Number" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="nbr" placeholder="3000" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formProfile">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Profile"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="profile_id">
+							<option value="0">{T.translate("Default")}</option>
+							{profiles_options}
+						</FormControl>
+					</Col>
 				</FormGroup>
 
 				<FormGroup>
@@ -401,7 +425,9 @@ class ConferenceRoom extends React.Component {
 		var current_profile = null;
 
 		var profile_options = this.state.profiles.map(function(row) {
-			if (row.id == room.profile_id) current_profile = row.name;
+			if (row.id == room.profile_id) {
+				current_profile = '[' + row.name + '] ' + row.description;
+			}
 			return [row.id, row.name];
 		});
 
