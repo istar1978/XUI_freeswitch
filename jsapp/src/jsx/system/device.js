@@ -37,70 +37,127 @@ import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 
 import verto from '../verto/verto';
 import { Verto } from '../verto/verto';
 
-export function getXUIDeviceSettings()
-{
+export function getXUIDeviceSettings() {
 	var ds = {};
 
-	var aec = localStorage.getItem("xui.audio.aec") || false;
-	var agc = localStorage.getItem("xui.audio.agc") || false;
-	var ns = localStorage.getItem("xui.audio.ns") || false;
-	var highpass = localStorage.getItem("xui.audio.highpass") || false;
-	var stereo = localStorage.getItem("xui.audio.stereo") || false;
-	var stun = localStorage.getItem("xui.audio.stun") || false;
-	var audioInDevice = localStorage.getItem("xui.audio.inDevice") || "any";
-	var audioOutDevice = localStorage.getItem("xui.audio.outDevice") || "any";
+	var autoBand = localStorage.getItem("xui.audio.autoBand") || false;
+	var testSpeedJoin = localStorage.getItem("xui.audio.testSpeedJoin") || false;
+	var googEchoCancellation = localStorage.getItem("xui.audio.googEchoCancellation") || false;
+	var googNoiseSuppression = localStorage.getItem("xui.audio.googNoiseSuppression") || false;
+	var googHighpassFilter = localStorage.getItem("xui.audio.googHighpassFilter") || false;
+	var googAutoGainControl = localStorage.getItem("xui.audio.googAutoGainControl") || false;
+	var useVideo = localStorage.getItem("xui.audio.useVideo") || false;
+	var useStereo = localStorage.getItem("xui.audio.useStereo") || false;
+	var useSTUN = localStorage.getItem("xui.audio.useSTUN") || false;
+	var mirrorInput = localStorage.getItem("xui.audio.mirrorInput") || false;
+	var askRecoverCall = localStorage.getItem("xui.audio.askRecoverCall") || false;
 
 	// localStorage is string only so convert them into boolean
-	ds.aec = aec == "true";
-	ds.agc = agc == "true";
-	ds.ns = ns == "true";
-	ds.highpass = highpass == "true";
-	ds.stereo = stereo == "true";
-	ds.stun = stun == "true";
-	ds.audioInDevice = audioInDevice;
-	ds.audioOutDevice = audioOutDevice;
+	ds.autoBand = autoBand == "true";
+	ds.testSpeedJoin = testSpeedJoin == "true";
+	ds.googEchoCancellation = googEchoCancellation == "true";
+	ds.googAutoGainControl = googAutoGainControl == "true";
+	ds.googNoiseSuppression = googNoiseSuppression == "true";
+	ds.googHighpassFilter = googHighpassFilter == "true";
+	ds.useVideo = useVideo == "true";
+	ds.useStereo = useStereo == "true";
+	ds.useSTUN = useSTUN == "true";
+	ds.mirrorInput = mirrorInput == "true";
+	ds.askRecoverCall = askRecoverCall == "true";
 
-	ds.resolution = localStorage.getItem("xui.video.resolution");
-	ds.frameRate = localStorage.getItem("xui.video.frameRate") || 15;
-	ds.videoDevice = localStorage.getItem("xui.video.videoDevice") || "any";
+	ds.videoDevice = localStorage.getItem("xui.audio.videoDevice") || "any";
+	ds.frameRate = localStorage.getItem("xui.audio.frameRate") || 15;
+	ds.resolution = localStorage.getItem("xui.audio.resolution") || "any";
+	ds.audioInDevice = localStorage.getItem("xui.audio.audioInDevice") || "any";
+	ds.audioOutDevice = localStorage.getItem("xui.audio.audioOutDevice") || "any";
+	ds.shareDevice = localStorage.getItem("xui.audio.shareDevice") || "any";
 
 	return ds;
 };
 
+export function defaultSetting() {
+	var defaultSetting = {
+		autoBand : true,
+		testSpeedJoin : true,
+		googEchoCancellation : true,
+		googAutoGainControl : true,
+		googNoiseSuppression : true,
+		googHighpassFilter : true,
+		useVideo  : true ,
+		useStereo : true ,
+		useSTUN : true ,
+		mirrorInput : false,
+		askRecoverCall : false,
+		videoDevice : "defalut",
+		frameRate : 15,
+		resolution : "defalut",
+		audioInDevice : "defalut",
+		audioOutDevice : "defalut",
+		shareDevice : "defalut"
+	};
+
+	return defaultSetting;
+}
+
 class SettingDevice extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleVideoDeviceChange = this.handleVideoDeviceChange.bind(this);
-		this.handleVideoFPSChange = this.handleVideoFPSChange.bind(this);
-		this.handleResChange = this.handleResChange.bind(this);
-		this.handleAuCheckChange = this.handleAuCheckChange.bind(this);
-		this.state = { cameras: [], microphones: [], speakers: [],
-			frameRate: 15, audioInDevice: "any", audioOutDevice: "any", videoDevice: "any",
-			aec: false, agc: false, ns: false, highpass: false,
-			stereo: false, stun: false
-		};
-	}
+		const _this = this;
+		let init = defaultSetting();
 
-	componentWillMount() {
+		this.state = { cameras: [], microphones: [], speakers: [] };
+		for(var key in init){
+			this.state[key] = init[key];
+		}
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleCheckChange = this.handleCheckChange.bind(this);
+		this.hanldeTestSpeed = this.hanldeTestSpeed.bind(this);
+		this.handleRefreshList = this.handleRefreshList.bind(this);
+		this.handleResetSettings = this.handleResetSettings.bind(this);
+		this.handlePrevieSetting = this.handlePrevieSetting.bind(this);
 	}
 
 	componentDidMount() {
 		const _this = this;
 		const ds = getXUIDeviceSettings();
+		for(var key in ds){
+			_this.setState({ [key]: ds[key] });
+		}
 
-		this.setState({
-			aec: ds.aec,
-			agc: ds.agc,
-			ns: ds.ns,
-			highpass: ds.highpass,
-			audioInDevice: ds.audioInDevice,
-			audioOutDevice: ds.audioOutDevice,
-			stereo: ds.stereo,
-			stun: ds.stun,
-			videoDevice: ds.videoDevice,
-			resolution: ds.resolution
-		});
+		this.handleRefreshList(ds);
+	}
 
+	handleChange(e){
+		localStorage.setItem("xui.audio." + e.target.name, e.target.value);
+		this.setState({[e.target.name]: e.target.value});
+	}
+
+	handleCheckChange(e){
+		this.setState({ [e.target.value]: e.target.checked });
+		localStorage.setItem("xui.audio." + e.target.value, e.target.checked);
+	}
+
+	hanldeTestSpeed(e) {
+		//...
+	}
+
+	handlePrevieSetting(){
+		//...
+	}
+
+	handleResetSettings() { 
+		const _this = this;
+		let init = defaultSetting();
+		for(var key in init){
+			_this.setState({ [key]: init[key] });
+			localStorage.setItem("xui.audio." + key, init[key]);
+		}
+	}
+
+	handleRefreshList(ds) {
+		const _this = this;
+	
 		var runtime = function(obj) {
 			console.log("refreshDevices runtime", obj);
 			_this.setState({
@@ -111,117 +168,75 @@ class SettingDevice extends React.Component {
 				frameRate: ds.frameRate
 			});
 		}
-
 		Verto.refreshDevices(runtime);
 	}
-
-	handleVideoDeviceChange(e){
-		this.state.videoDevice = e.target.value;
-		localStorage.setItem("xui.video.videoDevice", e.target.value);
-		this.setState({videoDevice: e.target.value});
-	}
-
-	handleVideoFPSChange(e){
-		this.state.frameRate = e.target.value;
-		localStorage.setItem("xui.video.frameRate", e.target.value);
-		this.setState({frameRate: e.target.value});
-	}
-
-	handleResChange(e){
-		this.state.resolution = e.target.value;
-		localStorage.setItem("xui.video.resolution", e.target.value);
-		this.setState({resolution: e.target.value});
-	}
-
-	handleAuCheckChange(e){
-		switch(e.target.value){
-			case "aec":
-				this.setState({aec: e.target.checked});
-				break;
-			case "ns":
-				this.setState({ns: e.target.checked});
-				break;
-			case "highpass":
-				this.setState({highpass: e.target.checked});
-				break;
-			case "stereo":
-				this.setState({stereo: e.target.checked});
-				break;
-			case "stun":
-				this.setState({stun: e.target.checked});
-				break;
-		}
-
-		localStorage.setItem("xui.audio." + e.target.value, e.target.checked);
-	}
-
-	handleAudioInDeviceChange(e) {
-		localStorage.setItem("xui.audio.inDevice", e.target.value);
-		this.setState({audioInDevice: e.target.value});
-	}
-
-	handleAudioOutDeviceChange(e) {
-		localStorage.setItem("xui.audio.outDevice", e.target.value);
-		this.setState({audioOutDevice: e.target.value});
-	}
-
 
 	render() {
 		const _this = this;
 
-		const video_rows = <Form horizontal id="newForm">
-					<div className="row">
-						<Col sm={2}><T.span text="Camera" /></Col>
-						<Col sm={3}>
-							<FormControl componentClass="select" onChange={this.handleVideoDeviceChange} value={this.state.videoDevice}>
-								<option key='none' value='none'>{T.translate("No Camera")}</option>
-
-								{_this.state.cameras.map(function(obj){
-									return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
-								})}
-							</FormControl>
-						</Col>
-					</div>
-					<div className="row">
-						<Col sm={2}><T.span text="Best frame rate" /></Col>
-						<Col sm={3}>
-							<FormControl onChange={this.handleVideoFPSChange} value={this.state.frameRate} componentClass="select">
-								<option value="default">{T.translate("default")}</option>
-								<option value="10">10 FPS</option>
-								<option value="15">15 FPS</option>
-								<option value="24">24 FPS</option>
-								<option value="25">25 FPS</option>
-								<option value="30">30 FPS</option>
-								<option value="60">60 FPS</option>
-							</FormControl>
-						</Col>
-					</div>
-					<div className="row">
-						<Col sm={2}><T.span text="Resolution" /></Col>
-						<Col sm={3}>
-							<FormControl onChange={this.handleResChange} value={this.state.resolution} componentClass="select" name="Resolution">
-								<option value="default">{T.translate("default")}</option>
-								<option value="120p" label="120p 160x120 4:3"></option>
-								<option value="QVGA" label="QVGA 320x240 4:3"></option>
-								<option value="VGA"  label="VGA  640x480 4:3"></option>
-								<option value="SVGA" label="SVGA 800x600 4:3"></option>
-								<option value="180p" label="180p 320x180 16:9"></option>
-								<option value="360p" label="360p 640x360 16:9"></option>
-								<option value="720p" label="720p 1280x720 16:9"></option>
-								<option value="1080p" label="1080p 1920x1080 16:9"></option>
-								<option value="QCIF" label="QCIF 176x144 11:9"></option>
-								<option value="CIF"  label="CIF  352x288 11:9"></option>
-								<option value="4CIF" label="4CIF 704x576 11:9"></option>
-							</FormControl>
-						</Col>
-					</div>
-				</Form>
+		const video_rows = <div>
+				<div className="row">
+					<Col sm={2}><T.span text="Camera" /></Col>
+					<Col sm={3}>
+						<FormControl name="videoDevice" componentClass="select" onChange={_this.handleChange} value={_this.state.videoDevice}>
+							<option key='none' value='none'>{T.translate("No Camera")}</option>
+							{_this.state.cameras.map(function(obj){
+								return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
+							})}
+						</FormControl>
+					</Col>
+				</div>
+				<div className="row">
+					<Col sm={2}><T.span text="Best frame rate" /></Col>
+					<Col sm={3}>
+						<FormControl name="frameRate" onChange={this.handleChange} value={this.state.frameRate} componentClass="select">
+							<option value="default">{T.translate("default")}</option>
+							<option value="10">10 FPS</option>
+							<option value="15">15 FPS</option>
+							<option value="24">24 FPS</option>
+							<option value="25">25 FPS</option>
+							<option value="30">30 FPS</option>
+							<option value="60">60 FPS</option>
+						</FormControl>
+					</Col>
+				</div>
+				<div className="row">
+					<Col sm={2}><T.span text="Resolution" /></Col>
+					<Col sm={3}>
+						<FormControl name="resolution" onChange={this.handleChange} value={this.state.resolution} componentClass="select">
+							<option value="default">{T.translate("default")}</option>
+							<option value="120p" label="120p 160x120 4:3"></option>
+							<option value="QVGA" label="QVGA 320x240 4:3"></option>
+							<option value="VGA"  label="VGA  640x480 4:3"></option>
+							<option value="SVGA" label="SVGA 800x600 4:3"></option>
+							<option value="180p" label="180p 320x180 16:9"></option>
+							<option value="360p" label="360p 640x360 16:9"></option>
+							<option value="720p" label="720p 1280x720 16:9"></option>
+							<option value="1080p" label="1080p 1920x1080 16:9"></option>
+							<option value="QCIF" label="QCIF 176x144 11:9"></option>
+							<option value="CIF"  label="CIF  352x288 11:9"></option>
+							<option value="4CIF" label="4CIF 704x576 11:9"></option>
+						</FormControl>
+					</Col>
+				</div>
+				<div className="row">
+					<Col sm={6}>
+						<Checkbox onChange={_this.handleCheckChange}  name="autoBand" value="autoBand" inline checked={_this.state.autoBand}>
+							<T.span text="Automatically determine speed and resolution settings" />
+						</Checkbox>
+						<br/><br/>
+						<Checkbox onChange={_this.handleCheckChange}  name="testSpeedJoin" value="testSpeedJoin" inline checked={_this.state.testSpeedJoin}>
+							<T.span text="Recheck bandwidth before each outgoing call" />
+						</Checkbox>
+					</Col>
+				</div>
+			</div>
 
 		const audio_rows = <div>
 			<div className="row">
 				<Col sm={2}><T.span text="Microphone" /></Col>
 				<Col sm={3}>
-					<FormControl componentClass="select" id="microphone" name="Microphone" onChange={_this.handleAudioInDeviceChange.bind(this)} value={_this.state.audioInDevice}>
+					<FormControl componentClass="select" id="microphone" name="audioInDevice" onChange={_this.handleChange} value={_this.state.audioInDevice}>
 						{_this.state.microphones.map(function(obj){
 							return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
 						})}
@@ -231,7 +246,7 @@ class SettingDevice extends React.Component {
 			<div className="row">
 				<Col sm={2}><T.span text="Speaker" /></Col>
 				<Col sm={3}>
-					<FormControl componentClass="select" id="speaker" name="Speaker" onChange={_this.handleAudioOutDeviceChange.bind(this)} value={_this.state.audioOutDevice}>
+					<FormControl componentClass="select" id="speaker" name="audioOutDevice" onChange={_this.handleChange} value={_this.state.audioOutDevice}>
 						{_this.state.speakers.map(function(obj){
 							return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
 						})}
@@ -240,38 +255,79 @@ class SettingDevice extends React.Component {
 			</div>
 			<div className="row">
 				<Col sm={4}>
-					<FormGroup id="audio_checkbox" onChange={this.handleAuCheckChange}>
-						<Checkbox id="rateE1" name="checkthree" value="aec" inline checked={_this.state.aec}>
-							<T.span text="Echo Cancellation" />
-						</Checkbox>
-						<br/><br/>
-						<Checkbox id="rateF2" name="checkfour" value="ns" inline checked={_this.state.ns}>
-							<T.span text="Noise Suppression" />
-						</Checkbox>
-						<br/><br/>
-						<Checkbox id="rateJ3" name="checkzero" value="highpass" inline checked={_this.state.highpass}>
-							<T.span text="Highpass Filter" />
-						</Checkbox>
-					</FormGroup>
+					<Checkbox onChange={_this.handleCheckChange}  name="googEchoCancellation" value="googEchoCancellation" inline checked={_this.state.googEchoCancellation}>
+						<T.span text="Echo Cancellation" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange}  name="googNoiseSuppression" value="googNoiseSuppression" inline checked={_this.state.googNoiseSuppression}>
+						<T.span text="Noise Suppression" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange}  name="googHighpassFilter" value="googHighpassFilter" inline checked={_this.state.googHighpassFilter}>
+						<T.span text="Highpass Filter" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange}  name="googAutoGainControl" value="googAutoGainControl" inline checked={_this.state.googAutoGainControl}>
+						<T.span text="Auto Gain Control" />
+					</Checkbox>
 				</Col>
 			</div>
 		</div>
 
 		const general_rows = <div className="row">
-			<Col sm={4}>
-			<FormGroup onChange={this.handleAuCheckChange}>
-				<Checkbox value="stereo" inline checked={_this.state.stereo}>
-					<T.span text="Stereo Audio" />
-				</Checkbox>
-				<br/><br/>
-				<Checkbox value="stun" inline checked={_this.state.stun}>
-					<T.span text="Use STUN" />
-				</Checkbox>
-			</FormGroup>
-			</Col>
+			<div className="row">
+				<Col sm={2}><T.span text="Share device" /></Col>
+				<Col sm={3}>
+					<FormControl name="shareDevice" onChange={this.handleChange} value={this.state.shareDevice} componentClass="select">
+						<option value="Screen">Screen</option>
+						{_this.state.cameras.map(function(obj){
+							return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
+						})}
+					</FormControl>
+				</Col>
+			</div>
+
+			<div className="row">
+				<Col sm={4}>
+					<Checkbox onChange={_this.handleCheckChange} value="useVideo" inline checked={_this.state.useVideo}>
+						<T.span text="Use Video" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange} value="useStereo" inline checked={_this.state.useStereo}>
+						<T.span text="Stereo Audio" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange} value="useSTUN" inline checked={_this.state.useSTUN}>
+						<T.span text="Use STUN" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange} value="mirrorInput" inline checked={_this.state.mirrorInput}>
+						<T.span text="Scale Remote Video To Match Camera Resolution" />
+					</Checkbox>
+					<br/><br/>
+					<Checkbox onChange={_this.handleCheckChange} value="askRecoverCall" inline checked={_this.state.askRecoverCall}>
+						<T.span text="Ask before recovering call" />
+					</Checkbox>
+				</Col>
+			</div>
+
+			<div className="row">
+				<Col sm={4}>
+					<Button onClick={_this.handlePrevieSetting}><T.span text="Preview Settings" /></Button>
+					<br/><br/>
+					<Button onClick={_this.handleRefreshList}><T.span text="Refresh Device List" /></Button>
+					<br/><br/>
+					<Button onClick={_this.handleResetSettings}><T.span text="Factory Reset" /></Button>
+				</Col>
+			</div>
 		</div>
 
 		return <div>
+			<ButtonToolbar className="pull-right">
+				<ButtonGroup>
+					<Button onClick={_this.hanldeTestSpeed}><T.span text="Check Network Speed" /></Button>
+				</ButtonGroup>
+			</ButtonToolbar>
 			<h2><T.span text="Video Settings" /></h2>
 			{video_rows}
 			<hr/>
