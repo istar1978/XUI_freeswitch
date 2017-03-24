@@ -494,6 +494,8 @@ class ConferenceRoom extends React.Component {
 				</FormGroup>
 
 			</Form>
+
+			{room.id ? <RoomMembers room_id={this.state.room.id} /> : null}
 		</div>
 	}
 }
