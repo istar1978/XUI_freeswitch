@@ -49,9 +49,8 @@ class ModulePage extends React.Component {
 		this.handleFSEvent = this.handleFSEvent.bind(this);
 	}
 
-	handleToggleParam(e) {
+	handleToggleParam(data) {
 		const _this = this;
-		const data = e.target.getAttribute("data");
 
 		$.ajax({
 			type: "PUT",
@@ -144,9 +143,8 @@ class ModulePage extends React.Component {
 
 	}
 
-	handleSort(e){
+	handleSort(field){
 		const rows = this.state.rows;
-		var field = e.target.getAttribute('data');
 		var n = 1;
 
 		if (this.state.order == 'ASC') {
@@ -190,7 +188,7 @@ class ModulePage extends React.Component {
 				return <tr key={row.id} className={loaded_class}>
 					<td>{row.k}</td>
 					<td>
-						<Button onClick={_this.handleToggleParam} data={row.id} bsStyle={enabled_style}>
+						<Button onClick={() => _this.handleToggleParam(row.id)} bsStyle={enabled_style}>
 							{dbfalse(row.disabled) ? T.translate("Yes") : T.translate("No")}
 						</Button>
 					</td>
@@ -208,8 +206,8 @@ class ModulePage extends React.Component {
 			<table className="table">
 				<tbody>
 				<tr>
-					<th onClick={this.handleSort.bind(this)} data="k"><T.span text="Name" data="k"/></th>
-					<th onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
+					<th onClick={() => this.handleSort("k")}><T.span text="Name" /></th>
+					<th onClick={() => this.handleSort("disabled")}><T.span text="Enabled" /></th>
 					<th><T.span text="Control"/></th>
 				</tr>
 				{rows}

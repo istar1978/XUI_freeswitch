@@ -98,10 +98,17 @@ var toolbox = `<xml id="toolbox" style="display: none">
 	<block type="IVREntry">
 		 <value name="case">
 			<shadow type="text">
-			 <field name="TEXT"></field>
-		   </shadow>
+				<field name="TEXT"></field>
+			</shadow>
 		 </value>
-	   </block>
+	</block>
+	<block type="IVRreturn">
+		 <value name="return">
+			<shadow type="text">
+				<field name="TEXT"></field>
+			</shadow>
+		</value>
+	</block>
 </category>
 
 <category name="FreeSWITCH" colour="10">
