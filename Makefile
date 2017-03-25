@@ -15,10 +15,17 @@ livereload:
 grunt:
 	cd jsapp && grunt
 
-setup:
+
+init:
+	cd jsapp/src/jsx && ln -sf xui.js index.js
+
+setup: init
 	cd jsapp && \
 	npm install #&& \
 #	bower install
+
+td:
+	cd jsapp/src/jsx && ln -sf td/index.js index.js
 
 csetup:
 	cd jsapp && \

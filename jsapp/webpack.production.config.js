@@ -4,7 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackMd5Hash = require('webpack-md5-hash');
 var config = {
     entry: {
-         "index": ["./src/jsx/index.jsx","./src/css/xui.css"],
+         "index": ["./src/jsx/index.js","./src/css/xui.css"],
     },
     output: {
         path: '../www/assets',

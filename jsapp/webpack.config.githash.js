@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackGitHash = require('webpack-git-hash');
 var config = {
     entry: {
-        "index": ["./src/jsx/index.jsx", "./src/css/xui.css"],
+        "index": ["./src/jsx/index.js", "./src/css/xui.css"],
     },
     output: {
         path: '../www/assets',

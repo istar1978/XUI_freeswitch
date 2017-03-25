@@ -36,7 +36,7 @@ import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-ro
 import MainMenu from './main-menu';
 import Languages from "./languages";
 import Footer from "./footer";
-import { Home } from "./index.jsx";
+import { Home } from "./index.js";
 import verto from "./verto/verto";
 
 class LoginPage extends React.Component {
