@@ -12,6 +12,7 @@ LANGUAGES["zh"] = {
 	"XUI is a FreeSWITCH UI framework and implementation": "XUI是一个FreeSWITCH图形界面框架和实现",
 	"More info": "详见",
 	"Conference Profiles": "会议模板",
+	"Conference Profile": "会议模板",
 	Author: "作者",
 	Version: "版本",
 	Phone: "电话",
@@ -100,6 +101,7 @@ LANGUAGES["zh"] = {
 	"Display as List": "以列表形式显示",
 	"Toggle Toolbar Text": "切换按钮图标文字提示",
 
+	"Create New Conference Profile": "创建新会议模板",
 
 	New: "新建",
 	Edit: "编辑",

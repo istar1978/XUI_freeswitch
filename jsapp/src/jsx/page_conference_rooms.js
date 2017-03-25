@@ -485,7 +485,7 @@ class ConferenceRoom extends React.Component {
 				</FormGroup>
 
 				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Profiles"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Profile"/></Col>
 					<Col sm={10}>
 						<EditControl edit={this.state.edit} componentClass="select" name="profile_id"
 							text={current_profile} defaultValue={room.profile_id}

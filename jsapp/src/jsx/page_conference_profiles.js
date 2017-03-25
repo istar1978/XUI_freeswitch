@@ -60,7 +60,7 @@ class NewProfile extends React.Component {
 		console.log("profile", profile);
 
 		if (!profile.name) {
-			notify(<T.span text="Mandatory fields left blank"/>);
+			_this.setState({errmsg: <T.span text="Mandatory fields left blank"/>});
 			return;
 		}
 
@@ -78,6 +78,7 @@ class NewProfile extends React.Component {
 			},
 			error: function(msg) {
 				console.error("profile", msg);
+				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText + ' ' + msg.responseText});
 			}
 		});
 	}
@@ -95,7 +96,7 @@ class NewProfile extends React.Component {
 			<Form horizontal id="newProfile">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="Profile one" /></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="default" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDescription">
@@ -247,7 +248,7 @@ class ConferenceProfilePage extends React.Component {
 			const params = data.params;
 			_this.setState({profile: data, params: params});
 		}, function(e) {
-			console.log("get re ERR");
+			console.error("get conference profile ERR", e);
 		});
 	}
 
