@@ -503,6 +503,7 @@ xtra.url_encode = url_encode
 function xtra.start_session()
 	print "start session"
 	cookie = env:getHeader("Cookie")
+
 	if not cookie then
 		local sessid = env:getHeader("X-XTRA-AUTH-ID")
 		if not sessid then

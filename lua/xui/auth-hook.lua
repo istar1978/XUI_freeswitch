@@ -1,8 +1,17 @@
+--[[
+	<hook event="CUSTOM" subclass="verto::login" script="/usr/local/freeswitch/xui/lua/xui/auth-hook.lua"/>
+]]
+
+freeswitch.consoleLog("INFO", event:serialize() .. "\n")
+
+
 sessid = event:getHeader("verto_sessid")
 login  = event:getHeader("verto_login")
+success= event:getHeader("verto_success")
 
-api = freeswitch.API()
+if (login and success == "1") then
+	api = freeswitch.API()
+	api:execute("hash", "insert/xui/" .. sessid .. "/" .. login)
+end
 
-api:execute("hash", "insert/xui/" .. sessid .. "/" .. login)
-
--- freeswitch.consoleLog("INFO", sessid .. "\n")
+freeswitch.consoleLog("INFO", sessid .. " Logged in\n")

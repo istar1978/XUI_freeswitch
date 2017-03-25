@@ -53,7 +53,8 @@ class CDRPage extends React.Component {
 			console.log("cdr", data);
 			_this.setState({cdr: data});
 		}, function(e) {
-			console.log("get cdr ERR");
+			console.error("get cdr", e);
+			notify('[' + e.status + '] ' + e.statusText);
 		});
 	}
 

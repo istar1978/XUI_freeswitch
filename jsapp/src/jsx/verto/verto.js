@@ -417,7 +417,7 @@ class Verto {
 							delete self._ws_callbacks[response.id];
 
 							if (self.options.onWSLogin) {
-								self.options.onWSLogin(true, self);
+								self.options.onWSLogin(self, true);
 							}
 						} : function(e) {
 							self.authing = false;
@@ -427,7 +427,7 @@ class Verto {
 								socket.send(orig_req);
 							}
 							if (self.options.onWSLogin) {
-								self.options.onWSLogin(true, self);
+								self.options.onWSLogin(self, true);
 							}
 						},
 
@@ -436,7 +436,7 @@ class Verto {
 							delete self._ws_callbacks[response.id];
 							error_cb(response.error, this);
 							if (self.options.onWSLogin) {
-							self.options.onWSLogin(false, self);
+							self.options.onWSLogin(self, false);
 							}
 						});
 					return;

@@ -53,101 +53,6 @@ if (!domain) domain = host;
   window.CustomEvent = CustomEvent;
 })();
 
-var callbacks = {
-
-	onMessage: function(verto, dialog, msg, data) {
-		console.log("GOT MSG", msg);
-
-		switch (msg) {
-		case $.verto.enum.message.pvtEvent:
-			console.error("pvtEvent", data.pvtData);
-			break;
-		case $.verto.enum.message.display:
-			break;
-		default:
-			break;
-		}
-	},
-
-	onDialogState: function(d) {
-		fire_event("verto-dialog-state", d);
-	},
-
-	onWSLogin: function(v, success) {
-		console.log("login", v);
-		console.log("login", success);
-		verto_loginState = true;
-
-		if (!success) {
-			fire_event("verto-login-error", v);
-			return;
-		}
-
-		setCookie("freeswitch_xtra_session_id", v.sessid);
-
-		// verto.subscribe("presence", {
-		// 	handler: function(v, e) {
-		// 		console.log("PRESENCE:", e);
-		// 	}
-		// });
-
-		fire_event("verto-login", v);
-
-		fsStatus(function(s) {
-			// fire a "update-status" event so the OverView component can update
-			fire_event("update-status", s);
-		});
-	},
-
-	onWSClose: function(v, success) {
-		console.log("close");
-		console.log(v);
-		fire_event("verto-disconnect", v);
-	},
-
-	onEvent: function(v, e) {
-		console.debug("GOT EVENT", e);
-	}
-};
-
-function verto_params() {
-	var protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
-	var username = localStorage.getItem('xui.username');
-	var password = localStorage.getItem('xui.password');
-	var vid_width = localStorage.getItem("phone.video.width");
-	if (vid_width == null) { vid_width = 800;}
-	var vid_height = 600;
-
-	return {
-		login: username + "@" + host,
-		passwd: password,
-		socketUrl: protocol + host + ":" + window.location.port + "/ws",
-		tag: "webcam",
-		ringFile: "/assets/sounds/bell_ring2.mp3",
-		iceServers: [
-		// { url: 'stun:[YOUR_STUN_SERVER]',}
-		],
-		deviceParams: {
-			useMic: 'any',
-			useSpeak: 'any'
-		}
-	}
-}
-
-$(document).ready(function(){
-	// window.verto = new $.verto(verto_params(), callbacks);
-});
-
-$('#ocean_callButton').click(function() {
-	options = {
-		from_number: $('#number').val(),
-		cid_number: $('#number').val()
-	};
-
-	makeCall($('#number').val(), options);
-});
-
-
 function makeCall(dest_number, options)
 {
 	verto.sendMethod("jsapi", {
@@ -159,46 +64,6 @@ function makeCall(dest_number, options)
 			cid_number: options.cid_number
 		}
 	});
-}
-
-function showFSAPI(what, success_cb, failed_cb)
-{
-	verto.sendMethod("jsapi", {
-		command: "fsapi",
-		data: {
-			cmd: "show",
-			arg: what + " as json"
-		},
-	}, success_cb, failed_cb);
-}
-
-function fsAPI(cmd, arg, success_cb, failed_cb)
-{
-	if (!success_cb) success_cb = function(r) {
-		console.log("Success", r);
-	}
-
-	if (!success_cb) failed_cb = function(r) {
-		console.error("Error", r);
-	}
-
-	verto.sendMethod("jsapi", {
-		command: "fsapi",
-		data: {
-			cmd: cmd,
-			arg: arg
-		},
-	}, success_cb, failed_cb);
-}
-
-function fsStatus(success_cb, failed_cb)
-{
-	verto.sendMethod("jsapi", {
-		command: "fsapi",
-		data: {
-			cmd: "status"
-		},
-	}, success_cb, failed_cb);
 }
 
 function fire_event(event_name, detail, bubbles)
@@ -248,16 +113,6 @@ function lua2(dest_number, options)
 				b: "bbbb"
 			}
 		}
-	});
-}
-
-function clueconstatus()
-{
-    verto.sendMethod("jsapi", {
-   		command: "status",
-    	data: {}
-  	}, function(x) {
-  		console.log("status", x);
 	});
 }
 

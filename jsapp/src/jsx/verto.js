@@ -34,8 +34,8 @@ class VertoPage extends React.Component {
 			},
 
 			onWSLogin: function(v, success) {
-				console.log("login", v);
-				console.log("login", success);
+				console.log("onWSLogin", v);
+				console.log("onWSLogin", success);
 				verto_loginState = true;
 
 				if (!success) {
@@ -43,7 +43,7 @@ class VertoPage extends React.Component {
 					return;
 				}
 
-				document.cookie = "freeswitch_xtra_session_id=" + v.sessid;
+				setCookie("freeswitch_xtra_session_id", v.sessid);
 
 				fire_event("verto-login", v);
 
@@ -63,6 +63,28 @@ class VertoPage extends React.Component {
 				console.debug("GOT EVENT", e);
 			}
 		};
+
+		function verto_params() {
+			var protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
+			var username = localStorage.getItem('xui.username');
+			var password = localStorage.getItem('xui.password');
+			var vid_width = localStorage.getItem("phone.video.width");
+
+			return {
+				login: username + "@" + host,
+				passwd: password,
+				socketUrl: protocol + host + ":" + window.location.port + "/ws",
+				tag: "webcam",
+				ringFile: "/assets/sounds/bell_ring2.mp3",
+				iceServers: [
+					// { url: 'stun:[YOUR_STUN_SERVER]',}
+				],
+				deviceParams: {
+					useMic: 'any',
+					useSpeak: 'any'
+				}
+			}
+		}
 
 		verto.connect(verto_params(), callbacks);
 	}

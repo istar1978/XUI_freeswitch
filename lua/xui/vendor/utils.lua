@@ -203,4 +203,14 @@ utils.print_r = function(t)
     print()
 end
 
+utils.log = function(level, msg)
+	if not msg then msg = '' end
+	freeswitch.consoleLog(level, msg);
+end
+
+utils.xlog = function(level, msg)
+	if not msg then msg = '' end
+	freeswitch.consoleLog(level, msg .. '\n');
+end
+
 return utils
