@@ -37,7 +37,7 @@ xdb.bind(xtra.dbh)
 get('/', function(params)
 	n, groups = xdb.find_all("groups")
 
-	if (groups) then
+	if (n > 0) then
 		return groups
 	else
 		return "[]"
