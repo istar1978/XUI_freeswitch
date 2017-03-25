@@ -23,6 +23,7 @@ LANGUAGES["zh"] = {
 	Last: "最近",
 	Refresh: "刷新",
 	Add: "添加",
+	"Click to Change": "点击修改...",
 
 	Overview: "状态",
 	Calls: "呼叫",

@@ -366,7 +366,7 @@ class SIPProfilePage extends React.Component {
 
 				return <tr key={param.id} className={disabled_class}>
 					<td>{param.k}</td>
-					<td><RIEInput value={param.v} change={_this.handleChange}
+					<td><RIEInput value={_this.state.highlight ? (param.v ? param.v : T.translate("Click to Change")) : param.v} change={_this.handleChange}
 						propName={param.id}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
