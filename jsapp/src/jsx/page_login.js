@@ -82,7 +82,7 @@ class LoginBox extends React.Component {
 	}
 
 	handleVertoLogin (e) {
-		console.log("page_login.js: login");
+		console.log("page_login.js: login", e);
 		ReactDOM.render(<Home/>, document.getElementById('body'))
 	}
 
