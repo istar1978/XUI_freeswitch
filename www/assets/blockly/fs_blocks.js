@@ -1,6 +1,6 @@
 /*
  * HTML5 GUI Framework for FreeSWITCH - XUI
- * Copyright (C) 2015-2016, Seven Du <dujinfang@x-y-t.cn>
+ * Copyright (C) 2015-2017, Seven Du <dujinfang@x-y-t.cn>
  *
  * Version: MPL 1.1
  *
