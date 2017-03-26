@@ -67,7 +67,6 @@ class LoginBox extends React.Component {
 		// verto.loginData(verto_params());
 		// verto.login();
 
-
 		verto.connect(verto_params());
 	}
 

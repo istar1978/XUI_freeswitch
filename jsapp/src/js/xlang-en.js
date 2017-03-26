@@ -8,6 +8,7 @@ LANGUAGES["en"] = {
 	Hangup: "Hup",
 	Transfer: "Xfer",
 	"days": "{day}days",
+	"Internal Error": "Internal Error: {msg}",
 
 	"Recording to": "Recording to *{path}*",
 	"Record completed": "Record complete *{path}*",

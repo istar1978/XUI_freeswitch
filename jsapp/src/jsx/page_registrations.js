@@ -60,7 +60,7 @@ class RegistrationsPage extends React.Component {
 	refreshRegistrations () {
 		var _this = this;
 		verto.showFSAPI("registrations", function(data) {
-			var msg = $.parseJSON(data.message);
+			var msg = JSON.parse(data.message);
 
 			if (msg.row_count === 0) {
 				_this.setState({rows: []});

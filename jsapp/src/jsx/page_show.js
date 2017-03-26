@@ -308,7 +308,7 @@ class ShowFSPage extends React.Component{
 		var _this = this;
 
 		verto.showFSAPI(this.props.what, function(data) {
-			var msg = $.parseJSON(data.message);
+			var msg = JSON.parse(data.message);
 			if (msg.row_count === 0) {
 				_this.setState({rows: []});
 			} else {

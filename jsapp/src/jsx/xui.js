@@ -219,8 +219,7 @@ class Home extends React.Component{
 	}
 };
 
-
-$(document).ready(function() {
+ready(function() {
 	ReactDOM.render(<Login/>, document.getElementById('body'));
 });
 

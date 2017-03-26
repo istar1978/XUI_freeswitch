@@ -375,7 +375,7 @@ class RoutePage extends React.Component {
 			checkDestType();
 		});
 
-		$.getJSON("/api/routes/" + this.props.params.id, "", function(data) {
+		$.getJSON("/api/routes/" + this.props.params.id, function(data) {
 			_this.setState({route: data});
 			checkDestType();
 		}, function(e) {

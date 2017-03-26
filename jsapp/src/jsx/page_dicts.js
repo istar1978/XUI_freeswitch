@@ -72,7 +72,7 @@ class NewDict extends React.Component {
 			},
 			error: function(msg) {
 				console.error("dict", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
+				_this.setState({errmsg: msg});
 			}
 		});
 	}
@@ -158,9 +158,8 @@ class DictPage extends React.Component {
 		}
 
 		$.ajax({
-			type: "POST",
+			type: "PUT",
 			url: "/api/dicts/" + dt.id,
-			headers: {"X-HTTP-Method-Override": "PUT"},
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify(dt),

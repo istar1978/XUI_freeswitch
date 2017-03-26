@@ -114,7 +114,7 @@ class ModulePage extends React.Component {
 			_this.setState({rows: data});
 
 			verto.fsAPI("show", "modules as json", function(ret) {
-				var msg = $.parseJSON(ret.message);
+				var msg = JSON.parse(ret.message);
 				let modules = {};
 
 				console.log(msg);

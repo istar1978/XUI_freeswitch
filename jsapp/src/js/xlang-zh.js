@@ -25,6 +25,7 @@ LANGUAGES["zh"] = {
 	Refresh: "刷新",
 	Add: "添加",
 	"Click to Change": "点击修改...",
+	"Internal Error": "内部错误: {msg}",
 
 	Overview: "状态",
 	Calls: "呼叫",

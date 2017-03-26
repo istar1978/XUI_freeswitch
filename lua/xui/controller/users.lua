@@ -35,7 +35,6 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-
 	-- local check = xdb.checkPermission('7','users','get','/')
 	-- if check then
 		n, users = xdb.find_all("users")

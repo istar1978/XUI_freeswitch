@@ -37,6 +37,7 @@ import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './libs/xtools';
 import verto from './verto/verto';
+import parseXML from './libs/xml_parser';
 
 class NewGateway extends React.Component {
 	constructor(props) {
@@ -554,11 +555,17 @@ class GatewaysPage extends React.Component {
 		verto.subscribe("FSevent.custom::sofia::gateway_state", {handler: this.handleFSEvent});
 
 		verto.fsAPI("sofia", "xmlstatus", function(data) {
-			let msg = $(data.message);
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data.message, "text/xml");
+			console.log('doc', doc);
 
-			msg.find("gateway").each(function() {
-				let gw = this;
-				_this.gwstatus[$(gw).find("name").text()] = $(gw).find("state").text();
+			const msg = parseXML(doc);
+			console.log('msg', msg);
+
+			msg.forEach(function(gw) {
+				console.log("gw", gw);
+				if (gw.type != "gateway") return;
+				_this.gwstatus[gw.name] = gw.state;
 			});
 
 			let rows = _this.state.rows.map(function(row) {

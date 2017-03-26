@@ -38,6 +38,7 @@ import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import { EditControl } from './libs/xtools'
 import verto from './verto/verto';
+import parseXML from './libs/xml_parser';
 
 class NewSIPProfile extends React.Component {
 	constructor(props) {
@@ -248,10 +249,16 @@ class SIPProfilePage extends React.Component {
 		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
 			_this.setState({profile: data, params: data.params});
 			verto.fsAPI("sofia", "xmlstatus", function(data) {
-				var msg = $(data.message);
-				msg.find("profile").each(function() {
-					var profile = this;
-					var name = $(profile).find("name").text();
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(data.message, "text/xml");
+				console.log('doc', doc);
+
+				const msg = parseXML(doc);
+				console.log('msg', msg);
+
+				msg.forEach(function(profile) {
+					if (profile.type != "profile") return;
+					var name = profile.name;
 					if(_this.state.profile.name == name){
 						_this.setState({running: true});
 					}
@@ -512,14 +519,19 @@ class SIPProfilesPage extends React.Component {
 			_this.setState({rows: data});
 
 			verto.fsAPI("sofia", "xmlstatus", function(data) {
-				var rows = _this.state.rows;
-				var msg = $(data.message);
+				let rows = [];
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(data.message, "text/xml");
+				console.log('doc', doc);
 
-				msg.find("profile").each(function() {
-					var profile = this;
-					var name = $(profile).find("name").text();
+				const msg = parseXML(doc);
+				console.log('msg', msg);
 
-					rows = rows.map(function(row) {
+				msg.forEach(function(profile) {
+					if (profile.type != "profile") return;
+					var name = profile.name;
+
+					rows = _this.state.rows.map(function(row) {
 						if (row.name == name) row.running = true;
 						return row;
 					});
@@ -646,17 +658,15 @@ class SIPProfilesPage extends React.Component {
 				return;
 			}
 
-			var msg = $(data.message);
-			var profile = msg[2];
-			var info = profile.firstElementChild.firstElementChild;
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data.message, "text/xml");
+			console.log('doc', doc);
 
-			var rows = [];
+			const profile = parseXML(doc);
 
-			rows.push({k: info.localName, v: info.innerText});
-
-			while(info = info.nextElementSibling) {
-				rows.push({k: info.localName, v: info.innerText});
-			}
+			const rows = Object.keys(profile).map(function(k, index) {
+				return {k: k, v: profile[k]};
+			});
 
 			_this.setState({profileDetails: {name: profile_name, rows: rows}});
 		});

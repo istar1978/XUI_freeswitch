@@ -149,13 +149,21 @@ function translateMember(member) {
 	return m;
 }
 
-function form2json (selector) {
-	var ary = $(selector).serializeArray();
-	var obj = {};
-	for (var a = 0; a < ary.length; a++) obj[ary[a].name] = ary[a].value;
-	return obj;
-}
 
+function form2json(selector) {
+	if (selector.substring(0, 1) == '#') selector = selector.substring(1);
+
+	var formElements = document.getElementById(selector).elements;
+	var obj = {};
+
+	for (var i=0; i<formElements.length; i++) {
+		if (formElements[i].type != "submit") {//we dont want to include the submit-buttom
+			if (formElements[i].name) obj[formElements[i].name] = formElements[i].value;
+		}
+	}
+
+    return obj;
+}
 
 function current_lang()
 {
@@ -189,7 +197,7 @@ function dbfalse(s)
 
 function notify(msg, level, timeout)
 {
-	m = {};
+	var m = {};
 	m.msg = msg;
 	if (level) m.level = level;
 	if (timeout) m.timeout = timeout;
