@@ -349,7 +349,7 @@ class Phone extends React.Component {
 		</Button>
 
 		if (this.state.callState == "Ringing") {
-			$('#web-phone').css('display', 'block');
+			this.state.displayState = "block";
 			answerButton = <button onClick={this.handleAnswer}>Answer</button>
 		}
 
@@ -393,7 +393,7 @@ class Phone extends React.Component {
 			{xtopDisplay}
 			{textDisplay}
 			<T.span id="phone-state" className={state} text={{ key: "Phone"}} onClick={this.handleMenuClick} />
-			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
+			<div style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;{this.state.cidname} <T.span text={this.state.callState}/></div>
 				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>&nbsp;&nbsp;
 				<Button bsStyle="success" bsSize="xsmall" onClick={this.handleCall}>

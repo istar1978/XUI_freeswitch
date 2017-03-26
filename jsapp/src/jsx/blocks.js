@@ -35,6 +35,7 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import Dropzone from 'react-dropzone';
+import { xFetchJSON } from './libs/xtools';
 
 class BlockPage extends React.Component {
 	constructor(props) {
@@ -51,8 +52,8 @@ class BlockPage extends React.Component {
 		var _this = this;
 
 		this.onresize = function() {
-			var blocklyDiv = $('#blocks');
-			var blocklyArea = $('#main');
+			var blocklyDiv = document.getElementById('blocks');
+			var blocklyArea = document.getElementById('main');
 
 			// Position blocklyDiv over blocklyArea.
 			if (blocklyDiv.style) {
@@ -545,13 +546,13 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			body.appendChild(xml);
 		}
 
-		$.get('/api/dicts?realm=TONE', function(obj) {
+		xFetchJSON('/api/dicts?realm=TONE').then((obj) => {
 			obj.forEach(function(row) {
 				 _this.fs_file_path_dropdown_data.push(["[Tone]: " + row.k, row.v]);
 			});
 		});
 
-		$.get('/api/media_files', function(obj) {
+		xFetchJSON('/api/media_files').then((obj) => {
 			console.log("data", obj);
 
 			obj.forEach(function(row) {
@@ -706,9 +707,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			block.js = "alert(1);"// disabled;
 
 			$.ajax({
-				type: "POST",
+				type: "PUT",
 				url: "/api/blocks/" + block.id,
-				headers: {"X-HTTP-Method-Override": "PUT"},
 				dataType: "json",
 				contentType: "application/json",
 				data: JSON.stringify(block),

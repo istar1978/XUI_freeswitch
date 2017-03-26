@@ -127,6 +127,8 @@ if (!window.jQuery) {
 			}
 		});
 	}
+
+	$.get = $.getJSON;
 }
 
 export {EditControl, xFetch, xFetchJSON};

@@ -337,7 +337,8 @@ export default class VertoDialog {
 		case Verto.enum.state.destroy:
 
 			if (typeof(dialog.verto.options.tag) === "function") {
-			  $('#' + dialog.params.tag).remove();
+			  // $('#' + dialog.params.tag).remove();
+			  console.error("FIXME", "!!!!!");
 			}
 
 			delete dialog.verto.dialogs[dialog.callID];
