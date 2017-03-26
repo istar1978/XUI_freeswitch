@@ -159,18 +159,18 @@ class Verto {
 			},
 			onWSConnect: function(o) {
 				console.log("connected!!!!");
-				o.call('login', {});
+				// o.call('login', {});
 			},
 			onWSLogin: function(verto, success) {
-				fire_event("verto-login", success);
+				// fire_event("verto-login", success);
 			},
 			onWSClose: function(verto, success) {
 				_this.purge();
 			}
 		}, params, callbacks);
 
-		console.error("options", this.options);
-		console.error("verto_params", params);
+		console.info("options", this.options);
+		console.info("verto_params", params);
 
 		if (this.options.deviceParams.useCamera) {
 			// $.FSRTC.getValidRes(this.options.deviceParams.useCamera, this.options.deviceParams.onResCheck);
@@ -845,6 +845,7 @@ class Verto {
 	}
 
 	logout(msg) {
+		console.log('verto logout', msg);
 		var verto = this;
 		verto.closeSocket();
 		if (verto.callbacks.onWSClose) {

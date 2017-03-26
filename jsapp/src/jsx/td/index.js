@@ -69,6 +69,7 @@ import { MediaFilesPage, MediaFilePage } from '../page_media_files';
 import { Login, LoginBox } from '../page_login';
 import Footer from '../footer';
 import Terminal from '../terminal';
+import verto from './verto/verto';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -116,9 +117,9 @@ class Home extends React.Component{
 	render() {
 		const handleLogout = function(params, replace) {
 			console.log(params, replace);
-			if (verto) verto.logout();
 			localStorage.removeItem("xui.username");
 			localStorage.removeItem("xui.password");
+			if (verto) verto.logout();
 			ReactDOM.render(<Login/>, document.getElementById('body'));
 		}
 
@@ -218,10 +219,5 @@ class Home extends React.Component{
 		</Router>
 	}
 };
-
-
-ready(function() {
-	ReactDOM.render(<Login/>, document.getElementById('body'));
-});
 
 export { Home };

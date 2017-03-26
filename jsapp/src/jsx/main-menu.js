@@ -129,7 +129,6 @@ class MainMenu extends React.Component {
 				<Nav pullRight><Notice/></Nav>
 			</Navbar.Collapse>
 			<video id="webcam" className="webcam"/>
-			<VertoPage/>
 		</Navbar>;
 	}
 }

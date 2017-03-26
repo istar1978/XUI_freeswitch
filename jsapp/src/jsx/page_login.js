@@ -38,6 +38,7 @@ import Languages from "./languages";
 import Footer from "./footer";
 import { Home } from "./index.js";
 import verto from "./verto/verto";
+import {verto_params, verto_callbacks} from "./verto";
 
 class LoginPage extends React.Component {
 	render() {
@@ -124,5 +125,10 @@ class Login extends React.Component {
 		</Router>
 	}
 };
+
+ready(function() {
+	verto.connect(verto_params(), verto_callbacks);
+	ReactDOM.render(<Login/>, document.getElementById('body'));
+});
 
 export { Login, LoginBox };
