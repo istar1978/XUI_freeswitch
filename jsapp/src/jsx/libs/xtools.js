@@ -84,7 +84,19 @@ function xFetchJSON(path, options) {
 
 	options = Object.assign({credentials: 'include'}, options);
 
+	if (!options.headers && options.body && (
+		options.method == 'POST' ||
+		options.method == 'PUT'  ||
+		options.method == 'PATCH'||
+		options.method == 'DELETE' )) { // default body to JSON
+		options.headers = {"Content-Type": "application/json"};
+	}
+
 	return fetch(path, options).then((response) => {
+		if (response.status < 200 || response.status > 299) {
+			return Promise.reject('[' + response.status + '] ' + response.statusText)
+		}
+
 		return response.json();
 	});
 }

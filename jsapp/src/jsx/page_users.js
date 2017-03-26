@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 
 class NewUser extends React.Component {
 	constructor(props) {
@@ -47,8 +47,6 @@ class NewUser extends React.Component {
 	}
 
 	handleSubmit(e) {
-		var _this = this;
-
 		console.log("submit...");
 		var user = form2json('#newUserForm');
 		console.log("user", user);
@@ -58,20 +56,15 @@ class NewUser extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/users",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(user),
-			success: function (obj) {
-				user.id = obj.id;
-				_this.props.handleNewUserAdded(user);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/users", {
+			method: "POST",
+			body: JSON.stringify(user)
+		}).then((obj) => {
+			user.id = obj.id;
+			this.props.handleNewUserAdded(user);
+		}).catch((msg) => {
+			console.error("user:", msg);
+			this.setState({errmsg: msg});
 		});
 	}
 
@@ -152,8 +145,6 @@ class ImportUser extends React.Component {
 	}
 
 	handleSubmit(e) {
-		var _this = this;
-
 		console.log("submit...");
 		var info = form2json('#importUserForm');
 		console.log("info", info);
@@ -179,21 +170,15 @@ class ImportUser extends React.Component {
 			user.cid_name = inputInfoI[5];
 			user.cid_number = inputInfoI[6];
 
-			$.ajax({
-				type: "POST",
-				url: "/api/users",
-				dataType: "json",
-				async: false,
-				contentType: "application/json",
-				data: JSON.stringify(user),
-				success: function (obj) {
-					user.id = obj.id;
-					_this.props.handleNewUserAdded1(user);
-				},
-				error: function(msg) {
-					console.error("route", msg);
-					_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-				}
+			xFetchJSON("/api/users",{
+				method: "POST",
+				body: JSON.stringify(user)
+			}).then((obj) => {
+				user.id = obj.id;
+				this.props.handleNewUserAdded1(user);
+			}).then((msg) => {
+				console.error("user", msg);
+				this.setState({errmsg: <T.span text={{key: "Internal Error", msg: msg}}/>});
 			});
 		}
 	}
@@ -265,20 +250,14 @@ class UserPage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/users/" + user.id,
-			headers: {"X-HTTP-Method-Override": "PUT"},
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(user),
-			success: function () {
-				_this.setState({user: user, edit: false})
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		xFetchJSON("/api/users/" + user.id, {
+			method: "PUT",
+			body: JSON.stringify(user)
+		}).then(() => {
+			this.setState({user: user, edit: false})
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("users", msg);
 		});
 	}
 
@@ -289,39 +268,36 @@ class UserPage extends React.Component {
 	handleGroup(e) {
 		var group_id = e.target.value;
 		var user_id = this.state.user.id;
+
 		if (e.target.checked) {
 			var gtype = "POST";
 		} else {
 			var gtype = "DELETE";
 		}
-		$.ajax({
+
+		xFetchJSON("/api/user_groups", {
 				type: gtype,
-				url: "/api/user_groups",
-				dataType: "json",
-				contentType: "application/json",
-				data: '{"user_id":"'+user_id+'","group_id":"'+group_id+'"}',
-				success: function (data) {
-					console.error("g", data);
-				},
-				error: function(msg) {
-					console.error("err", msg);
-				}
-			});
+				data: '{"user_id":"'+user_id+'","group_id":"'+group_id+'"}'
+		}).then((data) => {
+			console.error("g", data);
+		}).catch((msg) => {
+			console.error("err", msg);
+		});
 	}
 
 	componentDidMount() {
-		var _this = this;
-		$.getJSON("/api/users/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/users/" + this.props.params.id).then((data) => {
 			console.log("user", data);
-			_this.setState({user: data});
-		}, function(e) {
+			this.setState({user: data});
+		}).catch((msg) => {
 			console.log("get users ERR");
+			notify(<T.span text={{key: "Internal Error", msg: msg}}/>, "error");
 		});
 
-		$.getJSON("/api/user_groups/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/user_groups/" + this.props.params.id).then((data) => {
 			console.log("groups", data)
 			// _this.setState({group: data});
-		}, function(e) {
+		}).catch((e) => {
 			console.log("get groups ERR");
 		});
 	}
@@ -447,20 +423,16 @@ class UsersPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/users/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/users/" + id, {method: "DELETE"}).then(() => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("user", msg);
+			notify(msg, 'error');
 		});
 	}
 
@@ -474,12 +446,12 @@ class UsersPage extends React.Component {
 	}
 
 	componentDidMount() {
-		var _this = this;
-		$.getJSON("/api/users", "", function(data) {
+		xFetchJSON("/api/users").then((data) => {
 			console.log("users", data)
-			_this.setState({rows: data});
-		}, function(e) {
-			console.log("get users ERR");
+			this.setState({rows: data});
+		}).catch((msg) => {
+			console.log("get users ERR", msg);
+			notify(<T.span text={{key: "Internal Error", msg: msg}}/>, 'error');
 		});
 	}
 
