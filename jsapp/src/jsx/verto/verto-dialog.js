@@ -39,7 +39,7 @@ export default class VertoDialog {
 	constructor(direction, verto, params) {
 		var dialog = this;
 
-		dialog.params = $.extend({
+		dialog.params = Object.assign({
 			useVideo: verto.options.useVideo,
 			useStereo: verto.options.useStereo,
 			screenShare: false,

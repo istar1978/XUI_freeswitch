@@ -293,7 +293,7 @@ class Verto {
 				console.log("purging dialogs");
 			}
 			x++;
-			verto.dialogs[i].setState($.verto.enum.state.purge);
+			verto.dialogs[i].setState(Verto.enum.state.purge);
 		}
 
 		for (i in verto.eventSUBS) {
@@ -469,7 +469,7 @@ class Verto {
 				};
 
 				if (this._ws_socket !== null) {
-					this._ws_socket.send($.toJSON(msg));
+					this._ws_socket.send(JSON.stringify(msg));
 				}
 			}
 		}
