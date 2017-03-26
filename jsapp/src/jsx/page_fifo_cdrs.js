@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl } from './xtools';
+import { EditControl } from './libs/xtools';
 
 class FifoCDRPage extends React.Component {
 	constructor(props) {

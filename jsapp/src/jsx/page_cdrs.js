@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl, xFetchJSON } from './xtools';
+import { EditControl, xFetchJSON } from './libs/xtools';
 
 class CDRPage extends React.Component {
 	constructor(props) {

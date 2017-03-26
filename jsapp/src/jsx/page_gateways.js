@@ -35,7 +35,7 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './xtools';
+import { EditControl } from './libs/xtools';
 import verto from './verto/verto';
 
 class NewGateway extends React.Component {

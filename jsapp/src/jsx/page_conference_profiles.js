@@ -38,7 +38,7 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './xtools'
+import { EditControl } from './libs/xtools'
 
 class NewProfile extends React.Component {
 	propTypes: {handleNewProfileAdded: React.PropTypes.func}

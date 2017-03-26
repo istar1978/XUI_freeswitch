@@ -35,7 +35,7 @@ import T from 'i18n-react';
 import verto from './verto/verto';
 import { Link } from 'react-router';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
-import { EditControl } from './xtools'
+import { EditControl } from './libs/xtools'
 
 class NewMcast extends React.Component {
 	constructor(props) {
