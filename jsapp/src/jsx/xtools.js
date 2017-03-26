@@ -33,6 +33,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
+import 'whatwg-fetch';
 
 class EditControl extends FormControl {
 	constructor(props) {
@@ -70,4 +71,22 @@ class EditControl extends FormControl {
 
 }
 
-export {EditControl};
+function xFetch(path, options) {
+	if (!options) options = {};
+
+	options = Object.assign({credentials: 'include'}, options);
+
+	return fetch(path, options);
+}
+
+function xFetchJSON(path, options) {
+	if (!options) options = {};
+
+	options = Object.assign({credentials: 'include'}, options);
+
+	return fetch(path, options).then((response) => {
+		return response.json();
+	});
+}
+
+export {EditControl, xFetch, xFetchJSON};

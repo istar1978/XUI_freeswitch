@@ -41,7 +41,8 @@
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0",
     "webpack-git-hash": "^1.0.2",
-    "webpack-md5-hash": "0.0.5"
+    "webpack-md5-hash": "0.0.5",
+    "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {},
   "scripts": {

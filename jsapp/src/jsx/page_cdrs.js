@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl } from './xtools';
+import { EditControl, xFetchJSON } from './xtools';
 
 class CDRPage extends React.Component {
 	constructor(props) {
@@ -49,10 +49,10 @@ class CDRPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/cdrs/" + _this.props.params.uuid, "", function(data) {
+		xFetchJSON("/api/cdrs/" + _this.props.params.uuid, "").then((data) => {
 			console.log("cdr", data);
 			_this.setState({cdr: data});
-		}, function(e) {
+		}).catch((e) => {
 			console.error("get cdr", e);
 			notify('[' + e.status + '] ' + e.statusText);
 		});
@@ -153,16 +153,15 @@ class CDRsPage extends React.Component {
 	}
 
 	handleSearch (e) {
-		const _this = this;
 		const qs = "startDate=" + this.startDate.value +
 			"&endDate=" + this.endDate.value +
 			"&cidNumber=" + this.cidNumber.value +
 			"&destNumber=" + this.destNumber.value;
 		console.log(qs);
 
-		$.getJSON("/api/cdrs?" + qs, function(cdrs) {
-			_this.setState({rows: cdrs});
-		})
+		xFetchJSON("/api/cdrs?" + qs,).then((cdrs) => {
+			this.setState({rows: cdrs});
+		});
 	}
 
 	componentWillMount () {
@@ -172,21 +171,19 @@ class CDRsPage extends React.Component {
 	}
 
 	componentDidMount () {
-		const _this = this;
-		$.getJSON("/api/cdrs", function(cdrs) {
-			_this.setState({rows: cdrs, loaded : true});
-		})
+		xFetchJSON("/api/cdrs").then((data) => {
+			this.setState({rows: data, loaded : true});
+		});
 	}
 
 	handleQuery (e) {
-		var _this = this;
 		var data = parseInt(e.target.getAttribute("data"));
 
 		e.preventDefault();
 
-		$.getJSON("/api/cdrs?last=" + data, function(cdrs) {
-			_this.setState({rows: cdrs});
-		})
+		xFetchJSON("/api/cdrs?last=" + data).then((cdrs) => {
+			this.setState({rows: cdrs});
+		});
 	}
 
 	render () {
