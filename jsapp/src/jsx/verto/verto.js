@@ -79,6 +79,7 @@ class Verto {
 		this.videoDevices = [];
 		this.audioInDevices = [];
 		this.audioOutDevices = [];
+		this.rpcClient = this; // backward compatable
 
 		this.generateGUID = (typeof(window.crypto) !== 'undefined' &&
 			typeof(window.crypto.getRandomValues) !== 'undefined') ? function() {
