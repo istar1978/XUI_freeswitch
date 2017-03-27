@@ -256,13 +256,15 @@ class SIPProfilePage extends React.Component {
 				const msg = parseXML(doc);
 				console.log('msg', msg);
 
-				msg.forEach(function(profile) {
-					if (profile.type != "profile") return;
-					var name = profile.name;
-					if(_this.state.profile.name == name){
-						_this.setState({running: true});
-					}
-				});
+				if (msg.profile) {
+					msg.profile.forEach(function(profile) {
+						if (profile.type != "profile") return;
+						var name = profile.name;
+						if(_this.state.profile.name == name){
+							_this.setState({running: true});
+						}
+					});
+				}
 			});
 		}, function(e) {
 			console.log("get profile/sip_profiles ERR");
