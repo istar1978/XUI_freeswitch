@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 
 class NewGroup extends React.Component {
 	constructor(props) {
@@ -57,22 +57,16 @@ class NewGroup extends React.Component {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
-
-		$.ajax({
-			type: "POST",
-			url: "/api/groups",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(group),
-			success: function (obj) {
-				group.id = obj.id;
-				_this.props.handleNewUserAdded(group);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
-		});
+		xFetchJSON("/api/groups", {
+			method: "POST",
+			body: JSON.stringify(group)
+		}).then((obj) => {
+			group.id = obj.id;
+			_this.props.handleNewUserAdded(group);
+		}).catch((msg) => {
+			console.error("route", msg);
+			_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
+		}); 
 	}
 
 	render() {
@@ -145,19 +139,13 @@ class GroupPage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/groups/" + group.id,
-			headers: {"X-HTTP-Method-Override": "PUT"},
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(group),
-			success: function () {
-				_this.setState({group: group, errmsg: {key: "Saved at", time: Date()}})
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		xFetchJSON("/api/groups/" + group.id, {
+			method: "PUT",
+			body: JSON.stringify(group)
+		}).then(() => {
+			_this.setState({group: group, errmsg: {key: "Saved at", time: Date()}});
+		}).catch(() => {
+			console.error("route", msg);
 		});
 	}
 
@@ -173,37 +161,33 @@ class GroupPage extends React.Component {
 		} else {
 			var gtype = "DELETE";
 		}
-		$.ajax({
-			type: gtype,
-			url: "/api/permissions",
-			dataType: "json",
-			contentType: "application/json",
-			data: '{"permission_id":"'+permission_id+'","group_id":"'+group_id+'"}',
-			success: function (data) {
-				console.error("www", data);
-			},
-			error: function(msg) {
-				console.error("err", msg);
-			}
+		xFetchJSON("/api/permissions", {
+			method: gtype,
+			body: '{"permission_id":"'+permission_id+'","group_id":"'+group_id+'"}'
+		}).then((data) => {
+			console.error("www", data);
+		}).catch((msg) => {
+			console.error("err", msg);
 		});
 	}
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/groups/" + this.props.params.id, "", function(data) {
-			console.log("group", data);
-			_this.setState({group: data});
-		}, function(e) {
-			console.log("get groups ERR");
-		});
+		xFetchJSON("/api/groups/" + this.props.params.id)
+			.then((data) => {
+				console.log("group", data);
+				_this.setState({group: data});
+			}).catch((e) => {
+				console.log("get groups ERR");
+			});
 
-		$.getJSON("/api/permissions/" + this.props.params.id, "", function(data) {
-			console.log("permissions", data);
-			_this.setState({permissions: data});
-		}, function(e) {
-			console.log("get permissions ERR");
-		});
-		
+		xFetchJSON("/api/permissions/" + this.props.params.id)
+			.then((data) => {
+				console.log("permissions", data);
+				_this.setState({permissions: data});
+			}).catch((e) => {
+				console.log("get permissions ERR");
+			});
 	}
 
 	render() {
@@ -219,7 +203,7 @@ class GroupPage extends React.Component {
 		}
 
 		var permissions = this.state.permissions.map(function(row) {
-			return <Checkbox name="permissions" defaultChecked={row.checkshow} value={row.id}><T.span text="action:"/><T.span text={row.action}/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<T.span text="type:"/><T.span text={row.method}/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<T.span text="param:"/><T.span text={row.param}/></Checkbox>
+			return <Checkbox key="row" name="permissions" defaultChecked={row.checkshow} value={row.id}><T.span text="action:"/><T.span text={row.action}/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<T.span text="type:"/><T.span text={row.method}/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<T.span text="param:"/><T.span text={row.param}/></Checkbox>
 		})
 		return <div>
 			<ButtonToolbar className="pull-right">
@@ -296,21 +280,19 @@ class GroupsPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/groups/" + id,
-			success: function () {
+		xFetchJSON("/api/groups/" + id, {
+				method: "DELETE"
+			}).then(() => {
 				console.log("deleted")
 				var rows = _this.state.rows.filter(function(row) {
 					return row.id != id;
 				});
 
 				_this.setState({rows: rows});
-			},
-			error: function(msg) {
+			})
+			.catch((msg) => {
 				console.error("route", msg);
-			}
-		});
+			});
 	}
 
 	handleClick(x) {
@@ -324,12 +306,13 @@ class GroupsPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/groups", "", function(data) {
-			console.log("groups", data)
-			_this.setState({rows: data});
-		}, function(e) {
-			console.log("get groups ERR");
-		});
+		xFetchJSON("/api/groups",{})
+			.then((data) => {
+				console.log("groups", data);
+				_this.setState({rows: data});
+			}).catch((e) => {
+				console.log("get groups ERR");
+			});
 	}
 
 	handleFSEvent(v, e) {
