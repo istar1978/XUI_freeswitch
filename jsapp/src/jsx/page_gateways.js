@@ -179,7 +179,7 @@ class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: []};
+		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: [], danger: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -188,6 +188,7 @@ class GatewayPage extends React.Component {
 		this.toggleHighlight = this.toggleHighlight.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleToggleParam = this.handleToggleParam.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -339,9 +340,40 @@ class GatewayPage extends React.Component {
 		verto.fsAPI("sofia", "profile public killgw " + this.state.gw.name);
 	}
 
+	handleDelete(id) {
+		console.log("deleting id", id);
+		var _this = this;
+
+		if (!_this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
+
+		$.ajax({
+			type: "DELETE",
+			url: "/api/gateways?id=" + id,
+			success: function () {
+				console.log("deleted")
+				var params = _this.state.params.filter(function(param) {
+					return param.id != id;
+				});
+
+				_this.setState({params: params});
+				console.log(_this.state.params)
+			},
+			error: function(msg) {
+				console.error("route", msg);
+			}
+		});
+	}
+
 	render() {
 		const gw = this.state.gw;
-		const _this = this; 
+		const _this = this;
+		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let hand = { cursor: "pointer" };
+		var danger = this.state.danger ? "danger" : "";
 		let params = <tr></tr>;
 		let save_btn = "";
 		let register = gw.register == "yes" ? "yes" : "no";
@@ -370,6 +402,9 @@ class GatewayPage extends React.Component {
 						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
 							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
 						</Button>
+					</td>
+					<td>
+						<td><T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 					</td>
 				</tr>
 			});
@@ -466,6 +501,7 @@ class GatewayPage extends React.Component {
 					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="d"><T.span text="Name" data="k"/></th>
 					<th><T.span text="Value"/></th>
 					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data='disabled'><T.span text="Enabled" data="disabled"/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{params}
 				</tbody>

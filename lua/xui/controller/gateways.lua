@@ -102,3 +102,14 @@ delete('/:id', function(params)
 		return 500, "{}"
 	end
 end)
+
+delete('/', function(params)
+	id = tonumber(env:getHeader('id'))
+	ret = m_gateway.delete(id)
+
+	if ret >= 0 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
