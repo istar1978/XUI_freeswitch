@@ -467,10 +467,10 @@ class SIPProfilePage extends React.Component {
 				<div style={running_state}></div>
 			</ButtonGroup>
 			<ButtonGroup>
-				<Button onClick={_this.handleStart.bind(_this)}><i className="fa fa-play" aria-hidden="true"></i>&nbsp;<T.span text="Start"/></Button>
-				<Button onClick={_this.handleStop.bind(_this)}><i className="fa fa-pause" aria-hidden="true"></i>&nbsp;<T.span text="Stop"/></Button>
-				<Button onClick={_this.handleRestart.bind(_this)}><i className="fa fa-forward" aria-hidden="true"></i>&nbsp;<T.span text="Restart"/></Button>
-				<Button onClick={_this.handleRescan.bind(_this)}><i className="fa fa-search" aria-hidden="true"></i>&nbsp;<T.span text="Rescan"/></Button>
+				<Button onClick={_this.handleStart.bind(_this)}><i className="fa fa-circle" aria-hidden="true"></i>&nbsp;<T.span text="Start"/></Button>
+				<Button onClick={_this.handleStop.bind(_this)}><i className="fa fa-circle-o" aria-hidden="true"></i>&nbsp;<T.span text="Stop"/></Button>
+				<Button onClick={_this.handleRestart.bind(_this)}><i className="fa fa-circle-o-notch" aria-hidden="true"></i>&nbsp;<T.span text="Restart"/></Button>
+				<Button onClick={_this.handleRescan.bind(_this)}><i className="fa fa-refresh" aria-hidden="true"></i>&nbsp;<T.span text="Rescan"/></Button>
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }

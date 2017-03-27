@@ -464,10 +464,10 @@ class GatewayPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={_this.handleReg.bind(_this)} ><i className="fa fa-unlock" aria-hidden="true"></i>&nbsp;<T.span text="Reg" /></Button>
-				<Button onClick={_this.handleUnreg.bind(_this)} ><i className="fa fa-lock" aria-hidden="true"></i>&nbsp;<T.span text="Unreg" /></Button>
-				<Button onClick={_this.handleStart.bind(_this)} ><i className="fa fa-play" aria-hidden="true"></i>&nbsp;<T.span text="Start" /></Button>
-				<Button onClick={_this.handleStop.bind(_this)} ><i className="fa fa-pause" aria-hidden="true"></i>&nbsp;<T.span text="Stop" /></Button>
+				<Button onClick={_this.handleReg.bind(_this)} ><i className="fa fa-square" aria-hidden="true"></i>&nbsp;<T.span text="Reg" /></Button>
+				<Button onClick={_this.handleUnreg.bind(_this)} ><i className="fa fa-square-o" aria-hidden="true"></i>&nbsp;<T.span text="Unreg" /></Button>
+				<Button onClick={_this.handleStart.bind(_this)} ><i className="fa fa-circle" aria-hidden="true"></i>&nbsp;<T.span text="Start" /></Button>
+				<Button onClick={_this.handleStop.bind(_this)} ><i className="fa fa-circle-o" aria-hidden="true"></i>&nbsp;<T.span text="Stop" /></Button>
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
