@@ -150,6 +150,7 @@ class SIPProfilePage extends React.Component {
 		this.toggleHighlight = this.toggleHighlight.bind(this);
 		this.handleSort = this.handleSort.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.handleChangeValueK = this.handleChangeValueK.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -175,6 +176,34 @@ class SIPProfilePage extends React.Component {
 			},
 			error: function(msg) {
 				console.error("route", msg);
+			}
+		});
+	}
+
+	handleChangeValueK(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+
+		console.log("change", obj);
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/sip_profiles/" + this.state.profile.id + "/params/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({k: obj[id]}),
+			success: function (obj) {
+				console.log("success!!!!", obj);
+				const params = _this.state.profile.params.map(function(p) {
+					if (p.id == id) {
+						return obj;
+					}
+					return p;
+				});
+				_this.setState({params: params});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
 			}
 		});
 	}
@@ -402,7 +431,13 @@ class SIPProfilePage extends React.Component {
 				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
 
 				return <tr key={param.id} className={disabled_class}>
-					<td>{param.k}</td>
+					<td><RIEInput value={_this.state.highlight ? (param.k ? param.k : T.translate("Click to Change")) : param.k} change={_this.handleChangeValueK}
+						propName={param.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
 					<td><RIEInput value={_this.state.highlight ? (param.v ? param.v : T.translate("Click to Change")) : param.v} change={_this.handleChange}
 						propName={param.id}
 						className={_this.state.highlight ? "editable" : ""}
@@ -410,7 +445,7 @@ class SIPProfilePage extends React.Component {
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
-					<td style={{textAlign: "right", paddingRight: 0}}>
+					<td>
 						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
 							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
 						</Button>
