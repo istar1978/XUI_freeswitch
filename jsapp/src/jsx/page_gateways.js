@@ -189,6 +189,7 @@ class GatewayPage extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.handleChangeValueK = this.handleChangeValueK.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -301,6 +302,34 @@ class GatewayPage extends React.Component {
 		});
 	}
 
+	handleChangeValueK(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+
+		console.log("change", obj);
+
+		$.ajax({
+			type: "PUT",
+			url: "/api/gateways/" + this.state.gw.id + "/params/" + id,
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({k: obj[id]}),
+			success: function (param) {
+				console.log("success!!!!", param);
+				_this.state.params = _this.state.params.map(function(p) {
+					if (p.id == id) {
+						return param;
+					}
+					return p;
+				});
+				_this.setState({params: _this.state.params});
+			},
+			error: function(msg) {
+				console.error("update params", msg);
+			}
+		});
+	}
+
 	handleToggleParam(e) {
 		const _this = this;
 		const data = e.target.getAttribute("data");
@@ -390,7 +419,13 @@ class GatewayPage extends React.Component {
 				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
 
 				return <tr key={param.id} className={disabled_class}>
-					<td>{param.k}</td>
+					<td><RIEInput value={_this.state.highlight ? (param.k ? param.k : T.translate("Click to Change")) : param.k} change={_this.handleChangeValueK}
+						propName={param.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
 					<td><RIEInput value={_this.state.highlight ? (param.v ? param.v : T.translate("Click to Change")) : param.v} change={_this.handleChange}
 						propName={param.id}
 						className={_this.state.highlight ? "editable" : ""}
