@@ -527,17 +527,19 @@ class SIPProfilesPage extends React.Component {
 				const msg = parseXML(doc);
 				console.log('msg', msg);
 
-				msg.forEach(function(profile) {
-					if (profile.type != "profile") return;
-					var name = profile.name;
+				if (msg.profile) {
+					msg.profile.forEach(function(profile) {
+						if (profile.type != "profile") return;
+						var name = profile.name;
 
-					rows = _this.state.rows.map(function(row) {
-						if (row.name == name) row.running = true;
-						return row;
+						rows = _this.state.rows.map(function(row) {
+							if (row.name == name) row.running = true;
+							return row;
+						});
 					});
-				});
 
-				_this.setState({rows: rows});
+					_this.setState({rows: rows});
+				}
 			});
 		}, function(e) {
 			console.log("get sip_profiles ERR");
