@@ -159,7 +159,7 @@ class Verto {
 			},
 			onWSConnect: function(o) {
 				console.log("connected!!!!");
-				// o.call('login', {});
+				o.call('login', {});
 			},
 			onWSLogin: function(verto, success) {
 				// fire_event("verto-login", success);
@@ -205,7 +205,7 @@ class Verto {
 			this.ringer = document.getElementById(tag);
 		}
 
-		this.call('login', {});
+		// this.call('login', {});
 	}
 
 	connectSocket() {

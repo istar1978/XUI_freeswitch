@@ -172,7 +172,7 @@ class Phone extends React.Component {
 				case "360p": vid_width = 640; vid_height = 360; break;
 				case "720p": vid_width =1280; vid_height = 720; break;
 				case "1080p":vid_width =1920; vid_height = 1080;break;
-				case "CIF":  vid_width = 176; vid_height = 144; break;
+				case "QCIF": vid_width = 176; vid_height = 144; break;
 				case "CIF":  vid_width = 352; vid_height = 288; break;
 				case "4CIF": vid_width = 704; vid_height = 576; break;
 			}

@@ -66,9 +66,9 @@ class LoginBox extends React.Component {
 		localStorage.setItem('xui.username', username);
 		localStorage.setItem('xui.password', password);
 		// verto.loginData(verto_params());
-		// verto.login();
 
 		verto.connect(verto_params());
+		verto.login();
 	}
 
 	componentDidMount () {
