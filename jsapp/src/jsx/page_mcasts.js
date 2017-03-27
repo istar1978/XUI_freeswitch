@@ -35,7 +35,8 @@ import T from 'i18n-react';
 import verto from './verto/verto';
 import { Link } from 'react-router';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
+import parseXML from './libs/xml_parser'
 
 class NewMcast extends React.Component {
 	constructor(props) {
@@ -89,32 +90,25 @@ class NewMcast extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/mcasts",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(mcast),
-			success: function (obj) {
-				mcast.id = obj.id;
-				_this.props.handleNewMcastAdded(mcast);
-			},
-			error: function(msg) {
-				console.error("mcast", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/mcasts", {
+			method: "POST",
+			body: JSON.stringify(mcast)
+		}).then((obj) => {
+			mcast.id = obj.id;
+			this.props.handleNewMcastAdded(mcast);
+		}).catch((msg) => {
+			console.error("mcast:", msg);
+			this.setState({errmsg: msg});
 		});
 	}
 
 	componentDidMount() {
-		const _this = this;
-
-		$.getJSON("/api/dicts?realm=MCAST_CODEC_NAME", function(data) {
-			_this.setState({codec_name: data});
+		xFetchJSON("/api/dicts?realm=MCAST_CODEC_NAME").then((data) => {
+			this.setState({codec_name: data});
 		});
 
-		$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000", function(data) {
-			_this.setState({sample_rate: data});
+		xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
+			this.setState({sample_rate: data});
 		});
 	}
 
@@ -265,21 +259,15 @@ class McastPage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/mcasts/" + mcast.id,
-			headers: {"X-HTTP-Method-Override": "PUT"},
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(mcast),
-			success: function () {
-				_this.setState({mcast: mcast, edit: false})
-				_this.handleCodecNameChange({target: {value: _this.state.mcast.codec_name}});
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("mcast", msg);
-			}
+		xFetchJSON("/api/mcasts/" + mcast.id, {
+			method: "PUT",
+			body: JSON.stringify(mcast)
+		}).then(() => {
+			this.setState({mcast: mcast, edit: false})
+			this.handleCodecNameChange({target: {value: this.state.mcast.codec_name}});
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("mcast", msg);
 		});
 	}
 
@@ -417,7 +405,6 @@ class McastsPage extends React.Component {
 	handleDelete(e) {
 		var id = e.target.getAttribute("data-id");
 		console.log("deleting id", id);
-		var _this = this;
 
 		if (!this.state.danger) {
 			var c = confirm(T.translate("Confirm to Delete ?"));
@@ -425,20 +412,17 @@ class McastsPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/mcasts/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/mcasts/" + id, {
+			method: "DELETE"
+		}).then((data) => {
+			console.log("deleted")
+			var rows = this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("mcast", msg);
-			}
+			this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("mcast", msg);
 		});
 	}
 
@@ -451,30 +435,37 @@ class McastsPage extends React.Component {
 			handler: this.handleFSEvent.bind(this)
 		});
 
-		$.getJSON("/api/mcasts", "", function(data) {
+		xFetchJSON("/api/mcasts").then((data) => {
 			var rows = [];
-			_this.setState({rows: data});
+			this.setState({rows: data});
+			var _this = this;
 			verto.fsAPI("rtp_mcast", "xmllist", function(data) {
-				var rows = _this.state.rows;
-				var msg = $(data.message);
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(data.message, "text/xml");
+				console.log('doc', doc);
 
-				msg.find("mcast").each(function() {
-					var mcast = this;
-					var name = $(mcast).find("name").text();
-					var running = $(mcast).find("running").text();
+				const msg = parseXML(doc);
+				console.log('msg', msg);
 
-					rows = rows.map(function(row) {
-						if (row.name == name) {
-							row.running = dbtrue(running);
-						}
-						return row;
+				if (msg) {
+					msg.forEach(function(mcast) {
+						var name = mcast.name;
+						var running = mcast.running;
+
+						rows = _this.state.rows.map(function(row) {
+							if (row.name == name) {
+								row.running = dbtrue(running);
+							}
+							return row;
+						});
+
 					});
-				});
-
-				_this.setState({rows: rows});
+					_this.setState({rows: rows});
+				}
 			});
-		}, function(e) {
+		}).catch((e) => {
 			console.log("get mcasts ERR");
+			notify('[' + e.status + '] ' + e.statusText);
 		});
 	}
 
@@ -518,25 +509,18 @@ class McastsPage extends React.Component {
 
 	HandleToggleMcast(e) {
 		const mcast_id = e.target.getAttribute("data");
-		const _this = this;
 
-		$.ajax({
-			type: "POST",
-			headers: {"X-HTTP-Method-Override": "PUT"},
-			url: "/api/mcasts/" + mcast_id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: 'toggle'}),
-			success: function (mcast) {
-				const rows = _this.state.rows.map(function(row) {
-					if (row.id == mcast.id) row.enable = mcast.enable;
-					return row;
-				});
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("mcast", msg);
-			}
+		xFetchJSON("/api/mcasts/" + mcast_id, {
+			method: "PUT",
+			body: JSON.stringify({action: 'toggle'})
+		}).then((mcast) => {
+			const rows = this.state.rows.map(function(row) {
+				if (row.id == mcast.id) row.enable = mcast.enable;
+				return row;
+			});
+			this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("mcast", msg);
 		});
 	}
 
