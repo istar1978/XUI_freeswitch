@@ -566,14 +566,29 @@ class SIPProfilesPage extends React.Component {
 		if (e.eventChannel == "FSevent.custom::sofia::profile_start") {
 			const profile_name = e.data["profile_name"];
 
-			const rows = _this.state.rows.map(function(row) {
-				if (row.name == profile_name) {
-					row.running = true;
+			verto.fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
+				let rows = [];
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(data.message, "text/xml");
+				console.log('doc', doc);
+
+				const msg = parseXML(doc);
+				console.log('msg', msg);
+
+				if (msg.name == profile_name) {
+					const rows = _this.state.rows.map(function(row) {
+						if (row.name == profile_name) {
+							row.running = true;
+						}
+						return row;
+					});
+					_this.setState({rows: rows});
+				} else {
+					notify("ERR, profile [" + profile_name + "] start failed!");
 				}
-				return row;
+
 			});
 
-			_this.setState({rows: rows});
 		} else if (e.eventChannel == "FSevent.custom::sofia::profile_stop") {
 			const profile_name = e.data["profile_name"];
 
@@ -606,16 +621,32 @@ class SIPProfilesPage extends React.Component {
 		const _this = this;
 
 		let name = e.target.getAttribute("data-name");
-		verto.fsAPI("sofia", "profile " + name + " stop", function(ret) {
-			if (ret.message.match("stopping:")) {
-				// trick FS has no sofia::profile_stop event
-				var evt = {}
-				evt.eventChannel = "FSevent.custom::sofia::profile_stop";
-				evt.data = {profile_name: name}
-				_this.handleFSEvent(verto, evt);
+
+		verto.fsAPI("sofia", "xmlstatus profile " + name, function(data) {
+			let rows = [];
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data.message, "text/xml");
+			console.log('doc', doc);
+
+			const msg = parseXML(doc);
+			console.log('msg', msg);
+
+			if (msg.name == name) {
+				verto.fsAPI("sofia", "profile " + name + " stop", function(ret) {
+					if (ret.message.match("stopping:")) {
+						// trick FS has no sofia::profile_stop event
+						var evt = {}
+						evt.eventChannel = "FSevent.custom::sofia::profile_stop";
+						evt.data = {profile_name: name}
+						_this.handleFSEvent(verto, evt);
+					} else {
+						notify(ret.message);
+					}
+				});
 			} else {
-				notify(ret.message);
+				notify("ERR, profile [" + name + "] is not running!");
 			}
+
 		});
 	}
 
