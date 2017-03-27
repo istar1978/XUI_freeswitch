@@ -116,40 +116,6 @@ function lua2(dest_number, options)
 	});
 }
 
-// translate conference member
-function translateMember(member) {
-	let status;
-	let email;
-	if (member[1][4].indexOf("audio") < 0) { // old 1.4
-		status = {};
-		status.audio = {};
-		status.audio.talking = false;
-		status.audio.deaf = false,
-		status.audio.muted = false,
-		status.audio.onHold = false;
-		status.audio.energyScore = 0;
-		email = member[1][5];
-	} else {
-		status = JSON.parse(member[1][4]);
-		email = member[1][5].email;
-	}
-
-	m = {
-		'uuid': member[0],
-		'memberID': member[1][0],
-		'cidNumber': member[1][1],
-		'cidName': member[1][2],
-		'codec': member[1][3],
-		'status': status,
-		'email': email,
-		'active': false
-	};
-
-	// console.log("m", m);
-	return m;
-}
-
-
 function form2json(selector) {
 	if (selector.substring(0, 1) == '#') selector = selector.substring(1);
 
