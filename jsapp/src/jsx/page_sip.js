@@ -140,7 +140,7 @@ class SIPProfilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {profile: {}, edit: false, params:[], order: 'ASC', running: false};
+		this.state = {profile: {}, edit: false, params:[], order: 'ASC', running: false, danger: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -149,6 +149,7 @@ class SIPProfilePage extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.toggleHighlight = this.toggleHighlight.bind(this);
 		this.handleSort = this.handleSort.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -356,9 +357,36 @@ class SIPProfilePage extends React.Component {
 		this.setState({profile: profile});
 	}
 
+	handleDelete(id) {
+		console.log("deleting id", id);
+		var _this = this;
+		if (!_this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+			if (!c) return;
+		}
+		$.ajax({
+			type: "DELETE",
+			url: "/api/sip_profiles?id=" + id,
+			success: function () {
+				console.log("deleted")
+				var params = _this.state.params.filter(function(param) {
+					return param.id != id;
+				});
+				_this.setState({params: params});
+				console.log(_this.state.params)
+			},
+			error: function(msg) {
+				console.error("route", msg);
+			}
+		});
+	}
+
 	render() {
 		const profile = this.state.profile;
 		const _this = this;
+		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let hand = { cursor: "pointer" };
+		var danger = this.state.danger ? "danger" : "";
 		let save_btn = "";
 		let err_msg = "";
 		let params = <tr></tr>;
@@ -386,6 +414,9 @@ class SIPProfilePage extends React.Component {
 						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
 							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
 						</Button>
+					</td>
+					<td>
+						<td><T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 					</td>
 				</tr>
 			});
@@ -446,7 +477,8 @@ class SIPProfilePage extends React.Component {
 				<tr>
 					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="k"><T.span text="Name" data="k"/></th>
 					<th><T.span text="Value"/></th>
-					<th style={{textAlign: "right", paddingRight: 0, cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
+					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="disabled"><T.span text="Enabled" data="disabled"/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{params}
 				</tbody>
