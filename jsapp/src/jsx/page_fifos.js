@@ -4,7 +4,7 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
-import { EditControl } from './libs/xtools';
+import { EditControl, xFetchJSON } from './libs/xtools';
 import verto from './verto/verto';
 
 class FifoMemberPage extends React.Component {
@@ -17,9 +17,10 @@ class FifoMemberPage extends React.Component {
 
 	componentDidMount() {
 		const _this = this;
-		$.getJSON("/api/fifos/"+_this.props.params.fifo_id+"/members/" + _this.props.params.id , function(data) {
-			_this.setState({ row: data[0] });
-		}, function(e) {
+		let url = "/api/fifos/" + _this.props.params.fifo_id + "/members/" + _this.props.params.id;
+		xFetchJSON(url).then((obj) => {
+			_this.setState({ row: obj[0] });
+		}).catch((msg) => {
 			console.log("get ERR");
 		});
 	}
@@ -43,19 +44,14 @@ class FifoMemberPage extends React.Component {
 		}
 
 		member.fifo_name = _this.state.row.fifo_name;
-		$.ajax({
-			type: "PUT",
-			url: "/api/fifos/"+_this.state.row.fifo_id+"/members/" + member.id ,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(member),
-			success: function (obj) {
-				_this.setState({ editable: false, row: member})
-				notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("member", msg);
-			}
+		xFetchJSON( "/api/fifos/" + _this.state.row.fifo_id + "/members/" + member.id, {
+			method: "PUT",
+			body: JSON.stringify(member)
+		}).then((obj) => {
+			_this.setState({ editable: false, row: member})
+			notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+		}).catch((msg) => {
+			console.error("member", msg);
 		});
 	}
 
@@ -124,19 +120,15 @@ class NewMember extends React.Component {
 		}
 		member.fifo_id = this.props.fifoData.fifoId;
 		member.fifo_name = this.props.fifoData.fifoName;
-		$.ajax({
-			type: "POST",
-			url: "/api/fifos/" + member.fifo_id + "/members",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(member),
-			success: function (obj) {
-				member.id = obj.id;
-				_this.props.handleNewMemberAdded(member);
-			},
-			error: function(msg) {
-				console.error("new FIFO Err", msg);
-			}
+
+		xFetchJSON("/api/fifos/" + member.fifo_id + "/members", {
+			method: "POST",
+			body: JSON.stringify(member)
+		}).then((obj) => {
+			member.id = obj.id;
+			_this.props.handleNewMemberAdded(member);
+		}).catch((msg) => {
+			console.error("new FIFO Err", msg);
 		});
 	}
 
@@ -215,18 +207,20 @@ class FifoInfo extends React.Component {
 
 	componentDidMount() {
 		const _this = this;
-		$.getJSON("/api/fifos/" + _this.props.params.fifo_id, function(data) {
-			let ifChecked = data.auto_record == "1" ? true : false ;
-			_this.setState({ fifoRows: data, ifChecked: ifChecked});
-		},function(e) {
-			console.log("get Fifo ERR");
-		});
+		xFetchJSON("/api/fifos/" + _this.props.params.fifo_id)
+			.then((data) => {
+				let ifChecked = data.auto_record == "1" ? true : false ;
+				_this.setState({ fifoRows: data, ifChecked: ifChecked});
+			}).catch((msg) => {
+				console.log("get Fifo ERR");
+			});
 
-		$.getJSON("/api/fifos/" + _this.props.params.fifo_id + "/members", function(data) {
+		xFetchJSON("/api/fifos/" + _this.props.params.fifo_id + "/members")
+			.then((data) => {
 				_this.setState({ memberRows: data });
-			}, function(e) {
+			}).catch((msg) => {
 				console.log("get Member ERR");
-		});
+			});
 	}
 
 	handleEdit () {
@@ -250,19 +244,14 @@ class FifoInfo extends React.Component {
 		fifo.id = _this.props.params.fifo_id;
 		fifo.auto_record = _this.state.auto_record;
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/fifos/"+ fifo.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(fifo),
-			success: function (obj) {
-				_this.setState({ editable: false, fifoRows: fifo})
-				notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("fifo", msg);
-			}
+		xFetchJSON("/api/fifos/"+ fifo.id, {
+			method: "PUT",
+			body: JSON.stringify(fifo)
+		}).then((obj) => {
+			_this.setState({ editable: false, fifoRows: fifo})
+			notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+		}).catch((msg) => {
+			console.error("fifo", msg);
 		});
 	}
 
@@ -273,9 +262,12 @@ class FifoInfo extends React.Component {
 
 	handleNewMemberAdded (member) {
 		const _this = this;
-		$.getJSON("/api/fifos/"+ _this.props.params.fifo_id +"/members", function(data) {
-			_this.setState({memberRows: data, formShow: false});
-		});
+		xFetchJSON("/api/fifos/"+ _this.props.params.fifo_id +"/members")
+			.then((obj) => {
+				_this.setState({memberRows: obj, formShow: false});
+			}).catch((msg) => {
+				console.log("ERR");
+			});
 	}
 
 	handleDelete (id) {
@@ -285,20 +277,18 @@ class FifoInfo extends React.Component {
 			var c = confirm(T.translate("Confirm to Delete ?"));
 			if (!c) return;
 		}
-		$.ajax({
-			type: "DELETE",
-			url: "/api/fifos/" + _this.props.params.fifo_id + "/members/" + id,
-			success: function () {
-				console.log("deleted")
-				var memberRows = _this.state.memberRows.filter(function(row) {
-					return row.id != id;
-				});
-				console.log("delete row", memberRows);
-				_this.setState({memberRows: memberRows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+
+		xFetchJSON("/api/fifos/" + _this.props.params.fifo_id + "/members/" + id, {
+			method: "DELETE"
+		}).then(() => {
+			console.log("deleted")
+			var memberRows = _this.state.memberRows.filter(function(row) {
+				return row.id != id;
+			});
+			console.log("delete row", memberRows);
+			_this.setState({memberRows: memberRows});
+		}).catch((msg) => {
+			console.log("route", msg);
 		});
 	}
 
@@ -450,20 +440,17 @@ class NewFifo extends React.Component {
 		}
 
 		fifo.auto_record = _this.state.auto_record;
-		$.ajax({
-			type: "POST",
-			url: "/api/fifos",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(fifo),
-			success: function (obj) {
-				fifo.id = obj.id;
-				_this.props.handleNewFifoAdded(fifo);
-			},
-			error: function(msg) {
-				console.error("new FIFO Err", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+
+		xFetchJSON("/api/fifos", {
+			method: "POST",
+			types: "json",
+			body: JSON.stringify(fifo),
+		}).then((obj) => {
+			fifo.id = obj.id;
+			_this.props.handleNewFifoAdded(fifo);
+		}).catch((msg) => {
+			console.error("new FIFO Err", msg);
+			_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
 		});
 	}
 
@@ -534,10 +521,10 @@ class FifoPage extends React.Component {
 
 	componentDidMount() {
 		let _this = this;
-		$.getJSON("/api/fifos", function(data) {
+		xFetchJSON("/api/fifos").then((data) => {
 			_this.setState({rows: data});
-		}, function(e) {
-			console.log("get FIFO ERR");
+		}).catch((e)=> {
+			console.log("get groups ERR");
 		});
 	}
 
@@ -547,9 +534,13 @@ class FifoPage extends React.Component {
 
 	handleNewFifoAdded(fifo) {
 		const _this = this;
-		$.getJSON("/api/fifos", function(data) {
-			_this.setState({rows: data, formShow: false});
-		});
+		xFetchJSON("/api/fifos")
+			.then((obj) => {
+				_this.setState({rows: obj, formShow: false});
+			})
+			.catch((msg) => {
+				console.log("refresh err");
+			});
 	}
 
 	handleReparseClick() {
@@ -565,20 +556,17 @@ class FifoPage extends React.Component {
 			var c = confirm(T.translate("Confirm to Delete ?"));
 			if (!c) return;
 		}
-		$.ajax({
-			type: "DELETE",
-			url: "/api/fifos/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
+
+		xFetchJSON("/api/fifos/" + id, {
+			method: "DELETE"
+		}).then((data) => {
+			var rows = _this.state.rows.filter(function(row) {
 					return row.id != id;
 				});
 				console.log("delete row", rows);
 				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		}).catch((e)=> {
+			console.error("route", msg);
 		});
 	}
 
