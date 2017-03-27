@@ -170,6 +170,7 @@ LANGUAGES["zh"] = {
 	"Mandatory fields left blank": "红色字段不能为空",
 	"Saved at": "最后保存于 *{time}*",
 	"Created At": "创建时间",
+	HTTPERR: "[{code}] {statusText}",
 
 	"Create New Block": "创建新积木",
 	"IVR Blocks": "IVR积木",

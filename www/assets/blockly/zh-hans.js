@@ -413,6 +413,7 @@ Blockly.Msg.FS_BLOCK_FILE = "文件";
 Blockly.Msg.FS_BLOCK_IVRSTART = "IVR起点";
 Blockly.Msg.FS_BLOCK_DEFAULT = "默认";
 Blockly.Msg.FS_BLOCK_IVR = "IVR";
+Blockly.Msg.FS_BLOCK_IVR_NAME = "名称";
 Blockly.Msg.FS_BLOCK_CASE = "如果收到";
 Blockly.Msg.FS_BLOCK_FIFO = "FIFO队列";
 Blockly.Msg.FS_BLOCK_AUDIORECORD = "录音";

@@ -146,8 +146,9 @@ Blockly.Lua.fsFIFOS = function(block) {
 };
 
 Blockly.Lua.IVR = function(block) {
+  var text_name = Blockly.Lua.valueToCode(block, 'name', Blockly.Lua.ORDER_ATOMIC);
   var text_sound = Blockly.Lua.valueToCode(block, 'sound', Blockly.Lua.ORDER_ATOMIC);
-  var text_max = Blockly.Lua.valueToCode(block, 'MAX', Blockly.Lua.ORDER_ATOMIC);
+  var text_max = Blockly.Lua.valueToCode(block, 'max', Blockly.Lua.ORDER_ATOMIC);
   var statements_entries = Blockly.Lua.statementToCode(block, 'entries');
   var statements_default = Blockly.Lua.statementToCode(block, 'default');
   var timeout = 5000;
@@ -200,6 +201,16 @@ Blockly.Lua.IVRreturn = function(block) {
   var code = 'goto' + ' ' + 'digit' + text_digit + '\n' 
   return code;
 };
+
+Blockly.Lua.IVRAction= function(block) {
+  var action = block.getFieldValue('action');
+  var args = Blockly.Lua.valueToCode(block, 'args', Blockly.JSON.ORDER_ATOMIC);
+
+  // var code = {action: action, args: args};
+  var code = "";
+  return code;
+};
+
 
 Blockly.Lua.fsDBH = function(block) {
   var dsn  = block.getFieldValue('dsn');

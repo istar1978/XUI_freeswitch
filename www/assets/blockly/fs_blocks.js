@@ -198,6 +198,14 @@ var FSAPPs = [
 "wait_for_answer",
 "wait_for_silence"];
 
+var IVRAPPs = [
+"menu-exit",
+"menu-sub",
+"menu-exec-app",
+"menu-play-sound",
+"menu-back",
+"menu-top"];
+
 Blockly.Blocks['fsStart'] = {
   init: function() {
     this.appendDummyInput()
@@ -430,10 +438,12 @@ Blockly.Blocks['IVR'] = {
     init: function() {
         this.appendDummyInput()
             .appendField(Blockly.Msg.FS_BLOCK_IVR)
+        this.appendValueInput("name")
+            .appendField(Blockly.Msg.FS_BLOCK_IVR_NAME)
         this.appendValueInput("sound")
             .appendField(Blockly.Msg.FS_BLOCK_SOUND)
         this.appendDummyInput()
-        this.appendValueInput("MAX")
+        this.appendValueInput("max")
             .appendField(Blockly.Msg.FS_BLOCK_MAX)
 	this.appendDummyInput()
             .appendField(Blockly.Msg.FS_BLOCK_TERMINATOR)
@@ -477,6 +487,22 @@ Blockly.Blocks['IVRreturn'] = {
     }
 };
 
+Blockly.Blocks['IVRAction'] = {
+    init: function() {
+        var drops = new Array();
+        IVRAPPs.forEach(function(app) {
+            drops.push([app, app]);
+        });
+        this.appendValueInput("args")
+            .appendField(Blockly.Msg.FS_BLOCK_EXECUTE)
+            .appendField(new Blockly.FieldDropdown(drops), "action");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(20);
+        this.setTooltip('');
+        this.setHelpUrl('http://www.example.com/');
+    }
+};
 
 Blockly.Blocks['fsDBH'] = {
   init: function() {

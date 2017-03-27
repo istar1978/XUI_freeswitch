@@ -77,7 +77,7 @@ if user then
 		local dial_string = "{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}";
 
 		if row.type == 'HK' then -- Hai Kang
-			dial_string = "{^^!sip_h_Subject=" .. user .. ":0,34020000001320009999:0!absolute_codec_string=PCMU,PS}" .. dial_string
+			dial_string = "{^^!sip_h_Subject=" .. user .. ":0,34020000001320009999:0!absolute_codec_string=PS}" .. dial_string
 		end
 
 		pars= '<param name="password" value="' .. row.password .. '"/>' ..

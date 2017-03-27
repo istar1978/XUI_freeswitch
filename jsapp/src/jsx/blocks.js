@@ -85,17 +85,22 @@ var toolbox = `<xml id="toolbox" style="display: none">
 <category name="IVR" colour="0">
 	<block type="fsStart"></block>
 	<block type="IVR">
+		 <value name="name">
+			<shadow type="text">
+			 <field name="TEXT">default</field>
+		   </shadow>
+		 </value>
 		 <value name="sound">
 			<shadow type="text">
 			 <field name="TEXT"></field>
 		   </shadow>
 		 </value>
-		 <value name="MAX">
+		 <value name="max">
 			<shadow type="math_number">
 			 <field name="NUM">1</field>
 		   </shadow>
 		 </value>
-		</block>
+	</block>
 	<block type="IVREntry">
 		 <value name="case">
 			<shadow type="text">
@@ -109,6 +114,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 				<field name="TEXT"></field>
 			</shadow>
 		</value>
+	</block>
+	<block type="IVRAction">
 	</block>
 </category>
 
@@ -656,7 +663,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			"/assets/blockly/javascript_compressed.js",
 			"/assets/blockly/fs_blocks.js",
 			"/assets/blockly/fs_blocks_lua.js",
-			// "/assets/blockly/fs_blocks_javascript.js",
+			"/assets/blockly/fs_blocks_javascript.js",
+			"/assets/blockly/fs_blocks_json.js",
 			"/assets/blockly/" + blockly_lang + ".js"
 		];
 
@@ -692,7 +700,12 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			return code;
 		}
 		let toXml = function() {
-			let code = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(_this.workspace));;
+			let code = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(_this.workspace));
+			console.log(code);
+			return code;
+		}
+		let toJSON = function() {
+			let code = Blockly.JSON.workspaceToCode(_this.workspace);
 			console.log(code);
 			return code;
 		}
@@ -757,6 +770,23 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			}
 
 			download("block-" + this.state.block.id + ".xml",toXml());
+
+		} else if (data == "exportJSON") {
+			let download = function(filename, text) {
+				var pom = document.createElement('a');
+				pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				pom.setAttribute('download', filename);
+
+				if (document.createEvent) {
+					var event = document.createEvent('MouseEvents');
+					event.initEvent('click', true, true);
+					pom.dispatchEvent(event);
+				} else {
+					pom.click();
+				}
+			}
+
+			download("block-" + this.state.block.id + ".txt", toJSON());
 
 		} else if (data == "exportSVG") {
 			const renderSimple = function (workspace) {
@@ -836,6 +866,8 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			<div id='blocks'>
 			<ButtonToolbar className="pull-right">
 				<ButtonGroup>
+				<Button onClick={() => this.handleControlClick("exportJSON")}><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
+				<T.span text="Export JSON" /></Button>
 				<Button onClick={() => this.handleControlClick("exportXML")}><i className="fa fa-download" aria-hidden="true"></i>&nbsp;
 				<T.span text="Export XML" /></Button>
 				<Button onClick={() => this.handleControlClick("exportSVG")}><i className="fa fa-download" aria-hidden="true"></i>&nbsp;

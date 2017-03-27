@@ -1,4 +1,4 @@
--- XUI tables
+__ XUI tables
 
 CREATE TABLE routes (
 	id INTEGER PRIMARY KEY,
@@ -58,6 +58,8 @@ CREATE TABLE blocks (
 	xml TEXT,
 	js TEXT,
 	lua TEXT,
+	ivr_menu_id VARCHAR,  -- link to a IVR block
+
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
@@ -73,10 +75,10 @@ END;
 CREATE TABLE dicts (
 	id INTEGER PRIMARY KEY,
 	realm VARCHAR NOT NULL,
-	k VARCHAR NOT NULL, -- key
-	v VARCHAR, -- value
-	d VARCHAR, -- description
-	o INTEGER, -- order
+	k VARCHAR NOT NULL, __ key
+	v VARCHAR, __ value
+	d VARCHAR, __ description
+	o INTEGER, __ order
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
@@ -93,10 +95,10 @@ END;
 
 CREATE TABLE groups (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR NOT NULL,           -- a key in dicts
+	realm VARCHAR NOT NULL,           __ a key in dicts
 	name VARCHAR NOT NULL,
 	description VARCHAR,
-	group_id INTEGER,        -- nested groups
+	group_id INTEGER,        __ nested groups
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
@@ -165,10 +167,10 @@ END;
 
 CREATE TABLE params (
 	id INTEGER PRIMARY KEY,
-	realm VARCHAR NOT NULL, -- e.g. sip_profiles or gateways
+	realm VARCHAR NOT NULL, __ e.g. sip_profiles or gateways
 	k VARCHAR NOT NULL,
 	v VARCHAR,
-	ref_id INTEGER,-- e.g. sip_profiles.id or gateway.id
+	ref_id INTEGER,__ e.g. sip_profiles.id or gateway.id
 	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
@@ -205,7 +207,7 @@ END;
 
 CREATE TABLE media_files(
 	id INTEGER PRIMARY KEY,
-	type VARCHAR,          -- FAX, PDF, AUDIO, VIDEO, AUDIO-CONF, VIDEO-CONF
+	type VARCHAR,          __ FAX, PDF, AUDIO, VIDEO, AUDIO_CONF, VIDEO_CONF
 	name VARCHAR NOT NULL,
 	description VARCHAR,
 	file_name VARCHAR,
@@ -217,9 +219,9 @@ CREATE TABLE media_files(
 	bit_rate INTEGER,
 	duration INTEGER,
 	original_file_name VARCHAR,
-	dir_path VARCHAR, -- dir
-	abs_path VARCHAR, -- absolute path
-	rel_path VARCHAR, -- relative path
+	dir_path VARCHAR, __ dir
+	abs_path VARCHAR, __ absolute path
+	rel_path VARCHAR, __ relative path
 	thumb_path VARCHAR,
 	meta TEXT,
 	geo_position VARCHAR,
@@ -242,7 +244,7 @@ CREATE TABLE conference_rooms (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR,
 	description VARCHAR,
-	nbr VARCHAR,  -- conference number
+	nbr VARCHAR,  __ conference number
 	capacity integer,
 	realm VARCHAR,
 	pin VARCHAR,
@@ -263,7 +265,7 @@ CREATE TABLE conference_members (
 	room_id INTEGER NOT NULL,
 	name VARCHAR,
 	description VARCHAR,
-	num VARCHAR,  -- conference number
+	num VARCHAR,  __ conference number
 
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
@@ -311,9 +313,9 @@ CREATE TABLE fifo_cdrs (
 	id INTEGER PRIMARY KEY,
 	channel_uuid VARCHAR NOT NULL,
 	fifo_name VARCHAR NOT NULL,
-	ani VARCHAR,                -- the original caller id number
-	dest_number VARCHAR,        -- the original dest number
-	bridged_number VARCHAR,     -- bridged_number
+	ani VARCHAR,                __ the original caller id number
+	dest_number VARCHAR,        __ the original dest number
+	bridged_number VARCHAR,     __ bridged_number
 	media_file_id INTEGER,
 	
 	start_epoch INTEGER,
@@ -414,6 +416,7 @@ CREATE TABLE permissions (
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
+
 CREATE TRIGGER tg_permissions AFTER UPDATE ON permissions
 BEGIN
 	UPDATE permissions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
@@ -423,14 +426,17 @@ CREATE TABLE group_permissions(
 	id INTEGER PRIMARY KEY,
 	group_id INTEGER,
 	permission_id INTEGER,
+
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
+
 CREATE TRIGGER tg_group_permissions AFTER UPDATE ON group_permissions
 BEGIN
 	UPDATE group_permissions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
+
 
 CREATE TABLE conference_profiles (
 	id INTEGER PRIMARY KEY,
@@ -442,11 +448,65 @@ CREATE TABLE conference_profiles (
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
 );
+
 CREATE UNIQUE INDEX conference_profiles_name ON conference_profiles(name);
 CREATE INDEX conference_profiles_deleted_epoch ON conference_profiles(deleted_epoch);
 CREATE TRIGGER tg_conference_profiles AFTER UPDATE ON conference_profiles
 BEGIN
 	UPDATE conference_profiles set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREAT TABLE ivr_menus (
+	id INTEGER PRIMARY KEY,
+	name VARCHAR NOT NULL,
+	greet_ong VARCHAR,
+	greet_hort VARCHAR,
+	invalid_sound VARCHAR,
+	exit_sound VARCHAR,
+	transfer_sound VARCHAR,
+	timeout VARCHAR,
+	max_failures VARCHAR,
+	max_timeouts VARCHAR,
+	exec_on_max_failures VARCHAR,
+	exec_on_max_timeouts VARCHAR,
+	confirm_macro VARCHAR,
+	confirm_key VARCHAR,
+	tts_engine VARCHAR,
+	tts_voice VARCHAR,
+	confirm_attempts VARCHAR,
+	digit_len VARCHAR,
+	inter_digit_timeout VARCHAR,
+	pin VARCHAR,
+	pin_file VARCHAR,
+	bad_pin_file VARCHAR
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE UNIQUE INDEX ivr_menu_name ON ivr_menues(name);
+
+CREATE TRIGGER t_ivr_menues AFTER UPDATE ON ivr_menues
+BEGIN
+	UPDATE ivr_menues set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE ivr_actions (
+	id INTEGER PRIMARY Key,
+	ivr_menu_id INTEGER,
+	digits VARCHAR,
+	action VARCHAR,
+	args VARCHAR,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER t_ivr_actions AFTER UPDATE ON ivr_actions
+BEGIN
+	UPDATE ivr_actions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
 -- END
