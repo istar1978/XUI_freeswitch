@@ -437,6 +437,21 @@ class ConferencePage extends React.Component {
 				});
 
 				if (found) this.setState({outcall_rows: outcall_rows});
+
+				if (!found) {
+					const rows = this.state.rows.map(function(row) {
+						if (row.memberID < 0 && row.cidNumber == member.cidNumber) {
+							row.hidden = true;
+							found++;
+							return row;
+						} else {
+							return row;
+						}
+					});
+
+					if (found) this.setState({rows: rows});
+				}
+
 			}
 
 			var rows = this.state.rows;
@@ -464,6 +479,10 @@ class ConferencePage extends React.Component {
 			var rows = this.state.rows.filter(function(row) {
 				if (row.uuid == a.key) {
 					delete _this.activeMembers[row.memberID];
+				}
+
+				if (row.memberID < 0 && row.cidNumber == a.data[1]) {
+					row.hidden = false;
 				}
 
 				return row.uuid != a.key;
@@ -497,6 +516,7 @@ class ConferencePage extends React.Component {
 		const rows = this.state.outcall_rows.concat(this.state.rows);
 
 		const members = rows.map(function(member) {
+			if (member.hidden) return null;
 			member.conference_name = _this.props.name;
 			return <Member member={member} key={member.uuid} onMemberClick={_this.handleMemberClick} displayStyle={_this.state.displayStyle}/>
 		});
