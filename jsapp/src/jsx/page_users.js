@@ -230,7 +230,7 @@ class UserPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {user: {}, edit: false, group: []};
+		this.state = {user: {}, edit: false, groups: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -275,13 +275,19 @@ class UserPage extends React.Component {
 			var gtype = "DELETE";
 		}
 
+		const user_group = {
+			user_id: user_id,
+			group_id: group_id
+		};
+
 		xFetchJSON("/api/user_groups", {
-				type: gtype,
-				data: '{"user_id":"'+user_id+'","group_id":"'+group_id+'"}'
+				method: gtype,
+				body: JSON.stringify(user_group)
 		}).then((data) => {
-			console.error("g", data);
+			console.info("g", data);
 		}).catch((msg) => {
 			console.error("err", msg);
+			notify(msg, 'error');
 		});
 	}
 
@@ -296,7 +302,7 @@ class UserPage extends React.Component {
 
 		xFetchJSON("/api/user_groups/" + this.props.params.id).then((data) => {
 			console.log("groups", data)
-			// _this.setState({group: data});
+			this.setState({groups: data});
 		}).catch((e) => {
 			console.log("get groups ERR");
 		});
@@ -311,9 +317,10 @@ class UserPage extends React.Component {
 			save_btn = <Button onClick={this.handleSubmit}><i className="fa fa-save" aria-hidden="true"></i>&nbsp;<T.span text="Save"/></Button>
 		}
 
-		var group = this.state.group.map(function(row) {
-			return <Checkbox name="group" defaultChecked={row.checkshow} value={row.id}><T.span text={row.name}/></Checkbox>
-		})
+		const groups = this.state.groups.map(function(row) {
+			return <Checkbox name="group" key={row.id} defaultChecked={row.checkshow} value={row.id}>{row.name}</Checkbox>
+		});
+
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
@@ -382,10 +389,12 @@ class UserPage extends React.Component {
 			</Form>
 			
 			<br/>
+			<Form horizontal id="userGroupForm">
 				<FormGroup onChange={this.handleGroup}>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Groups"/></Col>
-					<Col sm={10}>{group}</Col>
+					<Col sm={10}>{groups}</Col>
 				</FormGroup>
+			</Form>
 			
 		</div>
 	}
