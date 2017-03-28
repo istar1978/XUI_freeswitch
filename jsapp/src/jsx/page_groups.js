@@ -65,7 +65,7 @@ class NewGroup extends React.Component {
 			_this.props.handleNewUserAdded(group);
 		}).catch((msg) => {
 			console.error("route", msg);
-			_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
+			_this.setState({errmsg: '' + msg + ''});
 		}); 
 	}
 
