@@ -450,7 +450,7 @@ class NewFifo extends React.Component {
 			_this.props.handleNewFifoAdded(fifo);
 		}).catch((msg) => {
 			console.error("new FIFO Err", msg);
-			_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
+			_this.setState({errmsg: "" + msg + ""});
 		});
 	}
 
