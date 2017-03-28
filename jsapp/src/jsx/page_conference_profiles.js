@@ -38,7 +38,7 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 
 class NewProfile extends React.Component {
 	propTypes: {handleNewProfileAdded: React.PropTypes.func}
@@ -64,22 +64,16 @@ class NewProfile extends React.Component {
 			return;
 		}
 
-		
-		$.ajax({
-			type: "POST",
-			url: "/api/conference_profiles",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(profile),
-			success: function (obj) {
-				console.log(obj);
-				profile.id = obj.id;
-				_this.props.onNewProfileAdded(profile);
-			},
-			error: function(msg) {
-				console.error("profile", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText + ' ' + msg.responseText});
-			}
+		xFetchJSON("/api/conference_profiles", {
+			method: "POST",
+			body: JSON.stringify(profile)
+		}).then((obj) => {
+			console.log(obj);
+			profile.id = obj.id;
+			_this.props.onNewProfileAdded(profile);
+		}).catch((msg) => {
+			console.error("profile", msg);
+			_this.setState({errmsg: '' + msg});
 		});
 	}
 
@@ -166,45 +160,33 @@ class ConferenceProfilePage extends React.Component {
 			notify(<T.span text="Mandatory fields left blank"/>, 'error');
 			return;
 		}
-
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_profiles/" + profile.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(profile),
-			success: function () {
-				_this.setState({profile: profile, edit: false})
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("profile", msg);
-			}
+		xFetchJSON("/api/conference_profiles/" + profile.id, {
+			method: "PUT",
+			body: JSON.stringify(profile)
+		}).then((obj) => {
+			_this.setState({profile: profile, edit: false})
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("profile", msg);
 		});
 	}
 	
 	handleToggleParam(e) {
 		const _this = this;
 		const data = e.target.getAttribute("data");
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_profiles/" + this.state.profile.id + "/params/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				// console.log("success!!!!", param);
-				const params = _this.state.params.map(function(p) {
-					if (p.id == data) {
-						p.disabled = param.disabled;
-					}
-					return p;
-				});
-				_this.setState({params: params});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
+		xFetchJSON("/api/conference_profiles/" + this.state.profile.id + "/params/" + data, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			const params = _this.state.params.map(function(p) {
+				if (p.id == data) {
+					p.disabled = param.disabled;
+				}
+				return p;
+			});
+			_this.setState({params: params});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
 		});
 	}
 	
@@ -212,43 +194,42 @@ class ConferenceProfilePage extends React.Component {
 		const _this = this;
 		const id = Object.keys(obj)[0];
 		console.log("change", obj);
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_profiles/" + this.state.profile.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.params = _this.state.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({params: _this.state.params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
+		xFetchJSON("/api/conference_profiles/" + this.state.profile.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({v: obj[id]})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			_this.state.params = _this.state.params.map(function(p) {
+				if (p.id == id) {
+					return param;
+				}
+				return p;
+			});
+			_this.setState({params: _this.state.params});
+		}).catch((msg) => {
+			console.error("update params", msg);
 		});
 	}
+
 	handleControlClick(e) {
 		this.setState({edit: !this.state.edit});
 	}
+
 	isStringAcceptable() {
 		return true;
 	}
+
 	toggleHighlight() {
 		this.setState({highlight: !this.state.highlight});
 	}
+
 	componentDidMount() {
 		const _this = this;
-		$.getJSON("/api/conference_profiles/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/conference_profiles/" + this.props.params.id).then((data) => {
 			const params = data.params;
 			_this.setState({profile: data, params: params});
-		}, function(e) {
-			console.error("get conference profile ERR", e);
+		}).catch((msg) => {
+			console.error("get conference profile ERR", msg);
 		});
 	}
 
@@ -358,20 +339,17 @@ class ConferenceProfilesPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/conference_profiles/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON( "/api/conference_profiles/" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("conference_profiles", msg);
 		});
 	}
 
@@ -418,10 +396,10 @@ class ConferenceProfilesPage extends React.Component {
 		var _this = this;
 		let url = "/api/conference_profiles";
 
-        $.getJSON(url, "", function(data) {
+		xFetchJSON(url).then((data) => {
 			console.log("profiles", data)
 			_this.setState({rows: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get profiles ERR");
 		});
 	}
