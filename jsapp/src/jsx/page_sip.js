@@ -36,7 +36,7 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 import { Link } from 'react-router';
 // http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 import verto from './verto/verto';
 import parseXML from './libs/xml_parser';
 
@@ -60,20 +60,15 @@ class NewSIPProfile extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/sip_profiles",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(profile),
-			success: function (obj) {
-				profile.id = obj.id;
-				_this.props.handleSIPProfileAdded(profile);
-			},
-			error: function(msg) {
-				console.error("sip_profile", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON( "/api/sip_profiles", {
+			method: "POST",
+			body: JSON.stringify(profile)
+		}).then((obj) => {
+			profile.id = obj.id;
+			_this.props.handleSIPProfileAdded(profile);
+		}).catch((msg) => {
+			console.error("sip_profile", msg);
+			_this.setState({errmsg: '' + msg + ''});
 		});
 	}
 
@@ -164,19 +159,14 @@ class SIPProfilePage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/sip_profiles/" + profile.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(profile),
-			success: function () {
-				_this.setState({profile: profile, edit:false});
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		xFetchJSON("/api/sip_profiles/" + profile.id, {
+			method: "PUT",
+			body: JSON.stringify(profile)
+		}).then((obj) => {
+			_this.setState({profile: profile, edit:false});
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("route", msg);
 		});
 	}
 
@@ -186,25 +176,20 @@ class SIPProfilePage extends React.Component {
 
 		console.log("change", obj);
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/sip_profiles/" + this.state.profile.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({k: obj[id]}),
-			success: function (obj) {
-				console.log("success!!!!", obj);
-				const params = _this.state.profile.params.map(function(p) {
-					if (p.id == id) {
-						return obj;
-					}
-					return p;
-				});
-				_this.setState({params: params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
+		xFetchJSON( "/api/sip_profiles/" + this.state.profile.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({k: obj[id]})
+		}).then((obj) => {
+			console.log("success!!!!", obj);
+			const params = _this.state.profile.params.map(function(p) {
+				if (p.id == id) {
+					return obj;
+				}
+				return p;
+			});
+			_this.setState({params: params});
+		}).catch((msg) => {
+			console.error("update params", msg);
 		});
 	}
 
@@ -216,25 +201,19 @@ class SIPProfilePage extends React.Component {
 		const _this = this;
 		const data = e.target.getAttribute("data");
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/sip_profiles/" + this.state.profile.id + "/params/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				// console.log("success!!!!", param);
-				const params = _this.state.params.map(function(p) {
-					if (p.id == data) {
-						p.disabled = param.disabled;
-					}
-					return p;
-				});
-				_this.setState({params: params});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
+		xFetchJSON("/api/sip_profiles/" + this.state.profile.id + "/params/" + data, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			const params = _this.state.params.map(function(p) {
+				if (p.id == data) {
+					p.disabled = param.disabled;
+				}
+				return p;
+			});
+			_this.setState({params: params});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
 		});
 	}
 
@@ -244,25 +223,20 @@ class SIPProfilePage extends React.Component {
 
 		console.log("change", obj);
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/sip_profiles/" + this.state.profile.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (obj) {
-				console.log("success!!!!", obj);
-				const params = _this.state.profile.params.map(function(p) {
-					if (p.id == id) {
-						return obj;
-					}
-					return p;
-				});
-				_this.setState({params: params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
+		xFetchJSON("/api/sip_profiles/" + this.state.profile.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({v: obj[id]})
+		}).then((obj) => {
+			console.log("success!!!!", obj);
+			const params = _this.state.profile.params.map(function(p) {
+				if (p.id == id) {
+					return obj;
+				}
+				return p;
+			});
+			_this.setState({params: params});
+		}).catch((msg) => {
+			console.error("update params", msg);
 		});
 	}
 
@@ -276,7 +250,8 @@ class SIPProfilePage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/sip_profiles/" + this.props.params.id, "", function(data) {
+
+		xFetchJSON("/api/sip_profiles/" + this.props.params.id).then((data) => {
 			_this.setState({profile: data, params: data.params});
 			verto.fsAPI("sofia", "xmlstatus", function(data) {
 				const parser = new DOMParser();
@@ -296,7 +271,7 @@ class SIPProfilePage extends React.Component {
 					});
 				}
 			});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get profile/sip_profiles ERR");
 		});
 		verto.subscribe("FSevent.custom::sofia::profile_start", {
@@ -393,20 +368,18 @@ class SIPProfilePage extends React.Component {
 			var c = confirm(T.translate("Confirm to Delete ?"));
 			if (!c) return;
 		}
-		$.ajax({
-			type: "DELETE",
-			url: "/api/sip_profiles?id=" + id,
-			success: function () {
-				console.log("deleted")
-				var params = _this.state.params.filter(function(param) {
-					return param.id != id;
-				});
-				_this.setState({params: params});
-				console.log(_this.state.params)
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+
+		xFetchJSON("/api/sip_profiles?id=" + id, {
+			method: "DELETE",
+		}).then((obj) => {
+			console.log("deleted")
+			var params = _this.state.params.filter(function(param) {
+				return param.id != id;
+			});
+			_this.setState({params: params});
+			console.log(_this.state.params)
+		}).catch((msg) => {
+			console.error("delete", msg);
 		});
 	}
 
@@ -450,9 +423,7 @@ class SIPProfilePage extends React.Component {
 							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
 						</Button>
 					</td>
-					<td>
-						<td><T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
-					</td>
+					<td><T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 				</tr>
 			});
 		}
@@ -554,20 +525,17 @@ class SIPProfilesPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/sip_profiles/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/sip_profiles/" + id, {
+			method: "DELETE",
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("sip", msg);
 		});
 	}
 
@@ -584,7 +552,8 @@ class SIPProfilesPage extends React.Component {
 
 	syncSofiaStatus() {
 		var _this = this;
-		$.getJSON("/api/sip_profiles", "", function(data) {
+
+		xFetchJSON("/api/sip_profiles").then((data) => {
 			_this.setState({rows: data});
 
 			verto.fsAPI("sofia", "xmlstatus", function(data) {
@@ -606,12 +575,11 @@ class SIPProfilesPage extends React.Component {
 							return row;
 						});
 					});
-
 					_this.setState({rows: rows});
 				}
 			});
-		}, function(e) {
-			console.log("get sip_profiles ERR");
+		}).catch((msg) => {
+			console.log("get sip_profiles ERR",msg);
 		});
 	}
 
@@ -778,23 +746,18 @@ class SIPProfilesPage extends React.Component {
 		const profile_id = e.target.getAttribute("data");
 		const _this = this;
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/sip_profiles/" + profile_id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: 'toggle'}),
-			success: function (profile) {
-				const rows = _this.state.rows.map(function(row) {
-					if (row.id == profile.id) row.disabled = profile.disabled;
-					return row;
-				});
+		xFetchJSON("/api/sip_profiles/" + profile_id, {
+			method: "PUT",
+			body: JSON.stringify({action: 'toggle'})
+		}).then((profile) => {
+			const rows = _this.state.rows.map(function(row) {
+				if (row.id == profile.id) row.disabled = profile.disabled;
+				return row;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("sip_profile", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("sip_profile", msg);
 		});
 	}
 

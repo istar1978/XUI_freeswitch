@@ -35,14 +35,13 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './libs/xtools';
+import { EditControl,xFetchJSON } from './libs/xtools';
 import verto from './verto/verto';
 import parseXML from './libs/xml_parser';
 
 class NewGateway extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {errmsg: ''};
 
 		// This binding is necessary to make `this` work in the callback
@@ -61,20 +60,15 @@ class NewGateway extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/gateways",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(gw),
-			success: function (obj) {
-				gw.id = obj.id;
-				_this.props.handleNewGatewayAdded(gw);
-			},
-			error: function(msg) {
-				console.error("gateway", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/gateways", {
+			method:"POST",
+			body: JSON.stringify(gw)
+		}).then((obj) => {
+			gw.id = obj.id;
+			_this.props.handleNewGatewayAdded(gw);
+		}).catch((msg) => {
+			console.error("gateway", msg);
+			_this.setState({errmsg: '' + msg + ''});
 		});
 	}
 
@@ -204,19 +198,14 @@ class GatewayPage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/gateways/" + gw.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(gw),
-			success: function () {
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-				_this.setState({gw: gw, edit: false})
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		xFetchJSON( "/api/gateways/" + gw.id, {
+			method: "PUT",
+			body: JSON.stringify(gw)
+		}).then((obj) => {
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+			_this.setState({gw: gw, edit: false})
+		}).catch((msg) => {
+			console.log("",msg)
 		});
 	}
 
@@ -226,22 +215,23 @@ class GatewayPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/gateways/" + this.props.params.id, "", function(data) {
-			// console.log("gw", data);
+
+		xFetchJSON( "/api/gateways/" + this.props.params.id, {
+		}).then((data) => {
 			const params = data.params;
 			delete data.params;
 			_this.setState({gw: data, params: params});
 
 			if (data.profile_id) {
-				$.getJSON("/api/sip_profiles/" + data.profile_id, function(data) {
+				xFetchJSON("/api/sip_profiles/" + data.profile_id).then((obj) => {
 					_this.setState({sip_profile: data});
 				});
 			}
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get gw ERR");
 		});
 
-		$.getJSON("/api/sip_profiles", function(data) {
+		xFetchJSON( "/api/sip_profiles").then((data) => {
 			_this.setState({sip_profiles: data});
 		});
 	}
@@ -280,25 +270,20 @@ class GatewayPage extends React.Component {
 
 		console.log("change", obj);
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/gateways/" + this.state.gw.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.params = _this.state.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({params: _this.state.params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
+		xFetchJSON( "/api/gateways/" + this.state.gw.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({v: obj[id]})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			_this.state.params = _this.state.params.map(function(p) {
+				if (p.id == id) {
+					return param;
+				}
+				return p;
+			});
+			_this.setState({params: _this.state.params});
+		}).catch((msg) => {
+			console.log("update params",msg)
 		});
 	}
 
@@ -308,25 +293,20 @@ class GatewayPage extends React.Component {
 
 		console.log("change", obj);
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/gateways/" + this.state.gw.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({k: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.params = _this.state.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({params: _this.state.params});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
+		xFetchJSON( "/api/gateways/" + this.state.gw.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({k: obj[id]})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			_this.state.params = _this.state.params.map(function(p) {
+				if (p.id == id) {
+					return param;
+				}
+				return p;
+			});
+			_this.setState({params: _this.state.params});
+		}).catch((msg) => {
+			console.error("update params", msg);
 		});
 	}
 
@@ -334,25 +314,19 @@ class GatewayPage extends React.Component {
 		const _this = this;
 		const data = e.target.getAttribute("data");
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/gateways/" + this.state.gw.id + "/params/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				// console.log("success!!!!", param);
-				const params = _this.state.params.map(function(p) {
+		xFetchJSON("/api/gateways/" + this.state.gw.id + "/params/" + data, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			const params = _this.state.params.map(function(p) {
 					if (p.id == data) {
 						p.disabled = param.disabled;
 					}
 					return p;
 				});
-				_this.setState({params: params});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
+			_this.setState({params: params});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
 		});
 	}
 	handleReg (e) {
@@ -378,22 +352,18 @@ class GatewayPage extends React.Component {
 
 			if (!c) return;
 		}
+		xFetchJSON( "/api/gateways?id=" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var params = _this.state.params.filter(function(param) {
+				return param.id != id;
+			});
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/gateways?id=" + id,
-			success: function () {
-				console.log("deleted")
-				var params = _this.state.params.filter(function(param) {
-					return param.id != id;
-				});
-
-				_this.setState({params: params});
-				console.log(_this.state.params)
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			_this.setState({params: params});
+			console.log(_this.state.params)
+		}).catch((msg) => {
+			console.log("getways",msg)
 		});
 	}
 
@@ -439,7 +409,7 @@ class GatewayPage extends React.Component {
 						</Button>
 					</td>
 					<td>
-						<td><T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
+						<T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/>
 					</td>
 				</tr>
 			});
@@ -577,20 +547,17 @@ class GatewaysPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/gateways/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/gateways/" + id , {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("gateway", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("gateway", msg);
 		});
 	}
 
@@ -608,16 +575,17 @@ class GatewaysPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/gateways", "", function(data) {
+
+		xFetchJSON("/api/gateways").then((data) => {
 			_this.setState({rows: data.map(function(row) {
 				row.class_name = _this.gwstatus[row.name] ? _this.gwstatus[row.name] : 'NONE';
 				return row;
 			})});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get gateways ERR");
 		});
 
-		$.getJSON("/api/sip_profiles", function(data) {
+		xFetchJSON("/api/sip_profiles").then((data) => {
 			_this.setState({sip_profiles: data});
 		});
 
@@ -704,6 +672,7 @@ class GatewaysPage extends React.Component {
 	}
 
 	handleGatewayAdded(gateway) {
+		console.log("TTTTTTTds", gateway);
 		var rows = this.state.rows;
 		gateway.class_name = 'NONE';
 		rows.unshift(gateway);
