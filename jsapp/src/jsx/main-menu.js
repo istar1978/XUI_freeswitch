@@ -128,7 +128,8 @@ class MainMenu extends React.Component {
 				<Nav pullRight>{ phone }</Nav>
 				<Nav pullRight><Notice/></Nav>
 			</Navbar.Collapse>
-			<video id="webcam" className="webcam"/>
+			<audio id="ringer" autoPlay="autoplay"/>
+			<video id="webcam" className="webcam" autoPlay="autoplay"/>
 		</Navbar>;
 	}
 }

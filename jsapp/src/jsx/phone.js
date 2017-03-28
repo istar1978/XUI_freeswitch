@@ -210,7 +210,17 @@ class Phone extends React.Component {
 	}
 
 	handleAnswer () {
-		this.state.curCall.answer();
+		console.log('kdsjfaskdfjasfjasdfa', this.state.curCall);
+
+		const ds = getXUIDeviceSettings();
+		console.log('============================= ds', ds);
+
+		this.state.curCall.answer({
+			useVideo: this.state.curCall.params.wantVideo,
+			useMic: ds.audioInDevice,
+			useSpeak: ds.audioOutDevice,
+			useCamera: ds.videoDevice
+		});
 	}
 
 	handleDTMF (e) {
@@ -258,7 +268,7 @@ class Phone extends React.Component {
 		});
 
 		// hack ringer
-		verto.ringer = document.getElementById('webcam');
+		verto.ringer = document.getElementById('ringer');
 	}
 
 	componentWillUnmount () {
@@ -348,9 +358,17 @@ class Phone extends React.Component {
 			<T.span text={this.state.useVideo ? 'Video' : 'Audio'}/>
 		</Button>
 
+		if (this.state.curCall) {
+			audioOrVideo = null;
+			toggleDTMF = null;
+		}
+
 		if (this.state.callState == "Ringing") {
 			this.state.displayState = true;
-			answerButton = <button onClick={this.handleAnswer}>Answer</button>
+			answerButton = <Button bsStyle="primary" bsSize="xsmall" onClick={this.handleAnswer}>
+				<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
+				<T.span text="Answer" />
+			</Button>
 		}
 
 		if (this.state.displayStyle == "xtop") {

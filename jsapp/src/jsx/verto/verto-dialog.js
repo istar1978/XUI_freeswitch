@@ -421,9 +421,12 @@ export default class VertoDialog {
 	}
 
 	stopRinging() {
-		var dialog = this;
-		if (dialog.verto.ringer) {
-			dialog.verto.ringer.stop();
+		if (this.verto.ringer) {
+			if (this.verto.ringer.stop) {
+				this.verto.ringer.stop();
+			} else {
+				this.verto.ringer.pause();
+			}
 		}
 	}
 
@@ -431,7 +434,8 @@ export default class VertoDialog {
 		var dialog = this;
 
 		if (dialog.verto.ringer) {
-			dialog.verto.ringer.attr("src", dialog.verto.options.ringFile)[0].play();
+			dialog.verto.ringer.src = dialog.verto.options.ringFile;
+			dialog.verto.ringer.play();
 
 			setTimeout(function() {
 				dialog.stopRinging();
@@ -587,36 +591,35 @@ export default class VertoDialog {
 	answer(params) {
 		var dialog = this;
 
-		if (!dialog.answered) {
-		if (!params) {
-		params = {};
-		}
+		if (dialog.answered) return;
+
+		if (!params) params = {};
 
 		params.sdp = dialog.params.sdp;
 
-			if (params) {
-				if (params.useVideo) {
-					dialog.useVideo(true);
-				}
-		dialog.params.callee_id_name = params.callee_id_name;
-		dialog.params.callee_id_number = params.callee_id_number;
-
-		if (params.useCamera) {
-			dialog.useCamera = params.useCamera;
-		}
-
-		if (params.useMic) {
-			dialog.useMic = params.useMic;
-		}
-
-		if (params.useSpeak) {
-			dialog.useSpeak = params.useSpeak;
-		}
+		if (params) {
+			if (params.useVideo) {
+				dialog.useVideo(true);
 			}
 
-			dialog.rtc.createAnswer(params);
-			dialog.answered = true;
+			dialog.params.callee_id_name = params.callee_id_name;
+			dialog.params.callee_id_number = params.callee_id_number;
+
+			if (params.useCamera) {
+				dialog.useCamera = params.useCamera;
+			}
+
+			if (params.useMic) {
+				dialog.useMic = params.useMic;
+			}
+
+			if (params.useSpeak) {
+				dialog.useSpeak = params.useSpeak;
+			}
 		}
+
+		dialog.rtc.createAnswer(params);
+		dialog.answered = true;
 	};
 
 	handleAnswer(params) {

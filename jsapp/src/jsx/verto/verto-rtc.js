@@ -833,7 +833,7 @@ export default class VertoRTC {
 				constraints: {
 					audio: false,
 					video: {
-					//mandatory: self.options.videoParams,
+					mandatory: self.options.videoParams,
 					//optional: []
 					},
 				},

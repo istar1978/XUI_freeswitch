@@ -1077,7 +1077,7 @@ if (window && typeof exports == 'undefined' && typeof module == 'undefined') {
 }
 
 // window.Verto = Verto;
-// window.verto = singleton;
+window.verto = singleton;
 
 /* For Emacs:
  * Local Variables:
