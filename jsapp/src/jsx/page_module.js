@@ -35,6 +35,8 @@ import T from 'i18n-react';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import verto from './verto/verto';
+import { xFetchJSON } from './libs/xtools';
+
 
 class ModulePage extends React.Component {
 	constructor(props) {
@@ -52,26 +54,21 @@ class ModulePage extends React.Component {
 	handleToggleParam(data) {
 		const _this = this;
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/modules/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				const rows = _this.state.rows.map(function(p) {
-					if (p.id == data) {
-						p.disabled = param.disabled;
-					}
-					return p;
-				});
-				_this.state.rows = rows;
-				_this.setState({rows: _this.state.rows});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
+		xFetchJSON( "/api/modules/" + data, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			const rows = _this.state.rows.map(function(p) {
+				if (p.id == data) {
+					p.disabled = param.disabled;
+				}
+				return p;
+			});
+			_this.state.rows = rows;
+			_this.setState({rows: _this.state.rows});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
 		});
 	}
 
@@ -109,7 +106,7 @@ class ModulePage extends React.Component {
 		verto.subscribe("FSevent.module_load", {handler: this.handleFSEvent});
 		verto.subscribe("FSevent.module_unload", {handler: this.handleFSEvent});
 
-		$.getJSON("/api/modules/" , "", function(data) {
+		xFetchJSON("/api/modules/").then((data) => {
 			console.log(data);
 			_this.setState({rows: data});
 
@@ -136,11 +133,9 @@ class ModulePage extends React.Component {
 
 				_this.setState({rows: rows});
 			});
-
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get module ERR");
 		});
-
 	}
 
 	handleSort(field){

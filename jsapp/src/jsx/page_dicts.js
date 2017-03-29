@@ -35,7 +35,7 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 
 class NewDict extends React.Component {
 	constructor(props) {
@@ -59,21 +59,15 @@ class NewDict extends React.Component {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
-
-		$.ajax({
-			type: "POST",
-			url: "/api/dicts",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(dt),
-			success: function (obj) {
-				dt.id = obj.id;
-				_this.props.handleNewDictAdded(dt);
-			},
-			error: function(msg) {
-				console.error("dict", msg);
-				_this.setState({errmsg: msg});
-			}
+		xFetchJSON("/api/dicts", {
+			method: "POST",
+			body: JSON.stringify(dt)
+		}).then((obj) => {
+			dt.id = obj.id;
+			_this.props.handleNewDictAdded(dt);
+		}).catch((msg) => {
+			console.error("dict", msg);
+			_this.setState({errmsg: msg});
 		});
 	}
 
@@ -157,19 +151,13 @@ class DictPage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/dicts/" + dt.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(dt),
-			success: function (data) {
-				console.log(data.ress);
-				_this.setState({dt: dt, errmsg: {key: "Saved at", time: Date()}})
-			},
-			error: function(msg) {
-				console.error("dict", msg);
-			}
+		xFetchJSON("/api/dicts/" + dt.id, {
+			method: "PUT",
+			body: JSON.stringify(dt)
+		}).then((data) => {
+			_this.setState({dt: dt, errmsg: {key: "Saved at", time: Date()}})
+		}).catch((msg) => {
+			console.error("dict", msg);
 		});
 	}
 
@@ -179,10 +167,10 @@ class DictPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/dicts/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/dicts/" + this.props.params.id).then((data) => {
 			console.log("dt", data);
 			_this.setState({dt: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get dt ERR");
 		});
 	}
@@ -291,20 +279,17 @@ class DictsPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/dicts/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/dicts/" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
+			_this.setState({rows: rows});
+		}).catch((msg) => {
 				console.error("route", msg);
-			}
 		});
 	}
 
@@ -331,15 +316,14 @@ class DictsPage extends React.Component {
 		var _this = this;
 
 		var realm = this.props.location.query.realm;
-		console.log(realm);
 		let url = "/api/dicts";
 
 		if (realm) url = url + "?realm=" + realm;
 
-        $.getJSON(url, "", function(data) {
+		xFetchJSON(url).then((data) => {
 			console.log("dt", data)
 			_this.setState({rows: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get dicts ERR");
 		});
 	}
@@ -353,10 +337,10 @@ class DictsPage extends React.Component {
 
 		if (realm) url = url + "?realm=" + realm;
 
-        $.getJSON(url, "", function(data) {
+		xFetchJSON(url).then((data) => {
 			console.log("dt", data)
-			_this.setState({rows: data});
-		}, function(e) {
+			_this.setState({rows: data})
+		}).catch((msg) => {
 			console.log("get dicts ERR");
 		});
 	}
@@ -377,37 +361,34 @@ class DictsPage extends React.Component {
 		const value = Object.values(obj)[0];
 
 		var rows = _this.state.rows;
-		var row = {};
+		var ro = {};
 
-		row.id = id;
-		row.realm = rows[id - 1].realm;
-		row.k = rows[(id - 1)].k;
-		row.v = value;		
-		row.d = rows[(id - 1)].d;
-		row.o = rows[(id - 1)].o;
-
-		var resrows = [];
-		$.ajax({
-			type: "PUT",
-			url: "/api/dicts/" + (row.id - 1),
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(row),
-			success: function (data) {
-
-				_this.state.rows.map(function(r){
-				console.log(id+'--'+r.id);
-					if (r.id == id) {
-						r = row;
-					}			
-					resrows.push(r);	
-				})
-				console.log(resrows)
-				_this.setState({rows: resrows});
-			},
-			error: function(msg) {
-				console.error("failed", msg);
+		rows.map(function(row) {
+			if(row.id == id){
+				ro.id = row.id;
+				ro.realm = row.realm;
+				ro.k = row.k;
+				ro.v = value;
+				ro.d = row.d;
+				ro.o = row.o;
 			}
+		});
+		var resrows = [];
+		xFetchJSON("/api/dicts/" + id , {
+			method: "PUT",
+			body: JSON.stringify(ro)
+		}).then((data) => {
+			_this.state.rows.map(function(r){
+			console.log(id+'--'+r.id);
+				if (r.id == id) {
+					r = ro;
+				}			
+				resrows.push(r);	
+			})
+			console.log(resrows)
+			_this.setState({rows: resrows});
+		}).catch((msg) => {
+			console.error("failed", msg);
 		});
 	}
 
@@ -425,13 +406,15 @@ class DictsPage extends React.Component {
 		var _this = this;
 
 		var rows = this.state.rows.map(function(row) {
+			var id = (row.id).toString();
 			return <tr key={row.id}>
 					<td>{row.id}</td>
 					<td><Link to={`/settings/dicts?realm=${row.realm}`} onClick={() => _this.handleRealmClick(row.realm)}>{row.realm}</Link></td>
 					<td><Link to={`/settings/dicts/${row.id}`}>{row.k}</Link></td>
-					<td>
-						<RIEInput value={_this.state.highlight ? (row.v ? row.v : T.translate("Click to Change")) : row.v} change={_this.handleChange}
-						propName={row.id}
+					<td >
+						<RIEInput value={_this.state.highlight ? (row.v ? row.v : T.translate("Click to Change")) : row.v} 
+						change={_this.handleChange}
+						propName={id}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
 						classLoading="loading"
