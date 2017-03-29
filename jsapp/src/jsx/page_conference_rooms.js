@@ -38,7 +38,7 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 
 class NewMember extends React.Component {
 	propTypes: {handleNewRoomAdded: React.PropTypes.func}
@@ -62,20 +62,15 @@ class NewMember extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/conference_rooms/" + this.props.room_id + '/members',
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(member),
-			success: function (obj) {
-				console.log(obj);
-				member.id = obj.id;
-				_this.props.onNewMemberAdded(member);
-			},
-			error: function(msg) {
-				console.error("member", msg);
-			}
+		xFetchJSON("/api/conference_rooms/" + this.props.room_id + '/members', {
+			method: "POST",
+			body: JSON.stringify(member)
+		}).then((obj) => {
+			console.log(obj);
+			member.id = obj.id;
+			_this.props.onNewMemberAdded(member);
+		}).catch((msg) => {
+			console.error("member", msg);
 		});
 	}
 
@@ -152,27 +147,25 @@ class RoomMembers extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/conference_rooms/" + this.props.room_id + "/members/" + id,
-			success: function () {
-				console.log("deleted")
-				var members = _this.state.members.filter(function(m) {
-					return m.id != id;
-				});
+		xFetchJSON("/api/conference_rooms/" + this.props.room_id + "/members/" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var members = _this.state.members.filter(function(m) {
+				return m.id != id;
+			});
 
-				_this.setState({members: members});
-			},
-			error: function(msg) {
-				console.error("conference membe", msg);
-			}
+			_this.setState({members: members});
+			
+		}).catch((msg) => {
+			console.error("conference membe", msg);
 		});
 	}
 
 	componentDidMount() {
 		const _this = this;
 
-		$.getJSON("/api/conference_rooms/" + _this.props.room_id + "/members", function(data) {
+		xFetchJSON("/api/conference_rooms/" + _this.props.room_id + "/members").then((data) => {
 			_this.setState({members: data});
 		});
 	}
@@ -249,30 +242,25 @@ class NewRoom extends React.Component {
 
 		room.realm = domain;
 
-		$.ajax({
-			type: "POST",
-			url: "/api/conference_rooms",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(room),
-			success: function (obj) {
-				console.log(obj);
-				room.id = obj.id;
-				_this.props.onNewRoomAdded(room);
-			},
-			error: function(msg) {
-				console.error("room", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/conference_rooms", {
+			method: "POST",
+			body: JSON.stringify(room)
+		}).then((obj) => {
+			console.log(obj);
+			room.id = obj.id;
+			_this.props.onNewRoomAdded(room);
+		}).catch((msg) => {
+			console.error("room", msg);
+			_this.setState({errmsg: '' + msg});
 		});
 	}
 
 	componentDidMount() {
 		const _this = this;
-		$.getJSON("/api/conference_profiles", "", function(data) {
+		xFetchJSON("/api/conference_profiles").then((data) => {
 			_this.setState({profiles: data});
-		}, function(e) {
-			console.error("get conference profile ERR", e);
+		}).catch((msg) => {
+			console.error("get conference profile ERR", msg);
 			_this.setState({errmsg: 'Get conference profile ERR'});
 		});
 	}
@@ -376,20 +364,14 @@ class ConferenceRoom extends React.Component {
 			notify(<T.span text="Mandatory fields left blank"/>, 'error');
 			return;
 		}
-
-		$.ajax({
-			type: "PUT",
-			url: "/api/conference_rooms/" + room.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(room),
-			success: function () {
-				_this.setState({room: room, edit: false})
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("room", msg);
-			}
+		xFetchJSON("/api/conference_rooms/" + room.id, {
+			method: "PUT",
+			body: JSON.stringify(room)
+		}).then((obj) => {
+			_this.setState({room: room, edit: false})
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("room", msg);
 		});
 	}
 	
@@ -404,15 +386,15 @@ class ConferenceRoom extends React.Component {
 	componentDidMount() {
 		const _this = this;
 
-		$.getJSON("/api/conference_rooms/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/conference_rooms/" + this.props.params.id).then((data) => {
 			_this.setState({room: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get gw ERR");
 		});
 
-		$.getJSON("/api/conference_room_profiles/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/conference_room_profiles/" + this.props.params.id).then((data) => {
 			_this.setState({profiles: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get re ERR");
 		});
 	}
@@ -529,20 +511,17 @@ class ConferenceRooms extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/conference_rooms/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/conference_rooms/" + id, {
+			method: "DELETE",
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("conference_rooms", msg);
 		});
 	}
 
@@ -590,10 +569,10 @@ class ConferenceRooms extends React.Component {
 
 		let url = "/api/conference_rooms";
 
-        $.getJSON(url, "", function(data) {
+		xFetchJSON(url).then((data) => {
 			console.log("rooms", data)
 			_this.setState({rows: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get rooms ERR");
 		});
 	}

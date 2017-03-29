@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 
 class NewRoute extends React.Component {
 	constructor(props) {
@@ -69,7 +69,7 @@ class NewRoute extends React.Component {
 				</FormGroup>});
 				break;
 			case 'FS_DEST_GATEWAY':
-				$.getJSON("/api/gateways", function(gateways) {
+				xFetchJSON("/api/gateways").then((gateways) => {
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Gateway" /></Col>
 						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{
@@ -78,12 +78,11 @@ class NewRoute extends React.Component {
 							})
 						}</FormControl></Col>
 					</FormGroup>
-
 					_this.setState({dest_uuid: dest_uuid, route_body: null});
 				});
 				break;
 			case 'FS_DEST_IVRBLOCK':
-				$.getJSON("/api/blocks", function(blocks) {
+				xFetchJSON("/api/blocks").then((blocks) => {
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="IVR Block" /></Col>
 						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{
@@ -97,7 +96,7 @@ class NewRoute extends React.Component {
 				});
 				break;
 			case 'FS_DEST_CONFERENCE':
-				$.getJSON("/api/conference_rooms", function(rooms) {
+				xFetchJSON("/api/conference_rooms").then((rooms) => {
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Conference Room" /></Col>
 						<Col sm={10}><FormControl componentClass="select" name="dest_uuid">{
@@ -127,31 +126,25 @@ class NewRoute extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/routes",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(route),
-			success: function (obj) {
-				_this.props.handleNewRouteAdded(obj);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/routes", {
+			method: "POST",
+			body: JSON.stringify(route)
+		}).then((obj) => {
+			_this.props.handleNewRouteAdded(obj);
+		}).catch((msg) => {
+			console.error("route", msg);
+			_this.setState({errmsg: '' + msg});
 		});
 	}
 
 	componentDidMount() {
 		const _this = this;
 
-		$.getJSON("/api/dicts?realm=CONTEXT", function(data) {
+		xFetchJSON("/api/dicts?realm=CONTEXT").then((data) => {
 			_this.setState({contexts: data});
 		});
-
-		$.getJSON("/api/dicts?realm=DEST", function(data) {
-			_this.setState({dest_types: data});
+		xFetchJSON("/api/dicts?realm=DEST").then((data) => {
+			_this.setState({contexts: data});
 		});
 	}
 
@@ -261,7 +254,7 @@ class RoutePage extends React.Component {
 				</FormGroup>});
 				break;
 			case 'FS_DEST_GATEWAY':
-				$.getJSON("/api/gateways", function(gateways) {
+				xFetchJSON("/api/gateways").then((gateways) => {
 					let current_gateway = null
 					const dest_options = gateways.map(function(gateway) {
 						const gw_text = gateway.name + '[' + gateway.realm + ' ' + gateway.username + ']';
@@ -282,14 +275,13 @@ class RoutePage extends React.Component {
 				});
 				break;
 			case 'FS_DEST_IVRBLOCK':
-				$.getJSON("/api/blocks", function(blocks) {
+				xFetchJSON("/api/blocks").then((blocks) => {
 					let current_block = null
 					const dest_options = blocks.map(function(block) {
 						const block_text = block.name + '[' + block.description + ']';
 						if (_this.state.route.dest_uuid == block.id) current_block = block_text;
 						return [block.id, block_text];
 					});
-
 					const dest_uuid = <FormGroup controlId="formDestUUID">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="IVR Block" /></Col>
 						<Col sm={10}><EditControl edit={_this.state.edit} componentClass="select" name="dest_uuid" text={current_block} defaultValue={_this.state.route.dest_uuid} options={dest_options}/></Col>
@@ -299,7 +291,7 @@ class RoutePage extends React.Component {
 				});
 				break;
 			case 'FS_DEST_CONFERENCE':
-				$.getJSON("/api/conference_rooms", function(rooms) {
+				xFetchJSON("/api/conference_rooms").then((rooms) => {
 					let current_room = "null"
 					const dest_options = rooms.map(function(room) {
 						const room_text = room.name + '[' + room.nbr + ']';
@@ -332,20 +324,15 @@ class RoutePage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/routes/" + route.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(route),
-			success: function () {
-				_this.setState({route: route, edit: false})
-				_this.handleDestTypeChange({target: {value: _this.state.route.dest_type}});
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		xFetchJSON("/api/routes/" + route.id, {
+			method: "PUT",
+			body: JSON.stringify(route)
+		}).then((obj) => {
+			_this.setState({route: route, edit: false})
+			_this.handleDestTypeChange({target: {value: _this.state.route.dest_type}});
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("route", msg);
 		});
 	}
 
@@ -365,20 +352,18 @@ class RoutePage extends React.Component {
 			_this.handleDestTypeChange({target: {value: _this.state.route.dest_type}});
 		}
 
-		$.getJSON("/api/dicts?realm=CONTEXT", function(data) {
+		xFetchJSON("/api/dicts?realm=CONTEXT").then((data) => {
 			_this.setState({contexts: data});
 			checkDestType();
 		});
-
-		$.getJSON("/api/dicts?realm=DEST", function(data) {
-			_this.setState({dest_types: data});
+		xFetchJSON("/api/dicts?realm=DEST").then((data) => {
+			_this.setState({contexts: data});
 			checkDestType();
 		});
-
-		$.getJSON("/api/routes/" + this.props.params.id, function(data) {
+		xFetchJSON("/api/routes/" + this.props.params.id).then((data) => {
 			_this.setState({route: data});
 			checkDestType();
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get route ERR");
 		});
 	}
@@ -497,20 +482,17 @@ class RoutesPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/routes/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/routes/" + id, {
+			method: "DELETE",
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("route", msg);
 		});
 	}
 
@@ -535,9 +517,9 @@ class RoutesPage extends React.Component {
 		let routershow = localStorage.getItem('xui.isSysRouterShow') || false;
 		routershow = routershow == 'true';
 
-		$.getJSON("/api/routes", "", function(data) {
+		xFetchJSON("/api/routes").then((data) => {
 			_this.setState({rows: data, isSysRouterShow: routershow});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get routes ERR");
 		});
 	}
