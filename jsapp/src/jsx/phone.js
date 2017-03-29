@@ -267,7 +267,7 @@ class Phone extends React.Component {
 		});
 
 		// hack ringer
-		verto.ringer = document.getElementById('webcam');
+		verto.ringer = document.getElementById('ringer');
 	}
 
 	componentWillUnmount () {

@@ -426,7 +426,6 @@ export default class VertoDialog {
 
 	indicateRing() {
 		var dialog = this;
-
 		if (dialog.verto.ringer) {
 			dialog.verto.ringer.src = dialog.verto.options.ringFile;
 			dialog.verto.ringer.play();
@@ -436,8 +435,7 @@ export default class VertoDialog {
 				if (dialog.state == Verto.enum.state.ringing) {
 					dialog.indicateRing();
 				}
-			},
-			dialog.verto.options.ringSleep);
+			}, dialog.verto.options.ringSleep);
 		}
 	}
 
