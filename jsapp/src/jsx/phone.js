@@ -213,7 +213,6 @@ class Phone extends React.Component {
 		console.log('kdsjfaskdfjasfjasdfa', this.state.curCall);
 
 		const ds = getXUIDeviceSettings();
-		console.log('============================= ds', ds);
 
 		this.state.curCall.answer({
 			useVideo: this.state.curCall.params.wantVideo,
@@ -358,7 +357,7 @@ class Phone extends React.Component {
 			<T.span text={this.state.useVideo ? 'Video' : 'Audio'}/>
 		</Button>
 
-		if (this.state.curCall) {
+		if (this.state.curCall && this.state.callState == "Ringing") {
 			audioOrVideo = null;
 			toggleDTMF = null;
 		}
