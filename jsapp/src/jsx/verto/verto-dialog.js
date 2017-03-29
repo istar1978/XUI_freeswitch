@@ -193,8 +193,6 @@ export default class VertoDialog {
 			useSpeak: dialog.useSpeak
 		});
 
-		// dialog.rtc.verto = dialog.verto;
-
 		if (dialog.direction == Verto.enum.direction.inbound) {
 			if (dialog.attach) {
 				dialog.answer();
@@ -422,11 +420,7 @@ export default class VertoDialog {
 
 	stopRinging() {
 		if (this.verto.ringer) {
-			if (this.verto.ringer.stop) {
-				this.verto.ringer.stop();
-			} else {
-				this.verto.ringer.pause();
-			}
+			this.rtc.stopRinger(this.verto.ringer);
 		}
 	}
 

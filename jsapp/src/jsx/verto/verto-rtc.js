@@ -164,98 +164,6 @@ function onOfferSDP(self, sdp) {
 	doCallback(self, "onOfferSDP");
 }
 
-function getMediaParams(obj) {
-	var audio;
-
-	if (obj.options.useMic && obj.options.useMic === "none") {
-		console.log("Microphone Disabled");
-		audio = false;
-	} else if (obj.options.videoParams && obj.options.screenShare) {//obj.options.videoParams.chromeMediaSource == 'desktop') {
-		console.error("SCREEN SHARE", obj.options.videoParams);
-		audio = false;
-	} else {
-		audio = {
-		};
-
-		if (obj.options.audioParams) {
-			audio = obj.options.audioParams;
-		}
-
-		if (obj.options.useMic !== "any") {
-			//audio.optional = [{sourceId: obj.options.useMic}]
-			audio.deviceId = {exact: obj.options.useMic};
-		}
-	}
-
-	if (obj.options.useVideo && obj.options.localVideo) {
-		getUserMedia({
-			constraints: {
-				audio: false,
-				video: obj.options.videoParams
-
-			},
-			localVideo: obj.options.localVideo,
-			onsuccess: function(e) {self.options.localVideoStream = e; console.log("local video ready");},
-			onerror: function(e) {console.error("local video error!");}
-		});
-	}
-
-	var video = {};
-	var bestFrameRate = obj.options.videoParams.vertoBestFrameRate;
-	var minFrameRate = obj.options.videoParams.minFrameRate || 15;
-	delete obj.options.videoParams.vertoBestFrameRate;
-
-	if (obj.options.screenShare) {
-		// fix for chrome to work for now, will need to change once we figure out how to do this in a non-mandatory style constraint.
-		var opt = [];
-		opt.push({sourceId: obj.options.useCamera});
-
-		if (bestFrameRate) {
-		opt.push({minFrameRate: bestFrameRate});
-		opt.push({maxFrameRate: bestFrameRate});
-		}
-
-		video = {
-		mandatory: obj.options.videoParams,
-		optional: opt
-		};
-	} else {
-
-		video = {
-			//mandatory: obj.options.videoParams,
-			width: {min: obj.options.videoParams.minWidth, max: obj.options.videoParams.maxWidth},
-			height: {min: obj.options.videoParams.minHeight, max: obj.options.videoParams.maxHeight}
-		};
-
-
-		var useVideo = obj.options.useVideo;
-
-		if (useVideo && obj.options.useCamera && obj.options.useCamera !== "none") {
-			//if (!video.optional) {
-			//video.optional = [];
-			//}
-
-			if (obj.options.useCamera !== "any") {
-				//video.optional.push({sourceId: obj.options.useCamera});
-				video.deviceId = obj.options.useCamera;
-			}
-
-			if (bestFrameRate) {
-				//video.optional.push({minFrameRate: bestFrameRate});
-				//video.optional.push({maxFrameRate: bestFrameRate});
-				video.frameRate = {ideal: bestFrameRate, min: minFrameRate, max: 30};
-			}
-
-		} else {
-			console.log("Camera Disabled");
-				video = false;
-				useVideo = false;
-		}
-	}
-
-	return {audio: audio, video: video, useVideo: useVideo};
-}
-
 function FSRTCPeerConnection(options) {
 	var gathering = false, done = false;
 	var config = {};
@@ -602,20 +510,18 @@ export default class VertoRTC {
 	}
 
 	useVideo(obj, local) {
-		var self = this;
-
 		if (obj) {
-			self.options.useVideo = obj;
-		self.options.localVideo = local;
-		self.constraints.offerToReceiveVideo = true;
+			this.options.useVideo = obj;
+			this.options.localVideo = local;
+			this.constraints.offerToReceiveVideo = true;
 		} else {
-			self.options.useVideo = null;
-		self.options.localVideo = null;
-		self.constraints.offerToReceiveVideo = false;
+			this.options.useVideo = null;
+			this.options.localVideo = null;
+			this.constraints.offerToReceiveVideo = false;
 		}
 
-		if (self.options.useVideo) {
-			self.options.useVideo.style.display = 'none';
+		if (this.options.useVideo) {
+			this.options.useVideo.style.display = 'none';
 		}
 	}
 
@@ -662,8 +568,7 @@ export default class VertoRTC {
 		this.peer.addAnswerSDP({
 			type: "answer",
 			sdp: sdp
-		},
-		onSuccess, onError);
+		}, onSuccess, onError);
 	}
 
 	stopPeer() {
@@ -685,13 +590,13 @@ export default class VertoRTC {
 			if(typeof self.localStream.stop == 'function') {
 				self.localStream.stop();
 			} else {
-		if (self.localStream.active){
+				if (self.localStream.active){
 					var tracks = self.localStream.getTracks();
 					console.log(tracks);
-			tracks.forEach(function(track, index){
-			console.log(track);
-			track.stop();
-			})
+					tracks.forEach(function(track, index){
+						console.log("stopping track", track);
+						track.stop();
+					});
 				}
 			}
 			self.localStream = null;
@@ -704,15 +609,15 @@ export default class VertoRTC {
 
 		if (self.options.localVideoStream) {
 			if(typeof self.options.localVideoStream.stop == 'function') {
-			self.options.localVideoStream.stop();
+				self.options.localVideoStream.stop();
 			} else {
-		if (self.options.localVideoStream.active) {
-				var tracks = self.options.localVideoStream.getTracks();
-				console.log(tracks);
-				tracks.forEach(function(track, index) {
+				if (self.options.localVideoStream.active) {
+					var tracks = self.options.localVideoStream.getTracks();
+					console.log(tracks);
+					tracks.forEach(function(track, index) {
 						console.log(track);
 						track.stop();
-					})
+					});
 				}
 			}
 		}
@@ -781,6 +686,97 @@ export default class VertoRTC {
 		return !self.videoEnabled;
 	}
 
+	getMediaParams() {
+		var audio;
+		const self = this;
+
+		if (this.options.useMic && this.options.useMic === "none") {
+			console.log("Microphone Disabled");
+			audio = false;
+		} else if (this.options.videoParams && this.options.screenShare) {//this.options.videoParams.chromeMediaSource == 'desktop') {
+			console.error("SCREEN SHARE", this.options.videoParams);
+			audio = false;
+		} else {
+			audio = {};
+
+			if (this.options.audioParams) {
+				audio = this.options.audioParams;
+			}
+
+			if (this.options.useMic !== "any") {
+				//audio.optional = [{sourceId: this.options.useMic}]
+				audio.deviceId = {exact: this.options.useMic};
+			}
+		}
+
+		if (this.options.useVideo && this.options.localVideo) {
+			getUserMedia({
+				constraints: {
+					audio: false,
+					video: this.options.videoParams
+
+				},
+				localVideo: this.options.localVideo,
+				onsuccess: function(e) {self.options.localVideoStream = e; console.log("local video ready");},
+				onerror: function(e) {console.error("local video error!");}
+			});
+		}
+
+		var video = {};
+		var bestFrameRate = this.options.videoParams.vertoBestFrameRate;
+		var minFrameRate = this.options.videoParams.minFrameRate || 15;
+		delete this.options.videoParams.vertoBestFrameRate;
+
+		if (this.options.screenShare) {
+			// fix for chrome to work for now, will need to change once we figure out how to do this in a non-mandatory style constraint.
+			var opt = [];
+			opt.push({sourceId: this.options.useCamera});
+
+			if (bestFrameRate) {
+				opt.push({minFrameRate: bestFrameRate});
+				opt.push({maxFrameRate: bestFrameRate});
+			}
+
+			video = {
+				mandatory: this.options.videoParams,
+				optional: opt
+			};
+		} else {
+			video = {
+				//mandatory: this.options.videoParams,
+				width: {min: this.options.videoParams.minWidth, max: this.options.videoParams.maxWidth},
+				height: {min: this.options.videoParams.minHeight, max: this.options.videoParams.maxHeight}
+			};
+
+			var useVideo = this.options.useVideo;
+
+			if (useVideo && this.options.useCamera && this.options.useCamera !== "none") {
+				//if (!video.optional) {
+				//video.optional = [];
+				//}
+
+				if (this.options.useCamera !== "any") {
+					//video.optional.push({sourceId: obj.options.useCamera});
+					video.deviceId = this.options.useCamera;
+				}
+
+				if (bestFrameRate) {
+					//video.optional.push({minFrameRate: bestFrameRate});
+					//video.optional.push({maxFrameRate: bestFrameRate});
+					video.frameRate = {ideal: bestFrameRate, min: minFrameRate, max: 30};
+				}
+
+			} else {
+				console.log("Camera Disabled");
+				video = false;
+				useVideo = false;
+			}
+		}
+
+		return {audio: audio, video: video, useVideo: useVideo};
+	}
+
+
 	createAnswer(params) {
 		var self = this;
 		self.type = "answer";
@@ -823,7 +819,8 @@ export default class VertoRTC {
 			onStreamError(self, e);
 		}
 
-		var mediaParams = getMediaParams(self);
+		this.options.useCamera = params.useCamera;
+		var mediaParams = this.getMediaParams();
 
 		console.log("Audio constraints", mediaParams.audio);
 		console.log("Video constraints", mediaParams.video);
@@ -833,7 +830,7 @@ export default class VertoRTC {
 				constraints: {
 					audio: false,
 					video: {
-					mandatory: self.options.videoParams,
+					// mandatory: self.options.videoParams,
 					//optional: []
 					},
 				},
@@ -855,6 +852,20 @@ export default class VertoRTC {
 
 	}
 
+	stopRinger(ringer) {
+		if (!ringer) return;
+
+		if(typeof ringer.stop == 'function') {
+			ringer.stop();
+		} else {
+			if (ringer.active){
+				var tracks = ringer.getTracks();
+				tracks.forEach(function(track, index){
+					track.stop();
+				});
+			}
+		}
+	}
 
 	call(profile) {
 		checkCompat();
@@ -907,13 +918,12 @@ export default class VertoRTC {
 			onStreamError(self, e);
 		}
 
-		var mediaParams = getMediaParams(self);
+		var mediaParams = this.getMediaParams();
 
 		console.log("Audio constraints", mediaParams.audio);
 		console.log("Video constraints", mediaParams.video);
 
 		if (mediaParams.audio || mediaParams.video) {
-
 			getUserMedia({
 				constraints: {
 					audio: mediaParams.audio,
@@ -926,15 +936,6 @@ export default class VertoRTC {
 		} else {
 			onSuccess(null);
 		}
-
-
-		/*
-		navigator.getUserMedia({
-			video: self.options.useVideo,
-			audio: true
-		}, onSuccess, onError);
-		*/
-
 	};
 
 	resSupported(w, h) {
