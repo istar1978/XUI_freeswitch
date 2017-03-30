@@ -54,22 +54,22 @@ class NewMcast extends React.Component {
 
 		switch(e.target.value) {
 			case 'PCMU':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
 			case 'PCMA':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
 			case 'G722':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=16000", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=16000").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
 			case 'CELT':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
@@ -223,22 +223,22 @@ class McastPage extends React.Component {
 
 		switch(e.target.value) {
 			case 'PCMU':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
 			case 'PCMA':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
 			case 'G722':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=16000", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=16000").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
 			case 'CELT':
-				$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE", function(data) {
+				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE").then((data) => {
 					_this.setState({sample_rate: data});
 				});
 				break;
@@ -278,18 +278,16 @@ class McastPage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 
-		$.getJSON("/api/dicts?realm=MCAST_CODEC_NAME", function(data) {
+		xFetchJSON("/api/dicts?realm=MCAST_CODEC_NAME").then((data) => {
 			_this.setState({codec_name: data});
 		});
-
-		$.getJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000", function(data) {
+		xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
 			_this.setState({sample_rate: data});
 		});
-
-		$.getJSON("/api/mcasts/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/mcasts/" + this.props.params.id).then((data) => {
 			_this.setState({mcast: data});
 			console.log("mcast", data);
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get mcast ERR");
 		});
 	}
