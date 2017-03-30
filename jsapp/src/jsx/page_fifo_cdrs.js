@@ -50,7 +50,7 @@ class FifoCDRPage extends React.Component {
 	componentDidMount() {
 		var _this = this;
 		$.getJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid, "", function(data) {
-			_this.setState({fifocdr: data.fifocdrs, result: data.result[0].name});
+			_this.setState({fifocdr: data.fifocdrs[0], result: data.result[0].name});
 		}, function(e) {
 			console.log("get cdr ERR");
 		});
