@@ -60,7 +60,7 @@ class CallsPage extends React.Component {
 	componentDidMount () {
 		var _this = this;
 		verto.showFSAPI("calls", function(data) {
-			var msg = $.parseJSON(data.message);
+			var msg = JSON.parse(data.message);
 			if (msg.row_count === 0) {
 				_this.setState({rows: []});
 			} else {

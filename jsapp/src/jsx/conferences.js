@@ -37,6 +37,7 @@ import ReactDOM from 'react-dom';
 import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import ConferencePage from './page_conferences';
+import { xFetchJSON } from './libs/xtools';
 
 class NewRoom extends React.Component {
 	propTypes: {handleNewRoomAdded: React.PropTypes.func}
@@ -63,22 +64,16 @@ class NewRoom extends React.Component {
 		}
 
 		room.realm = domain;
-
-		$.ajax({
-			type: "POST",
-			url: "/api/conference_rooms",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(room),
-			success: function (obj) {
-				console.log(obj);
-				room.id = obj.id;
-				_this.props.onNewRoomAdded(room);
-			},
-			error: function(msg) {
-				console.error("room", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/conference_rooms", {
+			method: "POST",
+			body: JSON.stringify(room)
+		}).then((obj) => {
+			console.log(obj);
+			room.id = obj.id;
+			_this.props.onNewRoomAdded(room);
+		}).catch((msg) => {
+			console.error("room", msg);
+			_this.setState({errmsg: '' + msg});
 		});
 	}
 
@@ -154,10 +149,10 @@ class Conferences extends React.Component {
 
 	componentDidMount() {
 		const _this = this;
-		$.getJSON('/api/conference_rooms', function(rows) {
+		xFetchJSON("/api/conference_rooms").then((rows) => {
 			console.log(rows);
 			_this.setState({rows: rows});
-		})
+		});
 	}
 
 	render() {
