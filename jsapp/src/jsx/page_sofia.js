@@ -33,6 +33,7 @@
 import React from 'react';
 import T from 'i18n-react';
 import verto from './verto/verto';
+import parseXML from './libs/xml_parser';
 
 class SofiaPage extends React.Component {
 	constructor(props) {
@@ -91,19 +92,15 @@ class SofiaPage extends React.Component {
 		}
 
 		verto.fsAPI("sofia", "xmlstatus profile " + profile_name, function(data) {
-			var msg = $(data.message);
-			console.log(msg);
-			var profile = msg[2];
-			var info = profile.firstElementChild.firstElementChild;
-
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data.message, "text/xml");
+			const msg = parseXML(doc);
 			var rows = [];
-
-			rows.push({k: info.localName, v: info.innerText});
-
-			while(info = info.nextElementSibling) {
-				rows.push({k: info.localName, v: info.innerText});
+			var values = Object.values(msg);
+			var keys = Object.keys(msg);
+			for (let i in keys) {
+				rows.push({k: keys[i], v: values[i]});
 			}
-
 			_this.setState({profileDetails: {name: profile_name, rows: rows}});
 		});
 	}
@@ -144,21 +141,15 @@ class SofiaPage extends React.Component {
 		}
 
 		verto.fsAPI("sofia", "xmlstatus gateway " + gwname, function(data) {
-			var msg = $(data.message);
-			var gateway = msg[2];
-			var param = gateway.firstElementChild;
-
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data.message, "text/xml");
+			const msg = parseXML(doc);
 			var rows = [];
-
-			var row = {}
-			var gwname = param.innerText;
-
-			rows.push({k: param.localName, v: param.innerText});
-
-			while(param = param.nextElementSibling) {
-				rows.push({k: param.localName, v: param.innerText});
+			var values = Object.values(msg);
+			var keys = Object.keys(msg);
+			for (let i in keys) {
+				rows.push({k: keys[i], v: values[i]});
 			}
-
 			_this.setState({gwDetails: {name: gwname, rows: rows}});
 		});
 	}
@@ -224,41 +215,49 @@ class SofiaPage extends React.Component {
 
 		verto.fsAPI("sofia", "xmlstatus", function(data) {
 			var rows = [];
-			var msg = $(data.message);
 
-			msg.find("profile").each(function() {
-				var profile = this;
-				var actions = [
-					{"action": "Start",   onClick: _this.handleProfileStart},
-					{"action": "Stop",    onClick: _this.handleProfileStop},
-					{"action": "Restart", onClick: _this.handleProfileRestart},
-					{"action": "Rescan",  onClick: _this.handleProfileRescan},
-					{"action": "More",    onClick: _this.handleProfileMore}
-				];
-				var row = {
-					"name": $(profile).find("name").text(),
-					"type": $(profile).find("type").text(),
-					"data": $(profile).find("data").text(),
-					"state": $(profile).find("state").text(),
-					"actions": actions
-				};
-				rows.push(row);
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data.message, "text/xml");
+			const msg = parseXML(doc);
+			console.log("msg", msg);
+			let profileAttr = [];
+			let aliasAttr = [];
+			let gatewayAttr = [];
+
+			msg.profile ? (msg.profile.length ? profileAttr = msg.profile : profileAttr.push(msg.profile)) : profileAttr = [];
+			msg.alias ? (msg.alias.length ? aliasAttr = msg.alias : aliasAttr.push(msg.alias)) : aliasAttr =  [];
+			msg.gateway ? (msg.gateway.length ? gatewayAttr = msg.gateway : gatewayAttr.push(msg.gateway)): gatewayAttr = [];
+
+			profileAttr.forEach(function(profile) {
+			var actions = [
+				{"action": "Start",   onClick: _this.handleProfileStart},
+				{"action": "Stop",    onClick: _this.handleProfileStop},
+				{"action": "Restart", onClick: _this.handleProfileRestart},
+				{"action": "Rescan",  onClick: _this.handleProfileRescan},
+				{"action": "More",    onClick: _this.handleProfileMore}
+			];
+			var row = {
+				"name": profile.name,
+				"type": profile.type,
+				"data": profile.data,
+				"state": profile.state,
+				"actions": actions
+			};
+			rows.push(row);
 			});
 
-			msg.find("alias").each(function() {
-				var alias = this;
+			aliasAttr.forEach( function(alias) {
 				var row = {
-					"name": $(alias).find("name").text(),
-					"type": $(alias).find("type").text(),
-					"data": $(alias).find("data").text(),
-					"state": $(alias).find("state").text(),
+					"name": alias.name,
+					"type": alias.type,
+					"data": alias.data,
+					"state": alias.state,
 					"actions": []
 				};
 				rows.push(row);
 			});
 
-			msg.find("gateway").each(function() {
-				var gw = this;
+			gatewayAttr.forEach(function(gateway) {
 				var actions = [
 					{"action": "Reg",   onClick: _this.handleGatewayReg},
 					{"action": "UnReg", onClick: _this.handleGatewayUnreg},
@@ -266,10 +265,10 @@ class SofiaPage extends React.Component {
 					{"action": "More",  onClick: _this.handleGatewayDetail}
 				];
 				var row = {
-					"name": $(gw).find("name").text(),
-					"type": $(gw).find("type").text(),
-					"data": $(gw).find("data").text(),
-					"state": $(gw).find("state").text(),
+					"name": gateway.name,
+					"type": gateway.type,
+					"data": gateway.data,
+					"state": gateway.state,
 					"actions": actions
 				};
 				rows.push(row);
@@ -315,7 +314,7 @@ class SofiaPage extends React.Component {
 				var gateways;
 
 				_this.state.gwDetails.rows.forEach(function(p) {
-					gateway_params.push(<li>{p.k}: {p.v}</li>);
+					gateway_params.push(<li key={p.k}>{p.k}: {p.v}</li>);
 				})
 
 				gateways = <ul>{gateway_params}</ul>
