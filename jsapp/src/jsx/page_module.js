@@ -32,17 +32,79 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Radio, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import verto from './verto/verto';
 import { xFetchJSON } from './libs/xtools';
 
+class AddNewParam extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {errmsg: ''};
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+	handleSubmit(e) {
+		var _this = this;
+		console.log("submit...");
+		var param = form2json('#newParamAddForm');
+		console.log("param", param);
+		if (!param.k) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+		xFetchJSON("/api/modules/", {
+			method:"POST",
+			body: JSON.stringify(param)
+		}).then((obj) => {
+			param.id = obj.id;
+			_this.props.handleNewParamAdded(param);
+		}).catch((msg) => {
+			console.error("gateway", msg);
+			_this.setState({errmsg: '' + msg + ''});
+		});
+	}
+
+	render() {
+		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewParamAdded;
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Add Param" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newParamAddForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="Name" /></Col>
+				</FormGroup>
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
 
 class ModulePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {edit: false, rows:[]};
+		this.state = {edit: false, rows:[], formShow: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleToggleParam = this.handleToggleParam.bind(this);
@@ -167,14 +229,23 @@ class ModulePage extends React.Component {
 			verto.fsAPI("unload", k);
 		} else if (data == "reload") {
 			verto.fsAPI("reload", k);
-		}
+		} else if (data == "new") {
+			this.setState({formShow: true});
+		};
 	}
 
+	handleParamAdded(param) {
+		console.log("param", param);
+		var rows = this.state.rows;
+		rows.unshift(param);
+		this.setState({rows: rows, formShow: false});
+	}
 
 	render() {
 		const _this = this;
 		let save_btn = "";
 		let err_msg = "";
+		let formClose = () => _this.setState({ formShow: false });
 
 		var rows = _this.state.rows.map(function(row) {
 				const enabled_style = dbfalse(row.disabled) ? "success" : "default";
@@ -197,6 +268,12 @@ class ModulePage extends React.Component {
 			});
 
 		return <div>
+			<ButtonToolbar className="pull-right">
+				<Button onClick={this.handleControlClick} data="new">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="new" text="Add" />
+				</Button>
+			</ButtonToolbar>
 			<h2><T.span text="Modules"/></h2>
 			<table className="table">
 				<tbody>
@@ -208,6 +285,7 @@ class ModulePage extends React.Component {
 				{rows}
 				</tbody>
 			</table>
+			<AddNewParam show={this.state.formShow} onHide={formClose} handleNewParamAdded={this.handleParamAdded.bind(this)}/>
 		</div>
 	}
 }

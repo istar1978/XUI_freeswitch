@@ -61,3 +61,15 @@ put('/:param_id', function(params)
 		return 404
 	end
 end)
+
+post('/', function(params)
+	params.realm = 'modules'
+	params.request.realm = params.realm
+	ret = m_modules.createParam(params.request)
+
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
