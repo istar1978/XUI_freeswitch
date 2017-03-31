@@ -123,3 +123,15 @@ delete('/', function(params)
 		return 500, "{}"
 	end
 end)
+
+post('/:ref_id', function(params)
+	params.request.ref_id = params.ref_id
+	params.realm = 'sip_profile'
+	params.request.realm = params.realm
+	ret = m_sip_profile.createParam(params.request)
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)

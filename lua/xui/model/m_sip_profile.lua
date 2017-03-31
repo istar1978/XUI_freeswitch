@@ -26,6 +26,20 @@ function create(kvp)
 	return id
 end
 
+function createParam(kvp)
+	id = xdb.create_return_id("params", kvp)
+	-- print(id)
+	if id then
+		local ref_id = kvp.ref_id
+		local realm = 'sip_profile'
+		local sql = "INSERT INTO params (id, realm, k, v, ref_id) values (" .. id .. ", '" .. realm .. "', '" .. kvp.k .. "' , '" .. kvp.v .. "', " .. ref_id .. ")"
+		freeswitch.consoleLog('err',sql)
+		xdb.execute(sql)
+	end
+
+	return id
+end
+
 function params(profile_id)
 	rows = {}
 	sql = "SELECT * from params WHERE realm = 'sip_profile' AND ref_id = " .. profile_id
@@ -79,5 +93,6 @@ m_sip_profile.params = params
 m_sip_profile.toggle = toggle
 m_sip_profile.toggle_param = toggle_param
 m_sip_profile.update_param = update_param
+m_sip_profile.createParam = createParam
 
 return m_sip_profile

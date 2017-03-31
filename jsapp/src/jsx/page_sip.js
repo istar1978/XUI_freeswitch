@@ -131,11 +131,77 @@ class NewSIPProfile extends React.Component {
 	}
 }
 
+class AddNewParam extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {errmsg: ''};
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+	handleSubmit(e) {
+		var _this = this;
+		console.log("submit...");
+		var param = form2json('#newParamAddForm');
+		console.log("param", param);
+		if (!param.k || !param.v) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+		xFetchJSON("/api/sip_profiles/" + _this.props.profile_id, {
+			method:"POST",
+			body: JSON.stringify(param)
+		}).then((obj) => {
+			param.id = obj.id;
+			_this.props.handleNewParamAdded(param);
+		}).catch((msg) => {
+			console.error("sip_profiles", msg);
+			_this.setState({errmsg: '' + msg + ''});
+		});
+	}
+	render() {
+		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewParamAdded;
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Add Param" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newParamAddForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="Name" /></Col>
+				</FormGroup>
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Value" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="v" placeholder="Value" /></Col>
+				</FormGroup>
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
 class SIPProfilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {profile: {}, edit: false, params:[], order: 'ASC', running: false, danger: false};
+		this.state = {profile: {}, edit: false, params:[], order: 'ASC', running: false, danger: false, formShow: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -194,7 +260,20 @@ class SIPProfilePage extends React.Component {
 	}
 
 	handleControlClick(e) {
-		this.setState({edit: !this.state.edit});
+		var data = e.target.getAttribute("data");
+		console.log("data", data);
+		if (data == "edit") {
+			this.setState({edit: !this.state.edit});
+		} else if (data == "new") {
+			this.setState({formShow: true});
+		};
+	}
+
+	handleParamAdded(param) {
+		console.log("param", param);
+		var params = this.state.params;
+		params.unshift(param);
+		this.setState({params: params, formShow: false});
 	}
 
 	handleToggleParam(e) {
@@ -387,6 +466,7 @@ class SIPProfilePage extends React.Component {
 	}
 
 	render() {
+		let formClose = () => _this.setState({ formShow: false });
 		const profile = this.state.profile;
 		const _this = this;
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
@@ -448,7 +528,7 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
+				<Button onClick={this.handleControlClick} data="edit"><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -478,6 +558,9 @@ class SIPProfilePage extends React.Component {
 			<ButtonGroup>
 				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
+			<ButtonGroup>
+				<Button onClick={this.handleControlClick} data="new"><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} data="new" text="Add"/></Button>
+			</ButtonGroup>
 			</ButtonToolbar>
 
 			<h2><T.span text="Params"/></h2>
@@ -492,6 +575,7 @@ class SIPProfilePage extends React.Component {
 				{params}
 				</tbody>
 			</table>
+			{this.state.profile.id ? <AddNewParam show={this.state.formShow} onHide={formClose} profile_id={this.state.profile.id} handleNewParamAdded={this.handleParamAdded.bind(this)}/> : null}
 		</div>
 	}
 }
