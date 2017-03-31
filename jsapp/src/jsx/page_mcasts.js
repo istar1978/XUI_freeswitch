@@ -444,9 +444,12 @@ class McastsPage extends React.Component {
 
 				const msg = parseXML(doc);
 				console.log('msg', msg);
+				let msgAttr = [];
+
 
 				if (msg) {
-					msg.forEach(function(mcast) {
+					msgAttr.length ? msgAttr = msg : msgAttr.push(msg);
+					msgAttr.forEach(function(mcast) {
 						var name = mcast.name;
 						var running = mcast.running;
 

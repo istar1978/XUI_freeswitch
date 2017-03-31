@@ -598,22 +598,25 @@ class GatewaysPage extends React.Component {
 			const doc = parser.parseFromString(data.message, "text/xml");
 			console.log('doc', doc);
 
-			const msg = parseXML(doc);
+			const ms = parseXML(doc);
 			console.log('msg', msg);
+			let msg = [];
+			if(ms){
+				ms.length ? msg = ms : msg.push(ms);
+				msg.forEach(function(gw) {
+					console.log("gw", gw);
+					if (gw.type != "gateway") return;
+					_this.gwstatus[gw.name] = gw.state;
+				});
 
-			msg.forEach(function(gw) {
-				console.log("gw", gw);
-				if (gw.type != "gateway") return;
-				_this.gwstatus[gw.name] = gw.state;
-			});
+				let rows = _this.state.rows.map(function(row) {
+					row.class_name = _this.gwstatus[row.name];
+					console.log('class_name', class_name);
+					return row;
+				});
 
-			let rows = _this.state.rows.map(function(row) {
-				row.class_name = _this.gwstatus[row.name];
-				console.log('class_name', class_name);
-				return row;
-			});
-
-			_this.setState({rows: rows});
+				_this.setState({rows: rows});
+			}
 		});
 
 	}
