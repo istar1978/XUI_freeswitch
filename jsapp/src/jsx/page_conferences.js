@@ -36,6 +36,7 @@ import { ButtonToolbar, ButtonGroup, Button, ProgressBar, Thumbnail } from 'reac
 import verto from './verto/verto';
 import { VertoLiveArray } from './verto/verto-livearray';
 import VertoConfMan from './verto/verto-confman';
+import { xFetchJSON } from './libs/xtools';
 
 // translate conference member
 function translateMember(member) {
@@ -100,19 +101,14 @@ class Member extends React.Component {
 		const member = this.props.member;
 
 		if (data == "call") {
-			$.ajax({
-				type: "POST",
-				url: "/api/conferences/" + member.conference_name,
-				dataType: "json",
-				contentType: "application/json",
-				data: JSON.stringify({
+			xFetchJSON("/api/conferences/" + member.conference_name, {
+				method: "POST",
+				body: JSON.stringify({
 					from: member.cidNumber,
-					to: member.cidNumber}),
-				success: function (obj) {
-				},
-				error: function(msg) {
-					console.error("err call", msg);
-				}
+					to: member.cidNumber
+				})
+			}).catch((msg) => {
+				console.error("err call", msg);
 			});
 
 			return;
@@ -260,19 +256,14 @@ class ConferencePage extends React.Component {
 			rows.unshift(member);
 			this.setState({outcall_rows: rows});
 
-			$.ajax({
-				type: "POST",
-				url: "/api/conferences/" + this.state.name,
-				dataType: "json",
-				contentType: "application/json",
-				data: JSON.stringify({
+			xFetchJSON("/api/conferences/" + this.state.name, {
+				method: "POST",
+				body: JSON.stringify({
 					from: member.cidNumber,
-					to: member.cidNumber}),
-				success: function (obj) {
-				},
-				error: function(msg) {
-					console.error("err call", msg);
-				}
+					to: member.cidNumber
+				})
+			}).catch((msg) => {
+				console.error("err call", msg);
 			});
 			return;
 		} else if (data == "toolbarText") {
@@ -312,7 +303,7 @@ class ConferencePage extends React.Component {
 		console.log("conference name:", this.props.name);
 		window.addEventListener("verto-login", this.handleVertoLogin);
 
-		$.getJSON("/api/conference_rooms/" + this.props.room_id + "/members", function(members) {
+		xFetchJSON("/api/conference_rooms/" + this.props.room_id + "/members").then((members) => {
 			_this.state.static_rows = members.map(function(m) {
 				const audio = {
 					talking: false,

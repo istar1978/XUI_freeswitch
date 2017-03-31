@@ -577,7 +577,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 
 		_this.fs_fifos_dropdown_data = new Array();
 
-		$.get('/api/fifos', function(obj) {
+		xFetchJSON("/api/fifos").then((obj) => {
 			console.log("data", obj);
 
 			obj.forEach(function(row) {
@@ -634,7 +634,7 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			_this.onresize();
 			Blockly.svgResize(_this.workspace);
 
-			$.getJSON("/api/blocks/" + _this.props.params.id, function(block) {
+			xFetchJSON("/api/blocks/" + _this.props.params.id ).then((block) => {
 				_this.setState({block: block});
 
 				if (block && block.xml && block.xml.length > 0) {
@@ -719,19 +719,15 @@ var toolbox = `<xml id="toolbox" style="display: none">
 			block.xml = toXml();
 			block.js = "alert(1);"// disabled;
 
-			$.ajax({
-				type: "PUT",
-				url: "/api/blocks/" + block.id,
-				dataType: "json",
-				contentType: "application/json",
-				data: JSON.stringify(block),
-				success: function () {
-					_this.setState({errmsg: {key: "Saved at", time: Date()}});
-										 notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-				},
-				error: function(msg) {
-					console.error("block", msg);
-				}
+			xFetchJSON("/api/blocks/" + block.id, {
+				method: "PUT",
+				body: JSON.stringify(block)
+			}).then((obj) => {
+				_this.setState({errmsg: {key: "Saved at", time: Date()}});
+				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+				
+			}).catch((msg) => {
+				console.error("block", msg);
 			});
 		} else if (data == "import") {
 
@@ -910,20 +906,15 @@ class NewBlock extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/blocks",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(block),
-			success: function (obj) {
-				block.id = obj.id;
-				_this.props.handleNewBlockAdded(block);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/blocks", {
+			method: "POST",
+			body: JSON.stringify(block)
+		}).then((obj) => {
+			block.id = obj.id;
+			_this.props.handleNewBlockAdded(block);
+		}).catch((msg) => {
+			console.error("route", msg);
+			_this.setState({errmsg: '' + msg});
 		});
 	}
 
@@ -997,26 +988,23 @@ class BlocksPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/blocks/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/blocks/" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("block", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("delete block", msg);
 		});
 	}
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/blocks", function(blocks) {
+		xFetchJSON("/api/blocks").then((blocks) => {
 			console.log("blocks", blocks);
 			_this.setState({rows: blocks});
 		});

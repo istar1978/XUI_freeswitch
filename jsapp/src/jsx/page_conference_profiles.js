@@ -37,8 +37,8 @@ import ReactDOM from 'react-dom';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
-import { EditControl, xFetchJSON } from './libs/xtools'
+import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
+import { EditControl, xFetchJSON } from './libs/xtools';
 
 class NewProfile extends React.Component {
 	propTypes: {handleNewProfileAdded: React.PropTypes.func}
