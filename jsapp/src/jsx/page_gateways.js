@@ -169,11 +169,86 @@ class NewGateway extends React.Component {
 	}
 }
 
+class AddNewParam extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {errmsg: ''};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var param = form2json('#newParamAddForm');
+		console.log("param", param);
+
+		if (!param.k || !param.v) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+		xFetchJSON("/api/gateways/" + _this.props.profile_id, {
+			method:"POST",
+			body: JSON.stringify(param)
+		}).then((obj) => {
+			param.id = obj.id;
+			_this.props.handleNewParamAdded(param);
+		}).catch((msg) => {
+			console.error("gateway", msg);
+			_this.setState({errmsg: '' + msg + ''});
+		});
+	}
+
+	render() {
+		console.log(this.props);
+
+		const props = Object.assign({}, this.props);
+		delete props.handleNewParamAdded;
+
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Add Param" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newParamAddForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="Name" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Value" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="v" placeholder="Value" /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
 class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: [], danger: false};
+		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: [], danger: false, formShow: false};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -205,12 +280,19 @@ class GatewayPage extends React.Component {
 			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 			_this.setState({gw: gw, edit: false})
 		}).catch((msg) => {
-			console.log("",msg)
+			console.log("", msg)
 		});
 	}
 
 	handleControlClick(e) {
-		this.setState({edit: !this.state.edit});
+		var data = e.target.getAttribute("data");
+		console.log("data", data);
+
+		if (data == "edit") {
+			this.setState({edit: !this.state.edit});
+		} else if (data == "new") {
+			this.setState({formShow: true});
+		};
 	}
 
 	componentDidMount() {
@@ -233,6 +315,7 @@ class GatewayPage extends React.Component {
 
 		xFetchJSON( "/api/sip_profiles").then((data) => {
 			_this.setState({sip_profiles: data});
+			console.log(sip_profiles)
 		});
 	}
 
@@ -367,9 +450,17 @@ class GatewayPage extends React.Component {
 		});
 	}
 
+	handleParamAdded(param) {
+		console.log("param", param);
+		var params = this.state.params;
+		params.unshift(param);
+		this.setState({params: params, formShow: false});
+	}
+
 	render() {
 		const gw = this.state.gw;
 		const _this = this;
+		let formClose = () => _this.setState({ formShow: false });
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
 		let hand = { cursor: "pointer" };
 		var danger = this.state.danger ? "danger" : "";
@@ -441,7 +532,7 @@ class GatewayPage extends React.Component {
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick} data="edit"><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} data="edit" text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -497,6 +588,9 @@ class GatewayPage extends React.Component {
 			<ButtonGroup>
 				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.toggleHighlight} text="Edit"/></Button>
 			</ButtonGroup>
+			<ButtonGroup>
+				<Button onClick={this.handleControlClick} data="new"><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} data="new" text="Add"/></Button>
+			</ButtonGroup>
 			</ButtonToolbar>
 
 			<h2><T.span text="Params"/></h2>
@@ -511,6 +605,7 @@ class GatewayPage extends React.Component {
 				{params}
 				</tbody>
 			</table>
+			{this.state.sip_profile.id ? <AddNewParam show={this.state.formShow} onHide={formClose} profile_id={this.state.sip_profile.id} handleNewParamAdded={this.handleParamAdded.bind(this)}/> : null}
 		</div>
 	}
 }
@@ -680,7 +775,6 @@ class GatewaysPage extends React.Component {
 		gateway.class_name = 'NONE';
 		rows.unshift(gateway);
 		this.setState({rows: rows, formShow: false});
-
 	}
 
 	render() {

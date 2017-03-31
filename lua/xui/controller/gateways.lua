@@ -93,6 +93,19 @@ post('/', function(params)
 	end
 end)
 
+post('/:ref_id', function(params)
+	params.request.ref_id = params.ref_id
+	params.realm = 'gateway'
+	params.request.realm = params.realm
+	ret = m_gateway.createParam(params.request)
+
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
+
 delete('/:id', function(params)
 	ret = xdb.delete("gateways", params.id);
 

@@ -8,6 +8,7 @@ function create(kvp)
 	kvp.template = nil
 
 	id = xdb.create_return_id("gateways", kvp)
+	freeswitch.consoleLog('err',id)
 	-- print(id)
 	if id then
 		local realm = 'gateway'
@@ -23,6 +24,21 @@ function create(kvp)
 
 		xdb.execute(sql)
 	end
+	return id
+end
+
+function createParam(kvp)
+	id = xdb.create_return_id("params", kvp)
+	-- print(id)
+	if id then
+		local ref_id = kvp.ref_id
+		local realm = 'gateway'
+		id = id + 1
+		local sql = "INSERT INTO params (id, realm, k, v, ref_id) values (" .. id .. ", '" .. realm .. "', '" .. kvp.k .. "' , '" .. kvp.v .. "', " .. ref_id .. ")"
+		freeswitch.consoleLog('err',sql)
+		xdb.execute(sql)
+	end
+
 	return id
 end
 
@@ -66,5 +82,6 @@ m_gateway.create = create
 m_gateway.params = params
 m_gateway.toggle_param = toggle_param
 m_gateway.update_param = update_param
+m_gateway.createParam = createParam
 
 return m_gateway
