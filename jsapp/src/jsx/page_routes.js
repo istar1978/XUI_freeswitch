@@ -144,7 +144,7 @@ class NewRoute extends React.Component {
 			_this.setState({contexts: data});
 		});
 		xFetchJSON("/api/dicts?realm=DEST").then((data) => {
-			_this.setState({contexts: data});
+			_this.setState({dest_types: data});
 		});
 	}
 
