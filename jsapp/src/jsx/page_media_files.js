@@ -37,7 +37,7 @@ import { Link } from 'react-router';
 // http://kaivi.github.io/riek/
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import Dropzone from 'react-dropzone';
-import { EditControl } from './libs/xtools'
+import { EditControl, xFetchJSON } from './libs/xtools'
 import verto from './verto/verto';
 
 class NewMediaFile extends React.Component {
@@ -63,21 +63,16 @@ class NewMediaFile extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "POST",
-			url: "/api/baidu/tts",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(mfile),
-			success: function (obj) {
-				_this.props.handleNewMediaFileAdded(obj);
-				var rows = _this.state.rows;
-				_this.setState({rows:rows, formShow: false});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-				_this.setState({errmsg: '[' + msg.status + '] ' + msg.statusText});
-			}
+		xFetchJSON("/api/baidu/tts", {
+			method: "POST",
+			body: JSON.stringify(mfile)
+		}).then((obj) => {
+			_this.props.handleNewMediaFileAdded(obj);
+			var rows = _this.state.rows;
+			_this.setState({rows:rows, formShow: false});
+		}).catch((msg) => {
+			console.error("route", msg);
+			_this.setState({errmsg: '' + msg});
 		});
 	}
 
@@ -154,22 +149,17 @@ class NewRecordFile extends React.Component {
 			if (!c) return;
 		}
 
-		$.getJSON("/api/media_files", "", function(data) {
-			console.log(data)
-			$.ajax({
-				type: "DELETE",
-				url: "/api/media_files/" + data[data.length-1].id,
-				success: function () {
-					console.log("delete success");
-				},
-				error: function(msg) {
-					console.error("route", msg);
-				}
+		xFetchJSON("/api/media_files").then((data) => {
+			xFetchJSON("/api/media_files/" + data[data.length-1].id, {
+				method: "DELETE"
+			}).then((obj) => {
+				console.log("delete success");
+			}).catch((msg) => {
+				console.error("media_files delete", msg);
 			});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get media_files ERR");
 		});
-
 		_this.setState({audio: null});
 	}
 
@@ -255,7 +245,7 @@ class MediaFilePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {mfile: {}, edit: false};
+		this.state = {mfile: {}, edit: false, ifFileShow: false, ifShowText: "FileShow"};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -263,8 +253,7 @@ class MediaFilePage extends React.Component {
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.toggleHighlight = this.toggleHighlight.bind(this);
-		this.handleFileShow = this.handleFileShow.bind(this);
-		this.handleHiddenFileShow = this.handleHiddenFileShow.bind(this);
+		this.handleToggleFileShow = this.handleToggleFileShow.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -278,20 +267,15 @@ class MediaFilePage extends React.Component {
 			return;
 		}
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/media_files/" + mfile.id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(mfile),
-			success: function () {
-				mfile.params = _this.state.mfile.params;
-				_this.setState({mfile: mfile, edit: false});
-				notify(<T.span text={{key:"Saved at", time: Date()}}/>);
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+		xFetchJSON("/api/media_files/" + mfile.id, {
+			method: "PUT",
+			body: JSON.stringify(mfile)
+		}).then((obj) => {
+			mfile.params = _this.state.mfile.params;
+			_this.setState({mfile: mfile, edit: false});
+			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
+		}).catch((msg) => {
+			console.error("media_files put", msg);
 		});
 	}
 
@@ -302,26 +286,20 @@ class MediaFilePage extends React.Component {
 	handleToggleParam(data) {
 		const _this = this;
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/media_files/" + this.state.mfile.id + "/params/" + data,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				// console.log("success!!!!", param);
-				const params = _this.state.mfile.params.map(function(p) {
-					if (p.id == data) {
-						p.disabled = param.disabled;
-					}
-					return p;
-				});
-				_this.state.mfile.params = params;
-				_this.setState({mfile: _this.state.mfile});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
+		xFetchJSON("/api/media_files/" + this.state.mfile.id + "/params/" + data, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			const params = _this.state.mfile.params.map(function(p) {
+				if (p.id == data) {
+					p.disabled = param.disabled;
+				}
+				return p;
+			});
+			_this.state.mfile.params = params;
+			_this.setState({mfile: _this.state.mfile});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
 		});
 	}
 
@@ -331,26 +309,21 @@ class MediaFilePage extends React.Component {
 
 		console.log("change", obj);
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/media_files/" + this.state.mfile.id + "/params/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: obj[id]}),
-			success: function (param) {
-				console.log("success!!!!", param);
-				_this.state.mfile.params = _this.state.mfile.params.map(function(p) {
-					if (p.id == id) {
-						return param;
-					}
-					return p;
-				});
-				_this.setState({mfile: _this.state.mfile});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-				_this.setState({mfile: _this.state.mfile});
-			}
+		xFetchJSON("/api/media_files/" + this.state.mfile.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({v: obj[id]})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			_this.state.mfile.params = _this.state.mfile.params.map(function(p) {
+				if (p.id == id) {
+					return param;
+				}
+				return p;
+			});
+			_this.setState({mfile: _this.state.mfile});
+		}).catch((msg) => {
+			console.error("update params", msg);
+			_this.setState({mfile: _this.state.mfile});
 		});
 	}
 
@@ -364,20 +337,23 @@ class MediaFilePage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/media_files/" + this.props.params.id, "", function(data) {
+		xFetchJSON("/api/media_files/" + this.props.params.id).then((data) => {
 			_this.setState({mfile: data});
 			console.log(data);
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get media files ERR");
 		});
 	}
 
-	handleFileShow() {
-		document.getElementById('showThing').style.display = 'block';
-	}
-
-	handleHiddenFileShow() {
-		document.getElementById('showThing').style.display = 'none';
+	handleToggleFileShow() {
+		this.setState({ifFileShow: !this.state.ifFileShow});
+		let ifShowText;
+		if(this.state.ifShowText == "HiddenFileShow" ) {
+			ifShowText = "FileShow";
+		}else{
+			ifShowText = "HiddenFileShow";
+		}
+		this.setState({ifShowText: ifShowText});
 	}
 
 	render() {
@@ -419,27 +395,26 @@ class MediaFilePage extends React.Component {
 			console.log(src);
 		};
 
-		if (mfile.ext == 'jpg' || (mfile.ext == 'png' || mfile.ext == 'jpeg')) {
-			var adiv =  <div id = "showThing">
-							<img src={src} />
-						</div>;
+		let picFormat = "jpg" || "png" || "jpeg";
+		let audioFormat = "mp3" || "wav";
+		let videoFormat = "mp4";
+		switch (mfile.ext) {
+			case picFormat:
+				var adiv = <img src= {src}/>
+				break;
+			case audioFormat:
+				var adiv = <audio src={src} controls="controls"/>
+				break;
+			case videoFormat:
+				var adiv = <video src={src} controls="controls"/>
+				break;
 		}
-		if (mfile.ext == 'mp3' || mfile.ext == 'wav'){
-			var adiv =  <div id = "showThing">
-							<audio src={src} controls="controls" />
-						</div>;
-		}
-		if (mfile.ext == 'mp4') {
-			var adiv =  <div id = "showThing">
-							<video src={src} controls="controls" />
-						</div>;
-		};
+		let display = this.state.ifFileShow ? {display: "block"} : {display: "none"};
 
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button onClick={this.handleFileShow}><T.span onClick={this.handleFileShow} text="FileShow"/></Button>
-				<Button onClick={this.handleHiddenFileShow}><T.span onClick={this.handleHiddenFileShow} text="HiddenFileShow"/></Button>
+				<Button onClick={this.handleToggleFileShow}><T.span text={this.state.ifShowText}/></Button>
 				{ save_btn }
 				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
 				<T.span onClick={this.handleControlClick} text="Edit"/></Button>
@@ -449,7 +424,9 @@ class MediaFilePage extends React.Component {
 			<h1>{mfile.name} <small>{mfile.extn}</small></h1>
 			<hr/>
 
+			<div  style={display}>
 			{ adiv }
+			</div>
 
 			<Form horizontal id="newMediaFilesForm">
 				<input type="hidden" name="id" defaultValue={mfile.id}/>
@@ -554,42 +531,27 @@ class MediaFilesPage extends React.Component {
 			if (!c) return;
 		}
 
-		$.ajax({
-			type: "DELETE",
-			url: "/api/media_files/" + id,
-			success: function () {
-				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
+		xFetchJSON("/api/media_files/" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var rows = _this.state.rows.filter(function(row) {
+				return row.id != id;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("route", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+				console.error("media_files", msg);
 		});
-	}
-
-	handleClick(x) {
-	}
-
-	componentWillMount() {
-	}
-
-	componentWillUnmount() {
 	}
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/media_files", "", function(data) {
+		xFetchJSON("/api/media_files").then((data) => {
 			_this.setState({rows: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get media_files ERR");
 		});
-	}
-
-	handleFSEvent(v, e) {
 	}
 
 	handleMediaFileAdded(roww) {
@@ -636,7 +598,7 @@ class MediaFilesPage extends React.Component {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
 					// console.log('response=',xhr.responseText);
-					let mfiles = $.parseJSON(xhr.responseText);
+					let mfiles = JSON.parse(xhr.responseText);
 					console.log(mfiles);
 					_this.setState({rows: mfiles.concat(_this.state.rows)});
 				} else {
@@ -676,22 +638,22 @@ class MediaFilesPage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				<Button onClick={() => this.handleControlClick("new")}>
-					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("new")}></i>&nbsp;
-					<T.span onClick={() => this.handleControlClick("new")} text="Upload" />
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="Upload" />
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
 				<Button onClick={() => this.handleControlClick("ivr")}>
-					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("ivr")}></i>&nbsp;
-					<T.span onClick={() => this.handleControlClick("ivr")} text="TTS" />
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="TTS" />
 				</Button>
 			</ButtonGroup>
 
 			<ButtonGroup>
 				<Button onClick={() => this.handleControlClick("record")}>
-					<i className="fa fa-plus" aria-hidden="true" onClick={() => this.handleControlClick("record")}></i>&nbsp;
-					<T.span onClick={() => this.handleControlClick("record")} text="Record" />
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="Record" />
 				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
