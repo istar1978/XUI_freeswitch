@@ -208,9 +208,9 @@ utils.log = function(level, msg)
 	freeswitch.consoleLog(level, msg);
 end
 
-utils.xlog = function(level, msg)
+utils.xlog = function(line, level, msg)
 	if not msg then msg = '' end
-	freeswitch.consoleLog(level, msg .. '\n');
+	freeswitch.consoleLog(level, line .. msg .. '\n');
 end
 
 return utils

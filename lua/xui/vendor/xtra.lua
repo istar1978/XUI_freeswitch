@@ -39,6 +39,11 @@
 -- module('xtra', package.seeall)
 -- print(env:serialize())
 
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+function __LUAFL__() return __FILE__() .. ':' .. __LINE__() .. ' ' end
+
 xtra = {}
 -- xtra.http_uri = env:getHeader("HTTP-URI")
 xtra.http_uri = env:getHeader("HTTP-Request-URI")
@@ -501,7 +506,7 @@ xtra.url_decode = url_decode
 xtra.url_encode = url_encode
 
 function xtra.start_session()
-	print "start session"
+	print (__LUAFL__() .. "start session")
 	cookie = env:getHeader("Cookie")
 
 	if not cookie then
@@ -527,7 +532,7 @@ function xtra.start_session()
 		if (xtra.session.user_id == "") then
 			xtra.session.user_id = nil
 		end
-		-- freeswitch.consoleLog("INFO", xtra.session.user_id .. "\n")
+		utils.xlog(__LUAFL__(), "INFO", xtra.session.user_id)
 	else
 		filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
 		conf = loadfile(filename)
@@ -540,7 +545,11 @@ function xtra.save_session(k, v)
 
 	if config.auth == "hash" and k == "user_id" then
 		api = freeswitch.API()
-		api:execute("hash", "insert/xui/" .. xtra.k .. "/" .. v)
+		if (v) then
+			api:execute("hash", "insert/xui/" .. xtra.session_uuid .. "/" .. v)
+		else
+			api:execute("hash", "delete/xui/" .. xtra.session_uuid)
+		end
 	else
 		filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
 		file = io.open(filename, "w")
