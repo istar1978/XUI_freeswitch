@@ -38,7 +38,7 @@ xdb.bind(xtra.dbh)
 get('/', function(params)
 	n, mcasts = xdb.find_all("mcasts")
 
-	if (mcasts) then
+	if (n > 0) then
 		return mcasts
 	else
 		return "[]"
