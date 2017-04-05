@@ -337,20 +337,17 @@ class SIPProfilePage extends React.Component {
 				const doc = parser.parseFromString(data.message, "text/xml");
 				console.log('doc', doc);
 
-				const ms = parseXML(doc);
-				let profileAttr = [];
-				ms.profile.length ?  profileAttr = ms.profile : profileAttr.push(ms.profile);
-
-				if(ms.profile){
-					if (profileAttr) {
-						profileAttr.forEach(function(profile) {
-							if (profile.type != "profile") return;
-							var name = profile.name;
-							if(_this.state.profile.name == name){
-								_this.setState({running: true});
-							}
-						});
-					}
+				const msg = parseXML(doc);
+				console.log("msg sip", msg);
+				if(msg.profile){
+					let profileAttr = ms.profile.length ? ms.profile :[ms.profile];
+					profileAttr.forEach(function(profile) {
+						if (profile.type != "profile") return;
+						var name = profile.name;
+						if(_this.state.profile.name == name){
+							_this.setState({running: true});
+						}
+					});
 				}
 			});
 		}).catch((msg) => {
@@ -649,22 +646,20 @@ class SIPProfilesPage extends React.Component {
 				const doc = parser.parseFromString(data.message, "text/xml");
 				console.log('doc', doc);
 
-				const ms = parseXML(doc);
-				let profileAttr = [];
-				if(ms.profile){
-					ms.profile.length ?  profileAttr = ms.profile : profileAttr.push(ms.profile);
-					if( profileAttr.length > 0 ){
-						profileAttr.forEach(function(profile) {
-							if (profile.type != "profile") return;
-							var name = profile.name;
+				const msg = parseXML(doc);
 
-							rows = _this.state.rows.map(function(row) {
-								if (row.name == name) row.running = true;
-								return row;
-							});
+				if(msg.profile){
+					let profileAttr = msg.profile.length ? msg.profile : [msg.profile];
+					profileAttr.forEach(function(profile) {
+						if (profile.type != "profile") return;
+						var name = profile.name;
+
+						rows = _this.state.rows.map(function(row) {
+							if (row.name == name) row.running = true;
+							return row;
 						});
-						_this.setState({rows: rows});
-					}
+					});
+					_this.setState({rows: rows});
 				}
 			});
 		}).catch((msg) => {
