@@ -597,13 +597,10 @@ class GatewaysPage extends React.Component {
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(data.message, "text/xml");
 			console.log('doc', doc);
-
-			const ms = parseXML(doc);
+			const msg = parseXML(doc);
 			console.log('msg', msg);
-			let msg = [];
-			if(ms){
-				ms.length ? msg = ms : msg.push(ms);
-				msg.forEach(function(gw) {
+			if(msg){
+				msg.gateway.forEach(function(gw) {
 					console.log("gw", gw);
 					if (gw.type != "gateway") return;
 					_this.gwstatus[gw.name] = gw.state;
