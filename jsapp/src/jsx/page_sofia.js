@@ -220,59 +220,61 @@ class SofiaPage extends React.Component {
 			const doc = parser.parseFromString(data.message, "text/xml");
 			const msg = parseXML(doc);
 			console.log("msg", msg);
-			let profileAttr = [];
-			let aliasAttr = [];
-			let gatewayAttr = [];
 
-			msg.profile ? (msg.profile.length ? profileAttr = msg.profile : profileAttr.push(msg.profile)) : profileAttr = [];
-			msg.alias ? (msg.alias.length ? aliasAttr = msg.alias : aliasAttr.push(msg.alias)) : aliasAttr =  [];
-			msg.gateway ? (msg.gateway.length ? gatewayAttr = msg.gateway : gatewayAttr.push(msg.gateway)): gatewayAttr = [];
-
-			profileAttr.forEach(function(profile) {
-			var actions = [
-				{"action": "Start",   onClick: _this.handleProfileStart},
-				{"action": "Stop",    onClick: _this.handleProfileStop},
-				{"action": "Restart", onClick: _this.handleProfileRestart},
-				{"action": "Rescan",  onClick: _this.handleProfileRescan},
-				{"action": "More",    onClick: _this.handleProfileMore}
-			];
-			var row = {
-				"name": profile.name,
-				"type": profile.type,
-				"data": profile.data,
-				"state": profile.state,
-				"actions": actions
-			};
-			rows.push(row);
-			});
-
-			aliasAttr.forEach( function(alias) {
-				var row = {
-					"name": alias.name,
-					"type": alias.type,
-					"data": alias.data,
-					"state": alias.state,
-					"actions": []
-				};
+			if(msg.profile) {
+				let profileAttr = msg.profile.length ? msg.profile : [msg.profile];
+				profileAttr.forEach(function(profile) {
+					var actions = [
+						{"action": "Start",   onClick: _this.handleProfileStart},
+						{"action": "Stop",    onClick: _this.handleProfileStop},
+						{"action": "Restart", onClick: _this.handleProfileRestart},
+						{"action": "Rescan",  onClick: _this.handleProfileRescan},
+						{"action": "More",    onClick: _this.handleProfileMore}
+					];
+					var row = {
+						"name": profile.name,
+						"type": profile.type,
+						"data": profile.data,
+						"state": profile.state,
+						"actions": actions
+					};
 				rows.push(row);
-			});
+				});
+			}
 
-			gatewayAttr.forEach(function(gateway) {
-				var actions = [
-					{"action": "Reg",   onClick: _this.handleGatewayReg},
-					{"action": "UnReg", onClick: _this.handleGatewayUnreg},
-					{"action": "Delete",onClick: _this.handleGatewayDelete},
-					{"action": "More",  onClick: _this.handleGatewayDetail}
-				];
-				var row = {
-					"name": gateway.name,
-					"type": gateway.type,
-					"data": gateway.data,
-					"state": gateway.state,
-					"actions": actions
-				};
-				rows.push(row);
-			});
+			if(msg.alias) {
+				let aliasAttr = msg.alias.length ? msg.alias : [msg.alias];
+				aliasAttr.forEach( function(alias) {
+					var row = {
+						"name": alias.name,
+						"type": alias.type,
+						"data": alias.data,
+						"state": alias.state,
+						"actions": []
+					};
+					rows.push(row);
+				});
+			}
+
+			if(msg.gateway) {
+				let gatewayAttr = msg.gateway.length ? msg.gateway : [msg.gateway];
+				gatewayAttr.forEach(function(gateway) {
+					var actions = [
+						{"action": "Reg",   onClick: _this.handleGatewayReg},
+						{"action": "UnReg", onClick: _this.handleGatewayUnreg},
+						{"action": "Delete",onClick: _this.handleGatewayDelete},
+						{"action": "More",  onClick: _this.handleGatewayDetail}
+					];
+					var row = {
+						"name": gateway.name,
+						"type": gateway.type,
+						"data": gateway.data,
+						"state": gateway.state,
+						"actions": actions
+					};
+					rows.push(row);
+				});
+			}
 
 			_this.setState({rows: rows});
 		});
