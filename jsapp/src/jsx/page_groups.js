@@ -143,7 +143,7 @@ class GroupPage extends React.Component {
 	}
 
 	handleGetGroupOptionsTree() {
-		xFetchJSON("/api/groups/build_group_options_tree").then((data) => {
+		xFetchJSON("/api/groups/build_group_options_tree/" + this.props.params.id).then((data) => {
 			console.log("group_options", data);
 			this.setState({group_options: data});
 		}).catch((e) => {

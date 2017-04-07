@@ -120,6 +120,7 @@ END;
 CREATE TRIGGER tg_groups_after_update_group AFTER UPDATE ON groups
 BEGIN
 	UPDATE groups SET level = ifnull((select level + 1 FROM groups WHERE id  = NEW.group_id), 0) WHERE id = NEW.id;
+	UPDATE groups SET level = ifnull((select level + 1 FROM groups WHERE id  = NEW.id), 0) WHERE group_id = NEW.id;
 END;
 
 CREATE TABLE user_groups (

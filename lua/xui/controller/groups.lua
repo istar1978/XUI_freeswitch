@@ -57,6 +57,29 @@ function build_group_options_tree(groups, options_tab)
 	end
 end
 
+function build_group_options_tree_t(groups, options_tab, id)
+	if (next(groups) ~= nil) then
+		for k, v in pairs(groups) do
+			if type(v) == "table" then
+				local spaces = ""
+				child_groups = {}
+				option_tab = {}
+
+				if (tonumber(v.level) ~= 0 ) then
+					spaces = string.rep("  ", tonumber(v.level) *2) .. "|" .. "---"
+				end
+
+				option_tab["name"] = spaces .. v.name
+				option_tab["value"] = v.id
+
+				table.insert(options_tab, option_tab)
+				n, child_groups = xdb.find_by_cond("groups", "group_id = " .. v.id .. " AND id <> " .. id)
+				build_group_options_tree_t(child_groups, options_tab, id)
+			end
+		end
+	end
+end
+
 function build_group_tree(groups, groups_tab)
 	if (next(groups) ~= nil) then
 		for k, v in pairs(groups) do
@@ -89,10 +112,9 @@ get('/', function(params)
 end)
 
 get('/build_group_tree', function(params)
-	local sql = "SELECT * FROM groups WHERE group_id is null or group_id = ''"
 	parent_groups = {}
-	n, parent_groups = xdb.find_by_sql(sql)
 	groups_tab  = {}
+	n, parent_groups = xdb.find_by_cond("groups", "group_id IS NULL OR group_id = ''")
 
 	build_group_tree(parent_groups, groups_tab)
 
@@ -100,12 +122,21 @@ get('/build_group_tree', function(params)
 end)
 
 get('/build_group_options_tree', function(params)
-	local sql = "SELECT * FROM groups WHERE group_id is null or group_id = ''"
 	parent_groups = {}
-	n, parent_groups = xdb.find_by_sql(sql)
 	options_tab  = {}
+	n, parent_groups = xdb.find_by_cond("groups", "group_id IS NULL OR group_id = ''")
 
 	build_group_options_tree(parent_groups, options_tab)
+
+	return options_tab
+end)
+
+get('/build_group_options_tree/:id', function(params)
+	parent_groups = {}
+	n, parent_groups = xdb.find_by_cond("groups", "(group_id IS NULL OR group_id = '') AND id <> " .. params.id)
+	options_tab  = {}
+
+	build_group_options_tree_t(parent_groups, options_tab, params.id)
 
 	return options_tab
 end)
