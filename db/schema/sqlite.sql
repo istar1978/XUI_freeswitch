@@ -97,6 +97,7 @@ CREATE TABLE groups (
 	id INTEGER PRIMARY KEY,
 	realm VARCHAR NOT NULL,           -- a key in dicts
 	name VARCHAR NOT NULL,
+	level integer DEFAULT 0,
 	description VARCHAR,
 	group_id INTEGER,        -- nested groups
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
@@ -109,6 +110,16 @@ CREATE INDEX groups_deleted_epoch ON groups(deleted_epoch);
 CREATE TRIGGER tg_groups AFTER UPDATE ON groups
 BEGIN
 	UPDATE groups set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER tg_groups_after_insert_group AFTER INSERT ON groups
+BEGIN
+	UPDATE groups SET level = ifnull((select level + 1 FROM groups WHERE id  = NEW.group_id), 0) WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER tg_groups_after_update_group AFTER UPDATE ON groups
+BEGIN
+	UPDATE groups SET level = ifnull((select level + 1 FROM groups WHERE id  = NEW.group_id), 0) WHERE id = NEW.id;
 END;
 
 CREATE TABLE user_groups (

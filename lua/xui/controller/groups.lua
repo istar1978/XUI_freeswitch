@@ -34,6 +34,50 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 
+function build_group_options_tree(groups, options_tab)
+	if (next(groups) ~= nil) then
+		for k, v in pairs(groups) do
+			if type(v) == "table" then
+				local spaces = ""
+				child_groups = {}
+				option_tab = {}
+
+				if (tonumber(v.level) ~= 0 ) then
+					spaces = string.rep("  ", tonumber(v.level) *2) .. "|" .. "---"
+				end
+
+				option_tab["name"] = spaces .. v.name
+				option_tab["value"] = v.id
+
+				table.insert(options_tab, option_tab)
+				n, child_groups = xdb.find_by_cond("groups", {group_id = v.id})
+				build_group_options_tree(child_groups, options_tab)
+			end
+		end
+	end
+end
+
+function build_group_tree(groups, groups_tab)
+	if (next(groups) ~= nil) then
+		for k, v in pairs(groups) do
+			if type(v) == "table" then
+				local spaces = ""
+				child_groups = {}
+
+				if (tonumber(v.level) ~= 0 ) then
+					spaces = string.rep("  ", tonumber(v.level) *2) .. "|" .. "---"
+				end
+
+				v["spaces"] = spaces
+
+				table.insert(groups_tab, v)
+				n, child_groups = xdb.find_by_cond("groups", {group_id = v.id})
+				build_group_tree(child_groups, groups_tab)
+			end
+		end
+	end
+end
+
 get('/', function(params)
 	n, groups = xdb.find_all("groups")
 
@@ -42,6 +86,28 @@ get('/', function(params)
 	else
 		return "[]"
 	end
+end)
+
+get('/build_group_tree', function(params)
+	local sql = "SELECT * FROM groups WHERE group_id is null or group_id = ''"
+	parent_groups = {}
+	n, parent_groups = xdb.find_by_sql(sql)
+	groups_tab  = {}
+
+	build_group_tree(parent_groups, groups_tab)
+
+	return groups_tab
+end)
+
+get('/build_group_options_tree', function(params)
+	local sql = "SELECT * FROM groups WHERE group_id is null or group_id = ''"
+	parent_groups = {}
+	n, parent_groups = xdb.find_by_sql(sql)
+	options_tab  = {}
+
+	build_group_options_tree(parent_groups, options_tab)
+
+	return options_tab
 end)
 
 get('/:id', function(params)
@@ -76,11 +142,17 @@ post('/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("groups", params.id);
+	n, child_groups = xdb.find_by_cond("groups", {group_id = params.id})
 
-	if ret == 1 then
-		return 200, "{}"
+	if (n > 0) then
+		return 400, "{ERR: group is being deleted has " .. n .. " children}"
 	else
-		return 500, "{}"
+		ret = xdb.delete("groups", params.id);
+		if ret == 1 then
+			return 200, "{}"
+		else
+			return 500, "{}"
+		end
 	end
+
 end)

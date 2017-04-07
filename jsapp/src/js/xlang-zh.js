@@ -63,6 +63,7 @@ LANGUAGES["zh"] = {
 	Hostname: "主机名",
 	Metadata: "元数据",
 	Group: "组",
+	"Parent Group": "所属组",
 	Contact: "联系地址",
 	Reg: "注册",
 	Unreg: "注销",

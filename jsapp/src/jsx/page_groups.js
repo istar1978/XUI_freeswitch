@@ -24,6 +24,7 @@
  * Contributor(s):
  *
  * Seven Du <dujinfang@x-y-t.cn>
+ * Mariah Yang <yangxiaojin@x-y-t.cn>
  *
  *
  */
@@ -47,7 +48,6 @@ class NewGroup extends React.Component {
 	}
 
 	handleSubmit(e) {
-		var _this = this;
 
 		console.log("submit...");
 		var group = form2json('#newGroupForm');
@@ -62,16 +62,21 @@ class NewGroup extends React.Component {
 			body: JSON.stringify(group)
 		}).then((obj) => {
 			group.id = obj.id;
-			_this.props.handleNewUserAdded(group);
+			this.props.handleNewGroupAdded(group);
 		}).catch((msg) => {
-			console.error("route", msg);
-			_this.setState({errmsg: '' + msg + ''});
+			console.error("group", msg);
+			this.setState({errmsg: '' + msg + ''});
 		}); 
 	}
 
 	render() {
 		const props = Object.assign({}, this.props);
-		delete props.handleNewUserAdded;
+		delete props.handleNewGroupAdded;
+
+		const group_options = this.props.group_options.map(function(option){
+			var text = option.name.replace(/ /g, String.fromCharCode(160))
+			return <option value={option.value}>{text}</option>
+		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -83,7 +88,17 @@ class NewGroup extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="name" /></Col>
 				</FormGroup>
-				
+
+				<FormGroup controlId="formParentGroup">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Parent Group"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="group_id">
+							<option value=""></option>
+							{ group_options }
+						</FormControl>
+					</Col>
+				</FormGroup>
+
 				<FormGroup controlId="formRealm">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" className="mandatory"/></Col>
 					<Col sm={10}><FormControl type="input" name="realm" /></Col>
@@ -119,7 +134,7 @@ class GroupPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', group: {}, edit: false, permissions: []};
+		this.state = {errmsg: '', group: {}, edit: false, permissions: [], group_options: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -127,8 +142,16 @@ class GroupPage extends React.Component {
 		this.handlePermissions = this.handlePermissions.bind(this);
 	}
 
+	handleGetGroupOptionsTree() {
+		xFetchJSON("/api/groups/build_group_options_tree").then((data) => {
+			console.log("group_options", data);
+			this.setState({group_options: data});
+		}).catch((e) => {
+			console.log("get group_options ERR");
+		});
+	}
+
 	handleSubmit(e) {
-		var _this = this;
 
 		console.log("submit...");
 		var group = form2json('#newGroupForm');
@@ -143,7 +166,8 @@ class GroupPage extends React.Component {
 			method: "PUT",
 			body: JSON.stringify(group)
 		}).then(() => {
-			_this.setState({group: group, errmsg: {key: "Saved at", time: Date()}});
+			this.setState({group: group, errmsg: {key: "Saved at", time: Date()}});
+			this.handleGetGroupOptionsTree();
 		}).catch(() => {
 			console.error("route", msg);
 		});
@@ -172,26 +196,31 @@ class GroupPage extends React.Component {
 	}
 
 	componentDidMount() {
-		var _this = this;
-		xFetchJSON("/api/groups/" + this.props.params.id)
-			.then((data) => {
-				console.log("group", data);
-				_this.setState({group: data});
-			}).catch((e) => {
-				console.log("get groups ERR");
-			});
 
-		xFetchJSON("/api/permissions/" + this.props.params.id)
-			.then((data) => {
-				console.log("permissions", data);
-				_this.setState({permissions: data});
-			}).catch((e) => {
-				console.log("get permissions ERR");
-			});
+		xFetchJSON("/api/groups/" + this.props.params.id).then((data) => {
+			console.log("group", data);
+			this.setState({group: data});
+		}).catch((e) => {
+			console.log("get groups ERR");
+		});
+
+		xFetchJSON("/api/permissions/" + this.props.params.id).then((data) => {
+			console.log("permissions", data);
+			this.setState({permissions: data});
+		}).catch((e) => {
+			console.log("get permissions ERR");
+		});
+
+		this.handleGetGroupOptionsTree();
 	}
 
 	render() {
 		const group = this.state.group;
+
+		const group_options = this.state.group_options.map(function(option) {
+			return [option.value, option.name.replace(/ /g, String.fromCharCode(160))];
+		});
+
 		let save_btn = "";
 		let err_msg = "";
 
@@ -229,6 +258,11 @@ class GroupPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={group.realm}/></Col>
 				</FormGroup>
 
+				<FormGroup controlId="formParentGroup">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Parent Group" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} componentClass="select" name="group_id" options={group_options} defaultValue={group.name}/></Col>
+				</FormGroup>
+
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="description" defaultValue={group.description}/></Col>
@@ -253,7 +287,7 @@ class GroupPage extends React.Component {
 class GroupsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, rows: [], danger: false, formShow1: false};
+		this.state = { formShow: false, rows: [], danger: false, formShow1: false, group_options: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -272,7 +306,6 @@ class GroupsPage extends React.Component {
 
 	handleDelete(id) {
 		console.log("deleting id", id);
-		var _this = this;
 
 		if (!this.state.danger) {
 			var c = confirm(T.translate("Confirm to Delete ?"));
@@ -284,18 +317,32 @@ class GroupsPage extends React.Component {
 				method: "DELETE"
 			}).then(() => {
 				console.log("deleted")
-				var rows = _this.state.rows.filter(function(row) {
-					return row.id != id;
-				});
-
-				_this.setState({rows: rows});
-			})
-			.catch((msg) => {
-				console.error("route", msg);
+				this.handleGetGroupsTree();
+				this.handleGetGroupOptionsTree();
+			}).catch((msg) => {
+				console.error("group", msg);
 			});
 	}
 
 	handleClick(x) {
+	}
+
+	handleGetGroupOptionsTree() {
+		xFetchJSON("/api/groups/build_group_options_tree").then((data) => {
+			console.log("group_options", data);
+			this.setState({group_options: data});
+		}).catch((e) => {
+			console.log("get group_options ERR");
+		});
+	}
+
+	handleGetGroupsTree() {
+		xFetchJSON("/api/groups/build_group_tree").then((data) => {
+			console.log("group_tree", data);
+			this.setState({rows: data});
+		}).catch((e) => {
+			console.log("get group_tree ERR");
+		});
 	}
 
 	componentWillMount() {
@@ -305,29 +352,19 @@ class GroupsPage extends React.Component {
 	}
 
 	componentDidMount() {
-		var _this = this;
-		xFetchJSON("/api/groups",{})
-			.then((data) => {
-				console.log("groups", data);
-				_this.setState({rows: data});
-			}).catch((e) => {
-				console.log("get groups ERR");
-			});
+		this.handleGetGroupsTree();
+		this.handleGetGroupOptionsTree();
 	}
 
 	handleFSEvent(v, e) {
 	}
 
-	handleUserAdded(user) {
-		var rows = this.state.rows;
-		rows.unshift(user);
-		this.setState({rows: rows, formShow: false});
-	}
 
-	handleUserAdded1(user) {
-		var rows = this.state.rows;
-		rows.unshift(user);
-		this.setState({rows: rows, formShow1: false});
+	handleGroupAdded(group) {
+		this.handleGetGroupsTree();
+		this.setState({formShow: false});
+		this.handleGetGroupOptionsTree();
+
 	}
 
 	render() {
@@ -341,7 +378,7 @@ class GroupsPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/settings/groups/${row.id}`}>{row.name}</Link></td>
+					<td>{row.spaces.replace(/ /g, String.fromCharCode(160))}<Link to={`/settings/groups/${row.id}`}>{row.name}</Link></td>
 					<td>{row.realm}</td>
 					<td>{row.description}</td>
 					<td><T.a onClick={() => _this.handleDelete(row.id)} text="Delete" className={danger}/></td>
@@ -374,7 +411,7 @@ class GroupsPage extends React.Component {
 				</table>
 			</div>
 
-			<NewGroup show={this.state.formShow} onHide={formClose} handleNewUserAdded={this.handleUserAdded.bind(this)}/>
+			<NewGroup show={this.state.formShow} onHide={formClose} handleNewGroupAdded={this.handleGroupAdded.bind(this)} group_options={this.state.group_options}/>
 		</div>
 	}
 }
