@@ -357,7 +357,7 @@ class RoutePage extends React.Component {
 			checkDestType();
 		});
 		xFetchJSON("/api/dicts?realm=DEST").then((data) => {
-			_this.setState({contexts: data});
+			_this.setState({dest_types: data});
 			checkDestType();
 		});
 		xFetchJSON("/api/routes/" + this.props.params.id).then((data) => {

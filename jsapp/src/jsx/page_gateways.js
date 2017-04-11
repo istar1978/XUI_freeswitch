@@ -317,7 +317,6 @@ class GatewayPage extends React.Component {
 
 		xFetchJSON( "/api/sip_profiles").then((data) => {
 			_this.setState({sip_profiles: data});
-			console.log(this.state.sip_profiles)
 		});
 	}
 
