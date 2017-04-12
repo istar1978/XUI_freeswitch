@@ -189,7 +189,7 @@ class AddNewParam extends React.Component {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
-		xFetchJSON("/api/gateways/" + _this.props.profile_id, {
+		xFetchJSON("/api/gateways/" + _this.props.profile_id + "/params/", {
 			method:"POST",
 			body: JSON.stringify(param)
 		}).then((obj) => {
