@@ -34,7 +34,7 @@ import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
-import { EditControl } from './libs/xtools';
+import { EditControl, xFetchJSON } from './libs/xtools';
 
 class FifoCDRPage extends React.Component {
 	constructor(props) {
@@ -49,9 +49,10 @@ class FifoCDRPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		$.getJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid, "", function(data) {
+
+		xFetchJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid).then((data) => {
 			_this.setState({fifocdr: data.fifocdrs[0], result: data.result[0].name});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get cdr ERR");
 		});
 	}
@@ -143,23 +144,17 @@ class FifoCDRsPage extends React.Component {
 			"&dest_number=" + this.dest_number.value +
 			"&bridged_number=" + this.bridged_number.value;
 
-		$.getJSON("/api/fifo_cdrs?" + qs, function(fifocdrs) {
+		xFetchJSON("/api/fifo_cdrs?" + qs).then((fifocdrs) => {
 			_this.setState({rows: fifocdrs});
-		})
-	}
-
-	componentWillMount () {
-	}
-
-	componentWillUnmount () {
+		});
 	}
 
 	componentDidMount () {
 		const _this = this;
 
-		$.getJSON("/api/fifo_cdrs", function(fifocdrs) {
+		xFetchJSON("/api/fifo_cdrs").then((fifocdrs) => {
 			_this.setState({rows: fifocdrs});
-		})
+		});
 	}
 
 	handleQuery (e) {
@@ -168,9 +163,9 @@ class FifoCDRsPage extends React.Component {
 
 		e.preventDefault();
 
-		$.getJSON("/api/fifo_cdrs?last=" + data, function(fifocdrs) {
+		xFetchJSON("/api/fifo_cdrs?last=" + data).then((fifocdrs) => {
 			_this.setState({rows: fifocdrs});
-		})
+		});
 	}
 
 	handleSortClick(bridged_number) {
