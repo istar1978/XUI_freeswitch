@@ -132,7 +132,7 @@ CREATE TABLE user_groups (
 	deleted_epoch INTEGER
 );
 
-CREATE INDEX user_group_u_g_id ON user_groups(user_id, group_id);
+CREATE UNIQUE INDEX user_group_u_g_id ON user_groups(user_id, group_id);
 
 CREATE TRIGGER tg_user_group AFTER UPDATE ON user_groups
 BEGIN
