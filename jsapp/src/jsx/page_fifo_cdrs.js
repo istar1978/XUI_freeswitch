@@ -39,92 +39,97 @@ import { EditControl, xFetchJSON } from './libs/xtools';
 class FifoCDRPage extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {fifocdr: {}, edit: false, result: ''};
-		this.handleSubmit = this.handleSubmit.bind(this);
+		this.state = { result: "", fifocdr: "", channel_uuid: "" };
 	}
 
-	handleSubmit(e) {
-	}
-
-	componentDidMount() {
-		var _this = this;
-
-		xFetchJSON("/api/fifo_cdrs/" + _this.props.params.channel_uuid).then((data) => {
-			_this.setState({fifocdr: data.fifocdrs[0], result: data.result[0].name});
-		}).catch((msg) => {
-			console.log("get cdr ERR");
-		});
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.channel_uuid) {
+				xFetchJSON("/api/fifo_cdrs/" + nextProps.channel_uuid).then((data) => {
+				this.setState({fifocdr: data.fifocdrs[0]});
+				if(data.result.length) {
+					this.setState({result: data.result[0].name});
+				}
+			});
+		}
 	}
 
 	render() {
+		const _this = this;
+		const src = this.state.result ? "/recordings/" + this.state.result : "";
 		const fifocdr = this.state.fifocdr;
-		const src = "/recordings/" + this.state.result;
-		return <div>
-			<h1><T.span text="FIFO CDR"/> <small>{fifocdr.channel_uuid}</small></h1>
-			<hr/>
+		const props = Object.assign({}, this.props);
+		delete props.channel_uuid;
 
-			<Form horizontal id="FIFOCDRForm">
-				<input type="hidden" name="id" defaultValue={fifocdr.channel_uuid}/>
-				<FormGroup controlId="formCaller_id_name">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
-					<Col sm={10}><audio src={src} controls="controls" /></Col>
-				</FormGroup>
+		return <Modal  {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg">
+				   <T.span text="FIFO CDR"/><small>{_this.props.channel_uuid}</small>
+				</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form horizontal id="FIFOCDRForm">
+					<input type="hidden" name="id" defaultValue={_this.props.channel_uuid}/>
+					<FormGroup controlId="formCaller_id_name">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
+						<Col sm={10}><audio src={src} controls="controls" /></Col>
+					</FormGroup>
+					<FormGroup controlId="formUUID">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="UUID"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.channel_uuid}/></Col>
+					</FormGroup>
+					<FormGroup controlId="formFIFOName">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="FIFO Name"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.fifo_name}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formUUID">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="UUID"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.channel_uuid}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formCID">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.ani}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formFIFOName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="FIFO Name"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.fifo_name}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formDest">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Number"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.dest_number}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formCID">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.ani}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formBridged">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Bridged Number"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.bridged_number}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formDest">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Number"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.dest_number}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formStart">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Start"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.start_epoch)}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formBridged">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Bridged Number"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={fifocdr.bridged_number}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formAnswer">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Answer"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.bridge_epoch)}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formStart">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Start"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.start_epoch)}/></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formAnswer">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Answer"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.bridge_epoch)}/></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formEnd">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="End"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.end_epoch)}/></Col>
-				</FormGroup>
-			</Form>
-		</div>
+					<FormGroup controlId="formEnd">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="End"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="channel_uuid" defaultValue={xdatetime(fifocdr.end_epoch)}/></Col>
+					</FormGroup>
+				</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
 	}
 }
 
 class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {rows: [], hiddendiv: 'none'};
+		this.state = {rows: [], hiddendiv: 'none', formShow: false, channel_uuid: ""};
 		this.handleMore = this.handleMore.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);
-	}
-
-	handleClick (x) {
 	}
 
 	handleControlClick (e) {
@@ -191,7 +196,7 @@ class FifoCDRsPage extends React.Component {
 		var _this = this;
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
-				<td><Link to={`/fifocdrs/${row.channel_uuid}`}>{row.channel_uuid}</Link></td>
+				<td><a onClick={()=>{_this.setState({formShow: true, channel_uuid: row.channel_uuid})}} style={{cursor: "pointer"}}>{row.channel_uuid}</a></td>
 				<td>{row.fifo_name}</td>
 				<td>{row.ani}</td>
 				<td>{row.dest_number}</td>
@@ -206,6 +211,7 @@ class FifoCDRsPage extends React.Component {
 		var nowdate = Date.parse(now);
 		var sevenDaysBeforenowtime = nowdate - 7*24*60*60*1000;
 		var sevenDaysBeforenowdate = new Date(sevenDaysBeforenowtime);
+		let formClose = () => this.setState({ formShow: false });
 
 		function getTime(time){
 			var month = (time.getMonth() + 1);
@@ -258,6 +264,7 @@ class FifoCDRsPage extends React.Component {
 				</tbody>
 				</table>
 			</div>
+			<FifoCDRPage show={this.state.formShow} onHide={formClose} channel_uuid={_this.state.channel_uuid} />
 		</div>
 	}
 };
