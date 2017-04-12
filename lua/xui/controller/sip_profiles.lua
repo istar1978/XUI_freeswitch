@@ -124,7 +124,7 @@ delete('/', function(params)
 	end
 end)
 
-post('/:ref_id', function(params)
+post('/:ref_id/params/', function(params)
 	params.request.ref_id = params.ref_id
 	params.realm = 'sip_profile'
 	params.request.realm = params.realm
