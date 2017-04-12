@@ -218,7 +218,7 @@ class NewGroup extends React.Component {
 
 		const group_options = this.props.group_options.map(function(option){
 			var text = option.name.replace(/ /g, String.fromCharCode(160))
-			return <option value={option.value}>{text}</option>
+			return <option key={option} value={option.value}>{text}</option>
 		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">

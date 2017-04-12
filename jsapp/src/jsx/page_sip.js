@@ -340,7 +340,7 @@ class SIPProfilePage extends React.Component {
 				const msg = parseXML(doc);
 				console.log("msg sip", msg);
 				if(msg.profile){
-					let profileAttr = ms.profile.length ? ms.profile :[ms.profile];
+					let profileAttr = msg.profile.length ? msg.profile :[msg.profile];
 					profileAttr.forEach(function(profile) {
 						if (profile.type != "profile") return;
 						var name = profile.name;
