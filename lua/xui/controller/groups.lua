@@ -141,6 +141,26 @@ get('/build_group_options_tree/:id', function(params)
 	return options_tab
 end)
 
+get('/:id/remain_members', function(params)
+	sql = " SELECT * from users WHERE id NOT IN (SELECT user_id from user_groups WHERE user_id is not null AND group_id = " .. params.id .. ");"
+	n, members = xdb.find_by_sql(sql)
+	if n > 0 then
+		return members
+	else
+		return '[]'
+	end
+end)
+
+get('/:id/members', function(params)
+	sql = "SELECT ug.id, ug.user_id, ug.group_id, u.name, u.extn, u.domain from user_groups ug LEFT JOIN users u ON ug.user_id = u.id WHERE ug.group_id = " .. params.id
+	n, members = xdb.find_by_sql(sql)
+	if n > 0 then
+		return members
+	else
+		return '[]'
+	end
+end)
+
 get('/:id', function(params)
 	group = xdb.find("groups", params.id)
 	if group then
@@ -162,7 +182,6 @@ end)
 
 post('/', function(params)
 	print(serialize(params))
-
 	ret = xdb.create_return_id('groups', params.request)
 
 	if ret then
@@ -171,6 +190,49 @@ post('/', function(params)
 		return 500, "{}"
 	end
 end)
+
+post('/members', function(params)
+	local members = params.request
+	for k, v in pairs(members) do
+		if type(v) == "table" then
+			xdb.create('user_groups', v)
+		end
+	end
+
+	return "{}"
+end)
+
+post('/:id/member', function(params)
+	print(serialize(params))
+	local member = params.request
+	member.group_id = params.id
+	ret = xdb.create_return_id('user_groups', member)
+
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
+
+delete('/members/:group_id', function(params)
+	ret = xdb.delete("user_groups", {group_id=params.group_id});
+	if ret >= 0 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
+
+delete('/members/:group_id/:member_id', function(params)
+	ret = xdb.delete("user_groups", {group_id=params.group_id, user_id=params.member_id});
+	if ret == 1 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
+
 
 delete('/:id', function(params)
 	n, child_groups = xdb.find_by_cond("groups", {group_id = params.id})

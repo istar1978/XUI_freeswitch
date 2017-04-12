@@ -34,8 +34,153 @@
 import React from 'react';
 import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import Select from 'react-select';
 import { Link } from 'react-router';
 import { EditControl, xFetchJSON } from './libs/xtools'
+
+class GroupMembers extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {members: [], danger: false, select_value: [], users: []}
+	}
+
+	handleGetGroupMembers() {
+		xFetchJSON("/api/groups/" + this.props.group_id + "/members").then((data) => {
+			this.setState({members: data});
+		});
+	}
+
+	handleGetReaminMembers() {
+		xFetchJSON("/api/groups/" + this.props.group_id + "/remain_members").then((data) => {
+			console.log("remain users:", data)
+			this.setState({users: data});
+		}).catch((msg) => {
+			console.log("get remain users ERR", msg);
+		});
+	}
+
+	handleMembersAdded() {
+		const group_id = this.props.group_id;
+		const members = JSON.stringify(this.state.select_value.map(function(select) {
+			return {group_id: group_id, user_id: select.value}
+		}));
+
+		xFetchJSON("/api/groups/members", {
+			method: "POST",
+			body: members
+		}).then((obj) => {
+			this.handleGetGroupMembers();
+			this.handleGetReaminMembers();
+			this.setState({select_value: []});
+		}).catch((msg) => {
+			console.error("member", msg);
+		});
+	}
+
+	handleSelectChange(value) {
+		this.setState({select_value: value});
+		console.log('select_value', value);
+	}
+
+
+	handleDelete(e) {
+		e.preventDefault();
+
+		var user_id = e.target.getAttribute("data-id");
+		console.log("deleting id", user_id);
+
+		if (!this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
+
+		xFetchJSON("/api/groups/members/" + this.props.group_id + "/" + user_id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var members = this.state.members.filter(function(m) {
+				return m.user_id != user_id;
+			});
+
+			this.setState({members: members});
+
+		}).catch((msg) => {
+			console.error("groups member ", msg);
+		});
+	}
+
+	handleDeleteMembers(e) {
+
+		if (!this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
+
+		xFetchJSON("/api/groups/members/" + this.props.group_id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			this.handleGetGroupMembers();
+
+		}).catch((msg) => {
+			console.error("groups members ", msg);
+		});
+	}
+
+	componentDidMount() {
+		this.handleGetGroupMembers();
+		this.handleGetReaminMembers();
+	}
+
+	render() {
+		const toggleDanger = () => this.setState({ danger: !this.state.danger });
+		const danger = this.state.danger ? "danger" : null;
+		const member_options = this.state.users.map(function(member) {
+			return {label: member.name + "|" + member.extn, value: member.id}
+		});
+
+		const _this = this;
+		var members = this.state.members.map(function(member) {
+			return <tr key={member.id}>
+					<td><Link to={`/settings/users/${member.user_id}`}>{member.extn}</Link></td>
+					<td>{member.name}</td>
+					<td>{member.domain}</td>
+					<td style={{textAlign: "right"}}>
+						<T.a onClick={_this.handleDelete.bind(_this)} data-id={member.user_id} text="Delete" className={danger} href="#"/>
+					</td>
+			</tr>;
+		})
+
+		return <div>
+			<h2><T.span text="Members"/></h2><br/>
+			<div className="pull-right" >
+				<T.button text="Remove All Member(s)" className="btn btn-danger" style={{ width:"160px"}} onClick={this.handleDeleteMembers.bind(this)}/>
+			</div>
+			<div className="pull-left">
+				<Select style={{ minWidth:"160px", maxWidth:"300px"}} name="multi-select" multi="true" value={this.state.select_value} placeholder={T.translate('Please Select')} options={member_options} onChange={this.handleSelectChange.bind(this)}/>
+			</div>
+			<div className="pull-left" >
+				<T.button text="Add Member(s)" className="btn btn-primary" style={{ width:"120px"}} onClick={this.handleMembersAdded.bind(this)}/>
+			</div>
+			<br/><br/>
+			<table className="table">
+				<tbody>
+				<tr>
+					<th><T.span text="Number" data="k"/></th>
+					<th><T.span text="Name"/></th>
+					<th><T.span text="Domain"/></th>
+					<th style={{textAlign: "right"}}>
+						<T.span style={{cursor: "pointer"}} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/>
+					</th>
+				</tr>
+				{members}
+				</tbody>
+			</table>
+		</div>
+	}
+}
 
 class NewGroup extends React.Component {
 	constructor(props) {
@@ -169,7 +314,7 @@ class GroupPage extends React.Component {
 			this.setState({group: group, errmsg: {key: "Saved at", time: Date()}});
 			this.handleGetGroupOptionsTree();
 		}).catch(() => {
-			console.error("route", msg);
+			console.error("group", msg);
 		});
 	}
 
@@ -196,12 +341,11 @@ class GroupPage extends React.Component {
 	}
 
 	componentDidMount() {
-
 		xFetchJSON("/api/groups/" + this.props.params.id).then((data) => {
 			console.log("group", data);
 			this.setState({group: data});
 		}).catch((e) => {
-			console.log("get groups ERR");
+			console.log("get group ERR");
 		});
 
 		xFetchJSON("/api/permissions/" + this.props.params.id).then((data) => {
@@ -275,11 +419,14 @@ class GroupPage extends React.Component {
 			</Form>
 
 			<br/>
-				<FormGroup onChange={this.handlePermissions}>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Permissions"/></Col>
-					<Col sm={10}>{permissions}</Col>
-				</FormGroup>
-			
+			<FormGroup onChange={this.handlePermissions}>
+				<Col componentClass={ControlLabel} sm={2}><T.span text="Permissions"/></Col>
+				<Col sm={10}>{permissions}</Col>
+			</FormGroup>
+			<br/>
+			<hr/>
+			{group.id ? <GroupMembers group_id={group.id} /> : null}
+
 		</div>
 	}
 }
@@ -305,7 +452,7 @@ class GroupsPage extends React.Component {
 	}
 
 	handleDelete(id) {
-		console.log("deleting id", id);
+		console.log("deleting id ", id);
 
 		if (!this.state.danger) {
 			var c = confirm(T.translate("Confirm to Delete ?"));
