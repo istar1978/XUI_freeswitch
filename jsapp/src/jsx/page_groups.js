@@ -41,7 +41,7 @@ import { EditControl, xFetchJSON } from './libs/xtools'
 class GroupMembers extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {members: [], danger: false, select_value: [], users: []}
+		this.state = {members: [], danger: false, select_value: [], users: []};
 	}
 
 	handleGetGroupMembers() {
@@ -104,6 +104,7 @@ class GroupMembers extends React.Component {
 			});
 
 			this.setState({members: members});
+			this.handleGetReaminMembers();
 
 		}).catch((msg) => {
 			console.error("groups member ", msg);
@@ -123,6 +124,7 @@ class GroupMembers extends React.Component {
 		}).then((obj) => {
 			console.log("deleted")
 			this.handleGetGroupMembers();
+			this.handleGetReaminMembers();
 
 		}).catch((msg) => {
 			console.error("groups members ", msg);
