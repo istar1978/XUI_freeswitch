@@ -206,6 +206,7 @@ class AddNewParam extends React.Component {
 
 		const props = Object.assign({}, this.props);
 		delete props.handleNewParamAdded;
+		delete props.profile_id;
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -305,6 +306,7 @@ class GatewayPage extends React.Component {
 			_this.setState({gw: data, params: params});
 
 			if (data.profile_id) {
+
 				xFetchJSON("/api/sip_profiles/" + data.profile_id).then((obj) => {
 					_this.setState({sip_profile: data});
 				});
@@ -315,7 +317,7 @@ class GatewayPage extends React.Component {
 
 		xFetchJSON( "/api/sip_profiles").then((data) => {
 			_this.setState({sip_profiles: data});
-			console.log(sip_profiles)
+			console.log(this.state.sip_profiles)
 		});
 	}
 
@@ -481,14 +483,7 @@ class GatewayPage extends React.Component {
 
 				return <tr key={param.id} className={disabled_class}>
 					<td><RIEInput value={_this.state.highlight ? (param.k ? param.k : T.translate("Click to Change")) : param.k} change={_this.handleChangeValueK}
-						propName={param.id}
-						className={_this.state.highlight ? "editable" : ""}
-						validate={_this.isStringAcceptable}
-						classLoading="loading"
-						classInvalid="invalid"/>
-					</td>
-					<td><RIEInput value={_this.state.highlight ? (param.v ? param.v : T.translate("Click to Change")) : param.v} change={_this.handleChange}
-						propName={param.id}
+						propName={param.k}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
 						classLoading="loading"
@@ -656,12 +651,6 @@ class GatewaysPage extends React.Component {
 		});
 	}
 
-	handleClick(x) {
-	}
-
-	componentWillMount() {
-	}
-
 	componentWillUnmount() {
 		verto.unsubscribe("FSevent.custom::sofia::gateway_delete");
 		verto.unsubscribe("FSevent.custom::sofia::gateway_add");
@@ -694,8 +683,9 @@ class GatewaysPage extends React.Component {
 			console.log('doc', doc);
 			const msg = parseXML(doc);
 			console.log('msg', msg);
-			if(msg){
-				msg.gateway.forEach(function(gw) {
+			if(msg.gateway){
+				let msgAttr = msg.gateway.length ? msg.gateway : [msg.gateway];
+				msgAttr.forEach(function(gw) {
 					console.log("gw", gw);
 					if (gw.type != "gateway") return;
 					_this.gwstatus[gw.name] = gw.state;
@@ -767,7 +757,6 @@ class GatewaysPage extends React.Component {
 	}
 
 	handleGatewayAdded(gateway) {
-		console.log("TTTTTTTds", gateway);
 		var rows = this.state.rows;
 		gateway.class_name = 'NONE';
 		rows.unshift(gateway);
