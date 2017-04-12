@@ -50,66 +50,55 @@ class SettingEventSocket extends React.Component {
 		console.log("id", id);
 		console.log("value", value);
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/settings/event_socket/" + id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({v: value}),
-			success: function (param) {
-				console.log("success!!!!", param);
+		xFetchJSON("/api/settings/event_socket/" + id, {
+			method: "PUT",
+			body: JSON.stringify({v: value})
+		}).then((param) => {
+			console.log("success!!!!", param);
 
-				const rows = _this.state.rows.map(function(row) {
-					if (row.id == param.id) {
-						row = param;
-					}
-					return row;
-				});
+			const rows = _this.state.rows.map(function(row) {
+				if (row.id == param.id) {
+					row = param;
+				}
+				return row;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("update params", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("update params", msg);
 		});
 	}
 
 	componentDidMount() {
 		const _this = this;
 
-		$.getJSON("/api/settings/event_socket", "", function(data) {
+		xFetchJSON("/api/settings/event_socket").then((data) => {
 			_this.setState({rows: data});
-		}, function(e) {
+		}).catch((msg) => {
 			console.log("get EventSocket ERR");
 		});
-
 	}
 
 	handleToggleParam(e) {
 		const _this = this;
 		const param_id = e.target.getAttribute("data");
 
-		$.ajax({
-			type: "PUT",
-			url: "/api/settings/event_socket/" + param_id,
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify({action: "toggle"}),
-			success: function (param) {
-				console.log("success!!!!", param);
+		xFetchJSON( "/api/settings/event_socket/" + param_id, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			console.log("success!!!!", param);
 
-				const rows = _this.state.rows.map(function(row) {
-					if (row.id == param.id) {
-						row.disabled = param.disabled;
-					}
-					return row;
-				});
+			const rows = _this.state.rows.map(function(row) {
+				if (row.id == param.id) {
+					row.disabled = param.disabled;
+				}
+				return row;
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
-				console.error("toggle params", msg);
-			}
+			_this.setState({rows: rows});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
 		});
 	}
 

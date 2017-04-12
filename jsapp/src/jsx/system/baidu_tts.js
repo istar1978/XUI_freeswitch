@@ -44,28 +44,23 @@ class SettingBaiduTTS extends React.Component {
 
 	fetchACCKEY() {
 		const _this = this;
-		$.ajax({
-			type: "PUT",
-			url: "/api/baidu/acckey",
-			dataType: "json",
-			contentType: "application/json",
-			data: null,
-			success: function (obj) {
-				console.log(obj);
-				const rows = _this.state.rows.map(function(row) {
-					if (row.k == obj.k) {
-						row.v = obj.v;
-						return row;
-					} else {
-						return row;
-					}
-				});
+		xFetchJSON("/api/baidu/acckey", {
+			method: "PUT",
+			body: null
+		}).then((obj) => {
+			console.log(obj);
+			const rows = _this.state.rows.map(function(row) {
+				if (row.k == obj.k) {
+					row.v = obj.v;
+					return row;
+				} else {
+					return row;
+				}
+			});
 
-				_this.setState({rows: rows});
-			},
-			error: function(msg) {
+			_this.setState({rows: rows});
+		}).catch((msg) => {
 				console.error("sip_profile", msg);
-			}
 		});
 	}
 
@@ -78,10 +73,10 @@ class SettingBaiduTTS extends React.Component {
 
 	componentDidMount() {
 		const _this = this;
-		$.getJSON("/api/dicts?realm=BAIDU", "", function(rows) {
+		xFetchJSON("/api/dicts?realm=BAIDU").then((rows) => {
 			_this.setState({rows: rows});
-		}, function(e) {
-			console.error(e);
+		}).catch((msg) => {
+			console.log("ERR", msg);
 		});
 	}
 
