@@ -156,17 +156,13 @@ class GroupMembers extends React.Component {
 		})
 
 		return <div>
-			<h2><T.span text="Members"/></h2><br/>
-			<div className="pull-right" >
-				<T.button text="Remove All Member(s)" className="btn btn-danger" style={{ width:"160px"}} onClick={this.handleDeleteMembers.bind(this)}/>
-			</div>
-			<div className="pull-left">
-				<Select style={{ minWidth:"160px", maxWidth:"300px"}} name="multi-select" multi="true" value={this.state.select_value} placeholder={T.translate('Please Select')} options={member_options} onChange={this.handleSelectChange.bind(this)}/>
-			</div>
-			<div className="pull-left" >
-				<T.button text="Add Member(s)" className="btn btn-primary" style={{ width:"120px"}} onClick={this.handleMembersAdded.bind(this)}/>
-			</div>
-			<br/><br/>
+			<h2><T.span text="Group Members"/></h2><br/>
+			<ButtonToolbar>
+				<Select style={{ minWidth:"160px", maxWidth:"300px"}} name="multi-select" multi="true" className="pull-left" value={this.state.select_value} placeholder={T.translate('Please Select')} options={member_options} onChange={this.handleSelectChange.bind(this)}/>
+				<Button bsStyle="primary" onClick={this.handleMembersAdded.bind(this)} className="pull-left">{T.translate("Add Member(s)")}</Button>
+				<Button bsStyle="danger" className="pull-right" onClick={this.handleDeleteMembers.bind(this)}>{T.translate("Remove All Member(s)")}</Button>
+			</ButtonToolbar>
+			<br/>
 			<table className="table">
 				<tbody>
 				<tr>

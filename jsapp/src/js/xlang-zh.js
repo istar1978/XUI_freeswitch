@@ -66,6 +66,7 @@ LANGUAGES["zh"] = {
 	"Parent Group": "所属组",
 	"Add Member(s)": "添加用户",
 	"Remove All Member(s)": "移除所有用户",
+	"Group Members": "组成员",
 	Contact: "联系地址",
 	Reg: "注册",
 	Unreg: "注销",
