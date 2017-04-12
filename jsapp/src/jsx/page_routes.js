@@ -35,6 +35,9 @@ import T from 'i18n-react';
 import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl, xFetchJSON } from './libs/xtools'
+import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
+import verto from './verto/verto';
+import parseXML from './libs/xml_parser';
 
 class NewRoute extends React.Component {
 	constructor(props) {
@@ -220,18 +223,140 @@ class NewRoute extends React.Component {
 	}
 }
 
+class AddNewParam extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {errmsg: ''};
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+	handleSubmit(e) {
+		var _this = this;
+		console.log("submit...");
+		var param = form2json('#newParamAddForm');
+		console.log("param", param);
+		if (!param.k || !param.v) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+		xFetchJSON("/api/routes/" + _this.props.profile_id + "/params/", {
+			method:"POST",
+			body: JSON.stringify(param)
+		}).then((obj) => {
+			param.id = obj.id;
+			_this.props.handleNewParamAdded(param);
+		}).catch((msg) => {
+			console.error("route", msg);
+			_this.setState({errmsg: '' + msg + ''});
+		});
+	}
+	render() {
+		console.log(this.props);
+		const props = Object.assign({}, this.props);
+		delete props.handleNewParamAdded;
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Add Param" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newParamAddForm">
+				<FormGroup controlId="formName">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="Name" /></Col>
+				</FormGroup>
+				<FormGroup controlId="formRealm">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Value" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="v" placeholder="Value" /></Col>
+				</FormGroup>
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
 class RoutePage extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {route: {}, edit: false, dest_uuid: null, dest_body: null,
-			contexts: [], dest_types: []
+			contexts: [], dest_types: [], danger: false, params: [], formShow: false
 		};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleDestTypeChange = this.handleDestTypeChange.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
+		this.handleSort = this.handleSort.bind(this);
+		this.handleToggleParam = this.handleToggleParam.bind(this);
+		this.toggleHighlight = this.toggleHighlight.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleChangeValueK = this.handleChangeValueK.bind(this);
+	}
+
+	toggleHighlight() {
+		this.setState({highlight: !this.state.highlight});
+	}
+
+	handleChange(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+
+		console.log("change", obj);
+
+		xFetchJSON( "/api/routes/" + this.state.route.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({v: obj[id]})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			_this.state.params = _this.state.params.map(function(p) {
+				if (p.id == id) {
+					return param;
+				}
+				return p;
+			});
+			_this.setState({params: _this.state.params});
+		}).catch((msg) => {
+			console.log("update params",msg)
+		});
+	}
+
+	handleChangeValueK(obj) {
+		const _this = this;
+		const id = Object.keys(obj)[0];
+
+		console.log("change", obj);
+
+		xFetchJSON( "/api/routes/" + this.state.route.id + "/params/" + id, {
+			method: "PUT",
+			body: JSON.stringify({k: obj[id]})
+		}).then((param) => {
+			console.log("success!!!!", param);
+			_this.state.params = _this.state.params.map(function(p) {
+				if (p.id == id) {
+					return param;
+				}
+				return p;
+			});
+			_this.setState({params: _this.state.params});
+		}).catch((msg) => {
+			console.error("update params", msg);
+		});
 	}
 
 	handleDestTypeChange(e) {
@@ -313,6 +438,33 @@ class RoutePage extends React.Component {
 		}
 	}
 
+	handleParamAdded(param) {
+		console.log("param", param);
+		var params = this.state.params;
+		params.unshift(param);
+		this.setState({params: params, formShow: false});
+	}
+
+	handleToggleParam(e) {
+		const _this = this;
+		const data = e.target.getAttribute("data");
+
+		xFetchJSON("/api/routes/" + this.state.route.id + "/params/" + data, {
+			method: "PUT",
+			body: JSON.stringify({action: "toggle"})
+		}).then((param) => {
+			const params = _this.state.params.map(function(p) {
+					if (p.id == data) {
+						p.disabled = param.disabled;
+					}
+					return p;
+				});
+			_this.setState({params: params});
+		}).catch((msg) => {
+			console.error("toggle params", msg);
+		});
+	}
+
 	handleSubmit(e) {
 		var _this = this;
 
@@ -337,9 +489,36 @@ class RoutePage extends React.Component {
 	}
 
 	handleControlClick(e) {
-		this.state.edit = !this.state.edit
-		this.handleDestTypeChange({target: {value: this.state.route.dest_type}});
-		this.setState({edit: this.state.edit});
+		var data = e.target.getAttribute("data");
+		console.log("data", data);
+
+		if (data == "edit") {
+			this.state.edit = !this.state.edit
+			this.handleDestTypeChange({target: {value: this.state.route.dest_type}});
+			this.setState({edit: this.state.edit});
+		} else if (data == "new") {
+			this.setState({formShow: true});
+		};
+	}
+
+	handleSort(e){
+		var params = this.state.params;
+
+		var field = e.target.getAttribute('data');
+		var n = 1;
+
+		if (this.state.order == 'ASC') {
+			this.state.order = 'DSC';
+			n = -1;
+		} else {
+			this.state.order = 'ASC';
+		}
+
+		params.sort(function(a,b) {
+			return a[field].toUpperCase() < b[field].toUpperCase() ? -1 * n : 1 * n;
+		});
+
+		this.setState({params: params});
 	}
 
 	componentDidMount() {
@@ -361,17 +540,82 @@ class RoutePage extends React.Component {
 			checkDestType();
 		});
 		xFetchJSON("/api/routes/" + this.props.params.id).then((data) => {
-			_this.setState({route: data});
+			console.log('data', data)
+			const params = data.params;
+			delete data.params;
+			_this.setState({route: data, params: params});
 			checkDestType();
 		}).catch((msg) => {
-			console.log("get route ERR");
+			console.log(msg);
+		});
+	}
+
+	handleDelete(id) {
+		console.log("deleting id", id);
+		var _this = this;
+
+		if (!_this.state.danger) {
+			var c = confirm(T.translate("Confirm to Delete ?"));
+
+			if (!c) return;
+		}
+		xFetchJSON( "/api/routes?id=" + id, {
+			method: "DELETE"
+		}).then((obj) => {
+			console.log("deleted")
+			var params = _this.state.params.filter(function(param) {
+				return param.id != id;
+			});
+
+			_this.setState({params: params});
+			console.log(_this.state.params)
+		}).catch((msg) => {
+			console.log("getways",msg)
 		});
 	}
 
 	render() {
 		const route = this.state.route;
+		var _this = this;
 		let save_btn = "";
 		let err_msg = "";
+		let hand = { cursor: "pointer" };
+		var danger = this.state.danger ? "danger" : "";
+		let toggleDanger = () => this.setState({ danger: !this.state.danger });
+		let params = <tr></tr>;
+		let formClose = () => _this.setState({ formShow: false });
+
+		if (this.state.params && Array.isArray(this.state.params)) {
+			params = this.state.params.map(function(param) {
+				const enabled_style = dbfalse(param.disabled) ? "success" : "default";
+				const disabled_class = dbfalse(param.disabled) ? null : "disabled";
+
+				return <tr key={param.id} className={disabled_class}>
+					<td><RIEInput value={_this.state.highlight ? (param.k ? param.k : T.translate("Click to Change")) : param.k} change={_this.handleChangeValueK}
+						propName={param.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
+					<td><RIEInput value={_this.state.highlight ? (param.v ? param.v : T.translate("Click to Change")) : param.v} change={_this.handleChange}
+						propName={param.id}
+						className={_this.state.highlight ? "editable" : ""}
+						validate={_this.isStringAcceptable}
+						classLoading="loading"
+						classInvalid="invalid"/>
+					</td>
+					<td>
+						<Button onClick={_this.handleToggleParam} data={param.id} bsStyle={enabled_style}>
+							{dbfalse(param.disabled) ? T.translate("Yes") : T.translate("No")}
+						</Button>
+					</td>
+					<td>
+						<T.a onClick={() => _this.handleDelete(param.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/>
+					</td>
+				</tr>
+			});
+		}
 
 		if (this.state.edit) {
 			save_btn = <Button onClick={this.handleSubmit}><i className="fa fa-save" aria-hidden="true"></i>&nbsp;<T.span text="Save"/></Button>
@@ -393,7 +637,7 @@ class RoutePage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
+				<Button onClick={this.handleControlClick} data="edit"><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -449,6 +693,29 @@ class RoutePage extends React.Component {
 					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
 			</Form>
+
+			<ButtonToolbar className="pull-right">
+			<ButtonGroup>
+				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+			</ButtonGroup>
+			<ButtonGroup>
+				<Button onClick={this.handleControlClick} data="new"><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} data="new" text="Add"/></Button>
+			</ButtonGroup>
+			</ButtonToolbar>
+
+			<h2><T.span text="Params"/></h2>
+			<table className="table">
+				<tbody>
+				<tr>
+					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data="d"><T.span text="Name" data="k"/></th>
+					<th><T.span text="Value"/></th>
+					<th style={{cursor: "pointer"}} onClick={this.handleSort.bind(this)} data='disabled'><T.span text="Enabled" data="disabled"/></th>
+					<th><T.span style={hand} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
+				</tr>
+				{params}
+				</tbody>
+			</table>
+			<AddNewParam show={this.state.formShow} onHide={formClose} profile_id={this.state.route.id} handleNewParamAdded={this.handleParamAdded.bind(this)}/>
 		</div>
 	}
 }
@@ -549,9 +816,9 @@ class RoutesPage extends React.Component {
     }
 
 	render() {
-	    let formClose = () => this.setState({ formShow: false });
-	    let toggleDanger = () => this.setState({ danger: !this.state.danger });
-		let hand = { cursor: "pointer" };
+	    const formClose = () => this.setState({ formShow: false });
+	    const toggleDanger = () => this.setState({ danger: !this.state.danger });
+		const hand = { cursor: "pointer" };
 
 	    var _this = this;
 	    var danger = this.state.danger ? "danger" : "";

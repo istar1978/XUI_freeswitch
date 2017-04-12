@@ -33,6 +33,7 @@
 content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
+require 'm_route'
 
 local block_prefix = config.block_path .. "/blocks-"
 
@@ -48,6 +49,8 @@ end)
 get('/:id', function(params)
 	route = xdb.find("routes", params.id)
 	if route then
+		p_params = m_route.params(params.id)
+		route.params = p_params
 		return route
 	else
 		return 404
@@ -101,5 +104,45 @@ delete('/:id', function(params)
 		return 200, "{}"
 	else
 		return 500, "{}"
+	end
+end)
+
+post('/:ref_id/params/', function(params)
+	params.request.ref_id = params.ref_id
+	params.realm = 'route'
+	params.request.realm = params.realm
+	ret = m_route.createParam(params.request)
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
+
+delete('/', function(params)
+	id = tonumber(env:getHeader('id'))
+	ret = m_route.delete(id)
+	
+	if ret >= 0 then
+		return 200, "{}"
+	else
+		return 500, "{}"
+	end
+end)
+
+put('/:id/params/:param_id', function(params)
+	print(serialize(params))
+	ret = nil;
+
+	if params.request.action and params.request.action == "toggle" then
+		ret = m_route.toggle_param(params.id, params.param_id)
+	else
+		ret = m_route.update_param(params.id, params.param_id, params.request)
+	end
+
+	if ret then
+		return ret
+	else
+		return 404
 	end
 end)
