@@ -134,10 +134,19 @@ class CDRsPage extends React.Component {
 	    	var r = 10000;
 	    	localStorage.setItem("theRows", r);
      	}
-     	this.state = {rows: [], loaded: false, hiddendiv: 'none'};
-     	this.handleQuery = this.handleQuery.bind(this);
-     	this.handleSearch = this.handleSearch.bind(this);
-     	this.handleMore = this.handleMore.bind(this);
+		this.state = {
+			rows: [],
+			loaded: false,
+			hiddendiv: 'none',
+			curPage: 1,
+			rowCount: 0,
+			pageCount: 0
+		};
+
+		this.handleQuery = this.handleQuery.bind(this);
+		this.handleSearch = this.handleSearch.bind(this);
+		this.handleMore = this.handleMore.bind(this);
+		this.handlePageTurn = this.handlePageTurn.bind(this);
 	}
 
 	handleClick (x) {
@@ -159,8 +168,40 @@ class CDRsPage extends React.Component {
 			"&destNumber=" + this.destNumber.value;
 		console.log(qs);
 
-		xFetchJSON("/api/cdrs?" + qs,).then((cdrs) => {
-			this.setState({rows: cdrs});
+		xFetchJSON("/api/cdrs?" + qs).then((cdrs) => {
+			this.setState({
+				rows: cdrs.data,
+				pageCount: cdrs.pageCount, 
+				rowCount: cdrs.rowCount,
+				curPage: cdrs.curPage
+			});
+		});
+	}
+
+	handlePageTurn (e, pageNum) {
+		var qs = "";
+
+		e.preventDefault();
+		if (pageNum < 0) return; // do nothing
+
+		if (this.state.hiddendiv == "block") {
+			qs = "startDate=" + this.startDate.value +
+				"&endDate=" + this.endDate.value +
+				"&cidNumber=" + this.cidNumber.value +
+				"&destNumber=" + this.destNumber.value;
+		} else {
+			qs = "last=" + this.days;
+		}
+
+		qs = qs + "&pageNum=" + pageNum;
+
+		xFetchJSON("/api/cdrs?" + qs).then((cdrs) => {
+			this.setState({
+				rows: cdrs.data,
+				pageCount: cdrs.pageCount, 
+				rowCount: cdrs.rowCount,
+				curPage: cdrs.curPage
+			});
 		});
 	}
 
@@ -171,18 +212,30 @@ class CDRsPage extends React.Component {
 	}
 
 	componentDidMount () {
-		xFetchJSON("/api/cdrs").then((data) => {
-			this.setState({rows: data, loaded : true});
+		xFetchJSON("/api/cdrs").then((cdrs) => {
+			this.setState({
+				rows: cdrs.data,
+				pageCount: cdrs.pageCount, 
+				rowCount: cdrs.rowCount,
+				curPage: cdrs.curPage,
+				loaded : true
+			});
 		});
 	}
 
 	handleQuery (e) {
 		var data = parseInt(e.target.getAttribute("data"));
 
+		this.days = data;
 		e.preventDefault();
 
 		xFetchJSON("/api/cdrs?last=" + data).then((cdrs) => {
-			this.setState({rows: cdrs});
+			this.setState({
+				rows: cdrs.data,
+				pageCount: cdrs.pageCount, 
+				rowCount: cdrs.rowCount,
+				curPage: cdrs.curPage
+			});
 		});
 	}
 
@@ -206,6 +259,102 @@ class CDRsPage extends React.Component {
 				<td><Link to={`/cdrs/${row.uuid}`}><T.span text="Detail"/></Link></td>
 			</tr>
 		})
+
+		var pagination = function() {
+			var pageCount = _this.state.pageCount;
+			var curPage = _this.state.curPage;
+			var rePages = [];
+			var paginationInfos = [];
+			var len = 7; // hard code temporary
+			var pageStart = 1;
+
+			if (pageCount == 0) return <div/>
+
+			if (pageCount <= len) {
+				len = pageCount;
+			} else {
+				if (curPage > Math.ceil(len/2)) {
+					if (curPage >= (pageCount - Math.floor(len/2))) {
+						pageStart = pageCount - len + 1;
+					} else {
+						pageStart = curPage - Math.floor(len/2);
+					}
+				}
+			}
+
+			for (var j = 1, i = pageStart; j <= len + 4; j ++) {
+				var liClass = "";
+				var paginationText = "";
+				var redirectPage = -1;  // means do nothing
+				var paginationInfo = {};
+
+				if (j == 1) {
+					paginationText = "First Page";
+
+					if (curPage == 1) {
+						liClass = "disabled";
+					} else {
+						redirectPage = 1;
+					}
+				} else if (j == 2) {
+					paginationText = "Previous Page";
+
+					if (curPage == 1) {
+						liClass = "disabled";
+					} else {
+						redirectPage = curPage - 1;
+					}
+				} else if (j == len + 3) {
+					paginationText = "Next Page";
+
+					if (curPage == pageCount) {
+						liClass = "disabled";
+					} else {
+						redirectPage = curPage + 1;
+					}
+				} else if (j == len + 4) {
+					paginationText = "Last Page";
+
+					if (curPage == pageCount) {
+						liClass = "disabled";
+					} else {
+						redirectPage = 0;
+					}
+				} else {
+					if (i == curPage) {
+						liClass = "active";
+						redirectPage = -1;
+					} else {
+						redirectPage = i;
+					}
+
+					paginationText = i.toString();
+					i ++;
+				}
+
+				paginationInfo.paginationText = paginationText;
+				paginationInfo.redirectPage = redirectPage;
+				paginationInfo.liClass = liClass;
+
+				paginationInfos.push(paginationInfo);
+			}
+
+			var paginationSelectItems = paginationInfos.map(function(info) {
+				return( 
+					<ul className="pagination">
+						<li className={info.liClass}>
+							<T.a text={info.paginationText} onClick={(e) => _this.handlePageTurn(e, info.redirectPage)} href="#"/>
+						</li>
+					</ul>
+				);
+			});
+
+			return(
+				<nav className="pull-right">
+					{paginationSelectItems}
+				</nav>
+			)
+		}();
 
 		if(this.state.loaded){
 			isShow = "none";
@@ -250,7 +399,8 @@ class CDRsPage extends React.Component {
 				<T.a onClick={this.handleMore} text="More" data="more" href="#"/>...
 				<br/>
 				<div className="pull-right">
-					<T.span text="Total Rows"/>: {rows.length}
+					<T.span text="Total Rows"/>: {this.state.rowCount} &nbsp;&nbsp;
+					<T.span text="Current Page/Total Page"/>: {this.state.curPage}/{this.state.pageCount}
 				</div>
 			</ButtonToolbar>
 
@@ -282,8 +432,8 @@ class CDRsPage extends React.Component {
 				</tr>
 				{rows}
 				<tr>
-					<td colSpan="11" style={{textAlign: "right"}}>
-						<T.span text="Total Rows"/>: {rows.length}
+					<td colSpan="12">
+						{pagination}
 					</td>
 				</tr>
 				</tbody>
@@ -291,7 +441,7 @@ class CDRsPage extends React.Component {
 			</div>
 			<div style={{textAlign: "center"}}>
 				<img style={loadSpinner} src="assets/img/loading.gif"/>
-			</div>	
+			</div>
 		</div>
 	}
 };

@@ -41,36 +41,77 @@ xtra.require_login()
 
 get('/', function(params)
 	startDate = env:getHeader('startDate')
-	last = env:getHeader('last')
+	last = tonumber(env:getHeader('last'))
+	pageNum = tonumber(env:getHeader('pageNum'))
+	rowPerPage = tonumber(env:getHeader('rowPerPage'))
+
+	local cdrs = {}
+	local rowCount = 0
+
+	cdrs.pageCount = 0
+	cdrs.rowCount = 0
+	cdrs.curPage = 0
+	cdrs.data = {}
+
+	pageNum = tonumber(pageNum)
+	rowPerPage = tonumber(rowPerPage)
+
+	if not pageNum or pageNum < 0 then
+		pageNum = 1
+	end
+
+	if not rowPerPage then
+		rowPerPage = 20
+	end
 
 	if not startDate then
-		if not last then last = "7" end
+		if not last then last = 7 end
 
-		n, cdrs = xdb.find_by_time("cdrs", last)
-
-		if (n > 0) then
-			return cdrs
-		else
-			return "[]"
-		end
+		local theTime = os.time()
+		local theTargetTime = theTime - last*24*60*60
+		cond = " strftime('%s', start_stamp) - " .. theTargetTime .. " > 0"
 
 	else
 		local endDate = env:getHeader('endDate')
 		local cidNumber = env:getHeader('cidNumber')
 		local destNumber = env:getHeader('destNumber')
 
-		local cond = xdb.date_cond("start_stamp", startDate, endDate) ..
+		cond = xdb.date_cond("start_stamp", startDate, endDate) ..
 					xdb.if_cond("caller_id_number", cidNumber) ..
 					xdb.if_cond("destination_number", destNumber)
+	end
 
-		n, cdrs = xdb.find_by_cond("cdrs", cond)
+	local cb = function(row)
+		rowCount = tonumber(row.count)
+	end
 
-		if (n > 0) then
-			return cdrs
-		else
-			return "[]"
+	xdb.find_by_sql("SELECT count(1) as count FROM cdrs WHERE " .. cond, cb)
+
+	if rowCount > 0 then
+		local offset = 0
+		local pageCount = 0
+
+		pageCount = math.ceil(rowCount / rowPerPage);
+
+		if pageNum == 0 then
+			-- It means the last page
+			pageNum = pageCount
+		end
+
+		offset = (pageNum - 1) * rowPerPage
+
+		local found, cdrsData = xdb.find_by_cond("cdrs", cond, "start_stamp DESC", nil, rowPerPage, offset)
+
+		if (found > 0) then
+			cdrs.rowCount = rowCount
+			cdrs.data = cdrsData
+			cdrs.curPage = pageNum
+			cdrs.pageCount = pageCount
 		end
 	end
+
+	return cdrs
+
 end)
 
 get('/:uuid', function(params)
