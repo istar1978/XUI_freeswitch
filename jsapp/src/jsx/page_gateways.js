@@ -538,7 +538,7 @@ class GatewayPage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1><T.span text="Gateway"/><small>{gw.name} {gw.username}</small></h1>
+			<h1><T.span text="Gateway"/><small>&nbsp;{gw.name} {gw.username}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newGatewayForm">
@@ -684,28 +684,35 @@ class GatewaysPage extends React.Component {
 		verto.subscribe("FSevent.custom::sofia::gateway_add", {handler: this.handleFSEvent});
 		verto.subscribe("FSevent.custom::sofia::gateway_state", {handler: this.handleFSEvent});
 
-		verto.fsAPI("sofia", "xmlstatus", function(data) {
+		verto.fsAPI("sofia", "xmlstatus gateway", function(data) {
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(data.message, "text/xml");
 			console.log('doc', doc);
 			const msg = parseXML(doc);
 			console.log('msg', msg);
-			if(msg.gateway){
-				let msgAttr = msg.gateway.length ? msg.gateway : [msg.gateway];
-				msgAttr.forEach(function(gw) {
-					console.log("gw", gw);
-					if (gw.type != "gateway") return;
-					_this.gwstatus[gw.name] = gw.state;
-				});
 
-				let rows = _this.state.rows.map(function(row) {
-					row.class_name = _this.gwstatus[row.name];
-					console.log('class_name', class_name);
-					return row;
-				});
+			let gateways = [];
 
-				_this.setState({rows: rows});
+			if (msg) {
+				if (isArray(msg)) {
+					gateways = msg;
+				} else if (isObject(msg)) {
+					gateways.push(msg);
+				}
 			}
+
+			gateways.forEach(function(gw) {
+				console.log("gw", gw);
+				_this.gwstatus[gw.name] = gw.state;
+			});
+
+			let rows = _this.state.rows.map(function(row) {
+				row.class_name = _this.gwstatus[row.name];
+				console.log('class_name', class_name);
+				return row;
+			});
+
+			_this.setState({rows: rows});
 		});
 
 	}
