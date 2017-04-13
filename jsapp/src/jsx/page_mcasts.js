@@ -444,25 +444,28 @@ class McastsPage extends React.Component {
 
 				const msg = parseXML(doc);
 				console.log('msg', msg);
-				let msgAttr = [];
 
+				let mcasts = [];
 
-				if (msg) {
-					msgAttr.length ? msgAttr = msg : msgAttr.push(msg);
-					msgAttr.forEach(function(mcast) {
-						var name = mcast.name;
-						var running = mcast.running;
-
-						rows = _this.state.rows.map(function(row) {
-							if (row.name == name) {
-								row.running = dbtrue(running);
-							}
-							return row;
-						});
-
-					});
-					_this.setState({rows: rows});
+				if (isArray(msg.gateway)) {
+					mcasts = msg;
+				} else if (isObject(msg)) {
+					mcasts.push(msg);
 				}
+
+				mcasts.forEach(function(mcast) {
+					let name = mcast.name;
+					let running = mcast.running;
+
+					rows = _this.state.rows.map(function(row) {
+						if (row.name == name) {
+							row.running = dbtrue(running);
+						}
+						return row;
+					});
+
+				});
+				_this.setState({rows: rows});
 			});
 		}).catch((e) => {
 			console.log("get mcasts ERR");

@@ -238,3 +238,15 @@ function currentTime () {
 	var time = new Date().Format("yyyy-MM-dd hh:mm:ss");
 	return time;
 }
+
+function isArray(obj) {
+	if(Array.isArray){
+		return Array.isArray(obj);
+	}else{
+		return Object.prototype.toString.call(obj)==="[object Array]";
+	}
+}
+
+function isObject(obj) {
+	return Object.prototype.toString.call(obj)==="[object Object]";
+}
