@@ -138,14 +138,6 @@ class SettingDevice extends React.Component {
 		localStorage.setItem("xui.audio." + e.target.value, e.target.checked);
 	}
 
-	hanldeTestSpeed(e) {
-		//...
-	}
-
-	handlePrevieSetting(){
-		//...
-	}
-
 	handleResetSettings() { 
 		const _this = this;
 		let init = defaultSetting();
@@ -153,6 +145,13 @@ class SettingDevice extends React.Component {
 			_this.setState({ [key]: init[key] });
 			localStorage.setItem("xui.audio." + key, init[key]);
 		}
+	}
+
+	hanldeTestSpeed() {
+		console.log("Still not use,will do ...");
+	}
+	handlePrevieSetting() {
+		console.log("Still not use,will do ...");
 	}
 
 	handleRefreshList(ds) {
@@ -179,7 +178,17 @@ class SettingDevice extends React.Component {
 					<Col sm={2}><T.span text="Camera" /></Col>
 					<Col sm={3}>
 						<FormControl name="videoDevice" componentClass="select" onChange={_this.handleChange} value={_this.state.videoDevice}>
-							<option key='none' value='none'>{T.translate("No Camera")}</option>
+							{_this.state.cameras.map(function(obj){
+								return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
+							})}
+						</FormControl>
+					</Col>
+				</div>
+				<div className="row">
+					<Col sm={2}><T.span text="Share device" /></Col>
+					<Col sm={3}>
+						<FormControl name="shareDevice" onChange={this.handleChange} value={this.state.shareDevice} componentClass="select">
+							<option value="Screen">Screen</option>
 							{_this.state.cameras.map(function(obj){
 								return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
 							})}
@@ -219,6 +228,7 @@ class SettingDevice extends React.Component {
 						</FormControl>
 					</Col>
 				</div>
+
 				<div className="row">
 					<Col sm={6}>
 						<Checkbox onChange={_this.handleCheckChange}  name="autoBand" value="autoBand" inline checked={_this.state.autoBand}>
@@ -228,7 +238,14 @@ class SettingDevice extends React.Component {
 						<Checkbox onChange={_this.handleCheckChange}  name="testSpeedJoin" value="testSpeedJoin" inline checked={_this.state.testSpeedJoin}>
 							<T.span text="Recheck bandwidth before each outgoing call" />
 						</Checkbox>
+						<br/><br/>
+						<Checkbox onChange={_this.handleCheckChange} value="mirrorInput" inline checked={_this.state.mirrorInput}>
+							<T.span text="Scale Remote Video To Match Camera Resolution" />
+						</Checkbox>
 					</Col>
+					<br/><br/>
+					<Button onClick={_this.handlePrevieSetting}><T.span text="Preview Settings" /></Button>
+					<br/><br/>
 				</div>
 			</div>
 
@@ -255,6 +272,10 @@ class SettingDevice extends React.Component {
 			</div>
 			<div className="row">
 				<Col sm={4}>
+					<Checkbox onChange={_this.handleCheckChange} value="useStereo" inline checked={_this.state.useStereo}>
+						<T.span text="Stereo Audio" />
+					</Checkbox>
+					<br/><br/>
 					<Checkbox onChange={_this.handleCheckChange}  name="googEchoCancellation" value="googEchoCancellation" inline checked={_this.state.googEchoCancellation}>
 						<T.span text="Echo Cancellation" />
 					</Checkbox>
@@ -275,34 +296,12 @@ class SettingDevice extends React.Component {
 		</div>
 
 		const general_rows = <div className="row">
-			<div className="row">
-				<Col sm={2}><T.span text="Share device" /></Col>
-				<Col sm={3}>
-					<FormControl name="shareDevice" onChange={this.handleChange} value={this.state.shareDevice} componentClass="select">
-						<option value="Screen">Screen</option>
-						{_this.state.cameras.map(function(obj){
-							return <option key={obj.id} value={obj.id}>{obj.label ? obj.label : obj.id}</option>
-						})}
-					</FormControl>
-				</Col>
-			</div>
 
 			<div className="row">
 				<Col sm={4}>
-					<Checkbox onChange={_this.handleCheckChange} value="useVideo" inline checked={_this.state.useVideo}>
-						<T.span text="Use Video" />
-					</Checkbox>
-					<br/><br/>
-					<Checkbox onChange={_this.handleCheckChange} value="useStereo" inline checked={_this.state.useStereo}>
-						<T.span text="Stereo Audio" />
-					</Checkbox>
-					<br/><br/>
+					
 					<Checkbox onChange={_this.handleCheckChange} value="useSTUN" inline checked={_this.state.useSTUN}>
 						<T.span text="Use STUN" />
-					</Checkbox>
-					<br/><br/>
-					<Checkbox onChange={_this.handleCheckChange} value="mirrorInput" inline checked={_this.state.mirrorInput}>
-						<T.span text="Scale Remote Video To Match Camera Resolution" />
 					</Checkbox>
 					<br/><br/>
 					<Checkbox onChange={_this.handleCheckChange} value="askRecoverCall" inline checked={_this.state.askRecoverCall}>
@@ -313,8 +312,6 @@ class SettingDevice extends React.Component {
 
 			<div className="row">
 				<Col sm={4}>
-					<Button onClick={_this.handlePrevieSetting}><T.span text="Preview Settings" /></Button>
-					<br/><br/>
 					<Button onClick={_this.handleRefreshList}><T.span text="Refresh Device List" /></Button>
 					<br/><br/>
 					<Button onClick={_this.handleResetSettings}><T.span text="Factory Reset" /></Button>

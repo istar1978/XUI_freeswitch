@@ -298,7 +298,7 @@ LANGUAGES["zh"] = {
 	"Best frame rate": "最佳帧率",
 	"Resolution": "分辨率",
 	Camera: "摄像头",
-	"Automatically determine speed and resolution settings": "自动缩放远端视频到本地摄像头分辨率",
+	"Automatically determine speed and resolution settings": "根据网速自动选择最佳分辨率",
 	"Recheck bandwidth before each outgoing call": "在恢复上一次通话前询问",
 	"Scale Remote Video To Match Camera Resolution": "自动缩放远端视频到本地摄像头分辨率",
 	"Ask before recovering call": "在恢复上一次通话前询问",
