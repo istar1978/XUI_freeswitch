@@ -654,10 +654,16 @@ class SIPProfilesPage extends React.Component {
 
 				let profiles = [];
 
-				if (isArray(msg)) {
-					profiles = msg;
-				} else if (isObject(msg)) {
-					profiles.push(msg);
+				if (msg) {
+					if (isArray(msg.profile)) {
+						profiles = msg.profile;
+					} else if (isObject(msg.profile)) {
+						profiles.push(msg.profile);
+					} else if (isArray(msg)) {
+						profiles = msg;
+					} else if (isObject(msg)) {
+						profiles.push(msg);
+					}
 				}
 
 				profiles.forEach(function(profile) {
