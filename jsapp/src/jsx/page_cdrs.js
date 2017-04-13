@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col, Pagination } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl, xFetchJSON } from './libs/xtools';
 
@@ -178,11 +178,8 @@ class CDRsPage extends React.Component {
 		});
 	}
 
-	handlePageTurn (e, pageNum) {
+	handlePageTurn (pageNum) {
 		var qs = "";
-
-		e.preventDefault();
-		if (pageNum < 0) return; // do nothing
 
 		if (this.state.hiddendiv == "block") {
 			qs = "startDate=" + this.startDate.value +
@@ -261,99 +258,25 @@ class CDRsPage extends React.Component {
 		})
 
 		var pagination = function() {
-			var pageCount = _this.state.pageCount;
-			var curPage = _this.state.curPage;
-			var rePages = [];
-			var paginationInfos = [];
-			var len = 7; // hard code temporary
-			var pageStart = 1;
+			var maxButtons = 7;
+			if (_this.state.pageCount == 0) return <div/>
 
-			if (pageCount == 0) return <div/>
+			if (maxButtons > _this.state.pageCount) maxButtons = _this.state.pageCount;
 
-			if (pageCount <= len) {
-				len = pageCount;
-			} else {
-				if (curPage > Math.ceil(len/2)) {
-					if (curPage >= (pageCount - Math.floor(len/2))) {
-						pageStart = pageCount - len + 1;
-					} else {
-						pageStart = curPage - Math.floor(len/2);
-					}
-				}
-			}
-
-			for (var j = 1, i = pageStart; j <= len + 4; j ++) {
-				var liClass = "";
-				var paginationText = "";
-				var redirectPage = -1;  // means do nothing
-				var paginationInfo = {};
-
-				if (j == 1) {
-					paginationText = "First Page";
-
-					if (curPage == 1) {
-						liClass = "disabled";
-					} else {
-						redirectPage = 1;
-					}
-				} else if (j == 2) {
-					paginationText = "Previous Page";
-
-					if (curPage == 1) {
-						liClass = "disabled";
-					} else {
-						redirectPage = curPage - 1;
-					}
-				} else if (j == len + 3) {
-					paginationText = "Next Page";
-
-					if (curPage == pageCount) {
-						liClass = "disabled";
-					} else {
-						redirectPage = curPage + 1;
-					}
-				} else if (j == len + 4) {
-					paginationText = "Last Page";
-
-					if (curPage == pageCount) {
-						liClass = "disabled";
-					} else {
-						redirectPage = 0;
-					}
-				} else {
-					if (i == curPage) {
-						liClass = "active";
-						redirectPage = -1;
-					} else {
-						redirectPage = i;
-					}
-
-					paginationText = i.toString();
-					i ++;
-				}
-
-				paginationInfo.paginationText = paginationText;
-				paginationInfo.redirectPage = redirectPage;
-				paginationInfo.liClass = liClass;
-
-				paginationInfos.push(paginationInfo);
-			}
-
-			var paginationSelectItems = paginationInfos.map(function(info) {
-				return( 
-					<ul className="pagination">
-						<li className={info.liClass}>
-							<T.a text={info.paginationText} onClick={(e) => _this.handlePageTurn(e, info.redirectPage)} href="#"/>
-						</li>
-					</ul>
-				);
-			});
-
-			return(
+			return (
 				<nav className="pull-right">
-					{paginationSelectItems}
+					<Pagination
+						prev={T.translate("Prev Page")}
+						next={T.translate("Next Page")}
+						first={T.translate("First Page")}
+						last={T.translate("Last Page")}
+						ellipsis={false}
+						items={_this.state.pageCount}
+						maxButtons={maxButtons}
+						activePage={_this.state.curPage}
+						onSelect={_this.handlePageTurn} />
 				</nav>
-			)
+			);
 		}();
 
 		if(this.state.loaded){

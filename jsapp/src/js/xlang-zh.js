@@ -253,7 +253,7 @@ LANGUAGES["zh"] = {
 	"Last Page": "尾页",
 	"First Page": "首页",
 	"Next Page": "下一页",
-	"Previous Page": "上一页",
+	"Prev Page": "上一页",
 	"Current Page/Total Page": "当前页/总页数",
 	"Create New FIFO": "创建新的队列",
 	"Add FIFO Member": "创建新的队列成员",
