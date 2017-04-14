@@ -447,7 +447,7 @@ class McastsPage extends React.Component {
 
 				let mcasts = [];
 
-				if (isArray(msg.gateway)) {
+				if (isArray(msg)) {
 					mcasts = msg;
 				} else if (isObject(msg)) {
 					mcasts.push(msg);
