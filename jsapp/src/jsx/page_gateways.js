@@ -308,7 +308,7 @@ class GatewayPage extends React.Component {
 			if (data.profile_id) {
 
 				xFetchJSON("/api/sip_profiles/" + data.profile_id).then((obj) => {
-					_this.setState({sip_profile: data});
+					_this.setState({sip_profile: obj});
 				});
 			}
 		}).catch((msg) => {
@@ -413,18 +413,19 @@ class GatewayPage extends React.Component {
 			console.error("toggle params", msg);
 		});
 	}
-	handleReg (e) {
-		verto.fsAPI("sofia", "profile public register " + this.state.gw.name);
+
+	handleReg(e) {
+		verto.fsAPI("sofia", "profile " + this.state.gw.profile_name + " register " + this.state.gw.name);
 	}
-	handleUnreg (e) {
-		verto.fsAPI("sofia", "profile public unregister " + this.state.gw.name);
+	handleUnreg(e) {
+		verto.fsAPI("sofia", "profile " + this.state.gw.profile_name + " unregister " + this.state.gw.name);
 	}
-	handleStart (e) {
-		verto.fsAPI("sofia", "profile public startgw " + this.state.gw.name);
-		verto.fsAPI("sofia", "profile public rescan");
+	handleStart(e) {
+		verto.fsAPI("sofia", "profile " + this.state.gw.profile_name + " startgw " + this.state.gw.name);
+		verto.fsAPI("sofia", "profile " + this.state.gw.profile_name + " rescan");
 	}
-	handleStop (e) {
-		verto.fsAPI("sofia", "profile public killgw " + this.state.gw.name);
+	handleStop(e) {
+		verto.fsAPI("sofia", "profile " + this.state.gw.profile_name + " killgw " + this.state.gw.name);
 	}
 
 	handleDelete(id) {
@@ -473,6 +474,16 @@ class GatewayPage extends React.Component {
 			return [row.id, row.name];
 		});
 
+		for (let i = 0; i < sip_profile_options.length; i++) {
+			if (sip_profile_options[i][0] == gw.profile_id) {
+
+				gw.profile_name = sip_profile_options[i][1];
+				if (!isString(gw.profile_name) || !gw.profile_name.length) gw.profile_name = "public";
+				_this.setState({gw, gw});
+				break;
+			}
+		}
+
 		register = <FormControl.Static><T.span text={register}/></FormControl.Static>
 
 		if (this.state.params && Array.isArray(this.state.params)) {
@@ -482,14 +493,14 @@ class GatewayPage extends React.Component {
 
 				return <tr key={param.id} className={disabled_class}>
 					<td><RIEInput value={_this.state.highlight ? (param.k ? param.k : T.translate("Click to Change")) : param.k} change={_this.handleChangeValueK}
-							propName={param.id}
+						propName={param.id}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
 						classLoading="loading"
 						classInvalid="invalid"/>
 					</td>
 					<td><RIEInput value={_this.state.highlight ? (param.v ? param.v : T.translate("Click to Change")) : param.v} change={_this.handleChange}
-						propName={param.id}					
+						propName={param.id}
 						propName={param.k}
 						className={_this.state.highlight ? "editable" : ""}
 						validate={_this.isStringAcceptable}
@@ -744,30 +755,41 @@ class GatewaysPage extends React.Component {
 	handleReg(e) {
 		e.preventDefault();
 
-		let name = e.target.getAttribute("data-name");
-		verto.fsAPI("sofia", "profile public register " + name);
+		let pname = e.target.getAttribute("data-pname");
+		let gname = e.target.getAttribute("data-gname");
+
+		verto.fsAPI("sofia", "profile " + pname + " register " + gname);
 	}
 
 	handleUnreg(e) {
 		e.preventDefault();
 
-		let name = e.target.getAttribute("data-name");
-		verto.fsAPI("sofia", "profile public unregister " + name);
+		let pname = e.target.getAttribute("data-pname");
+		let gname = e.target.getAttribute("data-gname");
+
+		if (!isString(pname) || !pname.length) pname = "public";
+		verto.fsAPI("sofia", "profile " + pname + " unregister " + gname);
 	}
 
 	handleStart(e) {
 		e.preventDefault();
 
-		let name = e.target.getAttribute("data-name");
-		verto.fsAPI("sofia", "profile public startgw " + name);
-		verto.fsAPI("sofia", "profile public rescan");
+		let pname = e.target.getAttribute("data-pname");
+		let gname = e.target.getAttribute("data-gname");
+
+		if (!isString(pname) || !pname.length) pname = "public";
+		verto.fsAPI("sofia", "profile " + pname + " startgw " + gname);
+		verto.fsAPI("sofia", "profile " + pname + " rescan");
 	}
 
 	handleStop(e) {
 		e.preventDefault();
 
-		let name = e.target.getAttribute("data-name");
-		verto.fsAPI("sofia", "profile public killgw " + name);
+		let pname = e.target.getAttribute("data-pname");
+		let gname = e.target.getAttribute("data-gname");
+
+		if (!isString(pname) || !pname.length) pname = "public";
+		verto.fsAPI("sofia", "profile " + pname + " killgw " + gname);
 	}
 
 	handleGatewayAdded(gateway) {
@@ -785,6 +807,16 @@ class GatewaysPage extends React.Component {
 
 		var _this = this;
 
+		_this.state.rows.forEach(function(gw) {
+			_this.state.sip_profiles.map(function(profile) {
+				if (gw.profile_id == profile.id) {
+					gw.profile_name = profile.name;
+					return gw;
+				}
+			})
+		});
+
+
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id} className={row.class_name}>
 					<td>{row.id}</td>
@@ -793,10 +825,10 @@ class GatewaysPage extends React.Component {
 					<td>{row.username}</td>
 					<td><T.span text={row.register}/></td>
 					<td>
-						<T.a onClick={_this.handleReg} data-name={row.name} text="Reg" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleUnreg} data-name={row.name} text="Unreg" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleStart} data-name={row.name} text="Start" href='#'/> |&nbsp;
-						<T.a onClick={_this.handleStop} data-name={row.name} text="Stop" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleReg} data-gname={row.name} data-pname={row.profile_name} text="Reg" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleUnreg} data-gname={row.name} data-pname={row.profile_name} text="Unreg" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleStart} data-gname={row.name} data-pname={row.profile_name} text="Start" href='#'/> |&nbsp;
+						<T.a onClick={_this.handleStop} data-gname={row.name} data-pname={row.profile_name} text="Stop" href='#'/> |&nbsp;
 						<span>{row.class_name}</span>
 					</td>
 					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>

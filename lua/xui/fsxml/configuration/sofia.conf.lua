@@ -114,16 +114,21 @@ end
 
 if gw_name then
 	local gateways
-
-	if gw_name == '_all_' then
-		gateways = build_gateways()
-	else
-		gateways = build_gateways({name = gw_name})
+	if profile_name == nil then
+		profile_name = "external"
 	end
 
+	xdb.find_by_cond("sip_profiles", {name = profile_name}, 'id', function(row)
+		if gw_name == '_all_' then
+			gateways = build_gateways({profile_id = row.id})
+		else
+			gateways = build_gateways({profile_id = row.id, name = gw_name})
+		end
+	end)
+
 	XML_STRING = [[<configuration name="sofia.conf" description="sofia Endpoint">
-		<profiles><profile name="external"><gateways>]] .. gateways ..
-		"</gateways></profile></profiles></configuration>"
+		<profiles><profile name="]] .. profile_name ..  [["><gateways>]] .. gateways ..
+		[[</gateways></profile></profiles></configuration>]]
 
 elseif profile_name then
 	local profile = nil
