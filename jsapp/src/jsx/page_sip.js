@@ -675,7 +675,7 @@ class SIPProfilesPage extends React.Component {
 						return row;
 					});
 				});
-				_this.setState({rows: rows});
+				if (rows.length) _this.setState({rows: rows});
 			});
 		}).catch((msg) => {
 			console.log("get sip_profiles ERR",msg);

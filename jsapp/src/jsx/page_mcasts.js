@@ -434,10 +434,11 @@ class McastsPage extends React.Component {
 		});
 
 		xFetchJSON("/api/mcasts").then((data) => {
-			var rows = [];
 			this.setState({rows: data});
+
 			var _this = this;
 			verto.fsAPI("rtp_mcast", "xmllist", function(data) {
+				let rows = [];
 				const parser = new DOMParser();
 				const doc = parser.parseFromString(data.message, "text/xml");
 				console.log('doc', doc);
@@ -465,7 +466,8 @@ class McastsPage extends React.Component {
 					});
 
 				});
-				_this.setState({rows: rows});
+
+				if (rows.length) _this.setState({rows: rows});
 			});
 		}).catch((e) => {
 			console.log("get mcasts ERR");
