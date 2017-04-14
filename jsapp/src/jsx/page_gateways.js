@@ -303,14 +303,17 @@ class GatewayPage extends React.Component {
 		}).then((data) => {
 			const params = data.params;
 			delete data.params;
-			_this.setState({gw: data, params: params});
 
 			if (data.profile_id) {
 
 				xFetchJSON("/api/sip_profiles/" + data.profile_id).then((obj) => {
 					_this.setState({sip_profile: obj});
+					data.profile_name = obj.name;
 				});
 			}
+
+			if (!isString(data.profile_name) || !data.profile_name.length) data.profile_name = "public";
+			_this.setState({gw: data, params: params});
 		}).catch((msg) => {
 			console.log("get gw ERR");
 		});
@@ -473,16 +476,6 @@ class GatewayPage extends React.Component {
 		const sip_profile_options = this.state.sip_profiles.map(function(row) {
 			return [row.id, row.name];
 		});
-
-		for (let i = 0; i < sip_profile_options.length; i++) {
-			if (sip_profile_options[i][0] == gw.profile_id) {
-
-				gw.profile_name = sip_profile_options[i][1];
-				if (!isString(gw.profile_name) || !gw.profile_name.length) gw.profile_name = "public";
-				_this.setState({gw, gw});
-				break;
-			}
-		}
 
 		register = <FormControl.Static><T.span text={register}/></FormControl.Static>
 
