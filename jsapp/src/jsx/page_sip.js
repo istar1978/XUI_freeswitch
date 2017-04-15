@@ -527,7 +527,10 @@ class SIPProfilePage extends React.Component {
 			</ButtonGroup>
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick} data="edit"><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
+				<Button onClick={this.handleControlClick} data="edit">
+					<i className="fa fa-edit" aria-hidden="true" onClick={this.handleControlClick} data="edit"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="edit" text="Edit"/>
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -558,7 +561,10 @@ class SIPProfilePage extends React.Component {
 				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="new"><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} data="new" text="Add"/></Button>
+				<Button onClick={this.handleControlClick} data="new">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="new" text="Add"/>
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
