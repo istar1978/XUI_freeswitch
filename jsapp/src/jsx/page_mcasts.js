@@ -545,7 +545,7 @@ class McastsPage extends React.Component {
 				<ButtonGroup>
 					<Button onClick={this.handleControlClick} data="new">
 						<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
-						<T.span onClick={this.handleControlClick} data="new" text="New" />
+						<T.span onClick={this.handleControlClick} data="new" text="New"/>
 					</Button>
 				</ButtonGroup>
 			</ButtonToolbar>
