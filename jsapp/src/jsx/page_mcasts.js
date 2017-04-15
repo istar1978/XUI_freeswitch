@@ -46,36 +46,6 @@ class NewMcast extends React.Component {
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleCodecNameChange = this.handleCodecNameChange.bind(this);
-	}
-
-	handleCodecNameChange(e) {
-		const _this = this;
-
-		switch(e.target.value) {
-			case 'PCMU':
-				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
-					_this.setState({sample_rate: data});
-				});
-				break;
-			case 'PCMA':
-				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
-					_this.setState({sample_rate: data});
-				});
-				break;
-			case 'G722':
-				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=16000").then((data) => {
-					_this.setState({sample_rate: data});
-				});
-				break;
-			case 'CELT':
-				xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE").then((data) => {
-					_this.setState({sample_rate: data});
-				});
-				break;
-			default:
-				break;
-		}
 	}
 
 	handleSubmit(e) {
@@ -264,7 +234,6 @@ class McastPage extends React.Component {
 			body: JSON.stringify(mcast)
 		}).then(() => {
 			this.setState({mcast: mcast, edit: false})
-			this.handleCodecNameChange({target: {value: this.state.mcast.codec_name}});
 			notify(<T.span text={{key:"Saved at", time: Date()}}/>);
 		}).catch((msg) => {
 			console.error("mcast", msg);
@@ -281,7 +250,7 @@ class McastPage extends React.Component {
 		xFetchJSON("/api/dicts?realm=MCAST_CODEC_NAME").then((data) => {
 			_this.setState({codec_name: data});
 		});
-		xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE&k=8000").then((data) => {
+		xFetchJSON("/api/dicts?realm=MCAST_SAMPLE_RATE").then((data) => {
 			_this.setState({sample_rate: data});
 		});
 		xFetchJSON("/api/mcasts/" + this.props.params.id).then((data) => {
@@ -337,7 +306,7 @@ class McastPage extends React.Component {
 				<FormGroup controlId="formCodecName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Codec Name"/></Col>
 					<Col sm={10}>
-						<EditControl edit={this.state.edit} componentClass="select" name="codec_name" options={codec_name_options} text={T.translate(mcast.codec_name)} defaultValue={mcast.codec_name} onChange={this.handleCodecNameChange}/>
+						<EditControl edit={this.state.edit} componentClass="select" name="codec_name" options={codec_name_options} text={T.translate(mcast.codec_name)} defaultValue={mcast.codec_name}/>
 					</Col>
 				</FormGroup>
 
