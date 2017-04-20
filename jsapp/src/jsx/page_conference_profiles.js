@@ -271,7 +271,10 @@ class ConferenceProfilePage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{ save_btn }
-				<Button><T.span onClick={this.handleControlClick.bind(this)} text="Edit"/></Button>
+				<Button onClick={this.handleControlClick.bind(this)}>
+				<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
+				<T.span text="Edit"/>
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -294,7 +297,10 @@ class ConferenceProfilePage extends React.Component {
 			
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
-				<Button><T.span onClick={this.toggleHighlight} text="Edit"/></Button>
+				<Button onClick={this.toggleHighlight}>
+				<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
+				<T.span text="Edit"/>
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 			<h2><T.span text="Params"/></h2>
