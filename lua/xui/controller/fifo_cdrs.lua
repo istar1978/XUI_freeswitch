@@ -36,40 +36,51 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
+	missed = env:getHeader('missed')
 	startDate = env:getHeader('startDate')
 	last = env:getHeader('last')
 
-	if not startDate then
-		if not last then last = "7" end
-
-		n, fifocdrs = xdb.find_by_time_of_fifo("fifo_cdrs", last)
+	if missed == "1" then
+		sql = "SELECT * FROM fifo_cdrs WHERE bridged_number is null"
+		n, fifocdrs = xdb.find_by_sql(sql)
 
 		if (n > 0) then
 			return fifocdrs
 		else
 			return "[]"
 		end
-
 	else
-		local endDate = env:getHeader('endDate')
-		local ani = env:getHeader('ani')
-		local dest_number = env:getHeader('dest_number')
-		local bridged_number = env:getHeader('bridged_number')
+		if not startDate then
+			if not last then last = "7" end
 
-		cond = xdb.date_cond_of_fifo("start_epoch", startDate, endDate) ..
-					xdb.if_cond("ani", ani) ..
-					xdb.if_cond("dest_number", dest_number) ..
-					xdb.if_cond("bridged_number", bridged_number)
+			n, fifocdrs = xdb.find_by_time_of_fifo("fifo_cdrs", last)
 
-		n, fifocdrs = xdb.find_by_cond("fifo_cdrs", cond)
+			if (n > 0) then
+				return fifocdrs
+			else
+				return "[]"
+			end
 
-		if (n > 0) then
-			return fifocdrs
 		else
-			return "[]"
+			local endDate = env:getHeader('endDate')
+			local ani = env:getHeader('ani')
+			local dest_number = env:getHeader('dest_number')
+			local bridged_number = env:getHeader('bridged_number')
+
+			cond = xdb.date_cond_of_fifo("start_epoch", startDate, endDate) ..
+						xdb.if_cond("ani", ani) ..
+						xdb.if_cond("dest_number", dest_number) ..
+						xdb.if_cond("bridged_number", bridged_number)
+
+			n, fifocdrs = xdb.find_by_cond("fifo_cdrs", cond)
+
+			if (n > 0) then
+				return fifocdrs
+			else
+				return "[]"
+			end
 		end
 	end
-
 end)
 
 get('/:channel_uuid', function(params)
