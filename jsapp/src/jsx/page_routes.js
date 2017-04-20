@@ -488,8 +488,7 @@ class RoutePage extends React.Component {
 		});
 	}
 
-	handleControlClick(e) {
-		var data = e.target.getAttribute("data");
+	handleControlClick(data) {
 		console.log("data", data);
 
 		if (data == "edit") {
@@ -637,7 +636,10 @@ class RoutePage extends React.Component {
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
 				{ save_btn }
-				<Button onClick={this.handleControlClick} data="edit"><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
+				<Button onClick={() => this.handleControlClick("edit")}>
+					<i className="fa fa-edit" aria-hidden="true"></i>&nbsp;
+					<T.span text="Edit" />
+				</Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
@@ -699,7 +701,9 @@ class RoutePage extends React.Component {
 				<Button onClick={this.toggleHighlight}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span onClick={this.toggleHighlight} text="Edit"/></Button>
 			</ButtonGroup>
 			<ButtonGroup>
-				<Button onClick={this.handleControlClick} data="new"><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;<T.span onClick={this.handleControlClick} data="new" text="Add"/></Button>
+				<Button onClick={() => this.handleControlClick("new")}>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} text="Add"/></Button>
 			</ButtonGroup>
 			</ButtonToolbar>
 
