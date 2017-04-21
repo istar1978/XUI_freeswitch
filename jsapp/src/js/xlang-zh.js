@@ -282,7 +282,6 @@ LANGUAGES["zh"] = {
 	"Source": "源",
 	"Codec Name": "编码",
 	"Codec Ms": "打包时间间隔",
-	"Channels": "通道数",
 	"Multicast Address": "组播地址",
 	"Multicast Port": "组播端口",
 	"Sample Rate": "采样频率",
