@@ -130,6 +130,7 @@ class FifoCDRsPage extends React.Component {
 		this.handleMore = this.handleMore.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);
+		this.handleFindMissed = this.handleFindMissed.bind(this);
 	}
 
 	handleControlClick (e) {
@@ -169,6 +170,16 @@ class FifoCDRsPage extends React.Component {
 		e.preventDefault();
 
 		xFetchJSON("/api/fifo_cdrs?last=" + data).then((fifocdrs) => {
+			_this.setState({rows: fifocdrs});
+		});
+	}
+
+	handleFindMissed (e) {
+		var _this = this;
+
+		e.preventDefault();
+
+		xFetchJSON("/api/fifo_cdrs?missed=" + 1).then((fifocdrs) => {
 			_this.setState({rows: fifocdrs});
 		});
 	}
@@ -228,6 +239,7 @@ class FifoCDRsPage extends React.Component {
 
 		return <div>
 			<ButtonToolbar className="pull-right">
+				<T.a onClick={this.handleFindMissed} text="Missed" style={{color: 'red'}} href="#"/> &nbsp;
 				<T.span text="Last"/> &nbsp;
 				<T.a onClick={this.handleQuery} text={{key:"days", day: 7}} data="7" href="#"/>&nbsp;|&nbsp;
 				<T.a onClick={this.handleQuery} text={{key:"days", day: 15}} data="15" href="#"/>&nbsp;|&nbsp;
