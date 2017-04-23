@@ -27,4 +27,22 @@ print(token)
 
 print(xwechat.sign('sipsip', "a", "b", "c"))
 
+json = {}
+json.button = {}
+
+button = {
+	type = "click",
+	name = "test",
+	key  = "test"
+}
+
+table.insert(json.button, button)
+button.name="test1"
+table.insert(json.button, button)
+
+json_text = utils.json_encode(json)
+xwechat.create_menu('sipsip', json_text)
+
+print(json_text)
+
 stream:write("test done\n")

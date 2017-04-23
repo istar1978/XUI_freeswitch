@@ -88,13 +88,13 @@ xwechat.sign = function(realm, nounce, ts, url)
 end
 
 xwechat.create_menu = function(realm, json)
-	URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" .. access_token(realm)
+	URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" .. xwechat.access_token(realm)
 	api = freeswitch.API()
 	api:execute("curl", URL .. " post " .. json)
 end
 
 xwechat.send_template_msg = function(realm, msg)
-	URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" .. access_token(realm)
+	URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" .. xwechat.access_token(realm)
 	api = freeswitch.API()
 	api:execute("curl", URL .. " post " .. msg)
 end
