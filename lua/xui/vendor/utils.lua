@@ -213,4 +213,20 @@ utils.xlog = function(line, level, msg)
 	freeswitch.consoleLog(level, line .. msg .. '\n');
 end
 
+utils.xml = function(text)
+	local doc = require("xmlSimple").newParser()
+	xml = doc:ParseXmlText(req)
+	xml = xml.xml
+	xml.val = function(xml, key)
+		v =  xml[key]:value()
+		if (v:sub(1,9) == '<![CDATA[') then
+			v = v:sub(10, -4)
+			-- remove <![CDATA[]]>
+		end
+		return v
+	end
+
+	return xml
+end
+
 return utils
