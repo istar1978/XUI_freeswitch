@@ -1,4 +1,20 @@
 LANGUAGES["zh"] = {
+
+	"New Call": "新来电",
+	"Answer Call": "接听",
+	"Refuse Call": "拒接",
+	"Select All": "全选",
+	"Deselect All": "全不选",
+	"Toggle Select": "反选",
+	"Make Call": "呼叫",
+	"Hangup Call": "挂断",
+
+	Online: "在线",
+	Offline: "离线",
+	Idle: "空闲",
+	Answered: "接听",
+	Ringing: "振铃",
+
 	Status: "状态",
 	State: "状态",
 	DashBoard: "首页",

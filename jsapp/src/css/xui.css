@@ -215,3 +215,55 @@ span.log0 {color: black;}
 	margin: 10px;
 	border-radius: 50%;
 }
+
+.user-item {
+	display: block;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding: 5px;
+	float: left;
+	width: 160px;
+	height: 120px;
+	background-color:#F5F5F5;
+}
+
+.user-selected {
+	border: 3px solid #009ad6 !important;
+	/*border: 1px dotted #f05b72;*/
+}
+
+.user-text {
+	text-shadow: 0 1px 0 #333333 !important;
+	color: #ffffff !important;
+}
+
+.user-state-ringing {
+	background: #ffe600 !important;
+}
+
+.user-state-active {
+	background: #ed1941 !important;
+}
+
+.user-state-area {
+	width: 70px;
+}
+
+.user-info-area {
+	width: 70px;
+	height: 110px
+}
+
+.text-danger {
+	color: #ed1941;
+}
+
+.process-bar {
+	background-color:#01B468;
+	text-align:center;
+	position: relative;
+	width:10%;
+	font-size:20px;
+	font-weight:bold;
+	border-radius:10px;
+}

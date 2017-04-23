@@ -38,7 +38,7 @@ CREATE TABLE users (
 	login VARCHAR,
 	email VARCHAR,
 	type VARCHAR,
-	disabled VARCHAR,
+	disabled BOOLEAN NOT NULL DEFAULT 0 CHECK(disabled IN (0, 1, '0', '1')),
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER
@@ -127,8 +127,8 @@ END;
 
 CREATE TABLE user_groups (
 	id INTEGER PRIMARY KEY,
-	user_id INTEGER NOT NULL,
-	group_id INTEGER NOT NULL,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	deleted_epoch INTEGER

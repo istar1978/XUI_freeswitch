@@ -116,8 +116,9 @@ get('/build_group_tree', function(params)
 	groups_tab  = {}
 	n, parent_groups = xdb.find_by_cond("groups", "group_id IS NULL OR group_id = ''")
 
-	build_group_tree(parent_groups, groups_tab)
-
+	if n > 0 then
+		build_group_tree(parent_groups, groups_tab)
+	end
 	return groups_tab
 end)
 
@@ -126,7 +127,9 @@ get('/build_group_options_tree', function(params)
 	options_tab  = {}
 	n, parent_groups = xdb.find_by_cond("groups", "group_id IS NULL OR group_id = ''")
 
-	build_group_options_tree(parent_groups, options_tab)
+	if n > 0 then
+		build_group_options_tree(parent_groups, options_tab)
+	end
 
 	return options_tab
 end)
@@ -159,6 +162,29 @@ get('/:id/members', function(params)
 	else
 		return '[]'
 	end
+end)
+
+get('/group_users', function(params)
+	group_users = {}
+	ungrouped_users = {}
+	grouped_users = {}
+	sql1 = "SELECT id AS userID, name AS userName, extn AS userExten, domain AS userDomain, 'ungrouped' AS groupID FROM users " ..
+		" WHERE id NOT IN (SELECT user_id FROM user_groups)"
+	sql2 = "SELECT u.id as userID, u.name AS userName, u.extn AS userExten, domain AS userDomain, g.id AS groupID, g.name AS groupName " ..
+		" FROM users u JOIN user_groups ug ON u.id = ug.user_id JOIN groups g ON ug.group_id = g.id " ..
+		" ORDER BY g.id"
+
+	n1, ungrouped_users = xdb.find_by_sql(sql1)
+	n2, grouped_users = xdb.find_by_sql(sql2)
+	group_users = ungrouped_users
+
+	if n2 > 0 then
+		for k, v in ipairs(grouped_users) do
+			table.insert(group_users, v)
+		end
+	end
+
+	return group_users
 end)
 
 get('/:id', function(params)

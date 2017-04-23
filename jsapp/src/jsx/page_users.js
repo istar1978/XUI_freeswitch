@@ -432,7 +432,9 @@ class UsersPage extends React.Component {
 			if (!c) return;
 		}
 
-		xFetchJSON("/api/users/" + id, {method: "DELETE"}).then(() => {
+		xFetchJSON("/api/users/" + id, {
+			method: "DELETE"
+		}).then((data) => {
 			console.log("deleted")
 			var rows = _this.state.rows.filter(function(row) {
 				return row.id != id;

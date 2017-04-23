@@ -33,7 +33,7 @@
 if not params then
 	XML_STRING = [[<domain name="]] .. '$${domain}' .. [[">]]
 
-	xdb.find_all("users", nil, function(row)
+	xdb.find_all("users", {disabled = 0}, function(row)
 		XML_STRING = XML_STRING .. [[<users><user id="]] .. row.extn .. [[">]] ..
 		[[<variables>]] ..
 		[[<variable name="user_context" value="default"/>]] ..
@@ -68,7 +68,7 @@ if purpose == "network-list" then
 end
 
 if user then
-	xdb.find_by_cond("users", {extn = user}, nil, function(row)
+	xdb.find_by_cond("users", {extn = user, disabled = 0}, nil, function(row)
 		found = true
 
 		cid_name = row.cid_name or row.name

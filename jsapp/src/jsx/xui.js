@@ -52,6 +52,7 @@ import RegistrationsPage from "./page_registrations";
 import CallsPage from "./page_calls";
 import FSUsersPage from "./page_fs_users";
 import SofiaPage from "./page_sofia";
+import MonitorPage from './page_monitor';
 import Conferences from './conferences';
 import SystemPage from './page_system';
 import { FifoPage, FifoInfo, FifoMemberPage } from './page_fifos';
@@ -78,6 +79,7 @@ const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
 
 const MENUS = [
+	{id: "MM_MONITOR", description: <T.span text={{ key: "Monitor"}} />, data: '/monitor'},
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conference"}} />, data: '/conferences'},
 	{id: "MM_TICKETS", description: <T.span text={{ key: "Tickets"}} />, data: '/tickets'},
 	{id: "MM_CDRS", description: <T.span text={{ key: "CDR"}} />, data: '/cdrs'},
@@ -163,6 +165,8 @@ class Home extends React.Component{
 
 				<Route path="about" component={AboutPage} />
 				<Route path="logout" component={LoginBox} onEnter={handleLogout}/>
+
+				<Route path="monitor" component={MonitorPage} />
 
 				<Route path="conferences" component={Conferences} />
 
