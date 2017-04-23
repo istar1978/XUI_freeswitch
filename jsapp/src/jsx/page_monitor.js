@@ -44,7 +44,9 @@ class TabContent extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', activeKey: "1"};
+		this.state = {errmsg: ''};
+		this.handleUserToggleSelect = this.handleUserToggleSelect.bind(this);
+		this.handleUserCall = this.handleUserCall.bind(this);
 	}
 
 
@@ -93,14 +95,14 @@ class TabContent extends React.Component {
 		return (
 			<div className={divClass}>
 				<div className="pull-left user-state-area">
-					<div><img src={userImageUrl} onClick={this.handleUserCall.bind(this)}/></div>
+					<div><img src={userImageUrl} onClick={this.handleUserCall}/></div>
 					<div>
 						<div className={textClass}>{"Offline"}</div>
 						<div className={textClass}>{"Idle"}</div>
 					</div>
 				</div>
 
-				<div className="pull-right user-info-area" onClick={this.handleUserToggleSelect.bind(this)}><br/>
+				<div className="pull-right user-info-area" onClick={this.handleUserToggleSelect}><br/>
 					<div className={textClass}>{user.userName}</div>
 					<div className={textClass}>{user.extn}</div>
 				</div>
@@ -222,7 +224,7 @@ class MonitorPage extends React.Component {
 		let users = this.state.users;
 
 		for (let i = 0; i < users.length; i++) {
-			if (user.groupID = users[i].groupID && user.userID == users[i].userID) {
+			if (user.groupID == users[i].groupID && user.userID == users[i].userID) {
 				users[i] = user;
 				this.setState({users: users});
 				break;
@@ -332,7 +334,7 @@ class MonitorPage extends React.Component {
 				let tabPanes = [];
 				if (id == defaultActiveKey) {
 					tabPanes = group_users[defaultActiveKey].users.map(function(u) {
-						return <TabContent user={u} currentLoginUser={currentLoginUser} handleUserToggleSelect={_this.handleUserToggleSelect.bind}/>
+						return <TabContent user={u} currentLoginUser={currentLoginUser} handleUserToggleSelect={_this.handleUserToggleSelect}/>
 					})
 					tabPanesMounted[id] = true;
 				} else {
