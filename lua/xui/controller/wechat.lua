@@ -42,6 +42,14 @@ get('/anyway/:realm', function(params)
 	return 	env:getHeader("echostr")
 end)
 
+get('/jstest', function(params)
+	content_type("text/html")
+
+	print(env:serialize())
+
+	return {"render", "jstest.html", {}}
+end)
+
 get('/:realm', function(params)
 	signature = env:getHeader("signature")
 	timestamp = env:getHeader("timestamp")
