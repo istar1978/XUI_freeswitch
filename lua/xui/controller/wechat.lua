@@ -47,6 +47,12 @@ get('/jstest', function(params)
 
 	print(env:serialize())
 
+	wechat = m_dict.get_obj('WECHAT/xyt')
+
+	ret = xwechat.get_js_access_token('sipsip', wechat.APPID, wechat.APPSEC, env:getHeader("code"))
+
+	print('js access token: ' .. ret)
+
 	return {"render", "jstest.html", {}}
 end)
 
@@ -56,7 +62,7 @@ get('/:realm', function(params)
 	nonce = env:getHeader("nonce")
 	echostr = env:getHeader("echostr")
 
-	wechat = m_dict.get_obj(params.realm)
+	-- wechat = m_dict.get_obj(params.realm)
 	wechat = m_dict.get_obj('WECHAT')
 
 	print(serialize(wechat))

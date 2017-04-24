@@ -98,3 +98,9 @@ xwechat.send_template_msg = function(realm, msg)
 	api = freeswitch.API()
 	return api:execute("curl", URL .. " post " .. msg)
 end
+
+xwechat.get_js_access_token = function(realm, appid, sec, code)
+	URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" .. appid .. "&secret=" .. sec .. "&code=" .. code .. "&grant_type=authorization_code"
+	api = freeswitch.API()
+	return api:execute("curl", URL)
+end
