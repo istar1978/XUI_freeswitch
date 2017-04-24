@@ -233,7 +233,7 @@ local function method_handler(method, path, func)
 				ret,errmsg = tmplate:load(view, config.view_path)
 				if ret == 0 then
 					result = tmplate:render(args)
-					xtra.write(result)
+					xtra.response(result)
 				else
 					xtra.write("Error")
 				end
