@@ -36,7 +36,7 @@ xwechat = {}
 
 xwechat.access_token = function(realm)
 	api = freeswitch.API()
-	access_token = api:execute("hash", "select/wechat/access_token_" .. realm)
+	access_token = api:execute("hash", "select/wechat/wechat_access_token_" .. realm)
 	return access_token
 end
 
@@ -90,11 +90,11 @@ end
 xwechat.create_menu = function(realm, json)
 	URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" .. xwechat.access_token(realm)
 	api = freeswitch.API()
-	api:execute("curl", URL .. " post " .. json)
+	return api:execute("curl", URL .. " post " .. json)
 end
 
 xwechat.send_template_msg = function(realm, msg)
 	URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" .. xwechat.access_token(realm)
 	api = freeswitch.API()
-	api:execute("curl", URL .. " post " .. msg)
+	return api:execute("curl", URL .. " post " .. msg)
 end

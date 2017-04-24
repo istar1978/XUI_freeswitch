@@ -18,10 +18,9 @@ if config.db_auto_connect then xdb.connect(config.dsn) end
 
 local wechat = m_dict.get_obj('WECHAT')
 
-print(xwechat.access_token('sipsip'))
-
 token = xwechat.get_token('sipsip', wechat.APPID, wechat.APPSEC)
 print(token)
+print(xwechat.access_token('sipsip'))
 
 -- xwechat.get_callback_ip()
 
@@ -41,8 +40,9 @@ button.name="test1"
 table.insert(json.button, button)
 
 json_text = utils.json_encode(json)
-xwechat.create_menu('sipsip', json_text)
+ret = xwechat.create_menu('sipsip', json_text)
 
 print(json_text)
+print(ret)
 
 stream:write("test done\n")
