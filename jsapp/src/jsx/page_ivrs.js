@@ -132,7 +132,7 @@ class NewAction extends React.Component {
 					</FormGroup>
 					<FormGroup controlId="formArgs">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Args" /></Col>
-						<Col sm={10}><FormControl type="input" name="args"/></Col>
+						<Col sm={10}><FormControl type="input" name="args" placeholder="transfer 1000 XML default"/></Col>
 					</FormGroup>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
@@ -280,74 +280,74 @@ class IvrInfo extends React.Component {
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Greet_short" /></Col>
 					<Col sm={9}><EditControl name="greet_short" edit={_this.state.editable} defaultValue={frow.greet_short}/></Col>
 				</FormGroup>
-                                <FormGroup controlId="formInvalid_sound">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Invalid_sound" /></Col>
-                                        <Col sm={9}><EditControl name="invalid_sound" edit={_this.state.editable} defaultValue={frow.invalid_sound}/></Col>
-                                </FormGroup>
+				<FormGroup controlId="formInvalid_sound">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Invalid_sound" /></Col>
+					<Col sm={9}><EditControl name="invalid_sound" edit={_this.state.editable} defaultValue={frow.invalid_sound}/></Col>
+				</FormGroup>
 				<FormGroup controlId="formExit_sound">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Exit_sound" /></Col>
-                                        <Col sm={9}><EditControl name="exit_sound" edit={_this.state.editable} defaultValue={frow.exit_sound}/></Col>
-                                </FormGroup>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Exit_sound" /></Col>
+					<Col sm={9}><EditControl name="exit_sound" edit={_this.state.editable} defaultValue={frow.exit_sound}/></Col>
+				</FormGroup>
 				<FormGroup controlId="formTransfer_sound">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Transfer_sound"/></Col>
-                                        <Col sm={9}><EditControl  name="transfer_sound" edit={_this.state.editable} defaultValue={frow.transfer_sound}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formMax_failures">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Max_failures" /></Col>
-                                        <Col sm={9}><EditControl  name="max_failures" edit={_this.state.editable} defaultValue={frow.max_failures}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formMax_timeouts">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Max_timeouts" /></Col>
-                                        <Col sm={9}><EditControl name="max_timeouts" edit={_this.state.editable} defaultValue={frow.max_timeouts}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formExec_on_max_failures">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Exec_on_max_failures" /></Col>
-                                        <Col sm={9}><EditControl name="exec_on_max_failures" edit={_this.state.editable} defaultValue={frow.exec_on_max_failures}/></Col>
-                                </FormGroup>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Transfer_sound"/></Col>
+					<Col sm={9}><EditControl  name="transfer_sound" edit={_this.state.editable} defaultValue={frow.transfer_sound}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formMax_failures">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Max_failures" /></Col>
+					<Col sm={9}><EditControl  name="max_failures" edit={_this.state.editable} defaultValue={frow.max_failures}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formMax_timeouts">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Max_timeouts" /></Col>
+					<Col sm={9}><EditControl name="max_timeouts" edit={_this.state.editable} defaultValue={frow.max_timeouts}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formExec_on_max_failures">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Exec_on_max_failures" /></Col>
+					<Col sm={9}><EditControl name="exec_on_max_failures" edit={_this.state.editable} defaultValue={frow.exec_on_max_failures}/></Col>
+				</FormGroup>
 				<FormGroup controlId="formExec_on_max_timeouts">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Exec_on_max_timeouts" /></Col>
-                                        <Col sm={9}><EditControl name="exec_on_max_timeouts" edit={_this.state.editable} defaultValue={frow.exec_on_max_timeouts}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formConfirm_macro">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Transfer_sound" className="confirm_macro"/></Col>
-                                        <Col sm={9}><EditControl  name="confirm_macro" edit={_this.state.editable} defaultValue={frow.confirm_macro}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formConfirm_key">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Confirm_key" /></Col>
-                                        <Col sm={9}><EditControl  name="confirm_key" edit={_this.state.editable} defaultValue={frow.confirm_key}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formTts_engine">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Tts_engine" /></Col>
-                                        <Col sm={9}><EditControl name="tts_engine" edit={_this.state.editable} defaultValue={frow.tts_engine}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formTts_voice">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Tts_voice" /></Col>
-                                        <Col sm={9}><EditControl name="tts_voice" edit={_this.state.editable} defaultValue={frow.tts_voice}/></Col>
-                                </FormGroup>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Exec_on_max_timeouts" /></Col>
+					<Col sm={9}><EditControl name="exec_on_max_timeouts" edit={_this.state.editable} defaultValue={frow.exec_on_max_timeouts}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formConfirm_macro">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Transfer_sound" className="confirm_macro"/></Col>
+					<Col sm={9}><EditControl  name="confirm_macro" edit={_this.state.editable} defaultValue={frow.confirm_macro}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formConfirm_key">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Confirm_key" /></Col>
+					<Col sm={9}><EditControl  name="confirm_key" edit={_this.state.editable} defaultValue={frow.confirm_key}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formTts_engine">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Tts_engine" /></Col>
+					<Col sm={9}><EditControl name="tts_engine" edit={_this.state.editable} defaultValue={frow.tts_engine}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formTts_voice">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Tts_voice" /></Col>
+					<Col sm={9}><EditControl name="tts_voice" edit={_this.state.editable} defaultValue={frow.tts_voice}/></Col>
+				</FormGroup>
 				<FormGroup controlId="formConfirm_attempts">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Confirm_attempts" /></Col>
-                                        <Col sm={9}><EditControl name="confirm_attempts" edit={_this.state.editable} defaultValue={frow.confirm_attempts}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formDigit_len">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Digit_len" className="digit_len"/></Col>
-                                        <Col sm={9}><EditControl  name="digit_len" edit={_this.state.editable} defaultValue={frow.digit_len}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formInter_digit_timeout">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Inter_digit_timeout" /></Col>
-                                        <Col sm={9}><EditControl  name="inter_digit_timeout" edit={_this.state.editable} defaultValue={frow.inter_digit_timeout}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formPin">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Pin" /></Col>
-                                        <Col sm={9}><EditControl name="pin" edit={_this.state.editable} defaultValue={frow.pin}/></Col>
-                                </FormGroup>
-                                <FormGroup controlId="formPin_file">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Pin_file" /></Col>
-                                        <Col sm={9}><EditControl name="pin_file" edit={_this.state.editable} defaultValue={frow.pin_file}/></Col>
-                                </FormGroup>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Confirm_attempts" /></Col>
+					<Col sm={9}><EditControl name="confirm_attempts" edit={_this.state.editable} defaultValue={frow.confirm_attempts}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formDigit_len">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Digit_len" className="digit_len"/></Col>
+					<Col sm={9}><EditControl  name="digit_len" edit={_this.state.editable} defaultValue={frow.digit_len}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formInter_digit_timeout">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Inter_digit_timeout" /></Col>
+					<Col sm={9}><EditControl  name="inter_digit_timeout" edit={_this.state.editable} defaultValue={frow.inter_digit_timeout}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formPin">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Pin" /></Col>
+					<Col sm={9}><EditControl name="pin" edit={_this.state.editable} defaultValue={frow.pin}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formPin_file">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Pin_file" /></Col>
+					<Col sm={9}><EditControl name="pin_file" edit={_this.state.editable} defaultValue={frow.pin_file}/></Col>
+				</FormGroup>
 				<FormGroup controlId="formBad_pin_file">
-                                        <Col componentClass={ControlLabel} sm={2}><T.span text="Bad_pin_file" /></Col>
-                                        <Col sm={9}><EditControl name="bad_pin_file" edit={_this.state.editable} defaultValue={frow.bad_pin_file}/></Col>
-                                </FormGroup>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Bad_pin_file" /></Col>
+					<Col sm={9}><EditControl name="bad_pin_file" edit={_this.state.editable} defaultValue={frow.bad_pin_file}/></Col>
+				</FormGroup>
 				</Form>
 			</div>;
 
@@ -360,8 +360,8 @@ class IvrInfo extends React.Component {
 					<td> {actionRow.args} </td>
 					<td> { <T.a onClick={() => _this.handleDelete(actionRow.id)} text="Delete" className={danger} style= {{cursor:"pointer"}}/>} </td>
 				</tr>;
-	    	}
-	    });
+				}
+			});
 
 		return <div>
 			{ivrRow}
@@ -447,18 +447,18 @@ class NewIvr extends React.Component {
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Greet_short" /></Col>
 						<Col sm={7}><FormControl type="input" name="greet_short" placeholder="welcome_short.wav" /></Col>
 					</FormGroup>
-                                        <FormGroup controlId="frominvalid_sound">
-                                                <Col componentClass={ControlLabel} sm={4}><T.span text="Invalid_sound"/></Col>
-                                                <Col sm={7}><FormControl type="input" name="invalid_sound" placeholder="ivr/ivr-that_was_an_invalid_entry.wav"/></Col>
-                                        </FormGroup>
-                                        <FormGroup controlId="formexit_sound">
-                                                <Col componentClass={ControlLabel} sm={4}><T.span text="Exit_sound" /></Col>
-                                                <Col sm={7}><FormControl type="input"  name="exit_sound" placeholder="voicemail/vm-goodbye.wav"/></Col>
-                                        </FormGroup>
-                                        <FormGroup controlId="formtimeout">
-                                                <Col componentClass={ControlLabel} sm={4}><T.span text="Timeout" /></Col>
-                                                <Col sm={7}><FormControl type="input" name="timeout" placeholder="15000" /></Col>
-                                        </FormGroup>
+					<FormGroup controlId="frominvalid_sound">
+						<Col componentClass={ControlLabel} sm={4}><T.span text="Invalid_sound"/></Col>
+						<Col sm={7}><FormControl type="input" name="invalid_sound" placeholder="ivr/ivr-that_was_an_invalid_entry.wav"/></Col>
+					</FormGroup>
+					<FormGroup controlId="formexit_sound">
+						<Col componentClass={ControlLabel} sm={4}><T.span text="Exit_sound" /></Col>
+						<Col sm={7}><FormControl type="input"  name="exit_sound" placeholder="voicemail/vm-goodbye.wav"/></Col>
+					</FormGroup>
+					<FormGroup controlId="formtimeout">
+						<Col componentClass={ControlLabel} sm={4}><T.span text="Timeout" /></Col>
+						<Col sm={7}><FormControl type="input" name="timeout" placeholder="15000" /></Col>
+					</FormGroup>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
 							<Button type="button" bsStyle="primary" onClick={ _this.handleSubmit }>
@@ -512,12 +512,6 @@ class IvrPage extends React.Component {
 			});
 	}
 
-	handleReparseClick() {
-		verto.fsAPI("ivr", "reparse", function(data) {
-			notify(<T.span text="IVR Reparsed"/>);
-		});
-	}
-
 	handleDelete (id){
 		console.log("deleting id", id);
 		var _this = this;
@@ -560,10 +554,6 @@ class IvrPage extends React.Component {
 		});
 		return <div>
 			<ButtonToolbar className="pull-right">
-				<Button onClick={this.handleReparseClick}>
-					<i className="fa fa-refresh" aria-hidden="true" ></i>&nbsp;
-					<T.span text="Reparse" />
-				</Button>
 				<Button onClick={()=>{_this.setState({formShow: true})}}>
 					<i className="fa fa-plus" aria-hidden="true" ></i>&nbsp;
 					<T.span text="New" />
@@ -579,8 +569,8 @@ class IvrPage extends React.Component {
 					<th><T.span text="Greet_long"/></th>
 					<th><T.span text="Greet_short"/></th>
 					<th><T.span text="Invalid_sound"/></th>
-                                        <th><T.span text="Exit_sound"/></th>
-                                        <th><T.span text="Timeout"/></th>
+					<th><T.span text="Exit_sound"/></th>
+					<th><T.span text="Timeout"/></th>
 					<th><T.span style={{cursor: "pointer" }} text="Delete" className={danger} onClick={toggleDanger} title={T.translate("Click me to toggle fast delete mode")}/></th>
 				</tr>
 				{rows}

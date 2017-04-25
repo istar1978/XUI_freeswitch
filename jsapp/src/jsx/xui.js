@@ -215,10 +215,10 @@ class Home extends React.Component{
 						<Route path=":fifo_id/members/:id" components={{sidebar: Settings, main: FifoMemberPage}} />
 					</Route>
 					<Route path="ivrs">
-                                                <IndexRoute components={{sidebar: Settings, main: IvrPage}} onEnter={ensureVisible}/>
-                                                <Route path=":ivr_menu_id" components={{sidebar: Settings, main: IvrInfo}} />
-                                                <Route path=":ivr_menu_id/actions/:id" components={{sidebar: Settings, main: IvrActionPage}} />
-                                        </Route>
+						<IndexRoute components={{sidebar: Settings, main: IvrPage}} onEnter={ensureVisible}/>
+						<Route path=":ivr_menu_id" components={{sidebar: Settings, main: IvrInfo}} />
+						<Route path=":ivr_menu_id/actions/:id" components={{sidebar: Settings, main: IvrActionPage}} />
+					</Route>
 					<Route path="mcasts">
 						<IndexRoute components={{sidebar: Settings, main: McastsPage}} onEnter={ensureVisible}/>
 						<Route path=":id" components={{sidebar: Settings, main: McastPage}}/>
