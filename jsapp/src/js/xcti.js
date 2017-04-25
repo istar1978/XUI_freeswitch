@@ -129,7 +129,7 @@ function form2json(selector) {
 			}
 		}
 		if (formElements[i].type == "radio") {
-			obj[formElements[i].name] = formElements.register.value;
+			obj[formElements[i].name] = formElements[formElements[i].name].value;
 		}
 	}
     return obj;
