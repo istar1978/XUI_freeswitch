@@ -70,6 +70,7 @@ import { Login, LoginBox } from './page_login';
 import Footer from './footer';
 import Terminal from './terminal';
 import verto from './verto/verto';
+import { ACLPage, ACLsPage } from './page_acls';
 
 const lang_map = detect_language();
 if (lang_map) T.setTexts(lang_map);
@@ -170,6 +171,10 @@ class Home extends React.Component{
 					<Route path="gateways">
 						<IndexRoute components={{sidebar: Settings, main: GatewaysPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: GatewayPage}}/>
+					</Route>
+					<Route path="acls">
+						<IndexRoute components={{sidebar: Settings, main: ACLsPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: ACLPage}}/>
 					</Route>
 					<Route path="dicts">
 						<IndexRoute components={{sidebar: Settings, main: DictsPage}}/>

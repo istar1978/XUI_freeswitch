@@ -504,6 +504,34 @@ BEGIN
 	UPDATE ivr_menus set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
+CREATE TABLE acls (
+	id INTEGER PRIMARY Key,
+	name VARCHAR NOT NULL,
+	status VARCHAR NOT NULL,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE UNIQUE INDEX acls_name ON acls(name);
+
+CREATE TRIGGER t_acls AFTER UPDATE ON acls
+BEGIN
+	UPDATE acls set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE acl_nodes (
+	id INTEGER PRIMARY KEY,
+	k VARCHAR NOT NULL,
+	v VARCHAR,
+	acl_id INTEGER,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
 CREATE TABLE ivr_actions (
 	id INTEGER PRIMARY Key,
 	ivr_menu_id INTEGER,
