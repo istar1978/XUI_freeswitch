@@ -378,6 +378,7 @@ LANGUAGES["zh"] = {
 	yes: "是",
 	no: "否",
 	Missed: "未接",
+	"Hidden Record": "隐藏录音",
 
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
