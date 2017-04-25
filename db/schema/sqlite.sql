@@ -471,8 +471,8 @@ END;
 CREATE TABLE ivr_menus (
 	id INTEGER PRIMARY KEY,
 	name VARCHAR NOT NULL,
-	greet_ong VARCHAR,
-	greet_hort VARCHAR,
+	greet_long VARCHAR,
+	greet_short VARCHAR,
 	invalid_sound VARCHAR,
 	exit_sound VARCHAR,
 	transfer_sound VARCHAR,

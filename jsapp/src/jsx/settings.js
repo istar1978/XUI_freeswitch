@@ -125,6 +125,12 @@ class Settings extends React.Component {
 				</NavItem>
 			</LinkContainer>
 
+			<LinkContainer to="/settings/ivrs" key="M_IVR">
+                                <NavItem eventKey="M_IVR">
+                                        <i className="fa fa-comments" aria-hidden="true"></i>&nbsp;
+                                        <T.span text="IVRS"/>
+                                </NavItem>
+                        </LinkContainer>
 
 
 			<LinkContainer to="/settings/system" key="M_SYSTEM">
