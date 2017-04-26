@@ -498,7 +498,7 @@ class MediaFilePage extends React.Component {
 class MediaFilesPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { formShow: false, recordFormShow: false, rows: [], danger: false, progress: -1};
+		this.state = { formShow: false, recordFormShow: false, rows: [], danger: false, progress: -1, show: false};
 
 		console.log("location", this.props.location.query)
 
@@ -516,9 +516,11 @@ class MediaFilesPage extends React.Component {
 			this.dropzone.open();
 		} else if (data == "ivr") {
 			this.setState({ formShow: true});
-		} else if (data == "record") {
-			this.setState({ recordFormShow: !this.state.recordFormShow });
-		}
+		} else if (data == "record" && this.state.show == true) {
+			this.setState({ recordFormShow: !this.state.recordFormShow, show: false });
+		} else if (data == "record" && this.state.show == false) {
+			this.setState({ recordFormShow: !this.state.recordFormShow, show: true });
+		};
 	}
 
 	handleDelete(id) {
@@ -632,6 +634,22 @@ class MediaFilesPage extends React.Component {
 			</tr>;
 		})
 
+		if (_this.state.show == false) {
+			var btng = <ButtonGroup>
+				<Button onClick={() => this.handleControlClick("record")}>
+					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
+					<T.span text="Record" />
+				</Button>
+			</ButtonGroup>;
+		} else {
+			var btng = <ButtonGroup>
+				<Button onClick={() => this.handleControlClick("record")}>
+					<i className="fa fa-minus" aria-hidden="true"></i>&nbsp;
+					<T.span text="Hidden Record" />
+				</Button>
+			</ButtonGroup>;
+		};
+		
 		return <Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} className="dropzone" activeClassName="dropzone_active" disableClick={true}><div>
 			<NewRecordFile show={this.state.recordFormShow}/>
 
@@ -650,12 +668,7 @@ class MediaFilesPage extends React.Component {
 				</Button>
 			</ButtonGroup>
 
-			<ButtonGroup>
-				<Button onClick={() => this.handleControlClick("record")}>
-					<i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
-					<T.span text="Record" />
-				</Button>
-			</ButtonGroup>
+			{btng}
 			</ButtonToolbar>
 
 			<h1><T.span text="Media Files"/> <small><T.span text="Drag and drop files here to upload"/></small></h1>

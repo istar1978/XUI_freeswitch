@@ -81,7 +81,7 @@ class NewACL extends React.Component {
 			<Form horizontal id="newACLForm">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="name" placeholder="route_to_beijing" /></Col>
+					<Col sm={10}><FormControl type="input" name="name" placeholder="new acl" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formDefault">
@@ -159,13 +159,13 @@ class AddNewNode extends React.Component {
 			<Modal.Body>
 			<Form horizontal id="newParamAddForm">
 				<FormGroup controlId="formName">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="k" placeholder="Name" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Type" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="k" placeholder="Type" /></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formRealm">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Value" className="mandatory"/></Col>
-					<Col sm={10}><FormControl type="input" name="v" placeholder="Value" /></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Cidr" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="v" placeholder="Cidr" /></Col>
 				</FormGroup>
 
 				<FormGroup>

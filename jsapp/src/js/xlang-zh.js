@@ -378,6 +378,12 @@ LANGUAGES["zh"] = {
 	yes: "是",
 	no: "否",
 	Missed: "未接",
+	"Hidden Record": "隐藏录音",
+	ACLs: "访问控制列表",
+	ACL: "访问控制列表",
+	Default: "默认",
+	node: "节点",
+	Cidr: "无类域间路由",
 
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",

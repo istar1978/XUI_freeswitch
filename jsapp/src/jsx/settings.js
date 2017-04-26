@@ -60,7 +60,7 @@ class Settings extends React.Component {
 			</LinkContainer>
 			<LinkContainer to="/settings/acls" key="M_ACLS">
 				<NavItem eventKey="M_ACLS">
-					<i className="fa fa-road" aria-hidden="true"></i>&nbsp;
+					<i className="fa fa-list" aria-hidden="true"></i>&nbsp;
 					<T.span text="ACLs"/>
 				</NavItem>
 			</LinkContainer>
