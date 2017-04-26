@@ -57,7 +57,7 @@ class TicketPage extends React.Component {
 		}).then((obj) => {
 			var rows = this.state.ticket_comments;
 			rows.unshift(obj);
-			this.setState({ticket_comments: rows, deal_user: 123});
+			this.setState({ticket_comments: rows, deal_user: null,hidden_user: null});
 		}).catch((err) => {
 			console.error("ticket", err);
 			notify(err, "error");
@@ -73,7 +73,7 @@ class TicketPage extends React.Component {
 			console.error("get ticket", e);
 		});
 
-		xFetchJSON("/api/users").then((data) => {
+		xFetchJSON("/api/users/bind").then((data) => {
 			this.setState({users: data});
 		});
 
@@ -95,23 +95,33 @@ class TicketPage extends React.Component {
 		})
 
 		const ticket = this.state.ticket;
+		var status = '';
+		if(ticket.status == 1){
+			status = '未完成';
+		}
+		if(ticket.status == 2){
+			status = '已完成';
+		}
 		let save_btn = "";
+		let hidden_user = "";
 		const users = this.state.users;
 		let deal_user = <FormControl componentClass="select" name="current_user_id">{
 				users.map(function(row) {
-					return <option key={row.id} readOnly="readonly" value={row.id}>{row.name}</option>
+					return <option key={row.id} value={row.id}>{row.name}</option>
 				})
 			}
 		</FormControl>;
 		if(ticket.current_user_id){
 			users.map(function(row) {
 				if(row.id == ticket.current_user_id){
-					deal_user = row.name;
+					deal_user = <FormControl type="input" readOnly="readonly" value={row.name}/>
+					hidden_user = <FormControl type="hidden" name="current_user_id" value={row.id}/>
 				}
 			})
 		}
 
 		this.state.deal_user = deal_user;
+		this.state.hidden_user = hidden_user;
 
 		save_btn = <Button onClick={this.handleSubmit}><T.span text="指派"/></Button>
 
@@ -122,10 +132,13 @@ class TicketPage extends React.Component {
 			</Col>
 		</FormGroup>;
 
+		const src = "http://118.89.102.147:8081/"+ticket.record_path
+		
 		return <div>
 			<h1><T.span text="工单"/></h1>
 			<hr/>
 			<Form horizontal id="ticketForm">
+			<input type="hidden" name="ticket_id" defaultValue={ticket.id}/>
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
 					<Col sm={10}>{ticket.cid_number}</Col>
@@ -136,7 +149,11 @@ class TicketPage extends React.Component {
 				</FormGroup>
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
-					<Col sm={10}><T.span text={ticket.status}/></Col>
+					<Col sm={10}><T.span text={status}/></Col>
+				</FormGroup>
+				<FormGroup controlId="formCaller_id_name">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
+					<Col sm={10}><audio src={src} controls="controls" /></Col>
 				</FormGroup>
 				<br/>
 			</Form>
@@ -150,6 +167,7 @@ class TicketPage extends React.Component {
 					</Col>
 				</FormGroup>
 				{options}
+				{this.state.hidden_user}
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}></Col>
 					<Col sm={10}>{save_btn}</Col>
@@ -204,12 +222,19 @@ class TicketsPage extends React.Component {
 		let hand = { cursor: "pointer"};
 		var danger = this.state.danger ? "danger" : "";
 		var rows = _this.state.rows.map(function(row) {
+			var status = '';
+			if(row.status == 1){
+				status = '未完成';
+			}
+			if(row.status == 2){
+				status = '已完成';
+			}
 			return <tr key={row.id}>
 				<td>{row.id}</td>
 				<td>{row.cid_number}</td>
 				<td>{row.subject}</td>
 				<td>{row.created_epoch}</td>
-				<td><T.span text={row.status}/></td>
+				<td><T.span text={status}/></td>
 				<td><Link to={`/tickets/${row.id}`}><T.span text="开始处理"/></Link> | <T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>
 		})

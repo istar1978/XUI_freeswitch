@@ -49,6 +49,16 @@ get('/', function(params)
 	-- end
 end)
 
+get('/bind', function(params)
+	n, users = xdb.find_by_sql("select * from users where id in(select user_id from wechat_users where user_id is not null)")
+	freeswitch.consoleLog("ERR", utils.json_encode(users))
+	if (users) then
+			return users
+	else
+		return "[]"
+	end
+end)
+
 get('/:id', function(params)
 	user = xdb.find("users", params.id)
 	if user then

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>小樱桃工单::设置</title>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+</head>
+<body>
+	<img src="{{ users.headimgurl}}" width="20px" height="20px" style="border-radius:50%;" />
+	<form method="post" action="http://shop.x-y-t.cn/we">
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell">
+				<div class="weui-cell__hd"><label class="weui-label">用户名</label></div>
+				<div class="weui-cell__bd">
+					<input name="login" class="weui-input" type="text" pattern="[0-9a-zA-Z-]*" value="{{users.extn}}"/>
+				</div>
+			</div>
+
+			<div class="weui-cell">
+				<div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+				<div class="weui-cell__bd">
+					<input name="pass" class="weui-input" type="password" value="{{users.password}}"/>
+				</div>
+			</div>
+
+			<input type="hidden" name="id" value="{{ users.id }}"/><br/>
+
+			<input type="submit" value="修改绑定" class="weui-btn weui-btn_primary"/>
+		</div>
+	</form>
+<div style="width:100%;height:50px;"></div>
+<div style="width:100%;height:50px;background-color:white;position:fixed;bottom:0px;">
+	<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fwe%2f1&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" style="display:block;width:33.3333%;height:100%;text-align:center;line-height:50px;float:left;">我的</a>
+	<a href="http://shop.x-y-t.cn/all" style="display:block;width:33.3333%;height:100%;text-align:center;line-height:50px;float:left;">全部</a>
+	<a href="http://shop.x-y-t.cn/setting" style="display:block;width:33.3333%;height:100%;text-align:center;line-height:50px;float:left;background-color:gray;color:white;">设置</a>
+	<a style="clear:both;"></div>
+</div>
+</body>
+</html>
