@@ -40,89 +40,98 @@ class CDRPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {cdr: {}, edit: false};
+		this.state = {cdr: {}, edit: false, uuid: ''};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	handleSubmit(e) {
 	}
 
-	componentDidMount() {
-		var _this = this;
-		xFetchJSON("/api/cdrs/" + _this.props.params.uuid, "").then((data) => {
-			console.log("cdr", data);
-			_this.setState({cdr: data});
-		}).catch((e) => {
-			console.error("get cdr", e);
-			notify('[' + e.status + '] ' + e.statusText);
-		});
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.uuid) {
+			xFetchJSON("/api/cdrs/" + nextProps.uuid).then((data) => {
+				this.setState({cdr: data});
+			});
+		}
 	}
 
 	render() {
+		var _this = this;
 		const cdr = this.state.cdr;
+		const props = Object.assign({}, this.props);
+		delete props.uuid;
 
-		return <div>
-			<h1><T.span text="CDR"/> <small>{cdr.uuid}</small></h1>
-			<hr/>
+		return <Modal  {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg">
+				   <T.span text="CDR"/><small>{_this.props.uuid}</small>
+				</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form horizontal id="FIFOCDRForm">
+					<input type="hidden" name="id" defaultValue={_this.props.uuid}/>
+					<FormGroup controlId="formCIDName">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="caller_id_name" defaultValue={cdr.caller_id_name}/></Col>
+					</FormGroup>
+					<FormGroup controlId="formCIDNumber">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="destination_number" defaultValue={cdr.caller_id_number}/></Col>
+					</FormGroup>
 
-			<Form horizontal id="CDRForm">
-				<input type="hidden" name="id" defaultValue={cdr.id}/>
-				<FormGroup controlId="formCaller_id_name">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Name"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="caller_id_name" defaultValue={cdr.caller_id_name}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formDestNumber">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Number"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={cdr.destination_number}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formCaller_id_number">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="caller_id_number" defaultValue={cdr.caller_id_number}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formContext">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Context"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="start_stamp" defaultValue={cdr.context}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formDestination_number">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Dest Number"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="destination_number" defaultValue={cdr.destination_number}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formStart">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Start"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="end_stamp" defaultValue={cdr.start_stamp}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formContext">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Context"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="context" defaultValue={cdr.context}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formAnswer">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Answer"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="duration" defaultValue={cdr.answer_stamp}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formStart_stamp">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Start" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="start_stamp" defaultValue={cdr.start_stamp}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formEnd">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="End"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="billsec" defaultValue={cdr.end_stamp}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formAnswer_stamp">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Answer"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="answer_stamp" defaultValue={cdr.answer_stamp}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formDuration">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Duration"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="hangup_cause" defaultValue={cdr.duration}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formEnd_stamp">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="End" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="end_stamp" defaultValue={cdr.end_stamp}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formBillSec">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Bill Sec"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="account_code" defaultValue={cdr.billsec}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formDuration">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Duration" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="duration" defaultValue={cdr.duration}/></Col>
-				</FormGroup>
+					<FormGroup controlId="formCause">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Cause"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="account_code" defaultValue={cdr.hangup_cause}/></Col>
+					</FormGroup>
 
-				<FormGroup controlId="formBillsec">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Bill Sec" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="billsec" defaultValue={cdr.billsec}/></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formHangup_cause">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Cause" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="hangup_cause" defaultValue={cdr.hangup_cause}/></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formAccount_code">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Account Code" /></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="account_code" defaultValue={cdr.account_code}/></Col>
-				</FormGroup>
-			</Form>
-		</div>
+					<FormGroup controlId="formAccountCode">
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Account Code"/></Col>
+						<Col sm={10}><EditControl edit={this.state.edit} name="account_code" defaultValue={cdr.account_code}/></Col>
+					</FormGroup>
+				</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
 	}
 }
 
@@ -130,17 +139,19 @@ class CDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		var theRows = localStorage.getItem("theRows");
-    	if (theRows == null) {
-	    	var r = 10000;
-	    	localStorage.setItem("theRows", r);
-     	}
+		if (theRows == null) {
+			var r = 10000;
+			localStorage.setItem("theRows", r);
+		}
 		this.state = {
 			rows: [],
 			loaded: false,
 			hiddendiv: 'none',
 			curPage: 1,
 			rowCount: 0,
-			pageCount: 0
+			pageCount: 0,
+			formShow: false,
+			uuid: ""
 		};
 
 		this.handleQuery = this.handleQuery.bind(this);
@@ -240,6 +251,7 @@ class CDRsPage extends React.Component {
 		var _this = this;
 		let isShow;
 
+		let formClose = () => _this.setState({ formShow: false });
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.uuid}>
 				<td>{row.caller_id_name}</td>
@@ -253,7 +265,7 @@ class CDRsPage extends React.Component {
 				<td>{row.billsec}</td>
 				<td>{row.hangup_cause}</td>
 				<td>{row.account_code}</td>
-				<td><Link to={`/cdrs/${row.uuid}`}><T.span text="Detail"/></Link></td>
+				<td><a onClick={()=>{_this.setState({formShow: true, uuid: row.uuid})}} style={{cursor: "pointer"}}>{T.translate("Detail")}</a></td>
 			</tr>
 		})
 
@@ -365,6 +377,7 @@ class CDRsPage extends React.Component {
 			<div style={{textAlign: "center"}}>
 				<img style={loadSpinner} src="assets/img/loading.gif"/>
 			</div>
+			<CDRPage show={this.state.formShow} onHide={formClose} uuid={_this.state.uuid} />
 		</div>
 	}
 };
