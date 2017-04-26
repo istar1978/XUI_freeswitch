@@ -73,7 +73,8 @@ function update_param(gw_id, param_id, kvp)
 end
 
 m_gateway.delete = function(gw_id)
-	local sql = "DELETE FROM params " .. xdb.cond({realm = 'gateway', id = gw_id})
+	xdb.delete("gateways", gw_id);
+	local sql = "DELETE FROM params " .. xdb.cond({realm = 'gateway', ref_id = gw_id})
 	xdb.execute(sql)
 	return xdb.affected_rows()
 end

@@ -83,7 +83,8 @@ function update_param(profile_id, param_id, kvp)
 end
 
 m_sip_profile.delete = function(profile_id)
-	local sql = "DELETE FROM params " .. xdb.cond({realm = 'sip_profile', id = profile_id})
+	xdb.delete("sip_profiles", profile_id);
+	local sql = "DELETE FROM params " .. xdb.cond({realm = 'sip_profile', ref_id = profile_id})
 	xdb.execute(sql)
 	return xdb.affected_rows()
 end

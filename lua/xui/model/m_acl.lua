@@ -71,7 +71,8 @@ function update_param(rt_id, param_id, kvp)
 end
 
 m_acl.delete = function(rt_id)
-	local sql = "DELETE FROM acl_nodes " .. xdb.cond({id = rt_id})
+	xdb.delete("acls", rt_id);
+	local sql = "DELETE FROM acl_nodes " .. xdb.cond({acl_id = rt_id})
 	xdb.execute(sql)
 	return xdb.affected_rows()
 end
