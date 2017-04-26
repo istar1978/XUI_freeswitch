@@ -549,4 +549,63 @@ BEGIN
 	UPDATE ivr_actions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
+-- CREATE TABLE order_user (
+	-- id INTEGER PRIMARY Key,
+	-- uid INTEGER,
+	-- tid INTEGER,
+
+	-- created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	-- updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	-- deleted_epoch INTEGER
+-- );
+
+-- CREATE TRIGGER t_order_user AFTER UPDATE ON order_user
+-- BEGIN
+	-- UPDATE order_user set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+-- END;
+
+CREATE TABLE ticket_log (
+	id INTEGER PRIMARY Key,
+	tid INTEGER,
+	dealname VARCHAR,
+	time VARCHAR,
+	content VARCHAR,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER t_ticket_log AFTER UPDATE ON ticket_log
+BEGIN
+	UPDATE ticket_log set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE tickets (
+	id INTEGER PRIMARY Key,
+	tel VARCHAR,
+	content VARCHAR,
+	time VARCHAR,
+	status INTEGER,
+	uid INTEGER,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER t_tickets AFTER UPDATE ON tickets
+BEGIN
+	UPDATE tickets set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE wechat_user (
+	id INTEGER PRIMARY Key,
+	openid VARCHAR,
+	headimgurl VARCHAR,
+	nickname VARCHAR,
+	sex INTEGER,
+	uid INTEGER
+);
+
 -- END

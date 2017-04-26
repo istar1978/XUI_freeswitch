@@ -1,4 +1,3 @@
---[[
 /*
  * HTML5 GUI Framework for FreeSWITCH - XUI
  * Copyright (C) 2015-2017, Seven Du <dujinfang@x-y-t.cn>
@@ -28,9 +27,23 @@
  *
  *
  */
-]]
 
-get('/', function(params)
-	local tab = {a= 1, b= 2}
-	return tab
-end)
+'use strict';
+
+import React from 'react';
+import T from 'i18n-react';
+
+class wechat extends React.Component {
+
+	render() {
+		return <div>
+			<h1><T.span text="About XUI"/></h1>
+			<p><T.span text="XUI is a FreeSWITCH UI framework and implementation"/></p>
+			<p><T.span text="Version"/>: 1.0</p>
+			<p><T.span text="Author"/>: Seven Du</p>
+			<p><T.span text="More info"/>: <a href="https://github.com/seven1240/xui" target="_blank">XUI on Github</a></p>
+		</div>;
+	}
+};
+
+export default wechat;

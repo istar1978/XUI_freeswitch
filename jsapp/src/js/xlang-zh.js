@@ -205,6 +205,7 @@ LANGUAGES["zh"] = {
 	Value: "值",
 	Description: "描述",
 	Order: "排序",
+	Orders: "工单",
 
 	SYSTEM: "系统",
 	LOCAL: "本地用户",

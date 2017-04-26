@@ -40,6 +40,7 @@ import { Router, Route, IndexRoute, Link, hashHistory, Redirect } from 'react-ro
 import Languages from "./languages";
 import MainMenu from './main-menu';
 import FSShow from "./fs_show";
+import { ORDERsPage, ORDERPage } from "./page_orders";
 import { CDRsPage, CDRPage } from "./page_cdrs";
 import { FifoCDRsPage, FifoCDRPage } from "./page_fifo_cdrs";
 import {McastsPage, McastPage} from "./page_mcasts";
@@ -78,6 +79,7 @@ if (lang_map) T.setTexts(lang_map);
 
 const MENUS = [
 	{id: "MM_CONFERENCES", description: <T.span text={{ key: "Conference"}} />, data: '/conferences'},
+	{id: "MM_ORDERS", description: <T.span text={{ key: "Orders"}} />, data: '/orders'},
 	{id: "MM_CDRS", description: <T.span text={{ key: "CDR"}} />, data: '/cdrs'},
 	{id: "MM_ABOUT", description: <T.span text={{ key: "About"}} />, data: '/about'}
 ];
@@ -143,6 +145,11 @@ class Home extends React.Component{
 
 				<Route path="show" component={FSShow} />
 				// <Route path="cdrs" component={CDRsPage} />
+
+				<Route path="orders">
+					<IndexRoute component={ORDERsPage} />
+					<Route path=":id" component={ORDERPage} />
+				</Route>
 
 				<Route path="cdrs">
 					<IndexRoute component={CDRsPage} />

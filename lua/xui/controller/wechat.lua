@@ -63,18 +63,48 @@ get('/anyway/:realm', function(params)
 	return 	env:getHeader("echostr")
 end)
 
-get('/jstest', function(params)
+get('/view', function(params)
 	content_type("text/html")
 
 	print(env:serialize())
 
-	wechat = m_dict.get_obj('WECHAT/xyt')
+	wechat = m_dict.get_obj('WECHAT')
 
 	ret = xwechat.get_js_access_token('sipsip', wechat.APPID, wechat.APPSEC, env:getHeader("code"))
 
-	print('js access token: ' .. ret)
+	jret = utils.json_decode(ret)
 
-	return {"render", "jstest.html", {}}
+	n, user = xdb.find_by_cond("users", {openid = jret.openid})
+	local u = user[1]
+	if(n > 0) then
+		return {"render", "users.html", {name = u.name,password = u.password}}
+	else
+		return {"render", "jstest.html", {openid = jret.openid}}
+	end
+
+end)
+
+post('/bind', function(params)
+	content_type("application/json")
+	return '{"res":' .. params.request.username .. '}'
+end)
+
+post('/jstest', function(params)
+	login = env:getHeader("login")
+	pass = env:getHeader("pass")
+	u_openid = env:getHeader("openid")
+
+	local users = {}
+	users.name = login
+	users.password = pass
+	n, user = xdb.find_by_cond("users", users)
+	local u = user[1]
+	if (n > 0) then
+		xdb.update_by_cond("users",{id = u.id}, {openid = u_openid})
+		redirect("http://www.baidu.com")
+	else
+		redirect("http://www.360.com")
+	end
 end)
 
 get('/:realm', function(params)
