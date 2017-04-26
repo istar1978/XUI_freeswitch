@@ -279,6 +279,7 @@ class Phone extends React.Component {
 
 	render () {
 		var state;
+		var callButtonDisabled = false;
 		var hangupButton = null;
 		var transferButton = null;
 		var answerButton = null;
@@ -385,6 +386,10 @@ class Phone extends React.Component {
 			</span>
 		}
 
+		if (this.state.curCall) {
+			callButtonDisabled = true;
+		}
+
 		if (this.state.displayStyle == "text") {
 			textDisplay = <span>
 				<span>188-6666-8888</span>
@@ -413,7 +418,7 @@ class Phone extends React.Component {
 			<div id="web-phone" style={{display: this.state.displayState ? "block" : "none"}}>
 				<div id="zm-phone">{verto.options.login}&nbsp;{this.state.cidname} <T.span text={this.state.callState}/></div>
 				<input id="dest_number" name="dest_number" value={this.state.destNumber} onChange={this.handleDestNumberChange}/>&nbsp;&nbsp;
-				<Button bsStyle="success" bsSize="xsmall" onClick={this.handleCall}>
+				<Button disabled={callButtonDisabled} bsStyle="success" bsSize="xsmall" onClick={this.handleCall}>
 					<i className="fa fa-phone" aria-hidden="true"></i>&nbsp;
 					<T.span text="Call" />
 				</Button>
