@@ -126,7 +126,7 @@ class FifoCDRPage extends React.Component {
 class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {rows: [], hiddendiv: 'none', formShow: false, channel_uuid: ""};
+		this.state = {rows: [], hiddendiv: 'none', formShow: false, channel_uuid: "", loaded: false};
 		this.handleMore = this.handleMore.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);
@@ -159,7 +159,7 @@ class FifoCDRsPage extends React.Component {
 		const _this = this;
 
 		xFetchJSON("/api/fifo_cdrs").then((fifocdrs) => {
-			_this.setState({rows: fifocdrs});
+			_this.setState({rows: fifocdrs, loaded : true});
 		});
 	}
 
@@ -205,6 +205,7 @@ class FifoCDRsPage extends React.Component {
 
 	render () {
 		var _this = this;
+		let isShow;
 		var rows = this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 				<td><a onClick={()=>{_this.setState({formShow: true, channel_uuid: row.channel_uuid})}} style={{cursor: "pointer"}}>{row.channel_uuid}</a></td>
@@ -217,6 +218,19 @@ class FifoCDRsPage extends React.Component {
 				<td>{xdatetime(row.end_epoch)}</td>
 			</tr>
 		});
+
+		if(this.state.loaded){
+			isShow = "none";
+		}
+		const loadSpinner = {
+			width : "200px",
+			height : "200px",
+			margin : "auto", 
+			clear : "both",
+			display : "block",
+			color : 'gray',
+			display : isShow
+		}
 
 		var now = new Date();
 		var nowdate = Date.parse(now);
@@ -277,6 +291,9 @@ class FifoCDRsPage extends React.Component {
 				</table>
 			</div>
 			<FifoCDRPage show={this.state.formShow} onHide={formClose} channel_uuid={_this.state.channel_uuid} />
+			<div style={{textAlign: "center"}}>
+				<img style={loadSpinner} src="assets/img/loading.gif"/>
+			</div>	
 		</div>
 	}
 };
