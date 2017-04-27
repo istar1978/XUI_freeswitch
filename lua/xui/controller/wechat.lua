@@ -36,6 +36,27 @@ xdb.bind(xtra.dbh)
 require 'xwechat'
 require 'm_dict'
 
+
+get('/xswitch/tickets', function(params)
+
+	print(env:serialize())
+
+	content_type("application/json")
+	tickets = {
+		{
+			id = 1,
+			subject = "test1",
+			content = "test1"
+		},
+		{
+			id = 2,
+			subject = "test2",
+			content = "text2"
+		}
+	}
+	return tickets
+end)
+
 -- realm to support multiple wechat accounds, e.g. sipsip, xyt
 
 get('/anyway/:realm', function(params)
