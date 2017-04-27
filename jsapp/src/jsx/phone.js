@@ -87,6 +87,16 @@ class Phone extends React.Component {
 
 		console.log("state", d.state);
 
+		// another call?
+		if (this.state.curCall && d.callID != this.state.curCall.callID) {
+			if (d.state.name != "hangup" && d.state.name != "destroy") {
+				console.log("hangup", d.callID);
+				d.hangup();
+			}
+
+			return;
+		}
+
 		if (d.state.name == "ringing") {
 			this.setState({
 				curCall: d,
