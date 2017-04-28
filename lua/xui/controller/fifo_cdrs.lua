@@ -39,27 +39,36 @@ get('/', function(params)
 	missed = env:getHeader('missed')
 	startDate = env:getHeader('startDate')
 	last = env:getHeader('last')
+	pageNum = tonumber(env:getHeader('pageNum'))
+	rowPerPage = tonumber(env:getHeader('rowPerPage'))
+
+	local fifocdrs = {}
+	local rowCount = 0
+
+	fifocdrs.pageCount = 0
+	fifocdrs.rowCount = 0
+	fifocdrs.curPage = 0
+	fifocdrs.data = {}
+
+	pageNum = tonumber(pageNum)
+	rowPerPage = tonumber(rowPerPage)
+
+	if not pageNum or pageNum < 0 then
+		pageNum = 1
+	end
+
+	if not rowPerPage then
+		rowPerPage = 20
+	end
 
 	if missed == "1" then
-		sql = "SELECT * FROM fifo_cdrs WHERE bridged_number is null"
-		n, fifocdrs = xdb.find_by_sql(sql)
-
-		if (n > 0) then
-			return fifocdrs
-		else
-			return "[]"
-		end
+		cond = "bridged_number is null"
 	else
 		if not startDate then
 			if not last then last = "7" end
-
-			n, fifocdrs = xdb.find_by_time_of_fifo("fifo_cdrs", last)
-
-			if (n > 0) then
-				return fifocdrs
-			else
-				return "[]"
-			end
+			local theTime = os.time()
+			local theTargetTime = theTime - last*24*60*60
+			cond = " strftime('%s', start_epoch) - " .. theTargetTime .. " > 0"
 
 		else
 			local endDate = env:getHeader('endDate')
@@ -71,16 +80,39 @@ get('/', function(params)
 						xdb.if_cond("ani", ani) ..
 						xdb.if_cond("dest_number", dest_number) ..
 						xdb.if_cond("bridged_number", bridged_number)
-
-			n, fifocdrs = xdb.find_by_cond("fifo_cdrs", cond)
-
-			if (n > 0) then
-				return fifocdrs
-			else
-				return "[]"
-			end
 		end
 	end
+
+	local cb = function(row)
+		rowCount = tonumber(row.count)
+	end
+
+	xdb.find_by_sql("SELECT count(1) as count FROM fifo_cdrs WHERE " .. cond, cb)
+
+	if rowCount > 0 then
+		local offset = 0
+		local pageCount = 0
+
+		pageCount = math.ceil(rowCount / rowPerPage);
+
+		if pageNum == 0 then
+			-- It means the last page
+			pageNum = pageCount
+		end
+
+		offset = (pageNum - 1) * rowPerPage
+
+		local found, fifocdrsData = xdb.find_by_cond("fifo_cdrs", cond, "start_epoch DESC", nil, rowPerPage, offset)
+
+		if (found > 0) then
+			fifocdrs.rowCount = rowCount
+			fifocdrs.data = fifocdrsData
+			fifocdrs.curPage = pageNum
+			fifocdrs.pageCount = pageCount
+		end
+	end
+
+	return fifocdrs
 end)
 
 get('/:channel_uuid', function(params)
