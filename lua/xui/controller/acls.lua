@@ -96,9 +96,9 @@ put('/:id', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("acls", params.id);
+	ret = m_acl.delete(params.id)
 
-	if ret == 1 then
+	if ret >= 0 then
 		return 200, "{}"
 	else
 		return 500, "{}"

@@ -72,7 +72,8 @@ function update_param(rt_id, param_id, kvp)
 end
 
 m_route.delete = function(rt_id)
-	local sql = "DELETE FROM params " .. xdb.cond({realm = 'route', id = rt_id})
+	xdb.delete("routes", rt_id);
+	local sql = "DELETE FROM params " .. xdb.cond({realm = 'route', ref_id = rt_id})
 	xdb.execute(sql)
 	return xdb.affected_rows()
 end

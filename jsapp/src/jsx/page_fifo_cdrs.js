@@ -32,7 +32,7 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col, Pagination } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl, xFetchJSON } from './libs/xtools';
 
@@ -126,11 +126,22 @@ class FifoCDRPage extends React.Component {
 class FifoCDRsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {rows: [], hiddendiv: 'none', formShow: false, channel_uuid: "", loaded: false};
+		this.state = {
+			rows: [],
+			hiddendiv: 'none',
+			formShow: false,
+			channel_uuid: "",
+			loaded: false,
+			curPage: 1,
+			rowCount: 0,
+			pageCount: 0
+
+		};
 		this.handleMore = this.handleMore.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);
 		this.handleFindMissed = this.handleFindMissed.bind(this);
+		this.handlePageTurn = this.handlePageTurn.bind(this);
 	}
 
 	handleControlClick (e) {
@@ -151,7 +162,12 @@ class FifoCDRsPage extends React.Component {
 			"&bridged_number=" + this.bridged_number.value;
 
 		xFetchJSON("/api/fifo_cdrs?" + qs).then((fifocdrs) => {
-			_this.setState({rows: fifocdrs});
+			_this.setState({
+				rows: fifocdrs.data,
+				pageCount: fifocdrs.pageCount, 
+				rowCount: fifocdrs.rowCount,
+				curPage: fifocdrs.curPage
+			});
 		});
 	}
 
@@ -159,18 +175,30 @@ class FifoCDRsPage extends React.Component {
 		const _this = this;
 
 		xFetchJSON("/api/fifo_cdrs").then((fifocdrs) => {
-			_this.setState({rows: fifocdrs, loaded : true});
+			_this.setState({
+				rows: fifocdrs.data,
+				loaded : true,
+				pageCount: fifocdrs.pageCount, 
+				rowCount: fifocdrs.rowCount,
+				curPage: fifocdrs.curPage
+			});
 		});
 	}
 
 	handleQuery (e) {
 		var _this = this;
 		var data = parseInt(e.target.getAttribute("data"));
+		this.days = data;
 
 		e.preventDefault();
 
 		xFetchJSON("/api/fifo_cdrs?last=" + data).then((fifocdrs) => {
-			_this.setState({rows: fifocdrs});
+			_this.setState({
+				rows: fifocdrs.data,
+				pageCount: fifocdrs.pageCount, 
+				rowCount: fifocdrs.rowCount,
+				curPage: fifocdrs.curPage
+			});
 		});
 	}
 
@@ -180,7 +208,12 @@ class FifoCDRsPage extends React.Component {
 		e.preventDefault();
 
 		xFetchJSON("/api/fifo_cdrs?missed=" + 1).then((fifocdrs) => {
-			_this.setState({rows: fifocdrs});
+			_this.setState({
+				rows: fifocdrs.data,
+				pageCount: fifocdrs.pageCount, 
+				rowCount: fifocdrs.rowCount,
+				curPage: fifocdrs.curPage
+			});
 		});
 	}
 
@@ -203,10 +236,35 @@ class FifoCDRsPage extends React.Component {
 		this.setState({rows: rows});
 	}
 
+	handlePageTurn (pageNum) {
+		var qs = "";
+
+		if (this.state.hiddendiv == "block") {
+			qs = "startDate=" + this.startDate.value +
+				"&endDate=" + this.endDate.value +
+				"&ani=" + this.ani.value +
+				"&dest_number=" + this.dest_number.value +
+				"&bridged_number=" + this.bridged_number.value;
+		} else {
+			qs = "last=" + this.days;
+		}
+
+		qs = qs + "&pageNum=" + pageNum;
+
+		xFetchJSON("/api/fifo_cdrs?" + qs).then((fifocdrs) => {
+			this.setState({
+				rows: fifocdrs.data,
+				pageCount: fifocdrs.pageCount, 
+				rowCount: fifocdrs.rowCount,
+				curPage: fifocdrs.curPage
+			});
+		});
+	}
+
 	render () {
 		var _this = this;
 		let isShow;
-		var rows = this.state.rows.map(function(row) {
+		var rows = _this.state.rows.map(function(row) {
 			return <tr key={row.id}>
 				<td><a onClick={()=>{_this.setState({formShow: true, channel_uuid: row.channel_uuid})}} style={{cursor: "pointer"}}>{row.channel_uuid}</a></td>
 				<td>{row.fifo_name}</td>
@@ -237,6 +295,28 @@ class FifoCDRsPage extends React.Component {
 		var sevenDaysBeforenowtime = nowdate - 7*24*60*60*1000;
 		var sevenDaysBeforenowdate = new Date(sevenDaysBeforenowtime);
 		let formClose = () => this.setState({ formShow: false });
+
+		let pagination = function() {
+			let maxButtons = 7;
+			if (_this.state.pageCount == 0) return <div></div>
+
+			if (maxButtons > _this.state.pageCount) maxButtons = _this.state.pageCount;
+
+			return (
+				<nav className="pull-right">
+					<Pagination
+						prev={T.translate("Prev Page")}
+						next={T.translate("Next Page")}
+						first={T.translate("First Page")}
+						last={T.translate("Last Page")}
+						ellipsis={false}
+						items={_this.state.pageCount}
+						maxButtons={maxButtons}
+						activePage={_this.state.curPage}
+						onSelect={_this.handlePageTurn} />
+				</nav>
+			);
+		}();
 
 		function getTime(time){
 			var month = (time.getMonth() + 1);
@@ -287,6 +367,11 @@ class FifoCDRsPage extends React.Component {
 					<th><T.span text="End"/></th>
 				</tr>
 				{rows}
+				<tr>
+					<td colSpan="12">
+						{pagination}
+					</td>
+				</tr>
 				</tbody>
 				</table>
 			</div>

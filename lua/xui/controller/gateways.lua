@@ -107,9 +107,9 @@ post('/:ref_id/params/', function(params)
 end)
 
 delete('/:id', function(params)
-	ret = xdb.delete("gateways", params.id);
+	ret = m_gateway.delete(params.id)
 
-	if ret == 1 then
+	if ret >= 0 then
 		return 200, "{}"
 	else
 		return 500, "{}"
