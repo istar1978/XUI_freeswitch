@@ -49,11 +49,21 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	n, orders = xdb.find_by_cond("tickets", {id = params.id})
-	if (n > 0) then
-		return orders[1]
+	ticket = xdb.find("tickets", params.id)
+	if ticket then
+		return ticket
 	else
 		return 404
+	end
+end)
+
+get('/:id/logs', function(params)
+	n, logs = xdb.find_by_cond("ticket_logs", {ticket_id = params.id}, "created_epoch DESC")
+
+	if (n > 0) then
+		return logs
+	else
+		return "[]"
 	end
 end)
 
@@ -108,6 +118,29 @@ post('/', function(params)
 
 	if order then
 		return order
+	else
+		return 500, "{}"
+	end
+end)
+
+post('/:id/logs', function(params)
+	print(serialize(params))
+
+	ticket = {}
+	ticket.id = params.id
+	ticket.current_user_id = params.request.current_user_id
+
+	xdb.update("tickets", ticket)
+
+	log = params.request
+	log.ticket_id = params.id
+	log.current_user_id = nil
+	log.user_name = 'Admin' -- TODO: hardcoded
+
+	ret = xdb.create_return_object("ticket_logs", log)
+
+	if ret then
+		return ret
 	else
 		return 500, "{}"
 	end

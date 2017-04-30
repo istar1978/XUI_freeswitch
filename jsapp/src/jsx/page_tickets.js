@@ -32,114 +32,118 @@
 
 import React from 'react';
 import T from 'i18n-react';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { EditControl, xFetchJSON } from './libs/xtools';
 
-class ORDERPage extends React.Component {
+class TicketPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {order: {}, users: [], user_options: null, ordering: [], deal_user: null};
+		this.state = {ticket: {}, users: [], user_options: null, ticket_logs: [], deal_user: null};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	handleSubmit(e) {
 		var _this = this;
-		var order = form2json('#ORDERForm');
-		if (!order.content) {
+		var ticket = form2json('#ticketProcessingForm');
+		if (!ticket.content) {
 			notify(<T.span text="Mandatory fields left blank"/>, "error");
 			return;
 		}
 
-		xFetchJSON("/api/orders",{
-				method: "POST",
-				body: JSON.stringify(order)
-			}).then((obj) => {
-				var rows = this.state.ordering;
-				rows.unshift(obj);
-				this.setState({ordering: rows, deal_user: 123});
-			}).then((msg) => {
-				console.error("order", msg);
-				this.setState({errmsg: <T.span text={{key: "Internal Error", msg: msg}}/>});
+		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/logs", {
+			method: "POST",
+			body: JSON.stringify(ticket)
+		}).then((obj) => {
+			var rows = this.state.ticket_logs;
+			rows.unshift(obj);
+			this.setState({ticket_logs: rows, deal_user: 123});
+		}).catch((err) => {
+			console.error("ticket", err);
+			notify(err, "error");
 		});
 	}
+
 	componentDidMount() {
 		var _this = this;
-		xFetchJSON("/api/orders/" + _this.props.params.id, "").then((data) => {
-			console.log("order", data);
-			_this.setState({order: data});
+		xFetchJSON("/api/tickets/" + _this.props.params.id, "").then((data) => {
+			console.log("ticket", data);
+			_this.setState({ticket: data});
 		}).catch((e) => {
-			console.error("get order", e);
+			console.error("get ticket", e);
 		});
+
 		xFetchJSON("/api/users").then((data) => {
 			this.setState({users: data});
 		});
-		xFetchJSON("/api/ordering/" + _this.props.params.id, "").then((data) => {
-			this.setState({ordering: data});
+
+		xFetchJSON("/api/tickets/" + _this.props.params.id + '/logs').then((data) => {
+			console.log('addddd', data)
+			this.setState({ticket_logs: data});
 		});
 	}
+
 	render() {
-			const ordering = this.state.ordering.map(function(row) {
-				return <FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="最新消息：" /></Col>
-					<Col sm={10}>{row.content}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;时间：{row.time}</Col>
-				</FormGroup>
-			})
-		const order = this.state.order;
+		const ticket_logs = this.state.ticket_logs.map(function(row) {
+			return <Row key={row.id}>
+				<Col componentClass={ControlLabel} sm={2}>{row.created_epoch}</Col>
+				<Col sm={10}>{row.user_name} <br/> {row.content}</Col>
+			</Row>
+		})
+
+		const ticket = this.state.ticket;
 		let save_btn = "";
 		const users = this.state.users;
-		let deal_user = <FormControl componentClass="select" name="uid">{
+		let deal_user = <FormControl componentClass="select" name="current_user_id">{
 				users.map(function(row) {
-					return <option key={row.id} readonly="readonly" value={row.id}>{row.name}</option>
+					return <option key={row.id} readOnly="readonly" value={row.id}>{row.name}</option>
 				})
 			}
 		</FormControl>;
-		if(order.uid){
+		if(ticket.current_user_id){
 			users.map(function(row) {
-				if(row.id == order.uid){
+				if(row.id == ticket.current_user_id){
 					deal_user = row.name;
 				}
 			})
 		}
+
 		this.state.deal_user = deal_user;
+
 		save_btn = <Button onClick={this.handleSubmit}><T.span text="指派"/></Button>
+
 		const options = <FormGroup>
 			<Col componentClass={ControlLabel} sm={2}><T.span text="处理人" /></Col>
 			<Col sm={10}>
 				{this.state.deal_user}
 			</Col>
 		</FormGroup>;
-		var status = "";
-		if(order.status == 1){
-			status = "未完成";
-		}if(order.status == 2){
-			status = "已完成";
-		}
+
 		return <div>
 			<h1><T.span text="工单"/></h1>
 			<hr/>
-			<Form horizontal id="ORDERForm">
-				<input type="hidden" name="tid" defaultValue={order.id}/>
+			<Form horizontal id="ticketForm">
 				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="电话"/></Col>
-					<Col sm={10}>{order.tel}</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
+					<Col sm={10}>{ticket.cid_number}</Col>
 				</FormGroup>
 				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="提交时间"/></Col>
-					<Col sm={10}>{order.time}</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Created At"/></Col>
+					<Col sm={10}>{ticket.created_epoch}</Col>
 				</FormGroup>
 				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="状态"/></Col>
-					<Col sm={10}>{status}</Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
+					<Col sm={10}><T.span text={ticket.status}/></Col>
 				</FormGroup>
 				<br/>
-				{ordering}
+			</Form>
 				<br/>
 				<br/>
+			<Form horizontal id="ticketProcessingForm">
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="内容"/></Col>
 					<Col sm={10}>
-						<FormControl type="input" name="content" placeholder="写入内容" />
+						<FormControl componentClass="textarea" name="content" placeholder="内容" />
 					</Col>
 				</FormGroup>
 				{options}
@@ -148,11 +152,14 @@ class ORDERPage extends React.Component {
 					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
 			</Form>
+
+			<hr/>
+			{ticket_logs}
 		</div>
 	}
 }
 
-class ORDERsPage extends React.Component {
+class TicketsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {rows: [], danger: false};
@@ -166,7 +173,7 @@ class ORDERsPage extends React.Component {
 
 			if (!c) return;
 		}
-		xFetchJSON("/api/orders/" + id, {method: "DELETE"}).then(() => {
+		xFetchJSON("/api/tickets/" + id, {method: "DELETE"}).then(() => {
 			console.log("deleted")
 			var rows = _this.state.rows.filter(function(row) {
 				return row.id != id;
@@ -185,7 +192,7 @@ class ORDERsPage extends React.Component {
 	}
 
 	componentDidMount () {
-		xFetchJSON("/api/orders").then((data) => {
+		xFetchJSON("/api/tickets").then((data) => {
 			this.setState({rows: data});
 		});
 	}
@@ -194,34 +201,36 @@ class ORDERsPage extends React.Component {
 		let hand = { cursor: "pointer"};
 		var danger = this.state.danger ? "danger" : "";
 		var rows = _this.state.rows.map(function(row) {
-			var status = "";
-			if(row.status == 1){
-				status = "未完成";
-			}
-			if(row.status == 2){
-				status = "已完成";
-			}
-			return <tr>
+			return <tr key={row.id}>
 				<td>{row.id}</td>
-				<td>{row.tel}</td>
-				<td>{row.time}</td>
-				<td>{status}</td>
-				<td><Link to={`/orders/${row.id}`}><T.span text="开始处理"/></Link>/<T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
+				<td>{row.cid_number}</td>
+				<td>{row.subject}</td>
+				<td>{row.created_epoch}</td>
+				<td><T.span text={row.status}/></td>
+				<td><Link to={`/tickets/${row.id}`}><T.span text="开始处理"/></Link> | <T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>
 		})
-		return <table className="table">
-			<tbody>
-				<tr>
-					<th><T.span text="ID"/></th>
-					<th><T.span text="电话"/></th>
-					<th><T.span text="提交时间"/></th>
-					<th><T.span text="状态"/></th>
-					<th><T.span text="操作"/></th>
-				</tr>
-				{rows}
-			</tbody>
-		</table>
+		return <div>
+			<ButtonToolbar className="pull-right">
+			</ButtonToolbar>
+
+			<h1><T.span text="Tickets" /></h1>
+
+			<table className="table">
+				<tbody>
+					<tr>
+						<th><T.span text="ID"/></th>
+						<th><T.span text="CID Number"/></th>
+						<th><T.span text="Subject"/></th>
+						<th><T.span text="Created At"/></th>
+						<th><T.span text="Status"/></th>
+						<th><T.span text="Action"/></th>
+					</tr>
+					{rows}
+				</tbody>
+			</table>
+		</div>
 	}
 }
 
-export {ORDERPage, ORDERsPage};
+export {TicketPage, TicketsPage};

@@ -107,6 +107,89 @@ post('/jstest', function(params)
 	end
 end)
 
+get('/:realm/tickets', function(params)
+	print(env:serialize())
+	print(serialize(params))
+	content_type("text/html")
+
+	realm = params.realm
+	code = env:getHeader("code")
+
+	wechat = m_dict.get_obj('WECHAT/' .. realm)
+
+	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
+	-- print(ret)
+	jret = utils.json_decode(ret)
+
+	if jret.openid then
+		n, wechat_user = xdb.find_by_cond("wechat_users", {openid = jret.openid})
+	else
+		n, wechat_user = xdb.find_by_cond("wechat_users", {code = code})
+	end
+
+	if (n > 0) then
+		local u = wechat_user[1]
+		print(serialize(u))
+
+		user1 = {
+			id = u.id,
+			code = code
+		}
+
+		xdb.update("wechat_users", user1)
+
+		if u.user_id and not (u.user_id == '') then
+			n, tickets = xdb.find_all("tickets")
+
+			return {"render", "wechat/tickets.html", {tickets = tickets}}
+		else
+			return {"render", "wechat/login.html", u}
+		end
+	else
+		ret = xwechat.get_sns_userinfo(jret.openid, jret.access_token)
+print(ret)
+		user_info = utils.json_decode(ret)
+		user_info.privilege = nil
+		user_info.language = nil
+		wechat_user_id = xdb.create_return_id("wechat_users", user_info)
+		wechat_user = {
+			id = wechat_user_id,
+			nickname = user_info.nickname,
+			headimgurl = user_info.headimgurl
+		}
+		return {"render", "wechat/login.html", wechat_user}
+	end
+end)
+
+post('/:realm/tickets', function(params) -- login
+	print(env:serialize())
+	print(serialize(params))
+	wechat = m_dict.get_obj('WECHAT/' .. params.realm)
+	appid = wechat.APPID
+
+	login = env:getHeader("login")
+	pass = env:getHeader("pass")
+	wechat_user_id = env:getHeader("id")
+
+	n, users = xdb.find_by_cond("users", {extn = login, password = pass})
+
+	if n > 0 then
+		user = users[1]
+		wechat_users = {
+			id = wechat_user_id,
+			user_id = user.id
+		}
+		xdb.update("wechat_users", wechat_users)
+		redirect_uri = "http%3A//shop.x-y-t.cn/seven" -- TODO: hardcoded
+		redirect_uri = xwechat.redirect_uri(appid, redirect_uri, "200")
+		redirect(redirect_uri)
+	else
+		redirect_uri = "http%3A//shop.x-y-t.cn/seven" -- TODO: hardcoded
+		redirect_uri = xwechat.redirect_uri(appid, redirect_uri, "403")
+		redirect(recirect_uri)
+	end
+end)
+
 get('/:realm', function(params)
 	signature = env:getHeader("signature")
 	timestamp = env:getHeader("timestamp")
@@ -169,3 +252,4 @@ post('/:realm', function(params)
 		"</xml>"
 	return response
 end)
+

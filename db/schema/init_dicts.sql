@@ -8,6 +8,7 @@ INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'GROUP', 'GROUP');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'BAIDU', 'BAIDU');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'MCAST_CODEC_NAME', 'MCAST_CODEC_NAME');
 INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'MCAST_SAMPLE_RATE', 'MCAST_SAMPLE_RATE');
+INSERT INTO dicts (realm, k, v) VALUES ('REALMS', 'TICKET', 'TICKET');
 
 -- k,v to each realm
 INSERT INTO dicts (realm, k, v) VALUES ('XUI', 'NAME', 'XUI');
@@ -85,5 +86,9 @@ INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '48000', '48000');
 
 INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'delete-all-outbound-member-on-startup', 'false');
 INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'outbound-strategy', 'ringall');
+
+INSERT INTO dicts (realm, k, v) VALUES ('TICKET', 'TICKET_ST_NEW', 'TICKET_ST_NEW');
+INSERT INTO dicts (realm, k, v) VALUES ('TICKET', 'TICKET_ST_PROCESSING', 'TICKET_ST_PROCESSING');
+INSERT INTO dicts (realm, k, v) VALUES ('TICKET', 'TICKET_ST_DONE', 'TICKET_ST_DONE');
 
 -- END

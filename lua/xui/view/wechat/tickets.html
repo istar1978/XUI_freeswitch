@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>小樱桃工单</title>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+</head>
+<body>
+
+	{% for ticket in tickets %}
+		<div class="weui-cells">
+			<div class="weui-cell">
+				<div class="weui-cell__bd">
+					<p>{{ ticket.subject }}</p>
+				</div>
+				<div class="weui-cell__ft">{{ ticket.id }}</div>
+			</div>
+		</div>
+	{% endfor %}
+
+	<form method="post" action="http://shop.x-y-t.cn/seven">
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cells__title">请输入处理内容</div>
+			<div class="weui-cell">
+				<div class="weui-cell__bd">
+					<textarea class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+				</div>
+			</div>
+
+			<input type="hidden" name="id" value="{{ id }}"/><br/>
+
+			<input type="submit" value="提交" class="weui-btn weui-btn_primary"/>
+		</div>
+	</form>
+</body>
+</html>

@@ -205,7 +205,7 @@ LANGUAGES["zh"] = {
 	Value: "值",
 	Description: "描述",
 	Order: "排序",
-	Orders: "工单",
+	Tickets: "工单",
 
 	SYSTEM: "系统",
 	LOCAL: "本地用户",
@@ -386,6 +386,10 @@ LANGUAGES["zh"] = {
 	node: "节点",
 	Cidr: "无类域间路由",
 
+	Subject: "主题",
+	TICKET_ST_NEW: "未处理",
+	TICKET_ST_PROCESSING: "处理中",
+	TICKET_ST_DONE: "已完成",
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"

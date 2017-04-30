@@ -104,3 +104,16 @@ xwechat.get_js_access_token = function(realm, appid, sec, code)
 	api = freeswitch.API()
 	return api:execute("curl", URL)
 end
+
+xwechat.get_sns_userinfo = function(openid, access_token)
+	URL = "https://api.weixin.qq.com/sns/userinfo?access_token=" .. access_token .. "&openid=" .. openid .. "&lang=zh_CN"
+	api = freeswitch.API()
+	return api:execute("curl", URL)
+end
+
+xwechat.redirect_uri = function(appid, redirect_uri, state)
+	return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" .. appid ..
+			"&redirect_uri=" .. redirect_uri ..
+			"&response_type=code&scope=snsapi_userinfo&state=" .. state ..
+			"#wechat_redirect"
+end

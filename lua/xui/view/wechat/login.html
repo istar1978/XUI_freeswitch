@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>小樱桃工单::登录</title>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+</head>
+<body>
+
+	<img src="{{ headimgurl}}" />
+	{{ nickname }}
+
+	<form method="post" action="http://shop.x-y-t.cn/seven">
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell">
+				<div class="weui-cell__hd"><label class="weui-label">用户名</label></div>
+				<div class="weui-cell__bd">
+					<input name="login" class="weui-input" type="text" pattern="[0-9a-zA-Z-]*" placeholder="请输入用户名"/>
+				</div>
+			</div>
+
+			<div class="weui-cell">
+				<div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+				<div class="weui-cell__bd">
+					<input name="pass" class="weui-input" type="password" placeholder="请输入密码"/>
+				</div>
+			</div>
+
+			<input type="hidden" name="id" value="{{ id }}"/><br/>
+
+			<input type="submit" value="登录" class="weui-btn weui-btn_primary"/>
+		</div>
+	</form>
+</body>
+</html>

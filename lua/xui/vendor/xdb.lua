@@ -40,7 +40,7 @@ local escapek = function(k)
 end
 local escapev = function(v)
 	if (type(v) == 'number') then
-		v = tostring(v)
+		return tostring(v)
 	end
 	return escape(v)
 end
@@ -68,7 +68,7 @@ local function _insert_string(kvp)
 
 	for k, v in pairs(kvp) do
 		keys =  keys .. comma .. escapek(k)
-		values = values .. comma .. escape(v)
+		values = values .. comma .. escapev(v)
 		comma = ","
 	end
 	return keys, values
