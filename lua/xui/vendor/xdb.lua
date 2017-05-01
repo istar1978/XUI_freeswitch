@@ -183,19 +183,6 @@ function xdb.find(t, id)
 	return r
 end
 
--- find from fifo_cdrs table with channel_uuid = channel_uuid
-function xdb.find_by_channel_uuid(t, channel_uuid)
-	local sql = "SELECT * FROM " .. t .. " WHERE channel_uuid = '" .. channel_uuid .."'"
-	local found = 0
-	local r = nil
-
-	xdb.dbh:query(sql, function(row)
-		r = row
-	end)
-
-	return r
-end
-
 -- find from table
 -- if cb is nil, return count of rows and all rows
 -- if cb is a callback function, run cb(row) for each row
@@ -290,28 +277,6 @@ end
 function xdb.execute(sql)
 	xdb.dbh:query(sql)
 	return xtra.dbh:affected_rows()
-end
-
---query cdrs
-function  xdb.find_by_time(t, time)
-	-- body
-	local theTime = os.time()
-	local theTargetTime = theTime - time*24*60*60
-	
-	local sql = "SELECT * FROM " .. t .. " WHERE  strftime('%s', start_stamp) -" .. theTargetTime ..  " > 0"
-
-	return xdb.find_by_sql(sql, cb)
-end
-
---query fifo-cdrs
-function  xdb.find_by_time_of_fifo(t, time)
-	-- body
-	local theTime = os.time()
-	local theTargetTime = theTime - time*24*60*60
-	
-	local sql = "SELECT * FROM " .. t .. " WHERE  strftime('%s', start_epoch) -" .. theTargetTime ..  " > 0"
-
-	return xdb.find_by_sql(sql, cb)
 end
 
 function xdb.date_cond(field, date1, date2)
