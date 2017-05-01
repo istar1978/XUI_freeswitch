@@ -209,6 +209,27 @@ function xdb.find_all(t, sort, cb)
 	return xdb.find_by_sql(sql, cb)
 end
 
+-- find one record from table, with WHERE condition cond
+-- if cb is nil, return count of rows and all rows
+-- if cb is a callback function, run cb(row) for each row
+-- if sort is not nil, ORDER BY sort string
+-- returns an table object, or nil
+
+function xdb.find_one(t, cond, sort, cb)
+	local cstr = _cond_string(cond)
+	local sql = "SELECT * FROM " .. t
+
+	if cstr then sql = sql .. cstr end
+	if sort then sql = sql .. " ORDER BY " .. sort end
+	sql = sql .. " LIMIT 1"
+	n, rows = xdb.find_by_sql(sql, cb, limit)
+	if n > 0 then
+		return rows[1]
+	else
+		return nil
+	end
+end
+
 -- find from table, with WHERE condition cond
 -- if cb is nil, return count of rows and all rows
 -- if cb is a callback function, run cb(row) for each row
@@ -220,7 +241,6 @@ function xdb.find_by_cond(t, cond, sort, cb, limit, offset)
 
 	if cstr then sql = sql .. cstr end
 	if sort then sql = sql .. " ORDER BY " .. sort end
-	freeswitch.consoleLog('err',sql)
 	return xdb.find_by_sql(sql, cb, limit, offset)
 end
 
