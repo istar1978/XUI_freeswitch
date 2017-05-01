@@ -123,20 +123,23 @@ get('/:realm/tickets', function(params)
 
 	if jret.openid then
 		n, wechat_user = xdb.find_by_cond("wechat_users", {openid = jret.openid})
-	else
+	else -- on page refresh, we got a code already used error
 		n, wechat_user = xdb.find_by_cond("wechat_users", {code = code})
 	end
 
 	if (n > 0) then
+		-- we already have the wechat userinfo in our db
 		local u = wechat_user[1]
-		print(serialize(u))
+		-- print(serialize(u))
 
-		user1 = {
-			id = u.id,
-			code = code
-		}
+		if jret.openid then -- catch the code for later use, e.g. refresh
+			user1 = {
+				id = u.id,
+				code = code
+			}
 
-		xdb.update("wechat_users", user1)
+			xdb.update("wechat_users", user1)
+		end
 
 		if u.user_id and not (u.user_id == '') then
 			n, tickets = xdb.find_all("tickets")
@@ -146,8 +149,9 @@ get('/:realm/tickets', function(params)
 			return {"render", "wechat/login.html", u}
 		end
 	else
+		-- find the wechat userinfo and save to our db
 		ret = xwechat.get_sns_userinfo(jret.openid, jret.access_token)
-print(ret)
+		-- print(ret)
 		user_info = utils.json_decode(ret)
 		user_info.privilege = nil
 		user_info.language = nil
