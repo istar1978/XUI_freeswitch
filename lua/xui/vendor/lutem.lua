@@ -8,6 +8,7 @@ local NODE_FOR = 2
 local NODE_EXPR = 3
 local NODE_BLOCK = 4
 local NODE_RAW = 5
+local NODE_VERB = 6
 
 ast_node = {
 	node_type = NODE_BLOCK,
@@ -154,7 +155,32 @@ function lutem:parse_file(filename, path)
 				end
 			end
 
-			pos_s = string.find(text, "{[{%%]", last)
+			if in_verbatim == true then -- add the whole block as raw text
+				if last == #text then break end
+
+				i, j = string.find(text, "{%%[ ]*endverbatim[ ]*%%}", last)
+
+				if i == nil then
+					node = new_ast_node(NODE_RAW, cur_parent, string.sub(text, last, #text))
+					table.insert(cur_parent.child_, node)
+					break
+				else
+					if i > last then
+						node = new_ast_node(NODE_RAW, cur_parent, string.sub(text, last, i-1))
+						table.insert(cur_parent.child_, node)
+					end
+
+					if #bstack < 1 or bstack[#bstack].node_type ~= NODE_VERB then
+						return -1, "endbverbatim error: "..cur_lno
+					end
+					table.remove(bstack)
+					cur_parent = bstack[#bstack]
+					last = j + 1
+					in_verbatim = false
+				end
+			end
+
+			pos_s = string.find(text, "{[{%%/]", last)
 			if pos_s == nil then
 
 				if #(cur_text.content) < 1000 then
@@ -166,7 +192,7 @@ function lutem:parse_file(filename, path)
 				break
 			end
 
-			--while found {{ or {%
+			--while found {{ or {% or {/
 
 			cur_text.content = cur_text.content .. string.sub(text, last, pos_s-1)
 			table.insert(cur_parent.child_, cur_text)
@@ -183,6 +209,13 @@ function lutem:parse_file(filename, path)
 					if i ~= last then return -1, "expr error: "..cur_lno end
 					word = string.match(text, "[%w._]+", i, j-2)
 					node = new_ast_node(NODE_EXPR, cur_parent, word)
+				end
+				last = j + 1
+				table.insert(cur_parent.child_, node)
+			elseif pre == '{/' then
+				i, j = string.find(text, ".*/}", last)
+				if i == last then
+					node = new_ast_node(NODE_RAW, cur_parent, string.sub(text, i, j-2))
 				end
 				last = j + 1
 				table.insert(cur_parent.child_, node)
@@ -235,6 +268,12 @@ function lutem:parse_file(filename, path)
 					end
 
 					table.insert(self.file_queue_, arglist[1])
+				elseif cmd == "verbatim" then
+					node = new_ast_node(NODE_VERB, cur_parent, arglist[1])
+					table.insert(cur_parent.child_, node)
+					cur_parent = node
+					table.insert(bstack, node)
+					in_verbatim = true
 				end
 			end
 
@@ -301,7 +340,7 @@ function lutem:render_node(node)
 		table.insert(self.output_, node.content)
 	elseif node.node_type == NODE_EXPR then
 		table.insert(self.output_, self:get_expr_val(node.content))
-	elseif node.node_type == NODE_BLOCK then
+	elseif node.node_type == NODE_BLOCK or node.node_type == NODE_VERB then
 		self:render_block(node)
 	elseif node.node_type == NODE_FOR then
 		self:render_loop(node)
