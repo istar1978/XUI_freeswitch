@@ -57,11 +57,11 @@ get('/:id', function(params)
 	end
 end)
 
-get('/:id/logs', function(params)
-	n, logs = xdb.find_by_cond("ticket_logs", {ticket_id = params.id}, "created_epoch DESC")
+get('/:id/comments', function(params)
+	n, comments = xdb.find_by_cond("ticket_comments", {ticket_id = params.id}, "created_epoch DESC")
 
 	if (n > 0) then
-		return logs
+		return comments
 	else
 		return "[]"
 	end
@@ -123,7 +123,7 @@ post('/', function(params)
 	end
 end)
 
-post('/:id/logs', function(params)
+post('/:id/comments', function(params)
 	print(serialize(params))
 
 	ticket = {}
@@ -132,12 +132,12 @@ post('/:id/logs', function(params)
 
 	xdb.update("tickets", ticket)
 
-	log = params.request
-	log.ticket_id = params.id
-	log.current_user_id = nil
-	log.user_name = 'Admin' -- TODO: hardcoded
+	comment = params.request
+	comment.ticket_id = params.id
+	comment.current_user_id = nil
+	comment.user_name = params.request.user_name or 'Admin' -- TODO: hardcoded
 
-	ret = xdb.create_return_object("ticket_logs", log)
+	ret = xdb.create_return_object("ticket_comments", comment)
 
 	if ret then
 		return ret

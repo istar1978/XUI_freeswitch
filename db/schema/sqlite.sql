@@ -551,26 +551,6 @@ BEGIN
 	UPDATE ivr_actions set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
-CREATE TABLE ticket_logs (
-	id INTEGER PRIMARY Key,
-	ticket_id INTEGER,
-	user_id INTEGER,
-	user_name VARCHAR,
-	avatar_url VARCHAR,
-	action VARCHAR,
-	subject VARCHAR,
-	content VARCHAR,
-
-	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
-	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
-	deleted_epoch INTEGER
-);
-
-CREATE TRIGGER t_ticket_logs AFTER UPDATE ON ticket_logs
-BEGIN
-	UPDATE ticket_logs set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
-END;
-
 CREATE TABLE tickets (
 	id INTEGER PRIMARY Key,
 	cid_number VARCHAR,
@@ -588,6 +568,26 @@ CREATE TABLE tickets (
 CREATE TRIGGER t_tickets AFTER UPDATE ON tickets
 BEGIN
 	UPDATE tickets set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TABLE ticket_comments (
+	id INTEGER PRIMARY Key,
+	ticket_id INTEGER,
+	user_id INTEGER,
+	user_name VARCHAR,
+	avatar_url VARCHAR,
+	action VARCHAR,
+	subject VARCHAR,
+	content VARCHAR,
+
+	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
+	deleted_epoch INTEGER
+);
+
+CREATE TRIGGER t_ticket_comments AFTER UPDATE ON ticket_comments
+BEGIN
+	UPDATE ticket_comments set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
 END;
 
 CREATE TABLE wechat_users (

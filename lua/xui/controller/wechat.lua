@@ -194,6 +194,19 @@ post('/:realm/tickets', function(params) -- login
 	end
 end)
 
+post('/:realm/link', function(params)
+	print(env:serialize())
+	print(serialize(params))
+
+	local cond = {}
+	cond.extn = request.username
+	cond.password = request.password
+
+	user = xdb.find_one("users", cond)
+
+	return 200
+end)
+
 get('/:realm', function(params)
 	signature = env:getHeader("signature")
 	timestamp = env:getHeader("timestamp")

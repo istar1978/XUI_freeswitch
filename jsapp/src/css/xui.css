@@ -208,3 +208,10 @@ span.log0 {color: black;}
 	display: none;
 	margin-left: 16.7%;
 }
+
+.avatar {
+	width: 32px;
+	height: 32px;
+	margin: 10px;
+	border-radius: 50%;
+}

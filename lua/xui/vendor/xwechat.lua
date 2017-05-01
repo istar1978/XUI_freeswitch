@@ -117,3 +117,13 @@ xwechat.redirect_uri = function(appid, redirect_uri, state)
 			"&response_type=code&scope=snsapi_userinfo&state=" .. state ..
 			"#wechat_redirect"
 end
+
+
+-- wechat xiaochengxu
+xwechat.get_wx_openid = function(appid, secret, code)
+	URL = "https://api.weixin.qq.com/sns/jscode2session?appid=" .. appid ..
+		"&secret=" .. secret .. "&js_code=" .. code ..
+		"&grant_type=authorization_code"
+	api = freeswitch.API()
+	return api:execute("curl", URL)
+end

@@ -39,7 +39,7 @@ import { EditControl, xFetchJSON } from './libs/xtools';
 class TicketPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {ticket: {}, users: [], user_options: null, ticket_logs: [], deal_user: null};
+		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -51,13 +51,13 @@ class TicketPage extends React.Component {
 			return;
 		}
 
-		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/logs", {
+		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/comments", {
 			method: "POST",
 			body: JSON.stringify(ticket)
 		}).then((obj) => {
-			var rows = this.state.ticket_logs;
+			var rows = this.state.ticket_comments;
 			rows.unshift(obj);
-			this.setState({ticket_logs: rows, deal_user: 123});
+			this.setState({ticket_comments: rows, deal_user: 123});
 		}).catch((err) => {
 			console.error("ticket", err);
 			notify(err, "error");
@@ -77,17 +77,20 @@ class TicketPage extends React.Component {
 			this.setState({users: data});
 		});
 
-		xFetchJSON("/api/tickets/" + _this.props.params.id + '/logs').then((data) => {
+		xFetchJSON("/api/tickets/" + _this.props.params.id + '/comments').then((data) => {
 			console.log('addddd', data)
-			this.setState({ticket_logs: data});
+			this.setState({ticket_comments: data});
 		});
 	}
 
 	render() {
-		const ticket_logs = this.state.ticket_logs.map(function(row) {
+		const ticket_comments = this.state.ticket_comments.map(function(row) {
 			return <Row key={row.id}>
 				<Col componentClass={ControlLabel} sm={2}>{row.created_epoch}</Col>
-				<Col sm={10}>{row.user_name} <br/> {row.content}</Col>
+				<Col sm={10}>{row.created_epoch} {row.user_name}
+					<img className="avatar" src={row.avatar_url}/>
+					<br/> {row.content}
+				</Col>
 			</Row>
 		})
 
@@ -154,7 +157,7 @@ class TicketPage extends React.Component {
 			</Form>
 
 			<hr/>
-			{ticket_logs}
+			{ticket_comments}
 		</div>
 	}
 }
