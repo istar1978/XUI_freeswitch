@@ -89,11 +89,18 @@ m_sip_profile.delete = function(profile_id)
 	return xdb.affected_rows()
 end
 
+function delete_param(id, param_id)
+	local sql = "DELETE FROM params WHERE id = " .. param_id .. " AND ref_id = " .. id
+	xdb.execute(sql)
+	return xdb.affected_rows()
+end
+
 m_sip_profile.create = create
 m_sip_profile.params = params
 m_sip_profile.toggle = toggle
 m_sip_profile.toggle_param = toggle_param
 m_sip_profile.update_param = update_param
 m_sip_profile.createParam = createParam
+m_sip_profile.delete_param = delete_param
 
 return m_sip_profile

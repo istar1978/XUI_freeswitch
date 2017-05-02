@@ -78,10 +78,17 @@ m_route.delete = function(rt_id)
 	return xdb.affected_rows()
 end
 
+function delete_param(id, param_id)
+	local sql = "DELETE FROM params where id = " .. param_id .. " AND ref_id = " .. id
+	xdb.execute(sql)
+	return xdb.affected_rows()
+end
+
 m_route.create = create
 m_route.params = params
 m_route.toggle_param = toggle_param
 m_route.update_param = update_param
 m_route.createParam = createParam
+m_route.delete_param = delete_param
 
 return m_route

@@ -431,8 +431,8 @@ class GatewayPage extends React.Component {
 		verto.fsAPI("sofia", "profile " + this.state.gw.profile_name + " killgw " + this.state.gw.name);
 	}
 
-	handleDelete(id) {
-		console.log("deleting id", id);
+	handleDelete(param_id) {
+		console.log("deleting param_id", param_id);
 		var _this = this;
 
 		if (!_this.state.danger) {
@@ -440,12 +440,12 @@ class GatewayPage extends React.Component {
 
 			if (!c) return;
 		}
-		xFetchJSON( "/api/gateways?id=" + id, {
+		xFetchJSON("/api/gateways/" + _this.state.gw.id + "/param/" + param_id, {
 			method: "DELETE"
 		}).then((obj) => {
 			console.log("deleted")
 			var params = _this.state.params.filter(function(param) {
-				return param.id != id;
+				return param.id != param_id;
 			});
 
 			_this.setState({params: params});

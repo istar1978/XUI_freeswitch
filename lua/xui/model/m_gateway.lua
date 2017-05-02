@@ -79,10 +79,18 @@ m_gateway.delete = function(gw_id)
 	return xdb.affected_rows()
 end
 
+function delete_param(id, param_id)
+	local sql = "DELETE FROM params WHERE id = " .. param_id .. " AND ref_id = " .. id
+	freeswitch.consoleLog('err', sql)
+	xdb.execute(sql)
+	return xdb.affected_rows()
+end
+
 m_gateway.create = create
 m_gateway.params = params
 m_gateway.toggle_param = toggle_param
 m_gateway.update_param = update_param
 m_gateway.createParam = createParam
+m_gateway.delete_param = delete_param
 
 return m_gateway
