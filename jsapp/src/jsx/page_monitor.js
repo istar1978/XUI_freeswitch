@@ -45,41 +45,37 @@ class TabContent extends React.Component {
 		super(props);
 
 		this.state = {errmsg: ''};
-		this.handleUserToggleSelect = this.handleUserToggleSelect.bind(this);
-		this.handleUserCall = this.handleUserCall.bind(this);
+		this.handleToggleSelect = this.handleToggleSelect.bind(this);
+		this.handleCall = this.handleCall.bind(this);
 	}
 
-
-	handleUserCall() {
+	handleCall() {
 		let user = this.props.user;
 		let currentLoginUser = this.props.currentLoginUser;
-		if (user.channelCallState == "idle" && user.registerState == "registered") {
+		if (user.channelCallState == "idle" && user.registerState == "registered" && currentLoginUser.channelCallState == "idle") {
 
-			let dialString = "originate {origination_caller_id_number=xui,verto_auto_answer=true}user/" + currentLoginUser.userExten +
-				"&bridge({origination_caller_id_number=" + currentLoginUser.userExten + "}"
-				+ "user/" + this.props.user.userExten + ")";
-
-			verto.fsAPI("bgapi", dialString, function(data) {
-				console.log("handleCall", data);
+			let curCall = verto.newCall({
+				destination_number: user.userExten,
+				caller_id_name: currentLoginUser.userName,
+				caller_id_number: currentLoginUser.userExten,
+				useVideo: false,
+				useStereo: false
 			});
+			this.props.handleCall(curCall);
 		}
 	}
 
-	handleUserToggleSelect() {
+	handleToggleSelect() {
 		let user = this.props.user;
-		if (user.selectedState == "selected") {
-			user.selectedState = "unselected";
-		} else {
-			user.selectedState = "selected";
-		}
-		this.props.handleUserToggleSelect(user);
+		this.props.handleToggleSelect(user);
 	}
 
 	render() {
 		const props = Object.assign({}, this.props);
 		const user = props.user;
 		delete props.user;
-		delete props.handleUserToggleSelect;
+		delete props.handleToggleSelect;
+		delete props.handleCall;
 		let activeStyle = "user-selected";
 		let registerState = "unregistered";
 		let channelCallState = user.channelCallState ? user.channelCallState : "idle";
@@ -95,14 +91,14 @@ class TabContent extends React.Component {
 		return (
 			<div className={divClass}>
 				<div className="pull-left user-state-area">
-					<div><img src={userImageUrl} onClick={this.handleUserCall}/></div>
+					<div><img src={userImageUrl} onClick={this.handleCall}/></div>
 					<div>
 						<div className={textClass}>{"Offline"}</div>
 						<div className={textClass}>{"Idle"}</div>
 					</div>
 				</div>
 
-				<div className="pull-right user-info-area" onClick={this.handleUserToggleSelect}><br/>
+				<div className="pull-right user-info-area" onClick={this.handleToggleSelect}><br/>
 					<div className={textClass}>{user.userName}</div>
 					<div className={textClass}>{user.extn}</div>
 				</div>
@@ -115,12 +111,58 @@ class MonitorPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg:'', group_users:{}, users:[], currentLoginUser:{}, activeKey: "0", navItems:[], tabContentObj:{}, tabPanesMounted: {}};
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUserToggleSelect = this.handleUserToggleSelect.bind(this);
+		this.state = {errmsg:'', group_users:{}, users:[], currentLoginUser:{}, activeKey: "0", navItems:[], tabContentObj:{}, tabPanesMounted: {}, curCall: null};
+		this.handleCall = this.handleCall.bind(this);
+		this.handleCallButton = this.handleCallButton.bind(this);
+		this.handleAnswer = this.handleAnswer.bind(this);
+		this.handleHangup = this.handleHangup.bind(this);
+		this.handleTabSelect = this.handleTabSelect.bind(this);
+		this.handleToggleSelect = this.handleToggleSelect.bind(this);
+		this.handleSelectAll = this.handleSelectAll.bind(this);
+		this.handleDeselectAll = this.handleDeselectAll.bind(this);
+		this.handleToggleSelectAll = this.handleToggleSelectAll.bind(this);
 	}
 
-	handleSelect(selectedKey) {
+	handleCall(curCall) {
+		if (curCall) this.setState({curCall: curCall});
+	}
+
+	handleCallButton() {
+		let users = this.state.users;
+		let activeKey = this.state.activeKey;
+		let currentLoginUser = this.state.currentLoginUser;
+		for (let i = 0; i < users.length; i++) {
+			if (users[i].groupID == activeKey && users[i].selectedState == "selected" &&
+				users[i].registerState == "registered" && users[i].channelCallState == "idle"
+				&& currentLoginUser.channelCallState == "idle") {
+				let curCall = verto.newCall({
+					destination_number: users[i].userExten,
+					caller_id_name: currentLoginUser.userName,
+					caller_id_number: currentLoginUser.userExten,
+					useVideo: false,
+					useStereo: false
+				});
+
+				if (curCall) this.setState({curCall: curCall});
+				break;
+			}
+		}
+	}
+
+	handleAnswer() {
+		const ds = getXUIDeviceSettings();
+
+		this.state.curCall.answer({
+			useMic: ds.audioInDevice,
+			useSpeak: ds.audioOutDevice
+		});
+	}
+
+	handleHangup() {
+		this.state.curCall.hangup();
+	}
+
+	handleTabSelect(selectedKey) {
 		var _this = this;
 		let users = this.state.group_users[selectedKey].users;
 		let tabContentObj = this.state.tabContentObj;
@@ -128,7 +170,7 @@ class MonitorPage extends React.Component {
 
 		if (!tabPanesMounted[selectedKey]) {
 			let tabPanes = users.map(function(u) {
-				return <TabContent user={u} currentLoginUser={_this.state.currentLoginUser} handleUserToggleSelect={_this.handleUserToggleSelect}/>
+				return <TabContent user={u} currentLoginUser={_this.state.currentLoginUser} handleCall={_this.handleCall} handleToggleSelect={_this.handleToggleSelect}/>
 			})
 
 			tabContentObj[selectedKey] = <Tab.Pane eventKey={selectedKey}>{tabPanes}</Tab.Pane>;
@@ -137,7 +179,69 @@ class MonitorPage extends React.Component {
 			this.setState({tabContentObj: tabContentObj});
 			this.setState({tabPanesMounted: tabPanesMounted});
 		}
+
 		this.setState({activeKey: selectedKey});
+	}
+
+	handleSelectAll() {
+		let activeKey = this.state.activeKey;
+		let users = this.state.users;
+
+		users.map(function(user) {
+			if (activeKey == user.groupID) {
+				user.selectedState = "selected";
+			}
+			return user;
+		})
+
+		this.setState({users: users});
+	}
+
+	handleDeselectAll() {
+		let activeKey = this.state.activeKey;
+		let users = this.state.users;
+
+		users.map(function(user) {
+			if (activeKey == user.groupID) {
+				user.selectedState = "unselected";
+			}
+			return user;
+		});
+
+		this.setState({users: users});
+	}
+
+	handleToggleSelectAll() {
+		let users = this.state.users;
+		let activeKey = this.state.activeKey;
+
+		users.map(function(user) {
+			if (user.selectedState == "selected") {
+				user.selectedState = "unselected";
+			} else if (user.selectedState == "unselected") {
+				user.selectedState = "selected";
+			}
+			return user;
+		})
+
+		this.setState({users: users});
+	}
+
+	handleToggleSelect(user) {
+		let users = this.state.users;
+		let activeKey = this.state.activeKey;
+		for (let i = 0; i < users.length; i++) {
+			if (users[i].groupID == activeKey && users[i].userID == user.userID) {
+				if (users[i].selectedState == "selected") {
+					users[i].selectedState = "unselected";
+				} else if (users[i].selectedState == "unselected") {
+					users[i].selectedState = "selected";
+				}
+				break;
+
+			}
+		}
+		this.setState({users: users});
 	}
 
 	handleFSEventRegister(v, e) {
@@ -220,16 +324,13 @@ class MonitorPage extends React.Component {
 		if (usersChanged) this.setState({users: users});
 	}
 
-	handleUserToggleSelect(user) {
+	handleVertoDialogState(e) {
+		let d = e.detail;
 		let users = this.state.users;
+		let currentLoginUser = this.state.currentLoginUser;
+		alert(JSON.stringify(d.state.name));
+		console.log("state", d.direction);
 
-		for (let i = 0; i < users.length; i++) {
-			if (user.groupID == users[i].groupID && user.userID == users[i].userID) {
-				users[i] = user;
-				this.setState({users: users});
-				break;
-			}
-		}
 	}
 
 	syncUserRegisterStatus() {
@@ -334,7 +435,7 @@ class MonitorPage extends React.Component {
 				let tabPanes = [];
 				if (id == defaultActiveKey) {
 					tabPanes = group_users[defaultActiveKey].users.map(function(u) {
-						return <TabContent user={u} currentLoginUser={currentLoginUser} handleUserToggleSelect={_this.handleUserToggleSelect}/>
+						return <TabContent user={u} currentLoginUser={currentLoginUser} handleCall={_this.handleCall} handleToggleSelect={_this.handleToggleSelect}/>
 					})
 					tabPanesMounted[id] = true;
 				} else {
@@ -358,6 +459,7 @@ class MonitorPage extends React.Component {
 		verto.subscribe("FSevent.custom::sofia::register", {handler: this.handleFSEventRegister.bind(this)});
 		verto.subscribe("FSevent.custom::sofia::unregister", {handler: this.handleFSEventRegister.bind(this)});
 		verto.subscribe("FSevent.channel_callstate", {handler: this.handleFSEventChannel.bind(this)});
+		window.addEventListener("verto-dialog-state", this.handleVertoDialogState.bind(this));
 	}
 
 	componentWillUnmount() {
@@ -370,6 +472,46 @@ class MonitorPage extends React.Component {
 	}
 
 	render() {
+		let callButtonDisabled = true;
+		let hangupButtonDisabled = true;
+		let answerButtonDisabled = true;
+		let refuseButtonDisabled = true;
+
+		let callButtonStyle = "default";
+		let hangupButtonStyle = "default";
+		let answerButtonStyle = "default";
+		let refuseButtonStyle = "default";
+
+		let currentLoginUser = this.state.currentLoginUser;
+		let users = this.state.users;
+		let activeKey = this.state.activeKey;
+
+		if (currentLoginUser.channelCallState == "ringing" && currentLoginUser.callDirection == "outbound") {
+			answerButtonDisabled = false;
+			refuseButtonDisabled = false;
+			answerButtonStyle = "danger";
+			refuseButtonDisabled = "danger";
+		} else if (currentLoginUser.channelCallState == "active" || (currentLoginUser.channelCallState == "ringing"
+			&& currentLoginUser.callDirection == "inbound")) {
+			hangupButtonDisabled = false;
+			answerButtonStyle = "danger";
+			hangupButtonStyle = "danger";
+		}
+
+		for (let i = 0; i < users.length; i++) {
+			if (users[i].groupID == activeKey && users[i].selectedState == "selected") {
+				if (users[i].registerState == "registered" && users[i].channelCallState == "idle") {
+					callButtonDisabled = false;
+					callButtonStyle = "primary";
+					break;
+				} else if (users[i].channelCallState != "idle") {
+					hangupButtonDisabled = false;
+					hangupButtonStyle = "danger";
+					break;
+				}
+			}
+		}
+
 		let tabContentObj = this.state.tabContentObj;
 		let tabContent = [];
 		for (let id in tabContentObj) {
@@ -381,19 +523,18 @@ class MonitorPage extends React.Component {
 				<Col sm={1}>
 					<div className="sidebar">
 						<ButtonGroup vertical>
-							<Button bsStyle={"default"} disabled>{T.translate("Make Call")}</Button><br/>
-							<Button bsStyle="default" disabled>{T.translate("Hangup Call")}</Button><br/>
-							<Button bsStyle="default" disabled>{T.translate("Answer Call")}</Button><br/>
-							<Button bsStyle="default" disabled>{T.translate("Refuse Call")}</Button><br/>
-							<Button bsStyle="default" disabled>{T.translate("Refuse Call")}</Button><br/>
-							<Button bsStyle="primary">{T.translate("Select All")}</Button><br/>
-							<Button bsStyle="primary">{T.translate("Deselect All")}</Button><br/>
-							<Button bsStyle="primary">{T.translate("Toggle Select")}</Button>
+							<Button bsStyle={callButtonStyle} disabled={callButtonDisabled} onClick={this.handleCallButton}>{T.translate("Make Call")}</Button><br/>
+							<Button bsStyle={hangupButtonStyle} disabled={hangupButtonDisabled} onClick={this.handleHangup}>{T.translate("Hangup Call")}</Button><br/>
+							<Button bsStyle={answerButtonStyle} disabled={answerButtonDisabled} onClick={this.handleAnswer}>{T.translate("Answer Call")}</Button><br/>
+							<Button bsStyle={refuseButtonStyle} disabled={refuseButtonDisabled} onClick={this.handleHangup}>{T.translate("Refuse Call")}</Button><br/>
+							<Button bsStyle="primary" onClick={this.handleSelectAll}>{T.translate("Select All")}</Button><br/>
+							<Button bsStyle="primary" onClick={this.handleDeselectAll}>{T.translate("Deselect All")}</Button><br/>
+							<Button bsStyle="primary" onClick={this.handleToggleSelectAll}>{T.translate("Toggle Select")}</Button>
 						</ButtonGroup>
 					</div>
 				</Col>
 				<Col sm={11}>
-					<Tab.Container id="group_tabs" onSelect={this.handleSelect} activeKey={this.state.activeKey}>
+					<Tab.Container id="group_tabs" onSelect={this.handleTabSelect} activeKey={this.state.activeKey}>
 						<Row className="clearfix">
 							<Col sm={12}><Nav bsStyle="tabs">{this.state.navItems}</Nav><br/></Col>
 							<Col sm={12}><Tab.Content animation>{tabContent}</Tab.Content></Col>
