@@ -87,7 +87,12 @@ class NewGateway extends React.Component {
 		});
 
 		const sip_profile_options = sip_profiles.map(sip_profile => {
-			return <option value={sip_profile.id} key={sip_profile.id}>{sip_profile.name}</option>
+			if (sip_profile.name == 'public') {
+				return <option value={sip_profile.id} key={sip_profile.id}  selected="selected">{sip_profile.name}</option>
+			} else {
+				return <option value={sip_profile.id} key={sip_profile.id}>{sip_profile.name}</option>
+			};
+
 		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
@@ -122,7 +127,7 @@ class NewGateway extends React.Component {
 				</FormGroup>
 
 				<FormGroup controlId="formSipProfile">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="SipProfile"/></Col>
+					<Col componentClass={ControlLabel} sm={2}><T.span text="SIP Profile"/></Col>
 					<Col sm={10}>
 						<FormControl componentClass="select" name="profile_id">
 							{sip_profile_options}
@@ -301,11 +306,11 @@ class GatewayPage extends React.Component {
 
 		xFetchJSON( "/api/gateways/" + this.props.params.id, {
 		}).then((data) => {
+			console.log('data', data)
 			const params = data.params;
 			delete data.params;
 
 			if (data.profile_id) {
-
 				xFetchJSON("/api/sip_profiles/" + data.profile_id).then((obj) => {
 					_this.setState({sip_profile: obj});
 					data.profile_name = obj.name;
@@ -617,7 +622,7 @@ class GatewayPage extends React.Component {
 				{params}
 				</tbody>
 			</table>
-			{this.state.sip_profile.id ? <AddNewParam show={this.state.formShow} onHide={formClose} profile_id={this.state.sip_profile.id} handleNewParamAdded={this.handleParamAdded.bind(this)}/> : null}
+			{this.state.sip_profile.id ? <AddNewParam show={this.state.formShow} onHide={formClose} profile_id={this.state.gw.id} handleNewParamAdded={this.handleParamAdded.bind(this)}/> : null}
 		</div>
 	}
 }

@@ -33,9 +33,8 @@ function createParam(kvp)
 	if id then
 		local ref_id = kvp.ref_id
 		local realm = 'gateway'
-		id = id + 1
 		local sql = "INSERT INTO params (id, realm, k, v, ref_id) values (" .. id .. ", '" .. realm .. "', '" .. kvp.k .. "' , '" .. kvp.v .. "', " .. ref_id .. ")"
-		freeswitch.consoleLog('err',sql)
+		freeswitch.consoleLog('err', sql)
 		xdb.execute(sql)
 	end
 
