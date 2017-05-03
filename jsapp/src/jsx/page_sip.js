@@ -442,20 +442,20 @@ class SIPProfilePage extends React.Component {
 		this.setState({profile: profile});
 	}
 
-	handleDelete(id) {
-		console.log("deleting id", id);
+	handleDelete(param_id) {
+		console.log("deleting param_id", param_id);
 		var _this = this;
 		if (!_this.state.danger) {
 			var c = confirm(T.translate("Confirm to Delete ?"));
 			if (!c) return;
 		}
 
-		xFetchJSON("/api/sip_profiles?id=" + id, {
+		xFetchJSON("/api/sip_profiles/" + _this.state.profile.id + "/param/" + param_id, {
 			method: "DELETE",
 		}).then((obj) => {
 			console.log("deleted")
 			var params = _this.state.params.filter(function(param) {
-				return param.id != id;
+				return param.id != param_id;
 			});
 			_this.setState({params: params});
 			console.log(_this.state.params)

@@ -119,9 +119,10 @@ post('/:ref_id/params/', function(params)
 	end
 end)
 
-delete('/', function(params)
-	id = tonumber(env:getHeader('id'))
-	ret = m_route.delete(id)
+delete('/:id/param/:param_id', function(params)
+	id = params.id
+	param_id = params.param_id
+	ret = m_route.delete_param(id, param_id)
 	
 	if ret >= 0 then
 		return 200, "{}"

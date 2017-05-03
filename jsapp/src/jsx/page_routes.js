@@ -549,8 +549,8 @@ class RoutePage extends React.Component {
 		});
 	}
 
-	handleDelete(id) {
-		console.log("deleting id", id);
+	handleDelete(param_id) {
+		console.log("deleting param_id", param_id);
 		var _this = this;
 
 		if (!_this.state.danger) {
@@ -558,12 +558,12 @@ class RoutePage extends React.Component {
 
 			if (!c) return;
 		}
-		xFetchJSON( "/api/routes?id=" + id, {
+		xFetchJSON("/api/routes/" + _this.state.route.id + "/param/" + param_id, {
 			method: "DELETE"
 		}).then((obj) => {
 			console.log("deleted")
 			var params = _this.state.params.filter(function(param) {
-				return param.id != id;
+				return param.id != param_id;
 			});
 
 			_this.setState({params: params});

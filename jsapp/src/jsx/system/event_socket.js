@@ -35,6 +35,7 @@ import T from 'i18n-react';
 import { Modal, ButtonGroup, ButtonToolbar, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Row, Col } from 'react-bootstrap';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek';
 import { xFetchJSON } from '../libs/xtools';
+import verto from '../verto/verto';
 
 class SettingEventSocket extends React.Component {
 	constructor(props) {
@@ -104,7 +105,7 @@ class SettingEventSocket extends React.Component {
 	}
 
 	handleReload() {
-		fsAPI("reload", "mod_event_socket", function(r) {
+		verto.fsAPI("reload", "mod_event_socket", function(r) {
 			notify(<T.span text="Module reloaded"/>);
 		});
 	}
@@ -112,7 +113,6 @@ class SettingEventSocket extends React.Component {
 	render() {
 		const _this = this;
 		let hand = {cursor : "pointer"};
-
 
 		const rows = this.state.rows.map((row) => {
 			const enabled_style = dbfalse(row.disabled) ? "success" : "default";
@@ -134,7 +134,6 @@ class SettingEventSocket extends React.Component {
 				</Col>
 			</Row>
 		});
-
 
 		return <div>
 			<ButtonToolbar className="pull-right">
