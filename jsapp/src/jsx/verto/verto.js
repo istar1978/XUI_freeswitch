@@ -105,7 +105,7 @@ class Verto {
 			});
 		};
 
-		this.connect();
+		// this.connect();
 	}
 
 	static init(obj, runtime) {
