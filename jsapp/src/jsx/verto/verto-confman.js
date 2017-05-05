@@ -58,6 +58,14 @@ export default class VertoConfMan {
 			}
 		});
 
+		verto.subscribe(conf.params.laData.infoChannel, {
+			handler: function(v, e) {
+				if (typeof(conf.params.infoCallback) === "function") {
+					conf.params.infoCallback(v,e);
+				}
+			}
+		});
+
 		verto.subscribe(this.params.laData.chatChannel, {
 			handler: function(v, e) {
 				if (typeof(_this.params.chatCallback) === "function") {
@@ -120,6 +128,11 @@ export default class VertoConfMan {
 		if (this.params.laData.chatChannel) {
 			this.verto.unsubscribe(this.params.laData.chatChannel);
 		}
+
+		if (conf.params.laData.infoChannel) {
+			conf.verto.unsubscribe(conf.params.laData.infoChannel);
+		}
+
 		if (this.params.laData.modChannel) {
 			this.verto.unsubscribe(this.params.laData.modChannel);
 		}

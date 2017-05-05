@@ -1068,6 +1068,8 @@ export default class VertoRTC {
 
 }
 
+// window.VertoRTC = VertoRTC;
+
 /* For Emacs:
  * Local Variables:
  * mode:c

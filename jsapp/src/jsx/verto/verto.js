@@ -104,6 +104,8 @@ class Verto {
 				return v.toString(16);
 			});
 		};
+
+		this.connect();
 	}
 
 	static init(obj, runtime) {
@@ -134,7 +136,7 @@ class Verto {
 		if (!params) params = this.params;
 		if (!callbacks) callbacks = this.callbacks;
 
-		if (!params.socketUrl) {
+		if (!params || !params.socketUrl) {
 			return;
 		}
 
@@ -162,7 +164,6 @@ class Verto {
 				o.call('login', {});
 			},
 			onWSLogin: function(verto, success) {
-				// fire_event("verto-login", success);
 			},
 			onWSClose: function(verto, success) {
 				_this.purge();
@@ -866,63 +867,76 @@ class Verto {
 		var self = this;
 		console.info("enumerating devices");
 		var aud_in = [], aud_out = [], vid = [];
+		var has_video = 0, has_audio = 0;
+		var Xstream;
 
-		if ((!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) && MediaStreamTrack.getSources) {
-			MediaStreamTrack.getSources(function (media_sources) {
-				for (var i = 0; i < media_sources.length; i++) {
-					if (media_sources[i].kind == 'video') {
-						vid.push(media_sources[i]);
-					} else {
-						aud_in.push(media_sources[i]);
-					}
+		function gotDevices(deviceInfos) {
+			// Handles being called several times to update labels. Preserve values.
+			for (var i = 0; i !== deviceInfos.length; ++i) {
+				var deviceInfo = deviceInfos[i];
+				var text = "";
+
+				console.log(deviceInfo);
+				console.log(deviceInfo.kind + ": " + deviceInfo.label + " id = " + deviceInfo.deviceId);
+
+				if (deviceInfo.kind === 'audioinput') {
+					text = deviceInfo.label || 'microphone ' + (aud_in.length + 1);
+					aud_in.push({id: deviceInfo.deviceId, kind: "audio_in", label: text});
+				} else if (deviceInfo.kind === 'audiooutput') {
+					text = deviceInfo.label || 'speaker ' + (aud_out.length + 1);
+					aud_out.push({id: deviceInfo.deviceId, kind: "audio_out", label: text});
+				} else if (deviceInfo.kind === 'videoinput') {
+					text = deviceInfo.label || 'camera ' + (vid.length + 1);
+					vid.push({id: deviceInfo.deviceId, kind: "video", label: text});
+				} else {
+					console.log('Some other kind of source/device: ', deviceInfo);
 				}
-
-				self.videoDevices = vid;
-				self.audioInDevices = aud_in;
-
-				console.info("Audio Devices", self.audioInDevices);
-				console.info("Video Devices", self.videoDevices);
-				runtime(true);
-			});
-		} else {
-			/* of course it's a totally different API CALL with different element names for the same exact thing */
-
-			if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-				console.log("enumerateDevices() not supported.");
-				return;
 			}
 
-			// List cameras and microphones.
-			navigator.mediaDevices.enumerateDevices().then(function(devices) {
-				devices.forEach(function(device) {
-					console.log('device', device);
+			self.videoDevices = vid;
+			self.audioInDevices = aud_in;
+			self.audioOutDevices = aud_out;
 
-					console.log(device.kind + ": " + device.label +
-						" id = " + device.deviceId);
+			console.info("Audio IN Devices", self.audioInDevices);
+			console.info("Audio Out Devices", self.audioOutDevices);
+			console.info("Video Devices", self.videoDevices);
 
-					if (device.kind === "videoinput") {
-						vid.push({id: device.deviceId, kind: "video", label: device.label});
-					} else if (device.kind === "audioinput") {
-						aud_in.push({id: device.deviceId, kind: "audio_in", label: device.label});
-					} else if (device.kind === "audiooutput") {
-						aud_out.push({id: device.deviceId, kind: "audio_out", label: device.label});
-					}
-				});
+			if (Xstream) {
+				Xstream.getTracks().forEach(function(track) {track.stop();});
+			}
 
-				self.videoDevices = vid;
-				self.audioInDevices = aud_in;
-				self.audioOutDevices = aud_out;
-
-				console.info("Audio IN Devices", self.audioInDevices);
-				console.info("Audio Out Devices", self.audioOutDevices);
-				console.info("Video Devices", self.videoDevices);
+			if (runtime) {
 				runtime(true);
-
-			}).catch(function(err) {
-				console.log(" Device Enumeration ERROR: " + err.name + ": " + err.message);
-				runtime(false);
-			});
+			}
 		}
+
+		function handleError(error) {
+			console.log('device enumeration error: ', error);
+			if (runtime) runtime(false);
+		}
+
+		function checkTypes(devs) {
+			for (var i = 0; i !== devs.length; ++i) {
+
+				if (devs[i].kind === 'audioinput') {
+					has_audio++;
+				} else if (devs[i].kind === 'videoinput') {
+					has_video++;
+				}
+			}
+
+			navigator.getUserMedia({
+					audio: (has_audio > 0 ? true : false),
+					video: (has_video > 0 ? true : false)
+				}, function(stream) {
+					Xstream = stream;
+					navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+				}, function(err) {
+					console.log("The following error occurred: " + err.name);
+				});
+		}
+
+		navigator.mediaDevices.enumerateDevices().then(checkTypes).catch(handleError);
 	}
 
 	static refreshDevices(runtime) {
