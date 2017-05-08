@@ -254,7 +254,7 @@ class GatewayPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: [], danger: false, formShow: false};
+		this.state = {errmsg: '', gw: {}, edit: false, params:[], sip_profiles: [], sip_profile: [], danger: false, formShow: false, class_name: ''};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -265,6 +265,7 @@ class GatewayPage extends React.Component {
 		this.handleToggleParam = this.handleToggleParam.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
 		this.handleChangeValueK = this.handleChangeValueK.bind(this);
+		this.handleFSEvent = this.handleFSEvent.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -301,6 +302,12 @@ class GatewayPage extends React.Component {
 		};
 	}
 
+	componentWillUnmount() {
+		verto.unsubscribe("FSevent.custom::sofia::gateway_delete");
+		verto.unsubscribe("FSevent.custom::sofia::gateway_add");
+		verto.unsubscribe("FSevent.custom::sofia::gateway_state");
+	}
+
 	componentDidMount() {
 		var _this = this;
 
@@ -326,6 +333,27 @@ class GatewayPage extends React.Component {
 		xFetchJSON( "/api/sip_profiles").then((data) => {
 			_this.setState({sip_profiles: data});
 		});
+
+		verto.subscribe("FSevent.custom::sofia::gateway_delete", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.custom::sofia::gateway_add", {handler: this.handleFSEvent});
+		verto.subscribe("FSevent.custom::sofia::gateway_state", {handler: this.handleFSEvent});
+	}
+
+	handleFSEvent(v, e) {
+		console.log('FSevent', e);
+		let class_name = "";
+
+		if (e.eventChannel == "FSevent.custom::sofia::gateway_add") {
+			console.log("gateway_add", e.data.Gateway);
+			class_name = "NOREG"
+		} else if (e.eventChannel == "FSevent.custom::sofia::gateway_delete") {
+			console.log("gateway_delete", e.data.Gateway);
+			class_name = "NONE"
+		} else if (e.eventChannel == "FSevent.custom::sofia::gateway_state") {
+			class_name = e.data.State;
+		}
+
+		this.setState({class_name: class_name});
 	}
 
 	handleSort(e){
@@ -550,7 +578,7 @@ class GatewayPage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1><T.span text="Gateway"/><small>&nbsp;{gw.name} {gw.username}</small></h1>
+			<h1><T.span text="Gateway"/><small className={this.state.class_name}>&nbsp;{gw.name} {gw.username}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newGatewayForm">

@@ -119,9 +119,16 @@ div.disabled {
 tr.NONE {color: #DDD !important;}
 tr.REGED {color: green !important;}
 tr.NOREG {color: black !important;}
-tr.TRYING{color: yellow !important;}
+tr.TRYING{color: #e69200 !important;}
 tr.FAIL_WAIT{color: #770 !important;}
 tr.FAILED{color: red !important;}
+
+.NONE {color: #DDD !important;}
+.REGED {color: green !important;}
+.NOREG {color: black !important;}
+.TRYING{color: #e69200 !important;}
+.FAIL_WAIT{color: #770 !important;}
+.FAILED{color: red !important;}
 
 tr.RINGING {color: yellow !important;}
 tr.ACTIVE {color: red !important;}
