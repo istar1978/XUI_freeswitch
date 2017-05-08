@@ -65,7 +65,7 @@ get('/', function(params)
 		cond = "bridged_number is null"
 	else
 		if not startDate then
-			if not last then last = "7" end
+			if (not last or last == 'undefined') then last = 7 end
 			local theTime = os.time()
 			local theTargetTime = theTime - last*24*60*60
 			cond = " strftime('%s', start_epoch) - " .. theTargetTime .. " > 0"
