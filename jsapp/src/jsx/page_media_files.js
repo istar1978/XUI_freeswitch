@@ -395,17 +395,17 @@ class MediaFilePage extends React.Component {
 			console.log(src);
 		};
 
-		let picFormat = "jpg" || "png" || "jpeg";
-		let audioFormat = "mp3" || "wav";
-		let videoFormat = "mp4";
 		switch (mfile.ext) {
-			case picFormat:
+			case "jpg":
+			case "png":
+			case "jpeg":
 				var adiv = <img src= {src}/>
 				break;
-			case audioFormat:
+			case "mp3":
+			case "wav":
 				var adiv = <audio src={src} controls="controls"/>
 				break;
-			case videoFormat:
+			case "mp4":
 				var adiv = <video src={src} controls="controls"/>
 				break;
 		}
