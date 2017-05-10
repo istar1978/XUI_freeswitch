@@ -601,7 +601,11 @@ CREATE TABLE wechat_users (
 	province VARCHAR,
 	city VARCHAR,
 	country VARCHAR,
+	language VARCHAR,
 	privilege VARCHAR,
+
+	wechat_type VARCHAR, -- html | wx (small program)
+
 	watermark_appid VARCHAR,
 	watermark_timestamp VARCHAR,
 
@@ -609,6 +613,9 @@ CREATE TABLE wechat_users (
 	access_token VARCHAR, -- jsapi access_token
 	refresh_token VARCHAR,
 	token_expire INTEGER,
+
+	session_key VARCHAR,  -- wx session key
+	session_3rd VARCHAR,  -- 3rd_session
 
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),

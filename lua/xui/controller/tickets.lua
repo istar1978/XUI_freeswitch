@@ -39,6 +39,9 @@ require 'xtra_config'
 require 'utils'
 xdb.bind(xtra.dbh)
 
+xtra.start_session()
+xtra.require_login()
+
 get('/', function(params)
 	n, orders = xdb.find_all("tickets", "id desc")
 	if (n > 0) then
@@ -63,7 +66,7 @@ get('/:id/comments', function(params)
 	for i, v in pairs(comments) do
 		local n, users = xdb.find_by_cond("wechat_users", {user_id = v.user_id})
 		local user = users[1]
-		v.avatar_url = user.headimgurl
+		-- v.avatar_url = user.headimgurl
 		table.insert(comments_res,v)
 	end
 	if (n > 0) then
@@ -128,7 +131,10 @@ post('/:id/comments', function(params)
 	ticket = {}
 	ticket.id = params.id
 	ticket.current_user_id = params.request.current_user_id
-	xdb.update("tickets", ticket)
+	if ticket.current_user_id then
+		xdb.update("tickets", ticket)
+	end
+
 	local comment = {}
 	-- comment = params.request
 	comment.ticket_id = params.id
@@ -141,8 +147,9 @@ post('/:id/comments', function(params)
 	member.ticket_id = params.id
 	member.dealname = params.request.dealname
 	member.content = params.request.content
-	local n, users = xdb.find_by_cond("wechat_users", {user_id = params.request.current_user_id})
-	local user = users[1]
+
+	local user = xdb.find("wechat_users", xtra.session.user_id)
+--[[
 	ret.avatar_url = user.headimgurl
 	local openid = user.openid
 	local wechat = m_dict.get_obj('WECHAT/xyt')
@@ -174,6 +181,10 @@ post('/:id/comments', function(params)
 	-- local json_text = '{"data":{"fist":{"color":"#173177","value":"啦啦啦"},"keyword1":{"color":"#173177","value":"啦啦啦"},"keyword2":{"color":"#173177","value":"哈哈"},"keyword3":{"color":"#173177","value":"3"},"remark":{"color":"#173177","value":"哇哇"}},"template_id":"7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc","touser":"ojc83wtKp0PlAeZ4BjbJAU0KL7Wo","url":"http://weixin.qq.com"}'
 	json_text = utils.json_encode(ajson)
 	xwechat.send_template_msg('sipsip', json_text)
+
+--]]
+
+
 	if ret then
 		return ret
 	else

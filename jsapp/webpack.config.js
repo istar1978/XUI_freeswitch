@@ -5,11 +5,15 @@ var WebpackMd5Hash = require('webpack-md5-hash');
 var config = {
     entry: {
         "index": ["./src/jsx/index.js","./src/css/xui.css"],
+        "wechat": "./src/wechat/index.js"
     },
+
     output: {
         path: '../www/assets',
-        filename: 'js/jsx/[name].[chunkhash:8].js'
+        filename: 'js/jsx/[name].[chunkhash:8].js',
+        publicPath: '/assets'
     },
+
     module: {
         loaders: [{
             test: /\.css$/,
@@ -33,9 +37,11 @@ var config = {
             exclude: /node_modules/
         }]
     },
+
     performance: {
         hints: false
     },
+
     plugins: [
         new HtmlWebpackPlugin({
             filename: '../index.html',
@@ -43,8 +49,21 @@ var config = {
             inject: true,
             chunks: ['index']
         }),
+
+        new HtmlWebpackPlugin({
+            filename: '../../lua/xui/view/wechat/tickets1.html',
+            template: './tickets.html',
+            inject: true,
+            chunks: ['wechat'],
+            output: {
+                publicPath: '/assets'
+            }
+        }),
+
         new WebpackMd5Hash(),
+
         new ExtractTextPlugin("css/xui.[contenthash:8].css"),
     ]
 };
+
 module.exports = config;

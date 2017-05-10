@@ -4,12 +4,16 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackMd5Hash = require('webpack-md5-hash');
 var config = {
     entry: {
-         "index": ["./src/jsx/index.js","./src/css/xui.css"],
+        "index": ["./src/jsx/index.js","./src/css/xui.css"],
+        "wechat": "./src/wechat/index.js"
     },
+
     output: {
         path: '../www/assets',
-        filename: 'js/jsx/[name].[chunkhash:8].js'
+        filename: 'js/jsx/[name].[chunkhash:8].js',
+        publicPath: '/assets'
     },
+
     module: {
         loaders: [{
             test: /\.css$/,
@@ -33,9 +37,11 @@ var config = {
             exclude: /node_modules/
         }]
     },
+
     performance: {
         hints: false
     },
+
     plugins: [
         new HtmlWebpackPlugin({
             filename: '../index.html',
@@ -43,13 +49,27 @@ var config = {
             inject: true,
             chunks: ['index']
         }),
+
+        new HtmlWebpackPlugin({
+            filename: '../../lua/xui/view/wechat/tickets1.html',
+            template: './tickets.html',
+            inject: true,
+            chunks: ['wechat'],
+            output: {
+                publicPath: '/assets'
+            }
+        }),
+
         new WebpackMd5Hash(),
+
         new ExtractTextPlugin("./css/xui.[chunkhash:8].css"),
+
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
+
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false,
@@ -60,4 +80,5 @@ var config = {
         }),
     ],
 };
+
 module.exports = config;

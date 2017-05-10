@@ -81,6 +81,61 @@ get('/:realm/setting', function(params)
 	return {"render", "wechat/setting.html", {users = users[1]}}
 end)
 
+get('/:realm/tickets', function(params)
+	print(env:serialize())
+	print(serialize(params))
+	content_type("text/html")
+	realm = params.realm
+	code = env:getHeader("code")
+	wechat = m_dict.get_obj('WECHAT/' .. realm)
+	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
+	-- print(ret)
+	jret = utils.json_decode(ret)
+	if jret.openid then
+		xtra.save_session("openid", jret.openid)
+		wechat_user = xdb.find_one("wechat_users", {openid = jret.openid})
+	else -- on page refresh, we got a code already used error
+		wechat_user = xdb.find_one("wechat_users", {code = code})
+	end
+	if wechat_user then
+		-- we already have the wechat userinfo in our db
+		local u = wechat_user
+		-- print(serialize(u))
+		if jret.openid then -- catch the code for later use, e.g. refresh
+			user1 = {
+				id = u.id,
+				code = code
+			}
+
+			xdb.update("wechat_users", user1)
+		end
+
+
+		if u.user_id and not (u.user_id == '') then
+			-- tickets = xdb.find("tickets",params.id)
+			-- n, comments = xdb.find_by_cond("ticket_comments", {ticket_id = tickets.id}, "created_epoch DESC")
+			comments = {}
+			return {"render", "wechat/tickets1.html", {tickets = tickets, tids = params.id, comments = comments, nickname = wechat_user.nickname}}
+		else
+			return {"render", "wechat/login.html", u}
+		end
+	else
+		-- find the wechat userinfo and save to our db
+		ret = xwechat.get_sns_userinfo(jret.openid, jret.access_token)
+		-- print(ret)
+		user_info = utils.json_decode(ret)
+		user_info.privilege = nil
+		user_info.language = nil
+		wechat_user_id = xdb.create_return_id("wechat_users", user_info)
+		wechat_user = {
+			id = wechat_user_id,
+			nickname = user_info.nickname,
+			headimgurl = user_info.headimgurl
+		}
+		return {"render", "wechat/login.html", wechat_user}
+	end
+end)
+
 get('/:realm/tickets/:id', function(params)
 	print(env:serialize())
 	print(serialize(params))
@@ -152,6 +207,10 @@ post('/:realm/tickets', function(params) -- login
 			user_id = user.id
 		}
 		xdb.update("wechat_users", wechat_users)
+
+		-- xtra.start_session()
+		xtra.save_session("user_id", user.id)
+
 		redirect_uri = "http://shop.x-y-t.cn/setting" -- TODO: hardcoded
 		-- redirect_uri = xwechat.redirect_uri(appid, redirect_uri, "200")
 		redirect(redirect_uri)
@@ -161,10 +220,55 @@ post('/:realm/link', function(params)
 	print(env:serialize())
 	print(serialize(params))
 	local cond = {}
-	cond.extn = request.username
-	cond.password = request.password
+
+	cond.extn = params.request.username
+	cond.password = params.request.password
+
 	user = xdb.find_one("users", cond)
+
+	wechat = m_dict.get_obj('WECHAT/' .. params.realm)
+	session = xwechat.get_wx_openid(wechat.APPID, wechat.APPSEC, params.request.code)
+
+	print("session:\n")
+	session = utils.json_decode(session)
+	print(serialize(session))
+
+	if session.session_key then
+		session_3rd = xtra.create_uuid()
+		print('session_3rd: ' .. session_3rd)
+
+		obj = {
+			user_id = user.id,
+			session_3rd = session_3rd,
+			session_key = session.session_key,
+			openid = session.openid,
+			nickname = params.request.userInfo.nickName,
+			sex = params.request.userInfo.gender,
+			language = params.request.userInfo.language,
+			city = params.request.userInfo.city,
+			province = params.request.userInfo.province,
+			country = params.request.userInfo.country
+		}
+
+		xdb.create("wechat_users", obj)
+
+		print("obj\n")
+		print(serialize(obj))
+
+		xtra.session_uuid = session_3rd
+		xtra.save_session("user_id", user.id)
+
+		return session_3rd;
+	end
+
 	return 200
+end)
+
+post('/:realm/wxsession', function(params)
+	wechat = m_dict.get_obj('WECHAT/' .. realm)
+	session = xwechat.get_wx_openid(wechat.APPID, wechat.APPSEC, params.code)
+	print(serialize(session))
+	return "KEY"
 end)
 
 get('/:realm', function(params)
