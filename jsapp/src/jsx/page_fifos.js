@@ -314,45 +314,45 @@ class FifoInfo extends React.Component {
 			<Form horizontal id="editFifoForm">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={9}><EditControl  name="name" edit={_this.state.editable} defaultValue={frow.name}/></Col>
+					<Col sm={10}><EditControl  name="name" edit={_this.state.editable} defaultValue={frow.name}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formDescription">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
-					<Col sm={9}><EditControl  name="description" edit={_this.state.editable} defaultValue={frow.description}/></Col>
+					<Col sm={10}><EditControl  name="description" edit={_this.state.editable} defaultValue={frow.description}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formImportance">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Importance" /></Col>
-					<Col sm={9}><EditControl name="importance" edit={_this.state.editable} defaultValue={frow.importance}/></Col>
+					<Col sm={10}><EditControl name="importance" edit={_this.state.editable} defaultValue={frow.importance}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formOPC">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Per Cycle" /></Col>
-					<Col sm={9}><EditControl name="outbound_per_cycle" edit={_this.state.editable} defaultValue={frow.outbound_per_cycle}/></Col>
+					<Col sm={10}><EditControl name="outbound_per_cycle" edit={_this.state.editable} defaultValue={frow.outbound_per_cycle}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formOPCM">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Per Cycle Min" /></Col>
-					<Col sm={9}><EditControl name="outbound_per_cycle_min" edit={_this.state.editable} defaultValue={frow.outbound_per_cycle_min}/></Col>
+					<Col sm={10}><EditControl name="outbound_per_cycle_min" edit={_this.state.editable} defaultValue={frow.outbound_per_cycle_min}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formOName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Name" /></Col>
-					<Col sm={9}><EditControl name="outbound_name" edit={_this.state.editable} defaultValue={frow.outbound_name}/></Col>
+					<Col sm={10}><EditControl name="outbound_name" edit={_this.state.editable} defaultValue={frow.outbound_name}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formOStrategy">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Strategy" /></Col>
-					<Col sm={9}><EditControl name="outbound_strategy" edit={_this.state.editable} defaultValue={frow.outbound_strategy}/></Col>
+					<Col sm={10}><EditControl name="outbound_strategy" edit={_this.state.editable} defaultValue={frow.outbound_strategy}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formOPriority">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="OB Priority" /></Col>
-					<Col sm={9}><EditControl name="outbound_priority" edit={_this.state.editable} defaultValue={frow.outbound_priority}/></Col>
+					<Col sm={10}><EditControl name="outbound_priority" edit={_this.state.editable} defaultValue={frow.outbound_priority}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formRetryDelay">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Retry Delay" /></Col>
-					<Col sm={9}><EditControl name="retry_delay" edit={_this.state.editable} defaultValue={frow.retry_delay}/></Col>
+					<Col sm={10}><EditControl name="retry_delay" edit={_this.state.editable} defaultValue={frow.retry_delay}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formAutoRecord">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Auto Record" /></Col>
-					<Col sm={9} style={colEdit}> <EditControl name="record_template" defaultValue={autoRecord}/></Col>
-					<Col sm={9} style={colCheck}>
+					<Col sm={10} style={colEdit}> <EditControl name="record_template" defaultValue={autoRecord}/></Col>
+					<Col sm={10} style={colCheck}>
 						<Checkbox name="auto_record" value="auto_record" inline onChange={_this.handleChecked} checked={_this.stateifChecked}>
 							<T.span text="Auto Record"/>
 						</Checkbox>
@@ -361,7 +361,7 @@ class FifoInfo extends React.Component {
 
 					<FormGroup controlId="formRecordTemplate">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Record Template" /></Col>
-						<Col sm={9}><EditControl name="record_template" edit={_this.state.editable} defaultValue={frow.record_template}/></Col>
+						<Col sm={10}><EditControl name="record_template" edit={_this.state.editable} defaultValue={frow.record_template}/></Col>
 					</FormGroup>
 				</Form>
 			</div>;
@@ -466,26 +466,26 @@ class NewFifo extends React.Component {
 			<Modal.Body>
 				<Form horizontal id="newFifoForm">
 					<FormGroup controlId="formName">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={7}><FormControl type="input" name="name" placeholder="name"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
+						<Col sm={10}><FormControl type="input" name="name" placeholder="name"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formDescription">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="Description" /></Col>
-						<Col sm={7}><FormControl type="input"  name="description" placeholder="description"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Description" /></Col>
+						<Col sm={10}><FormControl type="input"  name="description" placeholder="description"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formImportance">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="Importance" /></Col>
-						<Col sm={7}><FormControl type="input" name="importance" defaultValue="0"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="Importance" /></Col>
+						<Col sm={10}><FormControl type="input" name="importance" defaultValue="0"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPC">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle" defaultValue="1"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="OB Per Cycle" /></Col>
+						<Col sm={10}><FormControl type="input" name="outbound_per_cycle" defaultValue="1"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formOPCM">
-						<Col componentClass={ControlLabel} sm={4}><T.span text="OB Per Cycle Min" /></Col>
-						<Col sm={7}><FormControl type="input" name="outbound_per_cycle_min" defaultValue="1"/></Col>
+						<Col componentClass={ControlLabel} sm={2}><T.span text="OB Per Cycle Min" /></Col>
+						<Col sm={10}><FormControl type="input" name="outbound_per_cycle_min" defaultValue="1"/></Col>
 					</FormGroup>
-					<Col sm={4}></Col>
+					<Col sm={2}></Col>
 					<Checkbox name="auto_record" value="auto_record" inline onChange={_this.handleChecked}>
 						<T.span text="Auto Record" />
 					</Checkbox>
