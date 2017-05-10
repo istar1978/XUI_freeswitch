@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>全部工单</title>
+	<script src="//cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<style>
+	body{
+		font-family: '微软雅黑';
+		background-color: #eee;
+	}
+	.all_num{
+		width:90%;
+		margin:0 auto;
+	}
+	.all_num #left{
+		width:80%;
+		height:30px;
+		line-height:30px;
+		float:left;
+		display:inline;
+	}
+	.all_num #right{
+		background-color:green;
+		color:white;
+		width:18%;
+		height:30px;
+		text-align:center;
+		line-height:30px;
+		float:right;
+		display:inline;
+	}
+	.all_num #cb{
+		width:10%;
+		float:left;
+		display:inline;
+	}
+	.all_num #ca{
+		width:90%;
+		float:right;
+		display:inline;
+	}
+	.hb{
+		float:right;
+		margin-right:10%;
+		color:gray;
+	}
+</style>
+<body>
+	<h1 style="margin-left:10%;">全部工单</h1>
+	<hr/>
+{% for ticket in tickets %}
+	<div class="all_num">
+	<input id="cb" name="cb" type="checkbox" value="{{ ticket.id }}" />
+	<a id="ca" href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fwe%2f{{ ticket.id }}&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect">
+		<span id="left">{{ ticket.cid_number }}</span>
+		<span id="right">{{ ticket.status }}</span>
+		<div style="clear:both;"></div>
+	</a>
+	</div>
+	<div style="clear:both;"></div>
+	<hr/>
+{% endfor %}
+<div class="hb">
+	合并工单
+</div>
+<div style="width:100%;height:50px;"></div>
+<div style="width:100%;height:50px;background-color:white;position:fixed;bottom:0px;">
+	<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fwe%2f1&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" style="display:block;width:33.3333%;height:100%;text-align:center;line-height:50px;float:left;">我的</a>
+	<a href="http://shop.x-y-t.cn/all" style="display:block;width:33.3333%;height:100%;text-align:center;line-height:50px;float:left;background-color:gray;color:white;">全部</a>
+	<a href="http://shop.x-y-t.cn/setting" style="display:block;width:33.3333%;height:100%;text-align:center;line-height:50px;float:left;">设置</a>
+	<a style="clear:both;"></div>
+</div>
+<script type="text/javascript">
+	$(".hb").click(function(){
+		var arr = []
+		$("input[name='cb']:checkbox:checked").each(function(){ 
+			arr.push($(this).val())
+		})
+		var datas = JSON.stringify(arr);
+		$.ajax({
+			url:"http://shop.x-y-t.cn/hb",
+			type:"post",
+			dataType:"json",
+			data:{"tids":datas},
+			success:function(data){
+				window.location.href = 'http://shop.x-y-t.cn/all';
+			}
+		});
+	});
+</script>
+</body>
+</html>

@@ -35,7 +35,7 @@ require 'xdb'
 xdb.bind(xtra.dbh)
 require 'xwechat'
 require 'm_dict'
-
+xtra.start_session();
 
 get('/xswitch/tickets', function(params)
 
@@ -63,75 +63,44 @@ get('/anyway/:realm', function(params)
 	return 	env:getHeader("echostr")
 end)
 
-get('/view', function(params)
+get('/:realm/all', function(params)
 	content_type("text/html")
-
-	print(env:serialize())
-
-	wechat = m_dict.get_obj('WECHAT')
-
-	ret = xwechat.get_js_access_token('sipsip', wechat.APPID, wechat.APPSEC, env:getHeader("code"))
-
-	jret = utils.json_decode(ret)
-
-	n, user = xdb.find_by_cond("users", {openid = jret.openid})
-	local u = user[1]
-	if(n > 0) then
-		return {"render", "users.html", {name = u.name,password = u.password}}
-	else
-		return {"render", "jstest.html", {openid = jret.openid}}
-	end
-
+	local openid = xtra.session.openid
+	sql = "select a.* from tickets as a left join wechat_users as b on a.current_user_id = b.user_id where b.openid = '" .. openid .. "'"
+	n, tickets = xdb.find_by_sql(sql)
+	freeswitch.consoleLog("ERR",utils.json_encode(tickets))
+	return {"render", "wechat/all_tickets.html", {tickets = tickets}}
 end)
 
-post('/bind', function(params)
-	content_type("application/json")
-	return '{"res":' .. params.request.username .. '}'
+get('/:realm/setting', function(params)
+	content_type("text/html")
+	local openid = xtra.session.openid
+	sql = "select a.id,a.headimgurl,a.nickname,b.extn,b.password from wechat_users as a left join users as b on a.user_id = b.id where a.openid = '" .. openid .. "'"
+	n, users = xdb.find_by_sql(sql)
+	freeswitch.consoleLog("ERR",utils.json_encode(users))
+	return {"render", "wechat/setting.html", {users = users[1]}}
 end)
 
-post('/jstest', function(params)
-	login = env:getHeader("login")
-	pass = env:getHeader("pass")
-	u_openid = env:getHeader("openid")
-
-	local users = {}
-	users.name = login
-	users.password = pass
-	n, user = xdb.find_by_cond("users", users)
-	local u = user[1]
-	if (n > 0) then
-		xdb.update_by_cond("users",{id = u.id}, {openid = u_openid})
-		redirect("http://www.baidu.com")
-	else
-		redirect("http://www.360.com")
-	end
-end)
-
-get('/:realm/tickets', function(params)
+get('/:realm/tickets/:id', function(params)
 	print(env:serialize())
 	print(serialize(params))
 	content_type("text/html")
-
 	realm = params.realm
 	code = env:getHeader("code")
-
 	wechat = m_dict.get_obj('WECHAT/' .. realm)
-
 	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
 	-- print(ret)
 	jret = utils.json_decode(ret)
-
 	if jret.openid then
+		xtra.save_session("openid", jret.openid)
 		wechat_user = xdb.find_one("wechat_users", {openid = jret.openid})
 	else -- on page refresh, we got a code already used error
 		wechat_user = xdb.find_one("wechat_users", {code = code})
 	end
-
 	if wechat_user then
 		-- we already have the wechat userinfo in our db
 		local u = wechat_user
 		-- print(serialize(u))
-
 		if jret.openid then -- catch the code for later use, e.g. refresh
 			user1 = {
 				id = u.id,
@@ -142,9 +111,9 @@ get('/:realm/tickets', function(params)
 		end
 
 		if u.user_id and not (u.user_id == '') then
-			n, tickets = xdb.find_all("tickets")
-
-			return {"render", "wechat/tickets.html", {tickets = tickets}}
+			tickets = xdb.find("tickets",params.id)
+			n, comments = xdb.find_by_cond("ticket_comments", {ticket_id = tickets.id}, "created_epoch DESC")
+			return {"render", "wechat/tickets.html", {tickets = tickets, tids = params.id, comments = comments, nickname = wechat_user.nickname}}
 		else
 			return {"render", "wechat/login.html", u}
 		end
@@ -177,33 +146,24 @@ post('/:realm/tickets', function(params) -- login
 
 	n, users = xdb.find_by_cond("users", {extn = login, password = pass})
 
-	if n > 0 then
 		user = users[1]
 		wechat_users = {
 			id = wechat_user_id,
 			user_id = user.id
 		}
 		xdb.update("wechat_users", wechat_users)
-		redirect_uri = "http%3A//shop.x-y-t.cn/seven" -- TODO: hardcoded
-		redirect_uri = xwechat.redirect_uri(appid, redirect_uri, "200")
+		redirect_uri = "http://shop.x-y-t.cn/setting" -- TODO: hardcoded
+		-- redirect_uri = xwechat.redirect_uri(appid, redirect_uri, "200")
 		redirect(redirect_uri)
-	else
-		redirect_uri = "http%3A//shop.x-y-t.cn/seven" -- TODO: hardcoded
-		redirect_uri = xwechat.redirect_uri(appid, redirect_uri, "403")
-		redirect(recirect_uri)
-	end
 end)
 
 post('/:realm/link', function(params)
 	print(env:serialize())
 	print(serialize(params))
-
 	local cond = {}
 	cond.extn = request.username
 	cond.password = request.password
-
 	user = xdb.find_one("users", cond)
-
 	return 200
 end)
 

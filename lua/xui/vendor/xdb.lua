@@ -179,7 +179,7 @@ function xdb.find(t, id)
 	xdb.dbh:query(sql, function(row)
 		r = row
 	end)
-
+-- freeswitch.consoleLog("ERR", utils.json_encode(r))
 	return r
 end
 
