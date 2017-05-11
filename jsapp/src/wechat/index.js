@@ -51,36 +51,41 @@ class Home extends React.Component {
 	render() {
 		const _this = this;
 		const ticket = this.state.ticket;
-
 		const comments = this.state.ticket_comments.map((comment) => {
-			return <li key={comment.id}>{comment.created_at} {comment.content}</li>
+			return <a className="weui-media-box weui-media-box_appmsg">
+					<div className="weui-media-box__hd">
+						<img className="weui-media-box__thumb" src="{comment.avatar_url}" alt=""/>
+					</div>
+					<div className="weui-media-box__bd">
+						<h4 className="weui-media-box__title">{comment.user_name}：</h4>
+						<p className="weui-media-box__desc">{comment.content}</p>
+					</div>
+				</a>
 		})
-
-		return <div><h1>小樱桃工单</h1>
-
-			{current_ticket_id}
-
-			{ticket.user_name}
-			{ticket.subject}
-			{ticket.content}
-
-
-			<br/>
-
+		return <div>
+			<div className="weui-cells__title">
+			<div className="weui-cell__bd">{ticket.subject}</div>
+			<span className="weui-cell__ft">
+				<audio src="">
+				</audio>
+			</span>
+			</div>
 			<div className="weui-cells weui-cells_form">
 				<div className="weui-cell">
-					<textarea className="weui-textarea" placeholder="请输入内容" onChange={this.handleInput.bind(this)} rows="3"/>
+					<div className="weui-cell__bd">
+						<textarea className="weui-textarea" placeholder="请输入内容" onChange={this.handleInput.bind(this)} rows="3"></textarea>
+					</div>
 				</div>
-				<div className="weui-cell">
-					<input type="button" value="提交" className="weui-btn weui-btn_primary" onClick={this.handleSubmit.bind(this)}/>
-				</div>
-
 			</div>
-
-			comments<br/>
-
+		<div className="weui-btn-area" onClick={this.handleSubmit.bind(this)}>
+			<a className="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">提交</a>
+		</div>
+		<div className="weui-panel weui-panel_access">
+			<div className="weui-panel__hd">工单详情</div>
+			<div className="weui-panel__bd">
 			{comments}
-
+			</div>
+		</div>
 		</div>
 	}
 
@@ -95,7 +100,7 @@ class Tickets extends React.Component {
 	componentDidMount() {
 		var _this = this;
 
-		xFetchJSON("/api/tickets/").then((data) => {
+		xFetchJSON("/api/wechat/xyt/all").then((data) => {
 			console.log("ticket", data);
 			_this.setState({tickets: data});
 		}).catch((e) => {
@@ -104,13 +109,32 @@ class Tickets extends React.Component {
 	}
 
 	render() {
+		var _this = this;
 		const tickets = this.state.tickets.map((ticket) => {
-			return <li>{ticket.content}</li>
+			var status = '';
+			if(ticket.status == 1){
+				status = '未完成';
+			}else{
+				status = '已完成';
+			}
+			return <div className="weui-panel__bd">
+					<div className="weui-media-box weui-media-box_text">
+						<h4 className="weui-media-box__title">{ticket.subject}</h4>
+						<p className="weui-media-box__desc">{ticket.content}</p>
+						<ul className="weui-media-box__info">
+							<li className="weui-media-box__info__meta">来电:{ticket.cid_number}</li>
+							<li className="weui-media-box__info__meta">时间:{ticket.created_epoch}</li>
+							<li className="weui-media-box__info__meta weui-media-box__info__meta_extra">状态:{status}</li>
+						</ul>
+					</div>
+				</div>
 		});
-
 		console.log("tickets", tickets);
-
-		return <div>{tickets}</div>
+		return <div className="weui-panel">
+				<div className="weui-panel__hd">全部工单</div>
+					{tickets}
+				</div>
+				
 	}
 }
 
@@ -118,11 +142,55 @@ class Tickets extends React.Component {
 class Settings extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {users: []};
 	}
-
+	handleInputOne(e) {
+		console.log('input', e.target.value);
+		this.state.extn = e.target.value;
+	}
+	handleInputTwo(e) {
+		console.log('input', e.target.value);
+		this.state.password = e.target.value;
+	}
+	componentDidMount() {
+		var _this = this;
+		xFetchJSON("/api/wechat/xyt/setting").then((data) => {
+			console.log("users", data);
+			_this.setState({users: data});
+		}).catch((e) => {
+			console.error("get ticket", e);
+		});
+	}
+	handleSubmit() {
+		console.log('submit', this.state.comment_content);
+		xFetchJSON("/api/wechat/xyt/tickets", {
+			method: 'POST',
+			body: JSON.stringify({content: this.state.extn, content: this.state.password, id: this.state.users.id})
+		}).then((data) => {
+			console.log("res", data)
+			
+		}).catch((e) => {
+			console.error("comment err", e);
+		});
+	}
 	render() {
-		return <div>Settings</div>
+		var users = this.state.users;
+		return <div className="weui-cells weui-cells_form">
+					<div className="weui-cell">
+						<div className="weui-cell__hd"><label className="weui-label">用户名</label></div>
+						<div className="weui-cell__bd">
+							<input name="login" className="weui-input" onChange={this.handleInputOne.bind(this)} type="text" pattern="[0-9a-zA-Z-]*" value={users.extn}/>
+						</div>
+					</div>
+
+					<div className="weui-cell">
+						<div className="weui-cell__hd"><label className="weui-label">密码</label></div>
+						<div className="weui-cell__bd">
+							<input name="pass" className="weui-input" onChange={this.handleInputTwo.bind(this)} type="password" value={users.password}/>
+						</div>
+					</div>
+					<input type="button" value="修改绑定" className="weui-btn weui-btn_primary" onClick={this.handleSubmit.bind(this)}/>
+				</div>
 	}
 }
 
@@ -154,34 +222,28 @@ class App extends React.Component{
 	render() {
 		const _this = this;
 
-		return <div>
-			<div className="weui-tabbar">
-				<a className="weui-tabbar__item" onClick={() => _this.handleClick("last")}>
-					<div className="weui-tabbar__icon">
-						<img src="http://weui.github.io/weui/images/icon_nav_button.png" alt=""/>
-					</div>
-					<p className="weui-tabbar__label">我的</p>
-				</a>
-				<a className="weui-tabbar__item" onClick={() => _this.handleClick("tickets")}>
-					<div className="weui-tabbar__icon">
-						<img src="http://weui.github.io/weui/images/icon_nav_msg.png" alt=""/>
-					</div>
-					<p className="weui-tabbar__label">全部</p>
-				</a>
-				<a className="weui-tabbar__item" onClick={() => _this.handleClick("settings")}>
-					<div className="weui-tabbar__icon">
-						<img src="http://weui.github.io/weui/images/icon_nav_article.png" alt=""/>
-					</div>
-					<p className="weui-tabbar__label">设置</p>
-				</a>
-				<a className="weui-tabbar__item" onClick={() => _this.handleClick("other")}>
-					<div className="weui-tabbar__icon">
-						<img src="http://weui.github.io/weui/images/icon_nav_cell.png" alt=""/>
-					</div>
-					<p className="weui-tabbar__label">其它</p>
-				</a>
+		return <div className="weui_tab" style={{bottom:0,position:"fixed"}}>
+				<div className="weui_tabbar">
+					<a href="javascript:;" className="weui_tabbar_item" onClick={() => _this.handleClick("last")}>
+						<div className="weui_tabbar_icon">
+							<img src="http://weui.github.io/weui/images/icon_nav_button.png" alt=""/>
+						</div>
+						<p className="weui_tabbar_label">我的</p>
+					</a>
+					<a href="javascript:;" className="weui_tabbar_item" onClick={() => _this.handleClick("tickets")}>
+						<div className="weui_tabbar_icon">
+							<img src="http://weui.github.io/weui/images/icon_nav_article.png" alt=""/>
+						</div>
+						<p className="weui_tabbar_label">全部</p>
+					</a>
+					<a href="javascript:;" className="weui_tabbar_item" onClick={() => _this.handleClick("settings")}>
+						<div className="weui_tabbar_icon">
+							<img src="http://weui.github.io/weui/images/icon_nav_cell.png" alt=""/>
+						</div>
+						<p className="weui_tabbar_label">设置</p>
+					</a>
+				</div>
 			</div>
-		</div>
 	}
 }
 
