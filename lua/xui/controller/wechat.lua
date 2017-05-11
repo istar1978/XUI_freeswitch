@@ -140,7 +140,7 @@ post('/:realm/tickets', function(params) -- login
 		xtra.save_session("user_id", user.id)
 
 		-- redirect_uri = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fseven%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" -- TODO: hardcoded
-		redirect_uri = xwechat.redirect_uri(wechat.APPID, "http://shop.x-y-t.cn/api/wechat/" .. params.realm .. "tickets/0", "200")
+		redirect_uri = xwechat.redirect_uri(wechat.APPID, "http://shop.x-y-t.cn/api/wechat/" .. params.realm .. "/tickets/0", "200")
 		redirect(redirect_uri)
 end)
 
