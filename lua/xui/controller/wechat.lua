@@ -93,6 +93,7 @@ get('/:realm/tickets/:id', function(params)
 		if u.user_id and not (u.user_id == '') then
 			return {"render", "wechat/tickets1.html", {ticket_id = params.id}}
 		else
+			u.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
 			return {"render", "wechat/login.html", u}
 		end
 	else
@@ -108,11 +109,13 @@ get('/:realm/tickets/:id', function(params)
 			nickname = user_info.nickname,
 			headimgurl = user_info.headimgurl
 		}
+
+		wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
 		return {"render", "wechat/login.html", wechat_user}
 	end
 end)
 
-post('/:realm/tickets', function(params) -- login
+post('/:realm/login', function(params) -- login
 	print(env:serialize())
 	print(serialize(params))
 	wechat = m_dict.get_obj('WECHAT/' .. params.realm)
@@ -122,9 +125,9 @@ post('/:realm/tickets', function(params) -- login
 	pass = env:getHeader("pass")
 	wechat_user_id = env:getHeader("id")
 
-	n, users = xdb.find_by_cond("users", {extn = login, password = pass})
+	user = xdb.find_one("users", {extn = login, password = pass})
 
-		user = users[1]
+	if user then
 		wechat_users = {
 			id = wechat_user_id,
 			user_id = user.id
@@ -134,9 +137,19 @@ post('/:realm/tickets', function(params) -- login
 		-- xtra.start_session()
 		xtra.save_session("user_id", user.id)
 
-		-- redirect_uri = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fseven%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" -- TODO: hardcoded
-		redirect_uri = xwechat.redirect_uri(wechat.APPID, "http://shop.x-y-t.cn/api/wechat/" .. params.realm .. "/tickets/0", "200")
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/0"
+		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 		redirect(redirect_uri)
+	else
+		wechat_user = xdb.find(wechat_user_id)
+
+		if wechat_user then
+			wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
+			return {"render", "wechat/login.html", wechat_user}
+		else -- hacking me? just fail!
+			return 403
+		end
+	end
 end)
 
 post('/:realm/link', function(params)

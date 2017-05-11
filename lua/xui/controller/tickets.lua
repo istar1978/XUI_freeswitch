@@ -120,7 +120,9 @@ get('/end/:id',function(params)
 	local pid = params.id
 	ret = xdb.update_by_cond("tickets", { id = pid }, { status = '2' })
 	if ret then
-		redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fwe%2f' .. pid .. '&response_type=code&scope=snsapi_base&state=123#wechat_redirect')
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/" .. pid
+		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
+		redirect(redirect_uri)
 	else
 		return 500
 	end
@@ -170,10 +172,14 @@ print(serialize(ticket))
 		-- xwechat.get_callback_ip()
 		print(xwechat.sign('sipsip', "a", "b", "c"))
 
+
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/" .. member.ticket_id
+		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
+
 		local msg = {}
 		msg.touser = openid
 		msg.template_id = '7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc'
-		msg.url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fseven%2f' .. member.ticket_id .. '&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect'
+		msg.url = redirect_uri
 		msg.data = {}
 		msg.data.fist = {}
 		msg.data.fist.value = ticket.subject
