@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>小樱桃工单::登录</title>
-    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+	<title>小樱桃工单::登录</title>
+	<link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
 </head>
 <body>
 	<br/>
 	<br/>
 
 	<center>
-		<img src="{{ headimgurl}}" width="60px" height="60px" style="border-radius:50%;" />
+		<img src="{{ headimgurl }}" width="60px" height="60px" style="border-radius:50%;" />
 		<br>
 		{{ nickname }}
 	</center>
+
 	<br/>
 	<br/>
 
@@ -39,5 +40,16 @@
 			<input type="submit" value="登录" class="weui-btn weui-btn_primary"/>
 		</div>
 	</form>
+
+	{% if errmsg %}
+	<div class="weui-msg">
+		<div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
+		<div class="weui-msg__text-area">
+			<h2 class="weui-msg__title">{{ errmsg }}</h2>
+			<p class="weui-msg__desc"></p>
+		</div>
+	</div>
+	{% endif %}
+
 </body>
 </html>

@@ -30,12 +30,18 @@
  */
 ]]
 
-content_type("text/xml")
+content_type("text/html")
 require 'xdb'
 xdb.bind(xtra.dbh)
 require 'xwechat'
 require 'm_dict'
 xtra.start_session();
+
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+
+do_debug = true
 
 -- realm to support multiple wechat accounds, e.g. sipsip, xyt
 
@@ -58,8 +64,11 @@ end)
 
 
 get('/:realm/tickets/:id', function(params)
-	print(env:serialize())
-	print(serialize(params))
+	if do_debug then
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", env:serialize())
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
+	end
+
 	content_type("text/html")
 	realm = params.realm
 	code = env:getHeader("code")
@@ -116,8 +125,12 @@ get('/:realm/tickets/:id', function(params)
 end)
 
 post('/:realm/login', function(params) -- login
-	print(env:serialize())
-	print(serialize(params))
+
+	if do_debug then
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", env:serialize())
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
+	end
+
 	wechat = m_dict.get_obj('WECHAT/' .. params.realm)
 	appid = wechat.APPID
 
@@ -141,9 +154,10 @@ post('/:realm/login', function(params) -- login
 		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 		redirect(redirect_uri)
 	else
-		wechat_user = xdb.find(wechat_user_id)
+		wechat_user = xdb.find("wechat_users", wechat_user_id)
 
 		if wechat_user then
+			wechat_user.errmsg = '用户名/密码错误'
 			wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
 			return {"render", "wechat/login.html", wechat_user}
 		else -- hacking me? just fail!
@@ -258,6 +272,8 @@ post('/:realm', function(params)
 	Content = xml:val("Content")
 
 	Reply = "OK"
+
+	content_type("text/xml")
 
 	response = "<xml>" ..
 		"<ToUserName><![CDATA[" .. FromUserName .. "]]></ToUserName>" ..
