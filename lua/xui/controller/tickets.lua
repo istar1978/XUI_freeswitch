@@ -213,3 +213,25 @@ delete('/:id', function(params)
 		return 500, "{}"
 	end
 end)
+
+post('/', function(params)
+	print(serialize(params))
+
+	ret = xdb.create_return_id('tickets', params.request)
+
+	if ret then
+		return {id = ret}
+	else
+		return 500, "{}"
+	end
+end)
+
+put('/:id', function(params)
+	print(serialize(params))
+	ret = xdb.update("tickets", params.request)
+	if ret then
+		return 200, "{}"
+	else
+		return 500
+	end
+end)

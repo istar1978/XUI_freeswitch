@@ -36,11 +36,99 @@ import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl
 import { Link } from 'react-router';
 import { EditControl, xFetchJSON } from './libs/xtools';
 
+class NewTicket extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {errmsg: ''};
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var ticket = form2json('#newTicketForm');
+		console.log("ticket", ticket);
+
+		if (!ticket.cid_number || !ticket.subject) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+
+		xFetchJSON("/api/tickets", {
+			method:"POST",
+			body: JSON.stringify(ticket)
+		}).then((obj) => {
+			ticket.id = obj.id;
+			_this.props.handleNewTicketAdded(ticket);
+		}).catch((msg) => {
+			console.error("ticket", msg);
+			_this.setState({errmsg: '' + msg + ''});
+		});
+	}
+
+	render() {
+		console.log(this.props);
+
+		const props = Object.assign({}, this.props);
+		delete props.handleNewTicketAdded;
+
+		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-lg"><T.span text="Create New Ticket" /></Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+			<Form horizontal id="newTicketForm">
+				<FormGroup controlId="formCIDNumber">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="cid_number" placeholder="1000" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formSubject">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Subject" className="mandatory"/></Col>
+					<Col sm={10}><FormControl type="input" name="subject" placeholder="" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formContent">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Content"/></Col>
+					<Col sm={10}><FormControl componentClass="textarea" rows="5" name="content" placeholder="" /></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formStatus">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
+					<Col sm={10}><FormControl type="input" name="status" placeholder="" /></Col>
+				</FormGroup>
+
+				<FormGroup>
+					<Col smOffset={2} sm={10}>
+						<Button type="button" bsStyle="primary" onClick={this.handleSubmit}>
+							<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
+							<T.span text="Save" />
+						</Button>
+						&nbsp;&nbsp;<T.span className="danger" text={this.state.errmsg}/>
+					</Col>
+				</FormGroup>
+			</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={this.props.onHide}>
+					<i className="fa fa-times" aria-hidden="true"></i>&nbsp;
+					<T.span text="Close" />
+				</Button>
+			</Modal.Footer>
+		</Modal>;
+	}
+}
+
 class TicketPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null};
+		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null, edit: false};
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleSubmitChange = this.handleSubmitChange.bind(this);
 	}
 
 	handleSubmit(e) {
@@ -64,6 +152,32 @@ class TicketPage extends React.Component {
 		});
 	}
 
+	handleSubmitChange(e) {
+		var _this = this;
+
+		console.log("submit...");
+		var ticket = form2json('#ticketForm');
+		console.log("ticket", ticket);
+
+		if (!ticket.cid_number || !ticket.subject) {
+			this.setState({errmsg: "Mandatory fields left blank"});
+			return;
+		}
+
+		xFetchJSON("/api/tickets/" + ticket.id, {
+			method: "PUT",
+			body: JSON.stringify(ticket)
+		}).then((data) => {
+			_this.setState({ticket: ticket, errmsg: {key: "Saved at", time: Date()}})
+		}).catch((msg) => {
+			console.error("dict", msg);
+		});
+	}
+
+	handleControlClick(e) {
+		this.setState({edit: !this.state.edit});
+	}
+
 	componentDidMount() {
 		var _this = this;
 		xFetchJSON("/api/tickets/" + _this.props.params.id, "").then((data) => {
@@ -84,11 +198,16 @@ class TicketPage extends React.Component {
 	}
 
 	render() {
+		let savebtn = "";
+		if (this.state.edit) {
+			savebtn = <Button onClick={this.handleSubmitChange}><i className="fa fa-save" aria-hidden="true"></i>&nbsp;<T.span text="Save"/></Button>
+		}
+
 		const ticket_comments = this.state.ticket_comments.map(function(row) {
 			return <Row key={row.id}>
-				<Col componentClass={ControlLabel} sm={2}>{row.created_epoch}</Col>
-				<Col sm={10}>{row.created_epoch} {row.user_name}
-					<img className="avatar" src={row.avatar_url}/>
+				<Col componentClass={ControlLabel} sm={2} smOffset={2}>{row.created_epoch}</Col>
+				<Col sm={6}>{row.created_epoch} {row.user_name}
+					<img src='/assets/img/sit.png'/>
 					<br/> {row.content}
 				</Col>
 			</Row>
@@ -127,42 +246,55 @@ class TicketPage extends React.Component {
 
 		const options = <FormGroup>
 			<Col componentClass={ControlLabel} sm={2}><T.span text="处理人" /></Col>
-			<Col sm={10}>
+			<Col sm={8}>
 				{this.state.deal_user}
 			</Col>
 		</FormGroup>;
 
-		const src = "http://118.89.102.147:8081/"+ticket.record_path
+		const src = "http://118.89.102.147:8081/" + ticket.record_path
 		
 		return <div>
-			<h1><T.span text="工单"/><small>{ticket.subject}</small></h1>
+			<ButtonToolbar className="pull-right" onClick={this.handleControlClick}>
+			<ButtonGroup>
+				{ savebtn }
+				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
+			</ButtonGroup>
+			</ButtonToolbar>
+
+			<h1><T.span text="工单"/></h1>
 			<hr/>
 			<Form horizontal id="ticketForm">
-			<input type="hidden" name="ticket_id" defaultValue={ticket.id}/>
-				<FormGroup>
-					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
-					<Col sm={10}><FormControl.Static>{ticket.cid_number}</FormControl.Static></Col>
+				<input type="hidden" name="id" defaultValue={ticket.id}/>
+				<FormGroup controlId="formCIDNumber">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number" className="mandatory"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="cid_number" defaultValue={ticket.cid_number}/></Col>
 				</FormGroup>
-				<FormGroup>
+
+				<FormGroup controlId="formCreated_epoch">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Created At"/></Col>
-					<Col sm={10}>{ticket.created_epoch}</Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="created_epoch" defaultValue={ticket.created_epoch}/></Col>
 				</FormGroup>
-				<FormGroup>
+
+				<FormGroup controlId="formStatus">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
-					<Col sm={10}><T.span text={status}/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="status" defaultValue={ticket.status}/></Col>
 				</FormGroup>
+
 				<FormGroup controlId="formCaller_id_name">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
 					<Col sm={10}><audio src={src} controls="controls" /></Col>
 				</FormGroup>
-				<br/>
+
+				<FormGroup controlId="formSubject">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Subject"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="subject" defaultValue={ticket.subject}/></Col>
+				</FormGroup>
 			</Form>
-				<br/>
-				<br/>
+			<br/>
 			<Form horizontal id="ticketProcessingForm">
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="内容"/></Col>
-					<Col sm={10}>
+					<Col sm={8}>
 						<FormControl componentClass="textarea" name="content" placeholder="内容" />
 					</Col>
 				</FormGroup>
@@ -183,8 +315,9 @@ class TicketPage extends React.Component {
 class TicketsPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {rows: [], danger: false};
+		this.state = {rows: [], danger: false, formShow: false};
 		this.handleDelete = this.handleDelete.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
 	}
 	handleDelete(e) {
 		var id = e.target.getAttribute("data-id");
@@ -217,10 +350,27 @@ class TicketsPage extends React.Component {
 			this.setState({rows: data});
 		});
 	}
+
+	handleTicketAdded(ticket) {
+		var rows = this.state.rows;
+		rows.unshift(ticket);
+		this.setState({rows: rows, formShow: false});
+	}
+
+	handleControlClick(e) {
+		var data = e.target.getAttribute("data");
+		console.log("data", data);
+
+		if (data == "new") {
+			this.setState({ formShow: true});
+		}
+	}
+
 	render () {
 		var _this = this;
 		let hand = { cursor: "pointer"};
 		var danger = this.state.danger ? "danger" : "";
+		let formClose = () => this.setState({ formShow: false });
 		var rows = _this.state.rows.map(function(row) {
 			var status = '';
 			if(row.status == 1){
@@ -240,6 +390,10 @@ class TicketsPage extends React.Component {
 		})
 		return <div>
 			<ButtonToolbar className="pull-right">
+				<Button onClick={this.handleControlClick} data="new">
+					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
+					<T.span onClick={this.handleControlClick} data="new" text="New" />
+				</Button>
 			</ButtonToolbar>
 
 			<h1><T.span text="Tickets" /></h1>
@@ -257,6 +411,7 @@ class TicketsPage extends React.Component {
 					{rows}
 				</tbody>
 			</table>
+			<NewTicket show={this.state.formShow} onHide={formClose} handleNewTicketAdded={this.handleTicketAdded.bind(this)}/>
 		</div>
 	}
 }

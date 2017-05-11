@@ -406,6 +406,8 @@ LANGUAGES["zh"] = {
 	TICKET_ST_NEW: "未处理",
 	TICKET_ST_PROCESSING: "处理中",
 	TICKET_ST_DONE: "已完成",
+	"Create New Ticket": "新建工单",
+	Content: "内容",
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
