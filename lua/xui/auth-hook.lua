@@ -24,6 +24,7 @@ if (login and success == "1") then
 
 	user = xdb.find_one("users", {extn = user})
 
+print(user.id)
 	if user then
 		api = freeswitch.API()
 		api:execute("hash", "insert/xui/" .. sessid .. "/" .. user.id)

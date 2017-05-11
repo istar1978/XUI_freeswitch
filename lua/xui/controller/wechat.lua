@@ -146,12 +146,16 @@ get('/:realm/tickets/:id', function(params)
 	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
 	-- print(ret)
 	jret = utils.json_decode(ret)
+
 	if jret.openid then
-		xtra.save_session("openid", jret.openid)
 		wechat_user = xdb.find_one("wechat_users", {openid = jret.openid})
+		if wechat_user then
+			xtra.save_session("user_id", wechat_user.id)
+		end
 	else -- on page refresh, we got a code already used error
 		wechat_user = xdb.find_one("wechat_users", {code = code})
 	end
+
 	if wechat_user then
 		-- we already have the wechat userinfo in our db
 		local u = wechat_user
@@ -166,9 +170,7 @@ get('/:realm/tickets/:id', function(params)
 		end
 
 		if u.user_id and not (u.user_id == '') then
-			tickets = xdb.find("tickets",params.id)
-			n, comments = xdb.find_by_cond("ticket_comments", {ticket_id = tickets.id}, "created_epoch DESC")
-			return {"render", "wechat/tickets.html", {tickets = tickets, tids = params.id, comments = comments, nickname = wechat_user.nickname}}
+			return {"render", "wechat/tickets1.html", {ticket_id = params.id}}
 		else
 			return {"render", "wechat/login.html", u}
 		end

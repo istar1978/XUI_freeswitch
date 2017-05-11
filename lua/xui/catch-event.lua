@@ -77,7 +77,8 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		if config.fifo_ticket then -- create a ticket
 			ticket = {}
 			ticket.cid_number = cidNumber
-			ticket.status = 0
+			ticket.status = 1
+			ticket.subject = cidNumber
 			xdb.create('tickets', ticket);
 		end
 

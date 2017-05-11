@@ -135,13 +135,13 @@ class TicketPage extends React.Component {
 		const src = "http://118.89.102.147:8081/"+ticket.record_path
 		
 		return <div>
-			<h1><T.span text="工单"/></h1>
+			<h1><T.span text="工单"/><small>{ticket.subject}</small></h1>
 			<hr/>
 			<Form horizontal id="ticketForm">
 			<input type="hidden" name="ticket_id" defaultValue={ticket.id}/>
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="CID Number"/></Col>
-					<Col sm={10}>{ticket.cid_number}</Col>
+					<Col sm={10}><FormControl.Static>{ticket.cid_number}</FormControl.Static></Col>
 				</FormGroup>
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Created At"/></Col>

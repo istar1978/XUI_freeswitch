@@ -143,49 +143,58 @@ post('/:id/comments', function(params)
 	comment.user_name = params.request.user_name or 'Admin' -- TODO: hardcoded
 	ret = xdb.create_return_object("ticket_comments", comment)
 	local member = {}
-	member.time = os.date("%Y年%m月%d日%H时%M分")
 	member.ticket_id = params.id
 	member.dealname = params.request.dealname
 	member.content = params.request.content
 
-
 	print("session" .. serialize(xtra.session))
 
 	local user = xdb.find("wechat_users", xtra.session.user_id)
---[[
-	ret.avatar_url = user.headimgurl
-	local openid = user.openid
-	local wechat = m_dict.get_obj('WECHAT/xyt')
-	xwechat.access_token('sipsip')
-	token = xwechat.get_token('sipsip', wechat.APPID, wechat.APPSEC)
-	freeswitch.consoleLog("ERR", xwechat.access_token('sipsip'))
-	-- xwechat.get_callback_ip()
-	print(xwechat.sign('sipsip', "a", "b", "c"))
-	local ajson = {}
-	ajson.touser = openid
-	ajson.template_id = '7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc'
-	ajson.url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fwe%2f' .. member.ticket_id .. '&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect'
-	ajson.data = {}
-	ajson.data.fist = {}
-	ajson.data.fist.value = ''
-	ajson.data.fist.color = '#173177'
-	ajson.data.keyword1 = {}
-	ajson.data.keyword1.value = '招远交通工单'
-	ajson.data.keyword1.color = '#173177'
-	ajson.data.keyword2 = {}
-	ajson.data.keyword2.value = member.time
-	ajson.data.keyword2.color = '#173177'
-	ajson.data.keyword3 = {}
-	ajson.data.keyword3.value = 'Admin'
-	ajson.data.keyword3.color = '#173177'
-	ajson.data.remark = {}
-	ajson.data.remark.value = member.content
-	ajson.data.remark.color = '#173177'
-	-- local json_text = '{"data":{"fist":{"color":"#173177","value":"啦啦啦"},"keyword1":{"color":"#173177","value":"啦啦啦"},"keyword2":{"color":"#173177","value":"哈哈"},"keyword3":{"color":"#173177","value":"3"},"remark":{"color":"#173177","value":"哇哇"}},"template_id":"7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc","touser":"ojc83wtKp0PlAeZ4BjbJAU0KL7Wo","url":"http://weixin.qq.com"}'
-	json_text = utils.json_encode(ajson)
-	xwechat.send_template_msg('sipsip', json_text)
+	-- local user = xdb.find("wechat_users", params.request.current_user_id)
 
---]]
+	print(serialize(user))
+
+
+	ticket = xdb.find("tickets", params.id)
+
+print("ticket")
+print(serialize(ticket))
+
+	if ticket then
+		ret.avatar_url = user.headimgurl
+		local openid = user.openid
+		local wechat = m_dict.get_obj('WECHAT/xyt')
+		xwechat.access_token('sipsip')
+		token = xwechat.get_token('sipsip', wechat.APPID, wechat.APPSEC)
+		freeswitch.consoleLog("ERR", xwechat.access_token('sipsip'))
+		-- xwechat.get_callback_ip()
+		print(xwechat.sign('sipsip', "a", "b", "c"))
+
+		local msg = {}
+		msg.touser = openid
+		msg.template_id = '7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc'
+		msg.url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9456c585ce6eb6f7&redirect_uri=http%3a%2f%2fshop.x-y-t.cn%2fseven%2f' .. member.ticket_id .. '&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect'
+		msg.data = {}
+		msg.data.fist = {}
+		msg.data.fist.value = ticket.subject
+		msg.data.fist.color = '#173177'
+		msg.data.keyword1 = {}
+		msg.data.keyword1.value = ticket.subject
+		msg.data.keyword1.color = '#173177'
+		msg.data.keyword2 = {}
+		msg.data.keyword2.value = os.date("%Y年%m月%d日%H时%M分")
+		msg.data.keyword2.color = '#173177'
+		msg.data.keyword3 = {}
+		msg.data.keyword3.value = 'Admin'
+		msg.data.keyword3.color = '#173177'
+		msg.data.remark = {}
+		msg.data.remark.value = member.content
+		msg.data.remark.color = '#173177'
+		json_text = utils.json_encode(msg)
+
+		print(json_text)
+		xwechat.send_template_msg('sipsip', json_text)
+	end
 
 
 	if ret then

@@ -4,6 +4,8 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 import T from 'i18n-react';
 import { xFetchJSON } from '../jsx/libs/xtools';
+import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
+
 
 class Home extends React.Component {
 	constructor(props) {
@@ -14,27 +16,71 @@ class Home extends React.Component {
 	componentDidMount() {
 		var _this = this;
 
-		xFetchJSON("/api/tickets/1").then((data) => {
+		if (!current_ticket_id) return;
+
+		xFetchJSON("/api/tickets/" + current_ticket_id).then((data) => {
 			console.log("ticket", data);
 			_this.setState({ticket: data});
 		}).catch((e) => {
 			console.error("get ticket", e);
 		});
 
-		xFetchJSON('/api/tickets/1/comments').then((data) => {
-			console.log('addddd', data)
+		xFetchJSON('/api/tickets/' + current_ticket_id + '/comments').then((data) => {
 			this.setState({ticket_comments: data});
 		});
 	}
 
+	handleInput(e) {
+		console.log('input', e.target.value);
+		this.state.comment_content = e.target.value;
+	}
+
+	handleSubmit() {
+		console.log('submit', this.state.comment_content);
+		xFetchJSON("/api/tickets/" + current_ticket_id + "/comments", {
+			method: 'POST',
+			body: JSON.stringify({content: this.state.comment_content, current_user_id: "1"})
+		}).then((data) => {
+			console.log("res", data)
+			const comments = this.state.ticket_comments.unshift(data);
+			this.setState({comments: comments});
+		}).catch((e) => {
+			console.error("comment err", e);
+		});
+	}
+
 	render() {
+		const _this = this;
 		const ticket = this.state.ticket;
 
+		const comments = this.state.ticket_comments.map((comment) => {
+			return <li key={comment.id}>{comment.created_at} {comment.content}</li>
+		})
+
 		return <div><h1>小樱桃工单</h1>
+
+			{current_ticket_id}
 
 			{ticket.user_name}
 			{ticket.subject}
 			{ticket.content}
+
+
+			<br/>
+
+			<div className="weui-cells weui-cells_form">
+				<div className="weui-cell">
+					<textarea name="name" placeholder="请输入内容" onChange={this.handleInput.bind(this)}/>
+				</div>
+				<div className="weui-cell">
+					<input type="button" value="提交" class="weui-btn weui-btn_primary" onClick={this.handleSubmit.bind(this)}/>
+				</div>
+
+			</div>
+
+			comments<br/>
+
+			{comments}
 
 		</div>
 	}
