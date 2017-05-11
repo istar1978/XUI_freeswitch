@@ -4,7 +4,6 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 import T from 'i18n-react';
 import { xFetchJSON } from '../jsx/libs/xtools';
-import { Modal, ButtonToolbar, ButtonGroup, Button, Form, FormGroup, FormControl, ControlLabel, Checkbox, Col } from 'react-bootstrap';
 
 
 class Home extends React.Component {
