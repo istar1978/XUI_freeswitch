@@ -10,7 +10,7 @@ import verto from './verto/verto';
 class IvrActionPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { row: [], editText: "Edit", editable: false};
+		this.state = { row: [], editText: "Edit", editable: false, action: [] };
 		this.handleEdit = this.handleEdit.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -34,22 +34,21 @@ class IvrActionPage extends React.Component {
 		this.setState({ editText: text, editable: !this.state.editable });
 	}
 
-	handleSubmit (){
+	handleSubmit (e){
 		let _this = this;
 		console.log("submit...");
-		let action = form2json('#editActionForm');
+		var action = form2json('#editActionForm');
 		if (!action.action ) {
 			notify(<T.span text="Mandatory fields left blank"/>, 'error');
 			return;
 		}
 
-		action.action = _this.state.row.action;
 		xFetchJSON( "/api/ivrs/" + _this.state.row.ivr_menu_id + "/actions/" + action.id, {
 			method: "PUT",
 			body: JSON.stringify(action)
 		}).then((obj) => {
 			_this.setState({ editable: false, row: action})
-			notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+			notify(<T.span text={{key:"Saved at",time: Date()}}/>);
 		}).catch((msg) => {
 			console.error("action", msg);
 		});
@@ -58,6 +57,12 @@ class IvrActionPage extends React.Component {
 	render () {
 		const _this = this;
 		let row = this.state.row;
+		const action = [['menu-exec-app','menu-exec-app'],
+				['menu-sub','menu-sub'],
+				['menu-exit','menu-exit'],
+				['menu-play-sound','menu-play-sound'],
+				['menu-back','menu-back'],
+				['menu-top','menu-top']];
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={ _this.handleEdit }><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text={ _this.state.editText } /></Button>
@@ -73,7 +78,7 @@ class IvrActionPage extends React.Component {
 				</FormGroup>
 				<FormGroup controlId="formAction">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Action" className="mandatory"/></Col>
-					<Col sm={10}><EditControl name="action" edit={_this.state.editable} defaultValue={row.action}/></Col>
+					<Col sm={10}><EditControl name="action" edit={_this.state.editable} componentClass="select"  options={action} text={row.action} defaultValue={row.action}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formArgs">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Args" /></Col>
@@ -128,7 +133,15 @@ class NewAction extends React.Component {
 					</FormGroup>
 					<FormGroup controlId="formAction">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Action" className="mandatory"/></Col>
-						<Col sm={10}><FormControl type="input" name="action" placeholder="menu-exec-app" /></Col>
+						<Col sm={10}><FormControl componentClass="select"  name="action">
+							<option value ="menu-exec-app">menu-exec-app</option>
+							<option value ="menu-sub">menu-sub</option>
+							<option value="menu-exit">menu-exit</option>
+							<option value="menu-paly-sound">menu-play-sound</option>
+							<option value="menu-back">menu-back</option>
+							<option value="menu-top">menu-top</option>
+							</FormControl>
+						</Col>
 					</FormGroup>
 					<FormGroup controlId="formArgs">
 						<Col componentClass={ControlLabel} sm={2}><T.span text="Args" /></Col>
@@ -161,7 +174,7 @@ class IvrInfo extends React.Component {
 		super(props);
 		this.state = { 
 			ivrRows: [], actionRows:[], danger: false, formShow: false, 
-			editable: false, editText: "Edit", auto_record:"0", ifChecked: false};
+			editable: false, editText: "Edit", auto_record:"0", ifChecked: false, exit_sound: [], tones: [], media_files: [], media_file: []};
 
 		this.handleEdit = this.handleEdit.bind(this);
 		this.handleNewActionAdded = this.handleNewActionAdded.bind(this);
@@ -183,6 +196,13 @@ class IvrInfo extends React.Component {
 			}).catch((msg) => {
 				console.log("get action ERR");
 			});
+		xFetchJSON("/api/dicts?realm=TONE").then((data) => {
+				_this.setState({tones: data});
+			});
+		xFetchJSON( "/api/media_files").then((data) => {
+			_this.setState({media_files: data});
+		});
+
 	}
 
 	handleEdit () {
@@ -210,7 +230,7 @@ class IvrInfo extends React.Component {
 			body: JSON.stringify(ivr)
 		}).then((obj) => {
 			_this.setState({ editable: false, ivrRows: ivr})
-			notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+			notify(<T.span text={{key:"Saved at",time: Date()}}/>);
 		}).catch((msg) => {
 			console.error("ivr", msg);
 		});
@@ -252,7 +272,13 @@ class IvrInfo extends React.Component {
 	render() {
 		const _this = this;
 		const props = Object.assign({}, this.props);
-
+		const exit_sound = _this.state.tones.map(function(row) {
+			return [row.k, row.k];
+		});
+		const media_files_option = this.state.media_files.map(function(row) {
+			return [row.name, row.name];
+		});
+	
 		let formClose = () => this.setState({ formShow: false });
 		let danger = this.state.danger ? "danger" : ""; 
 		let toggleDanger = () => this.setState({ danger: !this.state.danger });
@@ -262,91 +288,91 @@ class IvrInfo extends React.Component {
 		let colCheck = _this.state.editable ? { display: "block"} : { display: "none" };
 
 		let ivrRow = <div>
-			<h1><T.span text="IVR Info"/></h1>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={ _this.handleEdit } ><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text={ _this.state.editText } /></Button>
 			</ButtonToolbar>
+			<h1><T.span text="IVR Info"/></h1>
 			<hr />
 			<Form horizontal id="editIvrForm">
 				<FormGroup controlId="formName">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Name" className="mandatory"/></Col>
-					<Col sm={9}><EditControl  name="name" edit={_this.state.editable} defaultValue={frow.name}/></Col>
+					<Col sm={10}><EditControl  name="name" edit={_this.state.editable} defaultValue={frow.name}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formGreet_long">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Greet_long" /></Col>
-					<Col sm={9}><EditControl  name="greet_long" edit={_this.state.editable} defaultValue={frow.greet_long}/></Col>
+					<Col sm={10}><EditControl  name="greet_long" edit={_this.state.editable} componentClass="select" options={media_files_option} text={_this.state.media_file.name} defaultValue={frow.greet_long}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formGreet_short">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Greet_short" /></Col>
-					<Col sm={9}><EditControl name="greet_short" edit={_this.state.editable} defaultValue={frow.greet_short}/></Col>
+					<Col sm={10}><EditControl name="greet_short" edit={_this.state.editable} componentClass="select" options={media_files_option} text={_this.state.media_file.name} defaultValue={frow.greet_short}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formInvalid_sound">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Invalid_sound" /></Col>
-					<Col sm={9}><EditControl name="invalid_sound" edit={_this.state.editable} defaultValue={frow.invalid_sound}/></Col>
+					<Col sm={10}><EditControl name="invalid_sound" edit={_this.state.editable} componentClass="select" options={media_files_option} text={_this.state.media_file.name} defaultValue={frow.invalid_sound}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formExit_sound">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Exit_sound" /></Col>
-					<Col sm={9}><EditControl name="exit_sound" edit={_this.state.editable} defaultValue={frow.exit_sound}/></Col>
+					<Col sm={10}><EditControl componentClass="select" name="exit_sound" edit={_this.state.editable} options={exit_sound} text={_this.state.exit_sound.k} defaultValue={frow.exit_sound}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formTransfer_sound">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Transfer_sound"/></Col>
-					<Col sm={9}><EditControl  name="transfer_sound" edit={_this.state.editable} defaultValue={frow.transfer_sound}/></Col>
+					<Col sm={10}><EditControl  name="transfer_sound" edit={_this.state.editable} defaultValue={frow.transfer_sound}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formMax_failures">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Max_failures" /></Col>
-					<Col sm={9}><EditControl  name="max_failures" edit={_this.state.editable} defaultValue={frow.max_failures}/></Col>
+					<Col sm={10}><EditControl  name="max_failures" edit={_this.state.editable} defaultValue={frow.max_failures}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formMax_timeouts">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Max_timeouts" /></Col>
-					<Col sm={9}><EditControl name="max_timeouts" edit={_this.state.editable} defaultValue={frow.max_timeouts}/></Col>
+					<Col sm={10}><EditControl name="max_timeouts" edit={_this.state.editable} defaultValue={frow.max_timeouts}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formExec_on_max_failures">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Exec_on_max_failures" /></Col>
-					<Col sm={9}><EditControl name="exec_on_max_failures" edit={_this.state.editable} defaultValue={frow.exec_on_max_failures}/></Col>
+					<Col sm={10}><EditControl name="exec_on_max_failures" edit={_this.state.editable} defaultValue={frow.exec_on_max_failures}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formExec_on_max_timeouts">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Exec_on_max_timeouts" /></Col>
-					<Col sm={9}><EditControl name="exec_on_max_timeouts" edit={_this.state.editable} defaultValue={frow.exec_on_max_timeouts}/></Col>
+					<Col sm={10}><EditControl name="exec_on_max_timeouts" edit={_this.state.editable} defaultValue={frow.exec_on_max_timeouts}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formConfirm_macro">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Transfer_sound" className="confirm_macro"/></Col>
-					<Col sm={9}><EditControl  name="confirm_macro" edit={_this.state.editable} defaultValue={frow.confirm_macro}/></Col>
+					<Col sm={10}><EditControl  name="confirm_macro" edit={_this.state.editable} defaultValue={frow.confirm_macro}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formConfirm_key">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Confirm_key" /></Col>
-					<Col sm={9}><EditControl  name="confirm_key" edit={_this.state.editable} defaultValue={frow.confirm_key}/></Col>
+					<Col sm={10}><EditControl  name="confirm_key" edit={_this.state.editable} defaultValue={frow.confirm_key}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formTts_engine">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Tts_engine" /></Col>
-					<Col sm={9}><EditControl name="tts_engine" edit={_this.state.editable} defaultValue={frow.tts_engine}/></Col>
+					<Col sm={10}><EditControl name="tts_engine" edit={_this.state.editable} defaultValue={frow.tts_engine}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formTts_voice">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Tts_voice" /></Col>
-					<Col sm={9}><EditControl name="tts_voice" edit={_this.state.editable} defaultValue={frow.tts_voice}/></Col>
+					<Col sm={10}><EditControl name="tts_voice" edit={_this.state.editable} defaultValue={frow.tts_voice}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formConfirm_attempts">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Confirm_attempts" /></Col>
-					<Col sm={9}><EditControl name="confirm_attempts" edit={_this.state.editable} defaultValue={frow.confirm_attempts}/></Col>
+					<Col sm={10}><EditControl name="confirm_attempts" edit={_this.state.editable} defaultValue={frow.confirm_attempts}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formDigit_len">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Digit_len" className="digit_len"/></Col>
-					<Col sm={9}><EditControl  name="digit_len" edit={_this.state.editable} defaultValue={frow.digit_len}/></Col>
+					<Col sm={10}><EditControl  name="digit_len" edit={_this.state.editable} defaultValue={frow.digit_len}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formInter_digit_timeout">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Inter_digit_timeout" /></Col>
-					<Col sm={9}><EditControl  name="inter_digit_timeout" edit={_this.state.editable} defaultValue={frow.inter_digit_timeout}/></Col>
+					<Col sm={10}><EditControl  name="inter_digit_timeout" edit={_this.state.editable} defaultValue={frow.inter_digit_timeout}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formPin">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Pin" /></Col>
-					<Col sm={9}><EditControl name="pin" edit={_this.state.editable} defaultValue={frow.pin}/></Col>
+					<Col sm={10}><EditControl name="pin" edit={_this.state.editable} defaultValue={frow.pin}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formPin_file">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Pin_file" /></Col>
-					<Col sm={9}><EditControl name="pin_file" edit={_this.state.editable} defaultValue={frow.pin_file}/></Col>
+					<Col sm={10}><EditControl name="pin_file" edit={_this.state.editable} defaultValue={frow.pin_file}/></Col>
 				</FormGroup>
 				<FormGroup controlId="formBad_pin_file">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Bad_pin_file" /></Col>
-					<Col sm={9}><EditControl name="bad_pin_file" edit={_this.state.editable} defaultValue={frow.bad_pin_file}/></Col>
+					<Col sm={10}><EditControl name="bad_pin_file" edit={_this.state.editable} defaultValue={frow.bad_pin_file}/></Col>
 				</FormGroup>
 				</Form>
 			</div>;
@@ -397,6 +423,7 @@ class NewIvr extends React.Component {
 
 	constructor (props) {
 		super(props);
+		this.state = {errmsg: "", tones: [], media_files: []};
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -420,14 +447,27 @@ class NewIvr extends React.Component {
 			_this.props.handleNewIvrAdded(ivr);
 		}).catch((msg) => {
 			console.error("new IVR Err", msg);
-			_this.setState({errmsg: "" + msg + ""});
+			
 		});
 	}
 
-	render () {
+	componentDidMount() {
 		const _this = this;
+
+		xFetchJSON("/api/dicts?realm=TONE").then((data) => {
+			_this.setState({tones: data});
+		});
+	}	
+
+	render () {
+		const _this = this ;
 		const props = Object.assign({}, this.props);
+		const media_files = props.media_files;
+		delete props.media_files;
 		delete props.handleNewIvrAdded;
+		const media_files_options = media_files.map(media_file => {
+			return <option value={media_file.name} key={media_file.name}>{media_file.name}</option>
+		});
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -437,34 +477,49 @@ class NewIvr extends React.Component {
 				<Form horizontal id="newIvrForm">
 					<FormGroup controlId="formName">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Name" className="mandatory"/></Col>
-						<Col sm={7}><FormControl type="input" name="name" placeholder="welcome"/></Col>
+						<Col sm={8}><FormControl type="input" name="name" placeholder="welcome"/></Col>
 					</FormGroup>
 					<FormGroup controlId="formGreet_long">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Greet_long" /></Col>
-						<Col sm={7}><FormControl type="input"  name="greet_long" placeholder="welcome.wav"/></Col>
+						<Col sm={8}><FormControl componentClass="select" name="greet_long">
+								{media_files_options}
+						</FormControl>
+						</Col>
 					</FormGroup>
 					<FormGroup controlId="formGreet_short">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Greet_short" /></Col>
-						<Col sm={7}><FormControl type="input" name="greet_short" placeholder="welcome_short.wav" /></Col>
+						<Col sm={8}><FormControl componentClass="select" name="greet_short">
+								{media_files_options}
+						</FormControl>
+						</Col>
 					</FormGroup>
 					<FormGroup controlId="frominvalid_sound">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Invalid_sound"/></Col>
-						<Col sm={7}><FormControl type="input" name="invalid_sound" placeholder="ivr/ivr-that_was_an_invalid_entry.wav"/></Col>
+						<Col sm={8}><FormControl componentClass="select" name="invalid_sound">
+									{media_files_options}
+						</FormControl>
+						</Col>
 					</FormGroup>
 					<FormGroup controlId="formexit_sound">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Exit_sound" /></Col>
-						<Col sm={7}><FormControl type="input"  name="exit_sound" placeholder="voicemail/vm-goodbye.wav"/></Col>
+						<Col sm={8}><FormControl componentClass="select" name="exit_sound" placeholder="select">
+								{this.state.tones.map(function(t) {
+								return <option key={t.id}>{t.k}</option>;
+							})}
+						</FormControl>
+						</Col>
 					</FormGroup>
 					<FormGroup controlId="formtimeout">
 						<Col componentClass={ControlLabel} sm={4}><T.span text="Timeout" /></Col>
-						<Col sm={7}><FormControl type="input" name="timeout" placeholder="15000" /></Col>
+						<Col sm={8}><FormControl type="input" name="timeout" placeholder="15000" /></Col>
 					</FormGroup>
 					<FormGroup>
 						<Col smOffset={2} sm={10}>
-							<Button type="button" bsStyle="primary" onClick={ _this.handleSubmit }>
+							<Button type="button" bsStyle="primary" onClick={ this.handleSubmit }>
 								<i className="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;
 								<T.span text="Save" />
 							</Button>
+							&nbsp;&nbsp;<T.span className="danger" text={ this.state.errmsg }/>
 						</Col>
 					</FormGroup>
 				</Form>
@@ -483,7 +538,7 @@ class IvrPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { rows: [], ivrId: "", ivrName:"", danger: "", formShow: false};
+		this.state = { rows: [], ivrId: "", ivrName:"", danger: "", formShow: false, media_files: [] };
 		this.handleActionClick = this.handleActionClick.bind(this);
 		this.handleNewIvrAdded = this.handleNewIvrAdded.bind(this);
 	}
@@ -494,6 +549,9 @@ class IvrPage extends React.Component {
 			_this.setState({rows: data});
 		}).catch((e)=> {
 			console.log("get groups ERR");
+		});
+		xFetchJSON( "/api/media_files").then((data) => {
+			_this.setState({media_files: data});
 		});
 	}
 
@@ -552,6 +610,7 @@ class IvrPage extends React.Component {
 				<td><T.a onClick={() => _this.handleDelete(row.id)} text="Delete" className={danger} style={{cursor:"pointer"}}/></td>
 			</tr>
 		});
+
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={()=>{_this.setState({formShow: true})}}>
@@ -578,7 +637,7 @@ class IvrPage extends React.Component {
 				</table>
 			</div>
 			<br />
-			<NewIvr show={this.state.formShow} onHide={formClose} handleNewIvrAdded={this.handleNewIvrAdded}/>
+			<NewIvr show={this.state.formShow}  media_files = {this.state.media_files} onHide={formClose} handleNewIvrAdded={this.handleNewIvrAdded}/>
 		</div>
 	}
 }

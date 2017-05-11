@@ -87,8 +87,8 @@ end)
 put('/:id/actions/:actions_id', function(params)
 	print(serialize(params))
 	action = params.request
-	actions.ivr_menu_id = nil
-	actions.id = nil
+	action.ivr_menu_id = nil
+	action.id = nil
 	ret = xdb.update_by_cond("ivr_actions", { ivr_menu_id = params.id, id = params.actions_id}, params.request)
 	if ret then
 		return 200, "{}"

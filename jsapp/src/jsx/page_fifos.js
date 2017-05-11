@@ -49,7 +49,7 @@ class FifoMemberPage extends React.Component {
 			body: JSON.stringify(member)
 		}).then((obj) => {
 			_this.setState({ editable: false, row: member})
-			notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+			notify(<T.span text={{key:"Saved at",time: Date()}}/>);
 		}).catch((msg) => {
 			console.error("member", msg);
 		});
@@ -249,7 +249,7 @@ class FifoInfo extends React.Component {
 			body: JSON.stringify(fifo)
 		}).then((obj) => {
 			_this.setState({ editable: false, fifoRows: fifo})
-			notify(<T.span text={{ key:"Saved at"+ Date()}}/>);
+			notify(<T.span text={{key:"Saved at",time: Date()}}/>);
 		}).catch((msg) => {
 			console.error("fifo", msg);
 		});
@@ -306,10 +306,10 @@ class FifoInfo extends React.Component {
 		let colCheck = _this.state.editable ? { display: "block"} : { display: "none" };
 
 		let fifoRow = <div>
-			<h1><T.span text="FIFO Info"/></h1>
 			<ButtonToolbar className="pull-right">
 				<Button onClick={ _this.handleEdit } ><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text={ _this.state.editText } /></Button>
 			</ButtonToolbar>
+			<h1><T.span text="FIFO Info"/></h1>
 			<hr />
 			<Form horizontal id="editFifoForm">
 				<FormGroup controlId="formName">
@@ -379,8 +379,8 @@ class FifoInfo extends React.Component {
 					<td> {memberRow.dial_string}  </td>
 					<td> { <T.a onClick={() => _this.handleDelete(memberRow.id)} text="Delete" className={danger} style= {{cursor:"pointer"}}/>} </td>
 				</tr>;
-	    	}
-	    });
+				}
+			});
 
 		return <div>
 			{fifoRow}
