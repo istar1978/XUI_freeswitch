@@ -222,25 +222,25 @@ class App extends React.Component{
 	render() {
 		const _this = this;
 
-		return <div className="weui_tab" style={{bottom:0,position:"fixed"}}>
-				<div className="weui_tabbar">
-					<a href="javascript:;" className="weui_tabbar_item" onClick={() => _this.handleClick("last")}>
-						<div className="weui_tabbar_icon">
+		return <div>
+				<div className="weui-tabbar">
+					<a className="weui-tabbar__item" onClick={() => _this.handleClick("last")}>
+						<div className="weui-tabbar__icon">
 							<img src="http://weui.github.io/weui/images/icon_nav_button.png" alt=""/>
 						</div>
-						<p className="weui_tabbar_label">我的</p>
+						<p className="weui-tabbar__label">我的</p>
 					</a>
-					<a href="javascript:;" className="weui_tabbar_item" onClick={() => _this.handleClick("tickets")}>
-						<div className="weui_tabbar_icon">
+					<a className="weui-tabbar__item" onClick={() => _this.handleClick("tickets")}>
+						<div className="weui-tabbar__icon">
 							<img src="http://weui.github.io/weui/images/icon_nav_article.png" alt=""/>
 						</div>
-						<p className="weui_tabbar_label">全部</p>
+						<p className="weui-tabbar__label">全部</p>
 					</a>
-					<a href="javascript:;" className="weui_tabbar_item" onClick={() => _this.handleClick("settings")}>
-						<div className="weui_tabbar_icon">
+					<a className="weui-tabbar__item" onClick={() => _this.handleClick("settings")}>
+						<div className="weui-tabbar__icon">
 							<img src="http://weui.github.io/weui/images/icon_nav_cell.png" alt=""/>
 						</div>
-						<p className="weui_tabbar_label">设置</p>
+						<p className="weui-tabbar__label">设置</p>
 					</a>
 				</div>
 			</div>
