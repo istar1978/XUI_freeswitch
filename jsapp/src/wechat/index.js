@@ -73,7 +73,7 @@ class Home extends React.Component {
 					<textarea name="name" placeholder="请输入内容" onChange={this.handleInput.bind(this)}/>
 				</div>
 				<div className="weui-cell">
-					<input type="button" value="提交" class="weui-btn weui-btn_primary" onClick={this.handleSubmit.bind(this)}/>
+					<input type="button" value="提交" className="weui-btn weui-btn_primary" onClick={this.handleSubmit.bind(this)}/>
 				</div>
 
 			</div>
