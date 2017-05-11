@@ -42,7 +42,6 @@
 function __FILE__() return debug.getinfo(2,'S').source end
 function __LINE__() return debug.getinfo(2, 'l').currentline end
 function __FUNC__() return debug.getinfo(1).name end
-function __LUAFL__() return __FILE__() .. ':' .. __LINE__() .. ' ' end
 
 xtra = {}
 -- xtra.http_uri = env:getHeader("HTTP-URI")
@@ -507,7 +506,7 @@ xtra.url_decode = url_decode
 xtra.url_encode = url_encode
 
 function xtra.start_session()
-	print (__LUAFL__() .. "start session")
+	print(__FILE__() .. ':' .. __LINE__() .. " start session")
 	cookie = env:getHeader("Cookie")
 
 	if not cookie then
@@ -533,7 +532,7 @@ function xtra.start_session()
 		if (xtra.session.user_id == "") then
 			xtra.session.user_id = nil
 		end
-		utils.xlog(__LUAFL__(), "INFO", xtra.session.user_id)
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", xtra.session.user_id)
 	else
 		filename = config.session_path .. "/lua-session-" .. xtra.session_uuid
 		conf = loadfile(filename)

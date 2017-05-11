@@ -210,7 +210,7 @@ end
 
 utils.xlog = function(line, level, msg)
 	if not msg then msg = '' end
-	freeswitch.consoleLog(level, line .. msg .. '\n');
+	freeswitch.consoleLog(level, line .. ' ' .. msg .. '\n');
 end
 
 utils.xml = function(text)

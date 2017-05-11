@@ -148,6 +148,9 @@ post('/:id/comments', function(params)
 	member.dealname = params.request.dealname
 	member.content = params.request.content
 
+
+	print("session" .. serialize(xtra.session))
+
 	local user = xdb.find("wechat_users", xtra.session.user_id)
 --[[
 	ret.avatar_url = user.headimgurl

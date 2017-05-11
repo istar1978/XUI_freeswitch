@@ -53,6 +53,8 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 	require 'xtra_config'
 	require 'xdb'
 
+	config.fifo_ticket = true
+
 	if config.db_auto_connect then xdb.connect(config.fifo_cdr_dsn or config.dsn) end
 
 	httpFifoNotificationURL = config.httpFifoNotificationURL
@@ -70,6 +72,15 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		rec.dest_number = destNumber
 		rec.start_epoch = "" .. os.time() + config.tz*60*60
 		xdb.create('fifo_cdrs', rec)
+
+
+		if config.fifo_ticket then -- create a ticket
+			ticket = {}
+			ticket.cid_number = cidNumber
+			ticket.status = 0
+			xdb.create('tickets', ticket);
+		end
+
 	elseif fifoAction == "pre-dial" then
 	elseif fifoAction == "bridge-caller-start" then
 		rec = {}
@@ -122,6 +133,10 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		end)
 	
 		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, id)
+
+
+		if config.fifo_ticket then -- update ?
+		end
 	end
 end
 
