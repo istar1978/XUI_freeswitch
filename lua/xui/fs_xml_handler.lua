@@ -1,4 +1,9 @@
-do_debug = true
+-- do_debug = true
+
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+
 
 section =   XML_REQUEST["section"]
 tag_name =  XML_REQUEST["tag_name"]
@@ -34,7 +39,9 @@ else
 	pkg = cur_dir .. "fsxml/" .. tag_name .. "/" .. key_value .. ".lua"
 end
 
-if do_debug then print(pkg) end
+if do_debug then
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", pkg)
+end
 
 f, e = loadfile(pkg)
 if f then
@@ -49,10 +56,14 @@ if f then
 		XML_STRING = "<xml></xml>"
 	end
 
-	if do_debug then print(XML_STRING) end
 else
 	if not e:match("No such file") then
 		freeswitch.consoleLog("ERR", e .. "\n")
 	end
 	XML_STRING = "<xml></xml>"
 end
+
+if do_debug then
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", XML_STRING)
+end
+

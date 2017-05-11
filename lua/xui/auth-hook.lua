@@ -2,7 +2,15 @@
 	<hook event="CUSTOM" subclass="verto::login" script="/usr/local/freeswitch/xui/lua/xui/auth-hook.lua"/>
 ]]
 
-freeswitch.consoleLog("INFO", event:serialize() .. "\n")
+-- do_debug = true
+
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+
+if do_debug then
+	freeswitch.consoleLog("INFO", event:serialize() .. "\n")
+end
 
 sessid = event:getHeader("verto_sessid")
 login  = event:getHeader("verto_login")
@@ -24,11 +32,12 @@ if (login and success == "1") then
 
 	user = xdb.find_one("users", {extn = user})
 
-print(user.id)
 	if user then
 		api = freeswitch.API()
 		api:execute("hash", "insert/xui/" .. sessid .. "/" .. user.id)
 	end
-end
 
-freeswitch.consoleLog("INFO", sessid .. " Logged in\n")
+	if do_debug then
+		freeswitch.consoleLog("INFO", sessid .. " Logged in\n")
+	end
+end
