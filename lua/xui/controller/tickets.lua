@@ -53,6 +53,7 @@ end)
 
 get('/:id', function(params)
 	ticket = xdb.find("tickets", params.id)
+
 	if ticket then
 		return ticket
 	else
@@ -162,18 +163,19 @@ post('/:id/comments', function(params)
 print("ticket")
 print(serialize(ticket))
 
+	realm = "xyt" -- fixme hardcoded
+
 	if ticket then
 		ret.avatar_url = user.headimgurl
 		local openid = user.openid
-		local wechat = m_dict.get_obj('WECHAT/xyt')
-		xwechat.access_token('sipsip')
-		token = xwechat.get_token('sipsip', wechat.APPID, wechat.APPSEC)
-		freeswitch.consoleLog("ERR", xwechat.access_token('sipsip'))
+		local wechat = m_dict.get_obj('WECHAT/' .. realm)
+		-- token = xwechat.access_token('realm')
+		token = xwechat.get_token(realm, wechat.APPID, wechat.APPSEC)
+		freeswitch.consoleLog("ERR", xwechat.access_token(realm))
 		-- xwechat.get_callback_ip()
-		print(xwechat.sign('sipsip', "a", "b", "c"))
+		-- print(xwechat.sign(realm, "a", "b", "c"))
 
-
-		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/" .. member.ticket_id
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. member.ticket_id
 		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 
 		local msg = {}
@@ -199,9 +201,8 @@ print(serialize(ticket))
 		json_text = utils.json_encode(msg)
 
 		print(json_text)
-		xwechat.send_template_msg('sipsip', json_text)
+		xwechat.send_template_msg(realm, json_text)
 	end
-
 
 	if ret then
 		return ret

@@ -54,7 +54,7 @@ class Home extends React.Component {
 		const comments = this.state.ticket_comments.map((comment) => {
 			return <a className="weui-media-box weui-media-box_appmsg">
 					<div className="weui-media-box__hd">
-						<img className="weui-media-box__thumb" src="{comment.avatar_url}" alt=""/>
+						<img className="weui-media-box__thumb" src={comment.avatar_url} alt=""/>
 					</div>
 					<div className="weui-media-box__bd">
 						<h4 className="weui-media-box__title">{comment.user_name}：</h4>
