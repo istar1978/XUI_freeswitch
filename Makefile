@@ -51,3 +51,6 @@ tar: out
 
 sync:
 	rsync -raz www/ $(path)
+
+xswitch:
+	scp -r lua www root@xswitch.cn:/usr/local/freeswitch/xui/
