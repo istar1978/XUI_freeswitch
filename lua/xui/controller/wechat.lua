@@ -44,21 +44,16 @@ get('/anyway/:realm', function(params)
 end)
 
 get('/:realm/all', function(params)
-	content_type("text/html")
-	local openid = xtra.session.openid
-	sql = "select a.* from tickets as a left join wechat_users as b on a.current_user_id = b.user_id where b.openid = '" .. openid .. "'"
-	n, tickets = xdb.find_by_sql(sql)
-	freeswitch.consoleLog("ERR",utils.json_encode(tickets))
-	return {"render", "wechat/all_tickets.html", {tickets = tickets}}
+	local user_id = xtra.session.user_id
+	n, tickets = xdb.find_all('tickets', "id desc")
+	return tickets
 end)
 
 get('/:realm/setting', function(params)
-	content_type("text/html")
-	local openid = xtra.session.openid
-	sql = "select a.id,a.headimgurl,a.nickname,b.extn,b.password from wechat_users as a left join users as b on a.user_id = b.id where a.openid = '" .. openid .. "'"
+	local user_id = xtra.session.user_id
+	sql = "select a.id,a.headimgurl,a.nickname,b.extn,b.password from wechat_users as a left join users as b on a.user_id = b.id where a.user_id = '" .. user_id .. "'"
 	n, users = xdb.find_by_sql(sql)
-	freeswitch.consoleLog("ERR",utils.json_encode(users))
-	return {"render", "wechat/setting.html", {users = users[1]}}
+	return users[1]
 end)
 
 

@@ -43,9 +43,9 @@ xtra.start_session()
 xtra.require_login()
 
 get('/', function(params)
-	n, orders = xdb.find_all("tickets", "id desc")
+	n, tickets = xdb.find_all("tickets", "id desc")
 	if (n > 0) then
-		return orders
+		return tickets
 	else
 		return "[]"
 	end
