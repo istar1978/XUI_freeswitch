@@ -15,8 +15,6 @@ class Home extends React.Component {
 	componentDidMount() {
 		var _this = this;
 
-		if (!current_ticket_id) return;
-
 		xFetchJSON("/api/tickets/" + current_ticket_id).then((data) => {
 			console.log("ticket", data);
 			_this.setState({ticket: data});
@@ -25,6 +23,7 @@ class Home extends React.Component {
 		});
 
 		xFetchJSON('/api/tickets/' + current_ticket_id + '/comments').then((data) => {
+			console.log('comments', data);
 			this.setState({ticket_comments: data});
 		});
 	}
@@ -51,8 +50,15 @@ class Home extends React.Component {
 	render() {
 		const _this = this;
 		const ticket = this.state.ticket;
+
+		if (!ticket.id) {
+			return <div><br/><br/><br/><br/><br/><br/>
+				<center>当前没有待处理工单</center>
+			</div>
+		}
+
 		const comments = this.state.ticket_comments.map((comment) => {
-			return <a className="weui-media-box weui-media-box_appmsg">
+			return <a className="weui-media-box weui-media-box_appmsg" key={comment.id}>
 					<div className="weui-media-box__hd">
 						<img className="weui-media-box__thumb" src={comment.avatar_url} alt=""/>
 					</div>
@@ -108,6 +114,12 @@ class Tickets extends React.Component {
 		});
 	}
 
+	handleClick(ticket_id) {
+		console.log(ticket_id);
+		current_ticket_id = ticket_id;
+		ReactDOM.render(<Home/>, document.getElementById('main'));
+	}
+
 	render() {
 		var _this = this;
 		const tickets = this.state.tickets.map((ticket) => {
@@ -117,9 +129,9 @@ class Tickets extends React.Component {
 			}else{
 				status = '已完成';
 			}
-			return <div className="weui-panel__bd">
+			return <div className="weui-panel__bd" key={ticket.id}>
 					<div className="weui-media-box weui-media-box_text">
-						<h4 className="weui-media-box__title">{ticket.subject}</h4>
+						<h4 className="weui-media-box__title" onClick={() => _this.handleClick(ticket.id)}>{ticket.subject}</h4>
 						<p className="weui-media-box__desc">{ticket.content}</p>
 						<ul className="weui-media-box__info">
 							<li className="weui-media-box__info__meta">来电:{ticket.cid_number}</li>

@@ -138,24 +138,26 @@ post('/:id/comments', function(params)
 		xdb.update("tickets", ticket)
 	end
 
+	local user = xdb.find("wechat_users", xtra.session.user_id)
+	-- local user = xdb.find("wechat_users", params.request.current_user_id)
+
+	print(serialize(user))
+
 	local comment = {}
 	-- comment = params.request
 	comment.ticket_id = params.id
 	comment.user_id = params.request.current_user_id
 	comment.content = params.request.content
 	comment.user_name = params.request.user_name or 'Admin' -- TODO: hardcoded
+	comment.avatar_url = user.headimgurl
 	ret = xdb.create_return_object("ticket_comments", comment)
+
 	local member = {}
 	member.ticket_id = params.id
 	member.dealname = params.request.dealname
 	member.content = params.request.content
 
 	print("session" .. serialize(xtra.session))
-
-	local user = xdb.find("wechat_users", xtra.session.user_id)
-	-- local user = xdb.find("wechat_users", params.request.current_user_id)
-
-	print(serialize(user))
 
 
 	ticket = xdb.find("tickets", params.id)
