@@ -223,7 +223,7 @@ class App extends React.Component{
 		const _this = this;
 
 		return <div>
-				<div className="weui-tabbar">
+				<div className="weui-tabbar" style={{position: "fixed"}}>
 					<a className="weui-tabbar__item" onClick={() => _this.handleClick("last")}>
 						<div className="weui-tabbar__icon">
 							<img src="http://weui.github.io/weui/images/icon_nav_button.png" alt=""/>
