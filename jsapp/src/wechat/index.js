@@ -70,9 +70,18 @@ class Home extends React.Component {
 		})
 		return <div>
 			<div className="weui-cells__title">
-			<div className="weui-cell__bd">{ticket.subject}</div>
+			<article class="weui-article">
+				<section>
+					<section>
+						<h3>{ticket.subject}</h3>
+						<p>
+							{ticket.content}
+						</p>
+					</section>
+				</section>
+			</article>
 			<span className="weui-cell__ft">
-				<audio src="">
+				<audio src="{ticket.record_path}">
 				</audio>
 			</span>
 			</div>
