@@ -554,6 +554,7 @@ END;
 CREATE TABLE tickets (
 	id INTEGER PRIMARY Key,
 	cid_number VARCHAR,
+	type VARCHAR,
 	subject VARCHAR,
 	content VARCHAR,
 	status VARCHAR,
