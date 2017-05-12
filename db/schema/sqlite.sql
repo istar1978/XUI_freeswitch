@@ -558,6 +558,7 @@ CREATE TABLE tickets (
 	subject VARCHAR,
 	content VARCHAR,
 	status VARCHAR,
+	record_path VARCHAR,
 	user_id INTEGER,            -- the user created this ticket
 	current_user_id INTEGER,    -- the user processing this ticket
 
