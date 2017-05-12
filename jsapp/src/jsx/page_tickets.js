@@ -39,7 +39,7 @@ import { EditControl, xFetchJSON } from './libs/xtools';
 class NewTicket extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {errmsg: ''};
+		this.state = {errmsg: '', types: []};
 
 		// This binding is necessary to make `this` work in the callback
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -69,6 +69,14 @@ class NewTicket extends React.Component {
 		});
 	}
 
+	componentDidMount() {
+		const _this = this;
+		xFetchJSON("/api/dicts?realm=TICKET").then((data) => {
+			data = data.slice(0,5)
+			_this.setState({types: data});
+		});
+	}
+
 	render() {
 		console.log(this.props);
 
@@ -91,14 +99,21 @@ class NewTicket extends React.Component {
 					<Col sm={10}><FormControl type="input" name="subject" placeholder="" /></Col>
 				</FormGroup>
 
+				<FormGroup controlId="formType">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Type"/></Col>
+
+					<Col sm={10}>
+						<FormControl componentClass="select" name="type">
+							{this.state.types.map(function(t) {
+								return <option key={t.id} value={t.v}>{T.translate(t.v)}</option>;
+							})}
+						</FormControl>
+					</Col>
+				</FormGroup>
+
 				<FormGroup controlId="formContent">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Content"/></Col>
 					<Col sm={10}><FormControl componentClass="textarea" rows="5" name="content" placeholder="" /></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formStatus">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
-					<Col sm={10}><FormControl type="input" name="status" placeholder="" /></Col>
 				</FormGroup>
 
 				<FormGroup>
@@ -273,6 +288,11 @@ class TicketPage extends React.Component {
 				<FormGroup controlId="formCreated_epoch">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Created At"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="created_epoch" defaultValue={ticket.created_epoch}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formType">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Type"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="type" defaultValue={ticket.type}/></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formStatus">
