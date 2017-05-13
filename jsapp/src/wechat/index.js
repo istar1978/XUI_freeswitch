@@ -9,7 +9,7 @@ import { xFetchJSON } from '../jsx/libs/xtools';
 class Home extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null};
+		this.state = {ticket: {},signPackage:[], users: [], user_options: null, ticket_comments: [], deal_user: null};
 	}
 
 	componentDidMount() {
@@ -24,8 +24,106 @@ class Home extends React.Component {
 
 		xFetchJSON('/api/tickets/' + current_ticket_id + '/comments').then((data) => {
 			console.log('comments', data);
-			this.setState({ticket_comments: data});
+			_this.setState({ticket_comments: data});
 		});
+		
+		xFetchJSON('/api/getsign/').then((data) => {
+			_this.setState({'signPackage': data})
+			var signPackage = data;
+		console.log('ddddddddddddddddddddd', JSON.stringify(signPackage));
+		alert(signPackage.appId+'--'+signPackage.timestamp+'--'+signPackage.nonceStr+'--'+signPackage.signature);
+			wx.config({
+			debug: true,
+			appId: "'" + signPackage.appId + "'",
+			timestamp: signPackage.timestamp,
+			nonceStr: "'" + signPackage.nonceStr + "'",
+			signature: "'" + signPackage.signature + "'",
+			jsApiList: [
+				// 所有要调用的 API 都要加到这个列表中
+				'checkJsApi',
+				'openLocation',
+				'getLocation',
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage'
+			]
+		});
+		
+		wx.ready(function () {
+			
+				
+			
+	wx.onMenuShareAppMessage({
+		title: '123',
+		desc: '345',
+		link: 'http://shop.x-y-t.cn',
+		imgUrl: '',
+		trigger: function (res) {
+			// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+			alert('用户点击发送给朋友');
+		},
+		success: function (res) {
+			alert('已分享');
+		},
+		cancel: function (res) {
+			alert('已取消');
+		},
+		fail: function (res) {
+			alert(JSON.stringify(res));
+		}
+	});
+
+	wx.onMenuShareTimeline({
+		title: '123',
+		link: '345',
+		imgUrl: 'http://shop.x-y-t.cn',
+		trigger: function (res) {
+			// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+			alert('用户点击分享到朋友圈');
+		},
+		success: function (res) {
+			alert('已分享');
+		},
+		cancel: function (res) {
+			alert('已取消');
+		},
+		fail: function (res) {
+			alert(JSON.stringify(res));
+		}
+	});
+			
+			
+			
+			
+			
+		});
+		});
+		
+			
+			
+		wx.config({
+			debug: true,
+			appId: "'" + signPackage.appId + "'",
+			timestamp: signPackage.timestamp,
+			nonceStr: "'" + signPackage.nonceStr + "'",
+			signature: "'" + signPackage.signature + "'",
+			jsApiList: [
+				// 所有要调用的 API 都要加到这个列表中
+				'checkJsApi',
+				'openLocation',
+				'getLocation',
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage'
+			]
+		});
+		
+		wx.ready(function () {
+			
+			
+			
+			
+			
+		});
+		
 	}
 
 	handleInput(e) {
