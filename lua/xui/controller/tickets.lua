@@ -192,7 +192,7 @@ post('/:id/comments', function(params)
 			token = xwechat.get_token(realm, wechat.APPID, wechat.APPSEC)
 			freeswitch.consoleLog("ERR", xwechat.access_token(realm))
 
-			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. member.ticket_id
+			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
 			redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 
 			xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, ticket.subject, params.request.content)
@@ -219,6 +219,7 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
+	params.request.status = 'TICKET_ST_NEW'
 	ret = xdb.create_return_id('tickets', params.request)
 
 	if ret then

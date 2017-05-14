@@ -120,6 +120,11 @@ end
 
 
 xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject, content)
+	if #content > 40 then
+		require 'utils'
+		content = utils.utf8sub(content, 1, 40)
+	end
+
 	local msg = {}
 	msg.touser = openid
 	msg.template_id = '7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc'
@@ -138,9 +143,10 @@ xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject
 	msg.data.keyword3.value = 'Admin'
 	msg.data.keyword3.color = '#173177'
 	msg.data.remark = {}
-	msg.data.remark.value = member.content
+	msg.data.remark.value = content
 	msg.data.remark.color = '#173177'
 	json_text = utils.json_encode(msg)
+	print(json_text)
 
 	xwechat.send_template_msg(realm, json_text)
 end

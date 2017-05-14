@@ -71,7 +71,7 @@ class NewTicket extends React.Component {
 
 	componentDidMount() {
 		const _this = this;
-		xFetchJSON("/api/dicts?realm=TICKET").then((data) => {
+		xFetchJSON("/api/dicts?realm=TICKET_TYPE").then((data) => {
 			data = data.slice(0,5)
 			_this.setState({types: data});
 		});
@@ -195,7 +195,7 @@ class TicketPage extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-		xFetchJSON("/api/tickets/" + _this.props.params.id, "").then((data) => {
+		xFetchJSON("/api/tickets/" + _this.props.params.id).then((data) => {
 			console.log("ticket", data);
 			_this.setState({ticket: data});
 		}).catch((e) => {
@@ -229,12 +229,7 @@ class TicketPage extends React.Component {
 
 		const ticket = this.state.ticket;
 		var status = '';
-		if(ticket.status == 1){
-			status = '未完成';
-		}
-		if(ticket.status == 2){
-			status = '已完成';
-		}
+
 		let save_btn = "";
 		let hidden_user = "";
 		const users = this.state.users;
@@ -296,7 +291,17 @@ class TicketPage extends React.Component {
 
 				<FormGroup controlId="formStatus">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="status" defaultValue={ticket.status}/></Col>
+					<Col sm={10}><FormControl.Static><T.span text={ticket.status}/></FormControl.Static></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formUser">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="派单人"/></Col>
+					<Col sm={10}><FormControl.Static><T.span text={ticket.user_id}/></FormControl.Static></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formUser1">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="执行人"/></Col>
+					<Col sm={10}><FormControl.Static><T.span text={ticket.current_user_id}/></FormControl.Static></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formCaller_id_name">
@@ -307,6 +312,11 @@ class TicketPage extends React.Component {
 				<FormGroup controlId="formSubject">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Subject"/></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="subject" defaultValue={ticket.subject}/></Col>
+				</FormGroup>
+
+				<FormGroup controlId="formContent">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Content"/></Col>
+					<Col sm={10}><EditControl componentClass="textarea" edit={this.state.edit} name="content" defaultValue={ticket.content}/></Col>
 				</FormGroup>
 			</Form>
 			<br/>

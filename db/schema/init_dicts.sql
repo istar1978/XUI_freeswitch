@@ -87,8 +87,8 @@ INSERT INTO dicts (realm, k, v) VALUES ('MCAST_SAMPLE_RATE', '48000', '48000');
 INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'delete-all-outbound-member-on-startup', 'false');
 INSERT INTO dicts (realm, k, v) VALUES ('FIFO', 'outbound-strategy', 'ringall');
 
-INSERT INTO dicts (realm, k, v) VALUES ('TICKET', 'TICKET_ST_NEW', 'TICKET_ST_NEW');
-INSERT INTO dicts (realm, k, v) VALUES ('TICKET', 'TICKET_ST_PROCESSING', 'TICKET_ST_PROCESSING');
-INSERT INTO dicts (realm, k, v) VALUES ('TICKET', 'TICKET_ST_DONE', 'TICKET_ST_DONE');
+INSERT INTO dicts (realm, k, v) VALUES ('TICKET_STATE', 'TICKET_ST_NEW', 'TICKET_ST_NEW');
+INSERT INTO dicts (realm, k, v) VALUES ('TICKET_STATE', 'TICKET_ST_PROCESSING', 'TICKET_ST_PROCESSING');
+INSERT INTO dicts (realm, k, v) VALUES ('TICKET_STATE', 'TICKET_ST_DONE', 'TICKET_ST_DONE');
 
 -- END
