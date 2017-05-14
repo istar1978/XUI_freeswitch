@@ -30,6 +30,12 @@
  */
 ]]
 
+local do_debug = true
+
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+
 content_type("application/json")
 
 require 'xdb'
@@ -138,7 +144,8 @@ put('/:id/assign/:dest_id',function(params)
 end)
 
 post('/:id/comments', function(params)
-	print(serialize(params))
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
+
 	ticket = {}
 	ticket.id = params.id
 	ticket.current_user_id = params.request.current_user_id
@@ -146,72 +153,50 @@ post('/:id/comments', function(params)
 		xdb.update("tickets", ticket)
 	end
 
-	local user = xdb.find("wechat_users", xtra.session.user_id)
-	-- local user = xdb.find("wechat_users", params.request.current_user_id)
+	local user = xdb.find("users", xtra.session.user_id)
+	local weuser = xdb.find_one("wechat_users", {
+		user_id = xtra.session.user_id
+	})
 
-	print(serialize(user))
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(xtra.session))
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(user))
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(weuser))
 
 	local comment = {}
-	-- comment = params.request
 	comment.ticket_id = params.id
-	comment.user_id = params.request.current_user_id
+	comment.user_id = xtra.session.user_id
 	comment.content = params.request.content
-	comment.user_name = params.request.user_name or 'Admin' -- TODO: hardcoded
-	comment.avatar_url = user.headimgurl
+	comment.user_name = user.name
+
+	if weuser then
+		comment.avatar_url = weuser.headimgurl
+	end
+
 	ret = xdb.create_return_object("ticket_comments", comment)
 
-	local member = {}
-	member.ticket_id = params.id
-	member.dealname = params.request.dealname
-	member.content = params.request.content
-
-	print("session" .. serialize(xtra.session))
-
-
 	ticket = xdb.find("tickets", params.id)
-
-print("ticket")
-print(serialize(ticket))
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(ticket))
 
 	realm = "xyt" -- fixme hardcoded
 
-	if ticket then
-		ret.avatar_url = user.headimgurl
-		local openid = user.openid
-		local wechat = m_dict.get_obj('WECHAT/' .. realm)
-		-- token = xwechat.access_token('realm')
-		token = xwechat.get_token(realm, wechat.APPID, wechat.APPSEC)
-		freeswitch.consoleLog("ERR", xwechat.access_token(realm))
-		-- xwechat.get_callback_ip()
-		-- print(xwechat.sign(realm, "a", "b", "c"))
+	if ticket and ticket.current_user_id then
+		-- todo, send to all users subscribed to this ticket ?
 
-		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. member.ticket_id
-		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
+		local weuser = xdb.find_one("wechat_users", {
+			user_id = ticket.current_user_id
+		})
 
-		local msg = {}
-		msg.touser = openid
-		msg.template_id = '7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc'
-		msg.url = redirect_uri
-		msg.data = {}
-		msg.data.fist = {}
-		msg.data.fist.value = ticket.subject
-		msg.data.fist.color = '#173177'
-		msg.data.keyword1 = {}
-		msg.data.keyword1.value = ticket.subject
-		msg.data.keyword1.color = '#173177'
-		msg.data.keyword2 = {}
-		msg.data.keyword2.value = os.date("%Y年%m月%d日%H时%M分")
-		msg.data.keyword2.color = '#173177'
-		msg.data.keyword3 = {}
-		msg.data.keyword3.value = 'Admin'
-		msg.data.keyword3.color = '#173177'
-		msg.data.remark = {}
-		msg.data.remark.value = member.content
-		msg.data.remark.color = '#173177'
-		json_text = utils.json_encode(msg)
+		if weuser then
+			local wechat = m_dict.get_obj('WECHAT/' .. realm)
+			-- token = xwechat.access_token('realm')
+			token = xwechat.get_token(realm, wechat.APPID, wechat.APPSEC)
+			freeswitch.consoleLog("ERR", xwechat.access_token(realm))
 
-		print(json_text)
-		xwechat.send_template_msg(realm, json_text)
+			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. member.ticket_id
+			redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
+
+			xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, ticket.subject, params.request.content)
+		end
 	end
 
 	if ret then

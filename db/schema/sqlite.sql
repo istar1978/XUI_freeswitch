@@ -606,7 +606,7 @@ CREATE TABLE wechat_users (
 	language VARCHAR,
 	privilege VARCHAR,
 
-	wechat_type VARCHAR, -- jsapp | weapp
+	app_type VARCHAR, -- jsapp | weapp
 
 	watermark_appid VARCHAR,
 	watermark_timestamp VARCHAR,

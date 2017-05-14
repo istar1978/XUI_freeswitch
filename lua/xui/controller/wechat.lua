@@ -176,39 +176,43 @@ post('/:realm/link', function(params)
 
 	user = xdb.find_one("users", cond)
 
-	wechat = m_dict.get_obj('WECHAT/' .. params.realm)
-	session = xwechat.get_wx_openid(wechat.APPID, wechat.APPSEC, params.request.code)
+	if user then
+		wechat = m_dict.get_obj('WECHAT/' .. params.realm)
+		session = xwechat.get_wx_openid(wechat.APPID, wechat.APPSEC, params.request.code)
 
-	print("session:\n")
-	session = utils.json_decode(session)
-	print(serialize(session))
+		print("session:\n")
+		session = utils.json_decode(session)
+		print(serialize(session))
 
-	if session.session_key then
-		session_3rd = xtra.create_uuid()
-		print('session_3rd: ' .. session_3rd)
+		if session.session_key then
+			session_3rd = xtra.create_uuid()
+			print('session_3rd: ' .. session_3rd)
 
-		obj = {
-			user_id = user.id,
-			session_3rd = session_3rd,
-			session_key = session.session_key,
-			openid = session.openid,
-			nickname = params.request.userInfo.nickName,
-			sex = params.request.userInfo.gender,
-			language = params.request.userInfo.language,
-			city = params.request.userInfo.city,
-			province = params.request.userInfo.province,
-			country = params.request.userInfo.country
-		}
+			obj = {
+				wechat_type = 'weapp',
+				user_id = user.id,
+				session_3rd = session_3rd,
+				session_key = session.session_key,
+				openid = session.openid,
+				nickname = params.request.userInfo.nickName,
+				sex = params.request.userInfo.gender,
+				language = params.request.userInfo.language,
+				city = params.request.userInfo.city,
+				province = params.request.userInfo.province,
+				country = params.request.userInfo.country
+			}
 
-		xdb.create("wechat_users", obj)
+			xdb.create("wechat_users", obj)
 
-		print("obj\n")
-		print(serialize(obj))
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(obj))
 
-		xtra.session_uuid = session_3rd
-		xtra.save_session("user_id", user.id)
+			xtra.session_uuid = session_3rd
+			xtra.save_session("user_id", user.id)
 
-		return session_3rd;
+			return session_3rd;
+		end
+	else
+		return 403
 	end
 
 	return 200

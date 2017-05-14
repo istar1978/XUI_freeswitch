@@ -119,7 +119,33 @@ xwechat.redirect_uri = function(appid, redirect_uri, state)
 end
 
 
--- wechat xiaochengxu
+xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject, content)
+	local msg = {}
+	msg.touser = openid
+	msg.template_id = '7cYHIHuEJe5cKey0KOKIaCcjhUX2vEVHt1NcUAPm7xc'
+	msg.url = redirect_uri
+	msg.data = {}
+	msg.data.fist = {}
+	msg.data.fist.value = subject
+	msg.data.fist.color = '#173177'
+	msg.data.keyword1 = {}
+	msg.data.keyword1.value = ticket.subject
+	msg.data.keyword1.color = '#173177'
+	msg.data.keyword2 = {}
+	msg.data.keyword2.value = os.date("%Y年%m月%d日%H时%M分")
+	msg.data.keyword2.color = '#173177'
+	msg.data.keyword3 = {}
+	msg.data.keyword3.value = 'Admin'
+	msg.data.keyword3.color = '#173177'
+	msg.data.remark = {}
+	msg.data.remark.value = member.content
+	msg.data.remark.color = '#173177'
+	json_text = utils.json_encode(msg)
+
+	xwechat.send_template_msg(realm, json_text)
+end
+
+-- weapp
 xwechat.get_wx_openid = function(appid, secret, code)
 	URL = "https://api.weixin.qq.com/sns/jscode2session?appid=" .. appid ..
 		"&secret=" .. secret .. "&js_code=" .. code ..
@@ -127,3 +153,4 @@ xwechat.get_wx_openid = function(appid, secret, code)
 	api = freeswitch.API()
 	return api:execute("curl", URL)
 end
+
