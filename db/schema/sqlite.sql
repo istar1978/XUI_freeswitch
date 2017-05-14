@@ -219,7 +219,7 @@ BEGIN
 END;
 
 
-CREATE TABLE media_files(
+CREATE TABLE media_files (
 	id INTEGER PRIMARY KEY,
 	type VARCHAR,          -- FAX, PDF, AUDIO, VIDEO, AUDIO_CONF, VIDEO_CONF
 	name VARCHAR NOT NULL,
@@ -606,7 +606,7 @@ CREATE TABLE wechat_users (
 	language VARCHAR,
 	privilege VARCHAR,
 
-	wechat_type VARCHAR, -- html | wx (small program)
+	wechat_type VARCHAR, -- jsapp | weapp
 
 	watermark_appid VARCHAR,
 	watermark_timestamp VARCHAR,
@@ -616,7 +616,7 @@ CREATE TABLE wechat_users (
 	refresh_token VARCHAR,
 	token_expire INTEGER,
 
-	session_key VARCHAR,  -- wx session key
+	session_key VARCHAR,  -- weapp session key
 	session_3rd VARCHAR,  -- 3rd_session
 
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),

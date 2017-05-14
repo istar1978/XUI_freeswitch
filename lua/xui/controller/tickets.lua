@@ -117,13 +117,21 @@ post('/hb', function(params)
 	end
 end)
 
-get('/end/:id',function(params)
+put('/:id/close',function(params)
 	local pid = params.id
-	ret = xdb.update_by_cond("tickets", { id = pid }, { status = '2' })
-	if ret then
-		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/" .. pid
-		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
-		redirect(redirect_uri)
+	ret = xdb.update_by_cond("tickets", { id = pid }, { status = 'TICKET_ST_DONE' })
+	if ret == 1 then
+		return 200
+	else
+		return 500
+	end
+end)
+
+put('/:id/assign/:dest_id',function(params)
+	local pid = params.id
+	ret = xdb.update_by_cond("tickets", { id = pid }, { current_user_id = params.dest_id })
+	if ret == 1 then
+		return 200
 	else
 		return 500
 	end
