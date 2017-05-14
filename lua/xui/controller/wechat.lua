@@ -74,13 +74,13 @@ get('/:realm/tickets/:id', function(params)
 	code = env:getHeader("code")
 	wechat = m_dict.get_obj('WECHAT/' .. realm)
 	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
-	-- print(ret)
+	-- utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", ret)
 	jret = utils.json_decode(ret)
 
 	if jret.openid then
 		wechat_user = xdb.find_one("wechat_users", {openid = jret.openid})
 		if wechat_user then
-			xtra.save_session("user_id", wechat_user.id)
+			xtra.save_session("user_id", wechat_user.user_id)
 		end
 	else -- on page refresh, we got a code already used error
 		wechat_user = xdb.find_one("wechat_users", {code = code})
