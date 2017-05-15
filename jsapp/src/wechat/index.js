@@ -85,7 +85,7 @@ class Home extends React.Component {
 
 		if (!ticket.id) {
 			return <div><br/><br/><br/><br/><br/><br/>
-				<center>当前没有待处理工单x</center>
+				<center>当前没有待处理工单</center>
 			</div>
 		}
 
