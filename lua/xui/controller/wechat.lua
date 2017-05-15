@@ -77,7 +77,7 @@ get('/:realm/tickets/:id', function(params)
 	code = env:getHeader("code")
 	wechat = m_dict.get_obj('WECHAT/' .. realm)
 	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
-	-- utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", ret)
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", ret)
 	jret = utils.json_decode(ret)
 
 	if jret.openid then
@@ -147,6 +147,24 @@ get('/:realm/tickets/:id', function(params)
 		wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
 		return {"render", "wechat/login.html", wechat_user}
 	end
+end)
+
+
+get('/:realm/jsapi_ticket', function(params)
+	sha1 = require("sha1")
+	local timestamp = os.time()
+	local nonceStr = 'AbEfgh' .. timestamp
+	local url = 'http://shop.x-y-t.cn'
+	wechat = m_dict.get_obj('WECHAT/xyt')
+	access_token = xwechat.get_token('WECHAT/xyt',wechat.APPID,wechat.APPSEC)
+	local gurl = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=' .. access_token
+	local body = api:execute("curl", gurl)
+	local res = utils.json_decode(body)
+	local ticket = res.ticket
+	local str = "jsapi_ticket=" .. ticket .. "&noncestr=" .. nonceStr .. "&timestamp=" .. timestamp .. "&url=" .. url
+	local signature = sha1(str)
+	freeswitch.consoleLog('ERR',signature)
+	return {appId = wechat.APPID, nonceStr = nonceStr, timestamp = timestamp, url = url, signature = signature, ticket = ticket}
 end)
 
 post('/:realm/login', function(params) -- login
