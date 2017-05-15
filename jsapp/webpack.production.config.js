@@ -8,6 +8,13 @@ var config = {
         "wechat": "./src/wechat/index.js"
     },
 
+    resolve: {
+        alias: {
+            'react': 'react-lite',
+            'react-dom': 'react-lite'
+        }
+    },
+
     output: {
         path: '../www/assets',
         filename: 'js/jsx/[name].[chunkhash:8].js',
