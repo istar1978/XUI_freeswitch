@@ -8,7 +8,7 @@ var config = {
         "wechat": "./src/wechat/index.js"
     },
 
-    resolve: {
+    noresolve: {
         alias: {
             'react': 'react-lite',
             'react-dom': 'react-lite'
