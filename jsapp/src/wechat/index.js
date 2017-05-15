@@ -29,10 +29,10 @@ class Home extends React.Component {
 
 		wx.ready(function () {
 			wx.onMenuShareAppMessage({
-				title: '123',
-				desc: '345',
-				link: 'http://shop.x-y-t.cn',
-				imgUrl: '',
+				title: _this.state.ticket.subject,
+				desc: _this.state.ticket.subject,
+				link: 'http://shop.x-y-t.cn/api/wechat/xyt/tickets/' + current_ticket_id,
+				imgUrl: 'http://shop.x-y-t.cn/assets/img/ticket.png',
 				trigger: function (res) {
 					// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
 					alert('用户点击发送给朋友');
@@ -68,13 +68,13 @@ class Home extends React.Component {
 			});
 		});
 
-		xFetchJSON('/api/wechat/xyt/jsapi_ticket').then((data) => {
+		xFetchJSON('/api/wechat/xyt/jsapi_ticket?url=' + escape(location.href.split('#')[0])).then((data) => {
 			_this.setState({'signPackage': data})
 			var signPackage = data;
 			console.log('signPackage', signPackage);
 
 			wx.config({
-				debug: true,
+				// debug: true,
 				appId: signPackage.appId,
 				timestamp: signPackage.timestamp,
 				nonceStr: signPackage.nonceStr,

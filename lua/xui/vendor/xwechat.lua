@@ -51,7 +51,6 @@ xwechat.get_token = function(realm, AppID, AppSec)
 	api = freeswitch.API()
 
 	body = api:execute("curl", URL)
-	print(body)
 	json = utils.json_decode(body)
 	-- print(serialize(list))
 
@@ -60,7 +59,7 @@ xwechat.get_token = function(realm, AppID, AppSec)
 end
 
 xwechat.get_js_ticket = function(realm)
-	URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" .. xwechat.access_token() .. "&type=jsapi"
+	URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" .. xwechat.access_token(realm) .. "&type=jsapi"
 	api = freeswitch.API()
 
 	body = api:execute("curl", URL)
