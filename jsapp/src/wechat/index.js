@@ -6,6 +6,13 @@ import T from 'i18n-react';
 import { xFetchJSON } from '../jsx/libs/xtools';
 
 var is_wx_ready = false;
+var to_tid = ''
+
+const ticket_status = {
+	"TICKET_ST_NEW": "未处理",
+	"TICKET_ST_PROCESSING": "处理中",
+	"TICKET_ST_DONE": "已完成"
+}
 
 class Home extends React.Component {
 	constructor(props) {
@@ -60,23 +67,13 @@ class Home extends React.Component {
 		});
 	}
 
-	handleInput(e) {
-		console.log('input', e.target.value);
-		this.state.comment_content = e.target.value;
+	handleComment(e) {
+		to_tid = e;
+		ReactDOM.render(<Comment/>, document.getElementById('main'));
 	}
-
-	handleSubmit() {
-		console.log('submit', this.state.comment_content);
-		xFetchJSON("/api/tickets/" + current_ticket_id + "/comments", {
-			method: 'POST',
-			body: JSON.stringify({content: this.state.comment_content})
-		}).then((data) => {
-			console.log("res", data)
-			const comments = this.state.ticket_comments.unshift(data);
-			this.setState({comments: comments});
-		}).catch((e) => {
-			console.error("comment err", e);
-		});
+	
+	handleAllot() {
+		ReactDOM.render(<Userlist/>, document.getElementById('main'));
 	}
 
 	render() {
@@ -95,47 +92,233 @@ class Home extends React.Component {
 						<img className="weui-media-box__thumb" src={comment.avatar_url} alt=""/>
 					</div>
 					<div className="weui-media-box__bd">
-						<h4 className="weui-media-box__title">{comment.user_name}：</h4>
-						<p className="weui-media-box__desc">{comment.content}</p>
+					
+					<div className="weui-form-preview__item">
+						<span className="weui-form-preview__label">
+							<h4 className="weui-media-box__title">{comment.user_name}:</h4>
+							<p className="weui-media-box__desc">{comment.content}</p>
+						</span>
+						<span className="weui-form-preview__value" style={{fontSize:"12px",float:"right",color:"gray"}}>{ticket.created_epoch}</span>
+						</div>
 					</div>
 				</a>
 		})
 		return <div>
 			<div className="weui-cells__title">
-			<article className="weui-article">
-				<section>
-					<section>
-						<h3>{ticket.subject}</h3>
-						<p>
-							{ticket.content}
-						</p>
-					</section>
-				</section>
-			</article>
-			<span className="weui-cell__ft">
-				<audio src="{ticket.record_path}">
-				</audio>
-			</span>
+				<h1 style={{ textAlign:"center" }}>{ticket.subject}</h1>
+			{/* <p>
+					{ticket.content}
+			</p> */}
 			</div>
-			<div className="weui-cells weui-cells_form">
+		<div className="weui-form-preview">
+			<div className="weui-form-preview__bd">
+				<div className="weui-form-preview__item">
+					<span style={{color:"black"}} className="weui-form-preview__label">时间</span>
+					<span className="weui-form-preview__value">{ticket.created_epoch}</span>
+				</div>
+			</div>
+			
+			
+			<div className="weui-form-preview__ft">
+			</div>
+			<div className="weui-form-preview__bd">
+				<div className="weui-form-preview__item">
+					<span style={{color:"black"}} className="weui-form-preview__label">派单人</span>
+					<span className="weui-form-preview__value">{ticket.user_name}</span>
+				</div>
+			</div>
+			
+			<div className="weui-form-preview__ft">
+			</div>
+			<div className="weui-form-preview__bd">
+				<div className="weui-form-preview__item">
+					<span style={{color:"black"}} className="weui-form-preview__label">执行人</span>
+					<span className="weui-form-preview__value">{ticket.current_user_name}</span>
+				</div>
+			</div>
+			
+			<div className="weui-form-preview__ft">
+			</div>
+			<div className="weui-form-preview__bd">
+				<div className="weui-form-preview__item">
+					<span style={{color:"black"}} className="weui-form-preview__label">类型</span>
+					<span className="weui-form-preview__value"><T.span text={ticket.type}/></span>
+				</div>
+			</div>
+			
+			<div className="weui-form-preview__ft">
+			</div>
+			<div className="weui-form-preview__bd">
+				<div className="weui-form-preview__item">
+					<span style={{color:"black"}} className="weui-form-preview__label">状态</span>
+					<span className="weui-form-preview__value">{ticket_status[ticket.status]}</span>
+				</div>
+			</div>
+			
+		</div>
+		<article className="weui-article">
+			<section>
+				<p>{ticket.content}</p>
+			</section>
+		</article>
+		{/* <a className="weui-form-preview__btn weui-form-preview__btn_primary" onClick={ () => _this.handleAllot()}>派发</a> */}
+			<a className="weui-form-preview__btn weui-form-preview__btn_primary" onClick={() => _this.handleComment(ticket.id)}>添加评论</a>
+			{/* <div className="weui-cells weui-cells_form">
 				<div className="weui-cell">
 					<div className="weui-cell__bd">
 						<textarea className="weui-textarea" placeholder="请输入内容" onChange={this.handleInput.bind(this)} rows="3"></textarea>
 					</div>
 				</div>
-			</div>
-		<div className="weui-btn-area" onClick={this.handleSubmit.bind(this)}>
+			</div> */}
+		{/*  <div className="weui-btn-area" onClick={this.handleSubmit.bind(this)}>
 			<a className="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">提交</a>
-		</div>
+		</div> */}
 		<div className="weui-panel weui-panel_access">
-			<div className="weui-panel__hd">工单详情</div>
 			<div className="weui-panel__bd">
 			{comments}
 			</div>
 		</div>
 		</div>
 	}
+}
 
+class Userlist extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {wechat_users: []};
+
+	}
+
+	componentDidMount() {
+		xFetchJSON("/api/wechat_users").then((data) => {
+			console.log("wechat_users", data)
+			this.setState({wechat_users: data})
+		}).catch((msg) => {
+			
+		});
+	}
+
+	render(){
+		var wechat_users = this.state.wechat_users.map(function(row) {
+			return <div className="weui-form-preview">
+						<a className="weui-media-box weui-media-box_appmsg" key="">
+							<div className="weui-media-box__hd">
+								<img className="weui-media-box__thumb" src={row.headimgurl} alt=""/>
+							</div>
+							<div className="weui-media-box__bd">
+								<div className="weui-form-preview__item">
+									<span className="weui-form-preview__value" style={{fontSize:"12px",color:"black"}}>{row.name}&nbsp;&nbsp;&nbsp;{row.extn}&nbsp;&nbsp;&nbsp;{row.nickname}</span>
+								</div>
+							</div>
+						</a>
+					</div>
+				})
+		
+		
+		return <div>
+			<div className="weui-form-preview__bd">
+				<div className="weui-form-preview__item">
+					<span style={{color:"black"}} className="weui-form-preview__label">选择用户</span>
+				</div>
+			</div>
+			{wechat_users}
+		</div>
+	}
+}
+
+class Comment extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {ticket_comments: [], content: []};
+	}
+	
+	componentDidMount() {
+		xFetchJSON("/api/tickets/" + to_tid).then((data) => {
+			console.log("comments_aaaaa", data)
+			this.setState({content: data})
+		}).catch((msg) => {
+			
+		});
+	}
+	
+	handleInput(e) {
+		console.log('input', e.target.value);
+		this.state.comment_content = e.target.value;
+	}
+
+	addComments(e) {
+		console.log('submit', this.state.comment_content);
+		if(this.state.comment_content){
+			xFetchJSON("/api/tickets/" + to_tid + "/comments", {
+				method: 'POST',
+				body: JSON.stringify({content: this.state.comment_content})
+			}).then((data) => {
+				current_ticket_id = to_tid;
+				ReactDOM.render(<Home/>, document.getElementById('main'));
+			}).catch((e) => {
+			
+			});
+		}
+	}
+	
+	render(){
+		const _this = this;
+		const comments = this.state.ticket_comments.map((comment) => {
+			return <a className="weui-media-box weui-media-box_appmsg" key={comment.id}>
+					<div className="weui-media-box__hd">
+						<img className="weui-media-box__thumb" src={comment.avatar_url} alt=""/>
+					</div>
+					<div className="weui-media-box__bd">
+					
+					<div className="weui-form-preview__item">
+						<span className="weui-form-preview__label">
+							<h4 className="weui-media-box__title">{comment.user_name}:</h4>
+							<p className="weui-media-box__desc">{comment.content}</p>
+						</span>
+						<span className="weui-form-preview__value" style={{fontSize:"12px",float:"right",color:"gray"}}>{ticket.created_epoch}</span>
+						</div>
+					</div>
+				</a>
+		})
+		
+		
+		return <div className="weui-form-preview">
+				<div className="weui-form-preview__bd">
+					<div className="weui-form-preview__item">
+						<span style={{color:"black"}} className="weui-form-preview__label">类型</span>
+						<span className="weui-form-preview__value">{this.state.content.type}</span>
+					</div>
+				</div>
+				<div className="weui-form-preview__ft">
+				</div>
+				<div className="weui-form-preview__bd">
+					<div className="weui-form-preview__item">
+						<span style={{color:"black"}} className="weui-form-preview__label">状态</span>
+						<span className="weui-form-preview__value">{ticket_status[this.state.content.status]}</span>
+					</div>
+				</div>
+				<div className="weui-form-preview__ft">
+				</div>
+				<article className="weui-article">
+					<section>
+						<p>{this.state.content.content}</p>
+					</section>
+				</article>
+				{/* <a className="weui-form-preview__btn weui-form-preview__btn_primary">派发</a>
+				<br/> */}
+				<div className="weui-cells weui-cells_form">
+				  <div className="weui-cell">
+					<div className="weui-cell__bd">
+					  <textarea className="weui-textarea" placeholder="请输入内容" onChange={this.handleInput.bind(this)} rows="3"></textarea>
+					</div>
+				  </div>
+				</div>
+				<div className="weui-cells weui-cells_form">
+					<a href="javascript:;" className="weui-btn weui-btn_primary" onClick={ () => _this.addComments()}>添加评论</a>
+				</div>
+				
+			</div>
+	}
 }
 
 class Tickets extends React.Component {
@@ -146,7 +329,6 @@ class Tickets extends React.Component {
 
 	componentDidMount() {
 		var _this = this;
-
 		xFetchJSON("/api/wechat/xyt/all").then((data) => {
 			console.log("ticket", data);
 			_this.setState({tickets: data});
@@ -164,22 +346,17 @@ class Tickets extends React.Component {
 	render() {
 		var _this = this;
 		const tickets = this.state.tickets.map((ticket) => {
-			var status = '';
-			if(ticket.status == 1){
-				status = '未完成';
-			}else{
-				status = '已完成';
-			}
-			return <div className="weui-panel__bd" key={ticket.id}>
+			return <div className="weui-panel__bd" onClick={() => _this.handleClick(ticket.id)} key={ticket.id} >
 					<div className="weui-media-box weui-media-box_text">
-						<h4 className="weui-media-box__title" onClick={() => _this.handleClick(ticket.id)}>{ticket.subject}</h4>
+						<h4 className="weui-media-box__title">{ticket.subject}</h4>
 						<p className="weui-media-box__desc">{ticket.content}</p>
 						<ul className="weui-media-box__info">
 							<li className="weui-media-box__info__meta">来电:{ticket.cid_number}</li>
 							<li className="weui-media-box__info__meta">时间:{ticket.created_epoch}</li>
-							<li className="weui-media-box__info__meta weui-media-box__info__meta_extra">状态:{status}</li>
+							<li className="weui-media-box__info__meta">状态:{ticket_status[ticket.status]}</li>
 						</ul>
 					</div>
+					<div className="weui-form-preview__ft"></div>
 				</div>
 		});
 		console.log("tickets", tickets);
@@ -187,7 +364,6 @@ class Tickets extends React.Component {
 				<div className="weui-panel__hd">全部工单</div>
 					{tickets}
 				</div>
-				
 	}
 }
 
@@ -276,6 +452,7 @@ class App extends React.Component{
 		const _this = this;
 
 		return <div>
+			<div style={{width:"100%",height:"50px"}}></div>
 				<div className="weui-tabbar" style={{position: "fixed"}}>
 					<a className="weui-tabbar__item" onClick={() => _this.handleClick("last")}>
 						<div className="weui-tabbar__icon">
@@ -289,7 +466,7 @@ class App extends React.Component{
 						</div>
 						<p className="weui-tabbar__label">全部</p>
 					</a>
-					<a className="weui-tabbar__item" onClick={() => _this.handleClick("settings")}>
+					<a className="weui-tabbar__item">
 						<div className="weui-tabbar__icon">
 							<img src="http://weui.github.io/weui/images/icon_nav_cell.png" alt=""/>
 						</div>

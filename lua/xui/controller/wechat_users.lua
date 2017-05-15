@@ -39,9 +39,17 @@ xdb.bind(xtra.dbh)
 
 get('/', function(params)
 		n, wechatusers = xdb.find_all("wechat_users")
+		local wechat_users = {}
 
-		if (wechatusers) then
-			return wechatusers
+		for i, v in pairs(wechatusers) do
+			user = xdb.find("users",v['user_id'])
+			v['extn'] = user['extn']
+			v['name'] = user['name']
+			table.insert(wechat_users,v)
+		end
+
+		if (wechat_users) then
+			return wechat_users
 		else
 			return "[]"
 		end

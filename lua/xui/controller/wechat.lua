@@ -88,6 +88,7 @@ get('/:realm/tickets/:id', function(params)
 	else
 		ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
 		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", ret)
+
 		jret = utils.json_decode(ret)
 
 		if jret.openid then
