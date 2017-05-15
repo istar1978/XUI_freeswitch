@@ -32,9 +32,12 @@
 
 content_type("text/html")
 require 'xdb'
-xdb.bind(xtra.dbh)
 require 'xwechat'
 require 'm_dict'
+require 'utils'
+require 'xtra_config'
+xdb.bind(xtra.dbh)
+
 xtra.start_session();
 
 function __FILE__() return debug.getinfo(2,'S').source end
@@ -100,6 +103,28 @@ get('/:realm/tickets/:id', function(params)
 		end
 
 		if u.user_id and not (u.user_id == '') then
+		
+		
+		
+			-- --待封装
+			-- local timestamp = os.time()
+			-- local nonceStr = 'AbEfgh' .. timestamp
+			-- local url = 'http://shop.x-y-t.cn'
+			-- wechat = m_dict.get_obj('WECHAT/xyt')
+			-- access_token = xwechat.get_token('WECHAT/xyt',wechat.APPID,wechat.APPSEC)
+			-- local gurl = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=' .. access_token
+			-- local body = api:execute("curl", gurl)
+			-- local res = utils.json_decode(body)
+			-- local ticket = res.ticket
+			-- local str = "jsapi_ticket=" .. ticket .. "&noncestr=" .. nonceStr .. "&timestamp=" .. timestamp .. "&url=" .. url
+
+			-- sha1 = require("sha1")
+			-- local signature = sha1(str)
+			-- freeswitch.consoleLog('ERR',signature)
+
+
+
+
 			return {"render", "wechat/tickets1.html", {ticket_id = params.id}}
 		else
 			u.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
