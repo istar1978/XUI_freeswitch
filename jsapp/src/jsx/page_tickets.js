@@ -72,7 +72,6 @@ class NewTicket extends React.Component {
 	componentDidMount() {
 		const _this = this;
 		xFetchJSON("/api/dicts?realm=TICKET_TYPE").then((data) => {
-			data = data.slice(0,5)
 			_this.setState({types: data});
 		});
 	}

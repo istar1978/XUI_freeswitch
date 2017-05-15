@@ -409,6 +409,16 @@ LANGUAGES["zh"] = {
 	"Create New Ticket": "新建工单",
 	Content: "内容",
 
+	Headimgurl: "头像",
+	Nickname: "昵称",
+	Sex: "性别",
+	Province: "省份",
+	City: "城市",
+	Country: "国家",
+	Language: "语言",
+	Privilege: "权限",
+	App_type: "终端",
+
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
 };
