@@ -78,8 +78,12 @@ get('/:realm/tickets/:id', function(params)
 	wechat = m_dict.get_obj('WECHAT/' .. realm)
 
 	if not code then
-		redirect_uri = env:getHeader("HTTP-Request-URI")
+		redirect_uri = "http://" .. env:getHeader("Host") .. env:getHeader("HTTP-Request-URI")
+		redirect_uri = "http://shop.x-y-t.cn/api/wechat/" .. params.realm .. "/tickets/" .. params.id
 		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
+		if do_debug then
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", redirect_uri)
+		end
 		redirect(redirect_uri)
 	else
 		ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
