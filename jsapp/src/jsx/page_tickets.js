@@ -227,7 +227,15 @@ class TicketPage extends React.Component {
 		})
 
 		const ticket = this.state.ticket;
+
 		var status = '';
+		var style = null;
+		if(ticket.status == "TICKET_ST_NEW"){
+			style = {color: 'red'};
+		}
+		if(ticket.status == 'TICKET_ST_DONE'){
+			style = {color: 'green'};
+		}
 
 		let save_btn = "";
 		let hidden_user = "";
@@ -290,7 +298,7 @@ class TicketPage extends React.Component {
 
 				<FormGroup controlId="formStatus">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
-					<Col sm={10}><FormControl.Static><T.span text={ticket.status}/></FormControl.Static></Col>
+					<Col sm={10}><FormControl.Static><T.span text={ticket.status} style={style}/></FormControl.Static></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formUser">
@@ -401,18 +409,19 @@ class TicketsPage extends React.Component {
 		let formClose = () => this.setState({ formShow: false });
 		var rows = _this.state.rows.map(function(row) {
 			var status = '';
-			if(row.status == 1){
-				status = '未完成';
+			var style = null;
+			if(row.status == "TICKET_ST_NEW"){
+				style = {color: 'red'};
 			}
-			if(row.status == 2){
-				status = '已完成';
+			if(row.status == 'TICKET_ST_DONE'){
+				style = {color: 'green'};
 			}
 			return <tr key={row.id}>
 				<td>{row.id}</td>
 				<td>{row.cid_number}</td>
 				<td>{row.subject}</td>
 				<td>{row.created_epoch}</td>
-				<td><T.span text={status}/></td>
+				<td><T.span text={row.status} style={style}/></td>
 				<td><Link to={`/tickets/${row.id}`}><T.span text="开始处理"/></Link> | <T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
 			</tr>
 		})
