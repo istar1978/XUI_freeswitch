@@ -17,7 +17,6 @@
 	</center>
 
 	<br/>
-	<br/>
 
 	<form method="post" action="{{ login_url }}">
 		<div class="weui-cells weui-cells_form">
@@ -36,6 +35,7 @@
 			</div>
 
 			<input type="hidden" name="id" value="{{ id }}"/><br/>
+			<input type="hidden" name="ticket_id" value="{{ ticket_id }}"/><br/>
 
 			<input type="submit" value="登录" class="weui-btn weui-btn_primary"/>
 		</div>

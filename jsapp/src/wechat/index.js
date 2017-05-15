@@ -69,7 +69,7 @@ class Home extends React.Component {
 		console.log('submit', this.state.comment_content);
 		xFetchJSON("/api/tickets/" + current_ticket_id + "/comments", {
 			method: 'POST',
-			body: JSON.stringify({content: this.state.comment_content, current_user_id: "1"})
+			body: JSON.stringify({content: this.state.comment_content})
 		}).then((data) => {
 			console.log("res", data)
 			const comments = this.state.ticket_comments.unshift(data);

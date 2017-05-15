@@ -115,7 +115,9 @@ get('/:realm/tickets/:id', function(params)
 			if u.user_id and not (u.user_id == '') then
 				return {"render", "wechat/tickets1.html", {ticket_id = params.id}}
 			else
+				u.ticket_id = params.id
 				u.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
+				utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", "render login:" .. serialize(u));
 				return {"render", "wechat/login.html", u}
 			end
 		else
@@ -125,6 +127,7 @@ get('/:realm/tickets/:id', function(params)
 			user_info = utils.json_decode(ret)
 			user_info.privilege = nil
 			user_info.language = nil
+			user_info.app_type = 'jsapp'
 			wechat_user_id = xdb.create_return_id("wechat_users", user_info)
 			wechat_user = {
 				id = wechat_user_id,
@@ -132,6 +135,7 @@ get('/:realm/tickets/:id', function(params)
 				headimgurl = user_info.headimgurl
 			}
 
+			wechat_user.ticket_id = params.id
 			wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
 			return {"render", "wechat/login.html", wechat_user}
 		end
@@ -179,6 +183,7 @@ post('/:realm/login', function(params) -- login
 	login = env:getHeader("login")
 	pass = env:getHeader("pass")
 	wechat_user_id = env:getHeader("id")
+	ticket_id = env:getHeader("ticket_id") or "0"
 
 	user = xdb.find_one("users", {extn = login, password = pass})
 
@@ -192,7 +197,7 @@ post('/:realm/login', function(params) -- login
 		-- xtra.start_session()
 		xtra.save_session("user_id", user.id)
 
-		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/0"
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/tickets/" .. ticket_id
 		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 		redirect(redirect_uri)
 	else
@@ -200,6 +205,7 @@ post('/:realm/login', function(params) -- login
 
 		if wechat_user then
 			wechat_user.errmsg = '用户名/密码错误'
+			wechat_user.ticket_id = ticket_id
 			wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
 			return {"render", "wechat/login.html", wechat_user}
 		else -- hacking me? just fail!
