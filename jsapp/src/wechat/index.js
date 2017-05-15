@@ -5,11 +5,12 @@ import ReactDOM from 'react-dom';
 import T from 'i18n-react';
 import { xFetchJSON } from '../jsx/libs/xtools';
 
+var is_wx_ready = false;
 
 class Home extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {ticket: {},signPackage:[], users: [], user_options: null, ticket_comments: [], deal_user: null};
+		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null};
 	}
 
 	componentDidMount() {
@@ -18,6 +19,37 @@ class Home extends React.Component {
 		xFetchJSON("/api/tickets/" + current_ticket_id).then((data) => {
 			console.log("ticket", data);
 			_this.setState({ticket: data});
+
+			// todo fix hardcoded
+			const uri = "http://xswitch.cn/api/wechat/xyt/tickets/" + data.id;
+
+			var shareData = {
+				title: data.subject,
+				desc: data.content.substr(0, 40),
+				link: uri,
+				imgUrl: 'http://xswitch.cn/assets/img/ticket.png',
+				trigger: function (res) {
+					// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+					console.log('用户点击发送给朋友');
+				},
+				success: function (res) {
+					console.log('已分享');
+				},
+				cancel: function (res) {
+					console.log('已取消');
+				},
+				fail: function (res) {
+					console.log('failed', res);
+				}
+			};
+
+			if (is_wx_ready) {
+				wx.onMenuShareAppMessage(shareData);
+			} else {
+				wx.ready(function() {
+					wx.onMenuShareAppMessage(shareData);
+				});
+			}
 		}).catch((e) => {
 			console.error("get ticket", e);
 		});
@@ -25,68 +57,6 @@ class Home extends React.Component {
 		xFetchJSON('/api/tickets/' + current_ticket_id + '/comments').then((data) => {
 			console.log('comments', data);
 			_this.setState({ticket_comments: data});
-		});
-
-		wx.ready(function () {
-			wx.onMenuShareAppMessage({
-				title: _this.state.ticket.subject,
-				desc: _this.state.ticket.subject,
-				link: 'http://shop.x-y-t.cn/api/wechat/xyt/tickets/' + current_ticket_id,
-				imgUrl: 'http://shop.x-y-t.cn/assets/img/ticket.png',
-				trigger: function (res) {
-					// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
-					alert('用户点击发送给朋友');
-				},
-				success: function (res) {
-					alert('已分享');
-				},
-				cancel: function (res) {
-					alert('已取消');
-				},
-				fail: function (res) {
-					alert(JSON.stringify(res));
-				}
-			});
-
-			wx.onMenuShareTimeline({
-				title: '123',
-				link: '345',
-				imgUrl: 'http://shop.x-y-t.cn',
-				trigger: function (res) {
-					// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
-					alert('用户点击分享到朋友圈');
-				},
-				success: function (res) {
-					alert('已分享');
-				},
-				cancel: function (res) {
-					alert('已取消');
-				},
-				fail: function (res) {
-					alert(JSON.stringify(res));
-				}
-			});
-		});
-
-		xFetchJSON('/api/wechat/xyt/jsapi_ticket?url=' + escape(location.href.split('#')[0])).then((data) => {
-			_this.setState({'signPackage': data})
-			var signPackage = data;
-			console.log('signPackage', signPackage);
-
-			wx.config({
-				// debug: true,
-				appId: signPackage.appId,
-				timestamp: signPackage.timestamp,
-				nonceStr: signPackage.nonceStr,
-				signature: signPackage.signature,
-				jsApiList: [
-					'checkJsApi',
-					'openLocation',
-					'getLocation',
-					'onMenuShareTimeline',
-					'onMenuShareAppMessage'
-				]
-			});
 		});
 	}
 
@@ -115,7 +85,7 @@ class Home extends React.Component {
 
 		if (!ticket.id) {
 			return <div><br/><br/><br/><br/><br/><br/>
-				<center>当前没有待处理工单</center>
+				<center>当前没有待处理工单x</center>
 			</div>
 		}
 
@@ -132,7 +102,7 @@ class Home extends React.Component {
 		})
 		return <div>
 			<div className="weui-cells__title">
-			<article class="weui-article">
+			<article className="weui-article">
 				<section>
 					<section>
 						<h3>{ticket.subject}</h3>
@@ -330,7 +300,37 @@ class App extends React.Component{
 	}
 }
 
+wx.ready(function () {
+	console.log("wx ready!");
+	is_wx_ready = true;
+
+	const shareData = {
+		title: '小樱桃工单',
+		desc: '小樱桃工单',
+		link: location.href.split('#')[0] + 1,
+		imgUrl: 'http://xswitch.cn/assets/img/ticket.png'
+	};
+
+	wx.onMenuShareAppMessage(shareData);
+});
+
+xFetchJSON('/api/wechat/xyt/jsapi_ticket?url=' + escape(location.href.split('#')[0])).then((data) => {
+	console.log('signPackage', data);
+	wx.config({
+		// debug: true,
+		appId: data.appId,
+		timestamp: data.timestamp,
+		nonceStr: data.nonceStr,
+		signature: data.signature,
+		jsApiList: [
+			'checkJsApi',
+			'openLocation',
+			'getLocation',
+			'onMenuShareTimeline',
+			'onMenuShareAppMessage'
+		]
+	});
+});
 
 ReactDOM.render(<Home/>, document.getElementById('main'));
 ReactDOM.render(<App/>, document.getElementById('body'));
-

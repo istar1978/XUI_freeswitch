@@ -76,76 +76,61 @@ get('/:realm/tickets/:id', function(params)
 	realm = params.realm
 	code = env:getHeader("code")
 	wechat = m_dict.get_obj('WECHAT/' .. realm)
-	ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
-	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", ret)
-	jret = utils.json_decode(ret)
 
-	if jret.openid then
-		wechat_user = xdb.find_one("wechat_users", {openid = jret.openid})
-		if wechat_user then
-			xtra.save_session("user_id", wechat_user.user_id)
+	if not code then
+		redirect_uri = env:getHeader("HTTP-Request-URI")
+		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
+		redirect(redirect_uri)
+	else
+		ret = xwechat.get_js_access_token(realm, wechat.APPID, wechat.APPSEC, code)
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", ret)
+		jret = utils.json_decode(ret)
+
+		if jret.openid then
+			wechat_user = xdb.find_one("wechat_users", {openid = jret.openid})
+			if wechat_user then
+				xtra.save_session("user_id", wechat_user.user_id)
+			end
+		else -- on page refresh, we got a code already used error
+			wechat_user = xdb.find_one("wechat_users", {code = code})
 		end
-	else -- on page refresh, we got a code already used error
-		wechat_user = xdb.find_one("wechat_users", {code = code})
-	end
 
-	if wechat_user then
-		-- we already have the wechat userinfo in our db
-		local u = wechat_user
-		-- print(serialize(u))
-		if jret.openid then -- catch the code for later use, e.g. refresh
-			user1 = {
-				id = u.id,
-				code = code
+		if wechat_user then
+			-- we already have the wechat userinfo in our db
+			local u = wechat_user
+			-- print(serialize(u))
+			if jret.openid then -- catch the code for later use, e.g. refresh
+				user1 = {
+					id = u.id,
+					code = code
+				}
+
+				xdb.update("wechat_users", user1)
+			end
+
+			if u.user_id and not (u.user_id == '') then
+				return {"render", "wechat/tickets1.html", {ticket_id = params.id}}
+			else
+				u.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
+				return {"render", "wechat/login.html", u}
+			end
+		else
+			-- find the wechat userinfo and save to our db
+			ret = xwechat.get_sns_userinfo(jret.openid, jret.access_token)
+			-- print(ret)
+			user_info = utils.json_decode(ret)
+			user_info.privilege = nil
+			user_info.language = nil
+			wechat_user_id = xdb.create_return_id("wechat_users", user_info)
+			wechat_user = {
+				id = wechat_user_id,
+				nickname = user_info.nickname,
+				headimgurl = user_info.headimgurl
 			}
 
-			xdb.update("wechat_users", user1)
+			wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
+			return {"render", "wechat/login.html", wechat_user}
 		end
-
-		if u.user_id and not (u.user_id == '') then
-		
-		
-		
-			-- --待封装
-			-- local timestamp = os.time()
-			-- local nonceStr = 'AbEfgh' .. timestamp
-			-- local url = 'http://shop.x-y-t.cn'
-			-- wechat = m_dict.get_obj('WECHAT/xyt')
-			-- access_token = xwechat.get_token('WECHAT/xyt',wechat.APPID,wechat.APPSEC)
-			-- local gurl = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=' .. access_token
-			-- local body = api:execute("curl", gurl)
-			-- local res = utils.json_decode(body)
-			-- local ticket = res.ticket
-			-- local str = "jsapi_ticket=" .. ticket .. "&noncestr=" .. nonceStr .. "&timestamp=" .. timestamp .. "&url=" .. url
-
-			-- sha1 = require("sha1")
-			-- local signature = sha1(str)
-			-- freeswitch.consoleLog('ERR',signature)
-
-
-
-
-			return {"render", "wechat/tickets1.html", {ticket_id = params.id}}
-		else
-			u.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
-			return {"render", "wechat/login.html", u}
-		end
-	else
-		-- find the wechat userinfo and save to our db
-		ret = xwechat.get_sns_userinfo(jret.openid, jret.access_token)
-		-- print(ret)
-		user_info = utils.json_decode(ret)
-		user_info.privilege = nil
-		user_info.language = nil
-		wechat_user_id = xdb.create_return_id("wechat_users", user_info)
-		wechat_user = {
-			id = wechat_user_id,
-			nickname = user_info.nickname,
-			headimgurl = user_info.headimgurl
-		}
-
-		wechat_user.login_url = config.wechat_base_url .. "/api/wechat/" .. params.realm .. "/login"
-		return {"render", "wechat/login.html", wechat_user}
 	end
 end)
 
