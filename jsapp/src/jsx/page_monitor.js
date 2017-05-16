@@ -81,7 +81,7 @@ class TabContent extends React.Component {
 		let channelCallState = user.channelCallState ? user.channelCallState : "idle";
 		let userCallStateStyle = "";
 		let userTextStyle = "";
-		let userImageUrl = user.registerState == "registered" ? "assets/img/phone-green.png" : "assets/img/phone-grey.png";
+		let userImageUrl = user.registerState == "registered" ? "/assets/img/phone-green.png" : "/assets/img/phone-grey.png";
 
 		let userSelectedClass = user.selectedState == "selected" ? "user-selected" : "";
 		let userCallClass = channelCallState!= "idle" ? "use-sate-" + channelCallState : "";
@@ -328,7 +328,7 @@ class MonitorPage extends React.Component {
 		let d = e.detail;
 		let users = this.state.users;
 		let currentLoginUser = this.state.currentLoginUser;
-		alert(JSON.stringify(d.state.name));
+		console.log(JSON.stringify(d.state.name));
 		console.log("state", d.direction);
 
 	}
