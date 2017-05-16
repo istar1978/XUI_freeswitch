@@ -32,11 +32,12 @@
 
 require 'multipart_parser'
 require 'xdb'
+require 'utils'
 
 post('/', function(params)
 	print(env:serialize())
 	local api = freeswitch.API()
-	local ctype = xtra.url_decode(env:getHeader("Content-Type"))
+	local ctype = utils.url_decode(env:getHeader("Content-Type"))
 	local content_length = tonumber(env:getHeader("Content-Length"))
 
 	print("ctype: "..ctype.." content_length: "..content_length.."\n");

@@ -283,27 +283,11 @@ function compile_url_pattern(pattern)
 	return compiled_pattern
 end
 
-function url_decode(str)
-	str = string.gsub (str, "+", " ")
-	str = string.gsub (str, "%%(%x%x)",
-	function(h) return string.char(tonumber(h,16)) end)
-	str = string.gsub (str, "\r\n", "\n")
-	return str
-end
-
-function url_encode(str)
-	if (str) then
-		str = string.gsub (str, "\n", "\r\n")
-		str = string.gsub (str, "([^%w %-%_%.%~])",
-		function (c) return string.format ("%%%02X", string.byte(c)) end)
-		str = string.gsub (str, " ", "+")
-	end
-	return str
-end
-
 local function escape(str)
 	return str:gsub("'", "''")
 end
+
+local url_decode = utils.url_decode
 
 -- parse querystring into table. urldecode tokens
 function parse(str, sep, eq)
@@ -502,8 +486,6 @@ function serialize(o)
 end
 
 xtra.serialize = serialize
-xtra.url_decode = url_decode
-xtra.url_encode = url_encode
 
 function xtra.start_session()
 	print(__FILE__() .. ':' .. __LINE__() .. " start session")

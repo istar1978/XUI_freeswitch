@@ -112,7 +112,7 @@ end
 
 xwechat.redirect_uri = function(appid, redirect_uri, state)
 	return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" .. appid ..
-			"&redirect_uri=" .. xtra.url_encode(redirect_uri) ..
+			"&redirect_uri=" .. utils.url_encode(redirect_uri) ..
 			"&response_type=code&scope=snsapi_userinfo&state=" .. state ..
 			"#wechat_redirect"
 end

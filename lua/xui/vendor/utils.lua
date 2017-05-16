@@ -249,6 +249,27 @@ local function chsize(char)
 	end
 end
 
+function url_decode(str)
+	str = string.gsub (str, "+", " ")
+	str = string.gsub (str, "%%(%x%x)",
+	function(h) return string.char(tonumber(h,16)) end)
+	str = string.gsub (str, "\r\n", "\n")
+	return str
+end
+
+function url_encode(str)
+	if (str) then
+		str = string.gsub (str, "\n", "\r\n")
+		str = string.gsub (str, "([^%w %-%_%.%~])",
+		function (c) return string.format ("%%%02X", string.byte(c)) end)
+		str = string.gsub (str, " ", "+")
+	end
+	return str
+end
+
+utils.url_encode = url_encode
+utils.url_decode = url_decode
+
 -- 计算utf8字符串字符数, 各种字符都按一个字符计算
 -- 例如utf8len("1你好") => 3
 function utf8len(str)
