@@ -135,7 +135,6 @@ class Conferences extends React.Component {
 	}
 
 	handleControlClick(data) {
-
 		if (data == "new") {
 			this.setState({ formShow: true});
 		}
@@ -150,7 +149,7 @@ class Conferences extends React.Component {
 	componentDidMount() {
 		const _this = this;
 		xFetchJSON("/api/conference_rooms").then((rows) => {
-			console.log(rows);
+			console.log('conferences', rows);
 			_this.setState({rows: rows});
 		});
 	}
