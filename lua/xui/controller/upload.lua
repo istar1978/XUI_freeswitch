@@ -30,6 +30,9 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 require 'multipart_parser'
 require 'xdb'
 require 'utils'

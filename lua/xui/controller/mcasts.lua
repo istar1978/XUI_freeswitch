@@ -30,6 +30,9 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 content_type("application/json")
 require 'xdb'
 require 'm_mcast'

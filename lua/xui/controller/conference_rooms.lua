@@ -30,6 +30,9 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 local prefix = config.block_path .. "/blocks-"
 require 'xdb'
 xdb.bind(xtra.dbh)

@@ -30,13 +30,14 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 content_type("application/json")
 
 require 'xdb'
 xdb.bind(xtra.dbh)
 
-xtra.start_session()
-xtra.require_login()
 -- freeswitch.consoleLog("INFO", xtra.session.user_id .. "\n")
 
 get('/', function(params)

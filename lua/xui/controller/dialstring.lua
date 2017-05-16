@@ -30,6 +30,9 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 content_type("text/plain")
 
 require 'm_dialstring'

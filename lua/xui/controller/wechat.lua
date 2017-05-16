@@ -30,6 +30,8 @@
  */
 ]]
 
+xtra.start_session();
+
 content_type("text/html")
 require 'xdb'
 require 'xwechat'
@@ -37,8 +39,6 @@ require 'm_dict'
 require 'utils'
 require 'xtra_config'
 xdb.bind(xtra.dbh)
-
-xtra.start_session();
 
 function __FILE__() return debug.getinfo(2,'S').source end
 function __LINE__() return debug.getinfo(2, 'l').currentline end

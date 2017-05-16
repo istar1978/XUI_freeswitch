@@ -30,7 +30,7 @@
  */
 ]]
 
-xtra.start_session();
+xtra.start_session()
 
 get("/", function()
 

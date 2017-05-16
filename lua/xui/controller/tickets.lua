@@ -30,6 +30,9 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 local do_debug = true
 
 function __FILE__() return debug.getinfo(2,'S').source end
@@ -44,9 +47,6 @@ require 'm_dict'
 require 'xtra_config'
 require 'utils'
 xdb.bind(xtra.dbh)
-
-xtra.start_session()
-xtra.require_login()
 
 get('/', function(params)
 	n, tickets = xdb.find_all("tickets", "id desc")

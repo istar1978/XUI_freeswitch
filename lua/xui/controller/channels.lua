@@ -30,6 +30,9 @@
  */
 ]]
 
+xtra.start_session()
+xtra.require_login()
+
 content_type("application/json")
 
 function build_dial_params(var, val, quote)

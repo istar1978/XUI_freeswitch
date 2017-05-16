@@ -1,3 +1,6 @@
+xtra.start_session()
+xtra.require_login()
+
 content_type("application/json")
 -- require 'xdb'
 -- xdb.bind(xtra.dbh)
