@@ -143,7 +143,23 @@ class TicketPage extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleSubmitChange = this.handleSubmitChange.bind(this);
+		this.handleControlClose = this.handleControlClose.bind(this);
 	}
+
+	handleControlClose () {
+		let _this = this;
+		let ticket = this.state.ticket;
+		console.log('ticket', ticket)
+		let id = this.state.ticket.id;
+		xFetchJSON("/api/tickets/" + id  + "/close", {
+			method: "PUT"
+		}).then(() => {
+			ticket.status = "TICKET_ST_DONE";
+			_this.setState({ticket: ticket})
+		}).catch((msg) => {
+			console.error("ticket", msg);
+		});
+	} 
 
 	handleSubmit(e) {
 		var _this = this;
@@ -184,7 +200,7 @@ class TicketPage extends React.Component {
 		}).then((data) => {
 			_this.setState({ticket: ticket, errmsg: {key: "Saved at", time: Date()}})
 		}).catch((msg) => {
-			console.error("dict", msg);
+			console.error("ticket", msg);
 		});
 	}
 
@@ -262,8 +278,9 @@ class TicketPage extends React.Component {
 		const src = "http://118.89.102.147:8081/" + ticket.record_path
 		
 		return <div>
-			<ButtonToolbar className="pull-right" onClick={this.handleControlClick}>
+			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
+				<Button onClick={this.handleControlClose}><i className="fa fa-check-square" aria-hidden="true"></i>&nbsp;<T.span text="Close"/></Button>
 				{ savebtn }
 				<Button onClick={this.handleControlClick}><i className="fa fa-edit" aria-hidden="true"></i>&nbsp;<T.span text="Edit"/></Button>
 			</ButtonGroup>
