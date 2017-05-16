@@ -41,10 +41,16 @@ class Settings extends React.Component {
 
 	render() {
 		return <Nav bsStyle="pills" stacked>
-			<LinkContainer to="/settings/users" key="M_OVERVIEW">
+			<LinkContainer to="/settings/users" key="M_USERS">
 				<NavItem eventKey="M_USER">
 					<i className="fa fa-user" aria-hidden="true"></i>&nbsp;
 					<T.span text="Users"/>
+				</NavItem>
+			</LinkContainer>
+			<LinkContainer to="/settings/wechatusers" key="M_WECHATUSERS">
+				<NavItem eventKey="M_WECHATUSER">
+					<i className="fa fa-user" aria-hidden="true"></i>&nbsp;
+					<T.span text="WechatUsers"/>
 				</NavItem>
 			</LinkContainer>
 			<LinkContainer to="/settings/groups" key="M_GROUPS">
