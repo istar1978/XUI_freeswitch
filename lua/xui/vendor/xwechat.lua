@@ -147,7 +147,7 @@ xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject
 	json_text = utils.json_encode(msg)
 	print(json_text)
 
-	xwechat.send_template_msg(realm, json_text)
+	return xwechat.send_template_msg(realm, json_text)
 end
 
 -- weapp

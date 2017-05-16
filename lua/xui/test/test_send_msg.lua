@@ -35,5 +35,6 @@ if weuser then
 	redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/0"
 	redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 
-	xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, subject, content)
+	ret = xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, subject, content)
+	stream:write(ret)
 end
