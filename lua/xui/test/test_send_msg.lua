@@ -2,6 +2,7 @@ print("test start ... \n")
 
 local cur_dir = debug.getinfo(1).source;
 cur_dir = string.gsub(cur_dir, "^@(.+)/test/test_send_msg.lua$", "%1")
+package.path = package.path .. ";" .. cur_dir .. "/?.lua"
 package.path = package.path .. ";" .. cur_dir .. "/vendor/?.lua"
 package.path = package.path .. ";" .. cur_dir .. "/model/?.lua"
 
