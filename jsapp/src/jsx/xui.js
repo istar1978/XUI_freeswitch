@@ -61,6 +61,7 @@ import Settings from './settings';
 import { ConferenceProfilePage, ConferenceProfilesPage } from './page_conference_profiles';
 import { ConferenceRooms, ConferenceRoom } from './page_conference_rooms';
 import { UsersPage, UserPage } from './page_users';
+import { WechatUsersPage, WechatUserPage } from './page_wechat_users';
 import { GroupsPage, GroupPage } from './page_groups';
 import { RoutesPage, RoutePage } from './page_routes';
 import { BlocksPage, BlockPage } from './blocks.js';
@@ -175,6 +176,10 @@ class Home extends React.Component{
 					<Route path="users">
 						<IndexRoute components={{sidebar: Settings, main: UsersPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: UserPage}}/>
+					</Route>
+					<Route path="wechatusers">
+						<IndexRoute components={{sidebar: Settings, main: WechatUsersPage}}/>
+						<Route path=":id" components={{sidebar: Settings, main: WechatUserPage}}/>
 					</Route>
 					<Route path="groups">
 						<IndexRoute components={{sidebar: Settings, main: GroupsPage}}/>

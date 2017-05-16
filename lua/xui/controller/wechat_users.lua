@@ -34,11 +34,31 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 
+get('/', function(params)
+		n, wechatusers = xdb.find_all("wechat_users")
+
+		if (wechatusers) then
+			return wechatusers
+		else
+			return "[]"
+		end
+end)
+
 get('/:id', function(params)
 	wechat_user = xdb.find("wechat_users", params.id)
 	if wechat_user then
 		return wechat_user
 	else
 		return 404
+	end
+end)
+
+delete('/:id', function(params)
+	ret = xdb.delete("wechat_users", params.id);
+
+	if ret == 1 then
+		return 200, "{}"
+	else
+		return 500, "{}"
 	end
 end)

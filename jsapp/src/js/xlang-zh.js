@@ -418,6 +418,8 @@ LANGUAGES["zh"] = {
 	Language: "语言",
 	Privilege: "权限",
 	App_type: "终端",
+	WechatUser: "微信用户",
+	WechatUsers: "微信用户",
 
 	Copyright: "版权所有 2016-" + new Date().getFullYear() + " 烟台小樱桃网络科技有限公司 保留所有权利",
 	the_last_line_______: "Don't put anything beyond this line"
