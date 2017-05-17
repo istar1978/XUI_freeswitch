@@ -229,13 +229,15 @@ post('/:realm/link', function(params)
 		wechat = m_dict.get_obj('WECHAT/' .. params.realm)
 		session = xwechat.get_wx_openid(wechat.APPID, wechat.APPSEC, params.request.code)
 
-		print("session:\n")
+		if do_debug then
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", 'session' .. session)
+		end
+
 		session = utils.json_decode(session)
-		print(serialize(session))
 
 		if session.session_key then
 			session_3rd = xtra.create_uuid()
-			print('session_3rd: ' .. session_3rd)
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", 'session_3rd: ' .. session_3rd)
 
 			obj = {
 				wechat_type = 'weapp',
@@ -259,12 +261,13 @@ post('/:realm/link', function(params)
 			xtra.save_session("user_id", user.id)
 
 			return session_3rd;
+		elseif session.errcode == 40163 then -- been used
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "ERR", serialize(session))
+			return 403
 		end
 	else
 		return 403
 	end
-
-	return 200
 end)
 
 post('/:realm/wxsession', function(params)
