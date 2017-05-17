@@ -61,11 +61,12 @@ end)
 get('/:id', function(params)
 	local ticket = {}
 	ticket = xdb.find("tickets", params.id)
-	n, user_name = xdb.find_by_cond("users", {id = ticket.user_id})
-	ticket.user_name = user_name[1].name
-	n, current_user_name = xdb.find_by_cond("users", {id = ticket.current_user_id})
-	ticket.current_user_name = current_user_name[1].name
+
 	if ticket then
+		n, user_name = xdb.find_by_cond("users", {id = ticket.user_id})
+		ticket.user_name = user_name[1].name
+		n, current_user_name = xdb.find_by_cond("users", {id = ticket.current_user_id})
+		ticket.current_user_name = current_user_name[1].name
 		return ticket
 	else
 		return 404
