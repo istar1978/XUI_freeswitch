@@ -13,3 +13,6 @@ npm-debug.log*
 bower_components/
 node_modules/
 out
+
+lua/xui/xtra_config.lua
+
