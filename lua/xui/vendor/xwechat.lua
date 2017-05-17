@@ -92,10 +92,18 @@ xwechat.create_menu = function(realm, json)
 	return api:execute("curl", URL .. " post " .. json)
 end
 
+local function fsescape(str)
+	str = str:gsub("'", "\\'")
+	str = str:gsub('[\r\n]', "")
+	return "'" .. str .. "'"
+end
+
 xwechat.send_template_msg = function(realm, msg)
 	URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" .. xwechat.access_token(realm)
 	api = freeswitch.API()
-	return api:execute("curl", URL .. " post " .. msg)
+	return api:execute("curl", URL .. " post " .. fsescape(msg))
+
+	print(fsescape(msg))
 end
 
 xwechat.get_js_access_token = function(realm, appid, sec, code)

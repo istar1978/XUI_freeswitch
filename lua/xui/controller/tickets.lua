@@ -46,6 +46,7 @@ require 'xwechat'
 require 'm_dict'
 require 'xtra_config'
 require 'utils'
+require 'm_ticket'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
@@ -182,21 +183,9 @@ post('/:id/comments', function(params)
 	if ticket and ticket.current_user_id then
 		-- todo, send to all users subscribed to this ticket ?
 
-		local weuser = xdb.find_one("wechat_users", {
-			user_id = ticket.current_user_id
-		})
-
-		if weuser then
-			local wechat = m_dict.get_obj('WECHAT/' .. realm)
-			-- token = xwechat.access_token('realm')
-			token = xwechat.get_token(realm, wechat.APPID, wechat.APPSEC)
-			freeswitch.consoleLog("ERR", xwechat.access_token(realm))
-
-			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
-			redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
-
-			xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, ticket.subject, params.request.content)
-		end
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
+		result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, '[回复] ' .. params.request.content)
+		print(result)
 	end
 
 	if ret then
