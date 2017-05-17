@@ -151,7 +151,12 @@ put('/:id/assign/:dest_id',function(params)
 	local pid = params.id
 	ret = xdb.update_by_cond("tickets", { id = pid }, { current_user_id = params.dest_id })
 	if ret == 1 then
-		return 200
+		ticket = {id = pid, current_user_id = params.dest_id}
+		dest_user = xdb.find("users", params.dest_id)
+		if dest_user then
+			ticket.current_user_name = dest_user.name
+		end
+		return ticket
 	else
 		return 500
 	end
