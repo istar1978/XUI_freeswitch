@@ -53,7 +53,10 @@ get('/', function(params)
 end)
 
 get('/bind', function(params)
-	n, users = xdb.find_by_cond("users u, wechat_users w", "u.id = w.user_id", "id")
+	n, users = xdb.find_by_sql([[SELECT u.*, w.id AS wechat_id, openid, headimgurl, nickname
+		FROM users u, wechat_users w
+		WHERE u.id = w.user_id
+		ORDER BY id]])
 
 	if (users) then
 			return users
