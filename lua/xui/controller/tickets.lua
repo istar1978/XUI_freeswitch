@@ -145,7 +145,9 @@ put('/:id/assign/:dest_id',function(params)
 end)
 
 post('/:id/comments', function(params)
-	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
+	if do_debug then
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
+	end
 
 	ticket = {}
 	ticket.id = params.id
@@ -184,7 +186,8 @@ post('/:id/comments', function(params)
 		-- todo, send to all users subscribed to this ticket ?
 
 		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
-		result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, '[回复] ' .. params.request.content)
+		content = '[回复] ' .. user.name .. ": " .. params.request.content
+		result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, content)
 		print(result)
 	end
 
@@ -206,13 +209,26 @@ delete('/:id', function(params)
 end)
 
 post('/', function(params)
-	print(serialize(params))
+	if do_debug then
+		print(serialize(params))
+	end
 
-	params.request.status = 'TICKET_ST_NEW'
-	ret = xdb.create_return_id('tickets', params.request)
+	local ticket = params.request
+	ticket.status = 'TICKET_ST_NEW'
+	ticket.user_id = xtra.session.user_id
 
-	if ret then
-		return {id = ret}
+	ticket = xdb.create_return_object('tickets', ticket)
+
+	realm = 'xyt' -- todo fixme hardcoded
+	if ticket then
+		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. ticket.id
+		result = m_ticket.send_wechat_notification(realm, ticket.user_id, redirect_uri, ticket.subject, ticket.content)
+
+		if do_debug then
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", result)
+		end
+
+		return {id = ticket.id}
 	else
 		return 500, "{}"
 	end
