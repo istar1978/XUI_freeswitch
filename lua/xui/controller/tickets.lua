@@ -162,13 +162,6 @@ post('/:id/comments', function(params)
 		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
 	end
 
-	ticket = {}
-	ticket.id = params.id
-	ticket.current_user_id = params.request.current_user_id
-	if ticket.current_user_id then
-		xdb.update("tickets", ticket)
-	end
-
 	local user = xdb.find("users", xtra.session.user_id)
 	local weuser = xdb.find_one("wechat_users", {
 		user_id = xtra.session.user_id
@@ -208,6 +201,15 @@ post('/:id/comments', function(params)
 		return ret
 	else
 		return 500, "{}"
+	end
+end)
+
+post('/:id/appoint', function(params)
+	ticket = {}
+	ticket.id = params.id
+	ticket.current_user_id = params.request.current_user_id
+	if ticket.current_user_id then
+		xdb.update("tickets", ticket)
 	end
 end)
 

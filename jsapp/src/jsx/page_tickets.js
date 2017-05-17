@@ -141,6 +141,7 @@ class TicketPage extends React.Component {
 		super(props);
 		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null, edit: false};
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleCommit = this.handleCommit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.handleSubmitChange = this.handleSubmitChange.bind(this);
 		this.handleControlClose = this.handleControlClose.bind(this);
@@ -151,7 +152,7 @@ class TicketPage extends React.Component {
 		let ticket = this.state.ticket;
 		console.log('ticket', ticket)
 		let id = this.state.ticket.id;
-		xFetch("/api/tickets/" + id  + "/close", {
+		xFetchJSON("/api/tickets/" + id  + "/close", {
 			method: "PUT"
 		}).then(() => {
 			ticket.status = "TICKET_ST_DONE";
@@ -163,11 +164,22 @@ class TicketPage extends React.Component {
 
 	handleSubmit(e) {
 		var _this = this;
+		var ticket = form2json('#ticketAppointForm');
+
+		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/appoint", {
+			method: "POST",
+			body: JSON.stringify(ticket)
+		}).then(() => {
+			console.log('appoint successfully')
+		}).catch((err) => {
+			console.error("ticket", err);
+			notify(err, "error");
+		});
+	}
+
+	handleCommit(e) {
+		var _this = this;
 		var ticket = form2json('#ticketProcessingForm');
-		if (!ticket.content) {
-			notify(<T.span text="Mandatory fields left blank"/>, "error");
-			return;
-		}
 
 		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/comments", {
 			method: "POST",
@@ -256,6 +268,7 @@ class TicketPage extends React.Component {
 		}
 
 		let save_btn = "";
+		let commit_btn = "";
 		let hidden_user = "";
 		const users = this.state.users;
 		let deal_user = <FormControl componentClass="select" name="current_user_id">{
@@ -277,6 +290,7 @@ class TicketPage extends React.Component {
 		this.state.hidden_user = hidden_user;
 
 		save_btn = <Button onClick={this.handleSubmit}><T.span text="指派"/></Button>
+		commit_btn = <Button onClick={this.handleCommit}><T.span text="评论"/></Button>
 
 		const options = <FormGroup>
 			<Col componentClass={ControlLabel} sm={2}><T.span text="处理人" /></Col>
@@ -285,7 +299,12 @@ class TicketPage extends React.Component {
 			</Col>
 		</FormGroup>;
 
-		const src = "http://118.89.102.147:8081/" + ticket.record_path
+		if (ticket.record_path) {
+			const src = "http://118.89.102.147:8081/" + ticket.record_path;
+			let Audio = <audio src={src} controls="controls" />;
+		} else {
+			let Audio = <div></div>;
+		};
 		
 		return <div>
 			<ButtonToolbar className="pull-right">
@@ -332,7 +351,7 @@ class TicketPage extends React.Component {
 
 				<FormGroup controlId="formCaller_id_name">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
-					<Col sm={10}><audio src={src} controls="controls" /></Col>
+					<Col sm={10}>{Audio}</Col>
 				</FormGroup>
 
 				<FormGroup controlId="formSubject">
@@ -342,22 +361,28 @@ class TicketPage extends React.Component {
 
 				<FormGroup controlId="formContent">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Content"/></Col>
-					<Col sm={10}><EditControl componentClass="textarea" edit={this.state.edit} name="content" defaultValue={ticket.content}/></Col>
+					<Col sm={8}><EditControl componentClass="textarea" edit={this.state.edit} name="content" defaultValue={ticket.content}/></Col>
 				</FormGroup>
 			</Form>
 			<br/>
-			<Form horizontal id="ticketProcessingForm">
+			<Form horizontal id="ticketProcessingForm">				
+				{options}
+				{this.state.hidden_user}
+				<FormGroup>
+					<Col componentClass={ControlLabel} sm={2}></Col>
+					<Col sm={10}>{save_btn}</Col>
+				</FormGroup>
+			</Form>
+			<Form horizontal id="ticketAppointForm">
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="内容"/></Col>
 					<Col sm={8}>
 						<FormControl componentClass="textarea" name="content" placeholder="内容" />
 					</Col>
 				</FormGroup>
-				{options}
-				{this.state.hidden_user}
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}></Col>
-					<Col sm={10}>{save_btn}</Col>
+					<Col sm={10}>{commit_btn}</Col>
 				</FormGroup>
 			</Form>
 
