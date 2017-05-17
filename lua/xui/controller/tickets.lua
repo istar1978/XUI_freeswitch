@@ -184,7 +184,12 @@ post('/:id/comments', function(params)
 	ret = xdb.create_return_object("ticket_comments", comment)
 
 	ticket = xdb.find("tickets", params.id)
-	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(ticket))
+	if do_debug then
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(ticket))
+	end
+	xdb.update_by_cond("tickets",
+		"id = " .. ticket.id .. " AND status = 'TICKET_ST_NEW'",
+		{status = 'TICKET_ST_PROCESSING'})
 
 	realm = "xyt" -- fixme hardcoded
 
