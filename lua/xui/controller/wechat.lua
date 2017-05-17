@@ -216,8 +216,11 @@ post('/:realm/login', function(params) -- login
 end)
 
 post('/:realm/link', function(params)
-	print(env:serialize())
-	print(serialize(params))
+	if do_debug then
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", env:serialize())
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", serialize(params))
+	end
+
 	local cond = {}
 
 	cond.extn = params.request.username
