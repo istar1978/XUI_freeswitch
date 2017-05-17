@@ -151,7 +151,7 @@ class TicketPage extends React.Component {
 		let ticket = this.state.ticket;
 		console.log('ticket', ticket)
 		let id = this.state.ticket.id;
-		xFetchJSON("/api/tickets/" + id  + "/close", {
+		xFetch("/api/tickets/" + id  + "/close", {
 			method: "PUT"
 		}).then(() => {
 			ticket.status = "TICKET_ST_DONE";

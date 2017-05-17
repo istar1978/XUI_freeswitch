@@ -125,10 +125,10 @@ post('/hb', function(params)
 end)
 
 put('/:id/close',function(params)
-	local pid = params.id
-	ret = xdb.update_by_cond("tickets", { id = pid }, { status = 'TICKET_ST_DONE' })
+	ret = m_ticket.close(params.id)
+
 	if ret == 1 then
-		return 200, "{}"
+		return {id = params.id}
 	else
 		return 500
 	end

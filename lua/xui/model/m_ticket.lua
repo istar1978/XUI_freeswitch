@@ -51,5 +51,33 @@ m_ticket.send_wechat_notification = function(realm, user_id, redirect_uri, subje
 	end
 end
 
+m_ticket.close = function(id)
+	ret = xdb.update_by_cond("tickets", { id = id }, { status = 'TICKET_ST_DONE' })
+
+	if ret == 1 then
+		user = xdb.find("users", xtra.session.user_id)
+		weuser = xdb.find_one("wechat_users", {user_id = xtra.session.user_id})
+
+		comment = {}
+		comment.ticket_id = id
+		comment.user_id = xtra.session.user_id
+		comment.action = "TICKET_ACTION_CLOSE"
+		comment.subject = "关闭工单"
+		comment.content = "关闭了工单"
+
+		if user then
+			comment.user_name = user.name
+		end
+
+		if weuser then
+			comment.avatar_url = weuser.avatar_url
+		end
+
+		xdb.create("ticket_comments", comment)
+	end
+
+	return ret
+end
+
 
 return m_ticket
