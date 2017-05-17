@@ -234,8 +234,10 @@ class TicketPage extends React.Component {
 		}
 
 		const ticket_comments = this.state.ticket_comments.map(function(row) {
+			let src = row.avatar_url;
+			let style = {width: '40px'};
 			return <Row key={row.id}>
-				<Col componentClass={ControlLabel} sm={1} smOffset={2}><img src='/assets/img/ticket.png'/></Col>
+				<Col componentClass={ControlLabel} sm={1} smOffset={2}><img src={src} style={style}/></Col>
 				<Col sm={6}> <strong>{row.user_name}</strong>&nbsp;<small>{row.created_epoch}</small>
 					<br/><br/><p>{row.content}</p>
 				</Col>
