@@ -258,7 +258,7 @@ class TicketPage extends React.Component {
 		const users = this.state.users;
 		let deal_user = <FormControl componentClass="select" name="current_user_id">{
 				users.map(function(row) {
-					return <option key={row.id} value={row.id}>{row.name}</option>
+					return <option key={row.id} value={row.id}>{row.name} ({row.extn}) {row.nickname}</option>
 				})
 			}
 		</FormControl>;
