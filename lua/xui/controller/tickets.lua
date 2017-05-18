@@ -181,6 +181,7 @@ post('/:id/comments', function(params)
 	comment.user_id = xtra.session.user_id
 	comment.content = params.request.content
 	comment.user_name = user.name
+	comment.action = params.request.action
 
 	if weuser then
 		comment.avatar_url = weuser.headimgurl
@@ -197,7 +198,7 @@ post('/:id/comments', function(params)
 		{status = 'TICKET_ST_PROCESSING'})
 
 
-	if config.wechat_realm then
+	if config.wechat_realm and (not comment.action == 'TICKET_ACTION_CHAT') then
 		realm = config.wechat_realm
 		if ticket and ticket.current_user_id then
 			-- todo, send to all users subscribed to this ticket ?
