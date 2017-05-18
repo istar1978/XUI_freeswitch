@@ -48,6 +48,12 @@ do_debug = true
 
 -- realm to support multiple wechat accounds, e.g. sipsip, xyt
 
+
+get('/seven', function(params)
+	print(env:serialize())
+	return 	env:getHeader("echostr")
+end)
+
 get('/anyway/:realm', function(params)
 	return 	env:getHeader("echostr")
 end)
@@ -155,7 +161,7 @@ get('/:realm/jsapi_ticket', function(params)
 	sha1 = require("sha1")
 	local timestamp = os.time()
 	local nonceStr = 'AbEfgh' .. timestamp
-	wechat = m_dict.get_obj('WECHAT/xyt')
+	wechat = m_dict.get_obj('WECHAT/' .. params.realm)
 
 	access_token = xwechat.get_token(params.realm, wechat.APPID, wechat.APPSEC)
 
