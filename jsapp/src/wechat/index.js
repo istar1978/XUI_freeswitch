@@ -275,7 +275,7 @@ class Comment extends React.Component {
 							<h4 className="weui-media-box__title">{comment.user_name}:</h4>
 							<p className="weui-media-box__desc">{comment.content}</p>
 						</span>
-						<span className="weui-form-preview__value" style={{fontSize:"12px",float:"right",color:"gray"}}>{ticket.created_epoch}</span>
+						<span className="weui-form-preview__value" style={{fontSize:"12px",float:"right",color:"gray"}}>{comment.created_epoch}</span>
 						</div>
 					</div>
 				</a>
