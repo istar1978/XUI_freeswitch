@@ -37,7 +37,7 @@ require 'xwechat'
 
 m_ticket = {}
 
-m_ticket.send_wechat_notification = function(realm, user_id, redirect_uri, subject, content)
+m_ticket.send_wechat_notification = function(realm, user_id, redirect_uri, subject, from, content)
 
 	local weuser = xdb.find_one("wechat_users", {user_id = user_id})
 
@@ -47,7 +47,7 @@ m_ticket.send_wechat_notification = function(realm, user_id, redirect_uri, subje
 		token = xwechat.get_token(realm, wechat.APPID, wechat.APPSEC)
 		redirect_uri = xwechat.redirect_uri(wechat.APPID, redirect_uri, "200")
 
-		return xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, subject, content)
+		return xwechat.send_ticket_notification(realm, weuser.openid, redirect_uri, subject, from, content)
 	end
 end
 

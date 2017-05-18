@@ -125,7 +125,7 @@ xwechat.redirect_uri = function(appid, redirect_uri, state)
 end
 
 
-xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject, content)
+xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject, from, content)
 	if #content > 40 then
 		require 'utils'
 		content = utils.utf8sub(content, 1, 40)
@@ -146,7 +146,7 @@ xwechat.send_ticket_notification = function(realm, openid, redirect_uri, subject
 	msg.data.keyword2.value = os.date("%Y年%m月%d日%H时%M分")
 	msg.data.keyword2.color = '#173177'
 	msg.data.keyword3 = {}
-	msg.data.keyword3.value = 'Admin'
+	msg.data.keyword3.value = from
 	msg.data.keyword3.color = '#173177'
 	msg.data.remark = {}
 	msg.data.remark.value = content

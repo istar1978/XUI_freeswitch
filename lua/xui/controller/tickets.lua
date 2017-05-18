@@ -203,7 +203,7 @@ post('/:id/comments', function(params)
 
 		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
 		content = '[回复] ' .. user.name .. ": " .. params.request.content
-		result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, content)
+		result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, user.name, content)
 		print(result)
 	end
 
@@ -246,8 +246,9 @@ post('/', function(params)
 
 	realm = 'xyt' -- todo fixme hardcoded
 	if ticket then
+		user = xdb.find("users", xtra.session.user_id)
 		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. ticket.id
-		result = m_ticket.send_wechat_notification(realm, ticket.user_id, redirect_uri, ticket.subject, ticket.content)
+		result = m_ticket.send_wechat_notification(realm, ticket.user_id, redirect_uri, ticket.subject, user.name, ticket.content)
 
 		if do_debug then
 			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", result)
