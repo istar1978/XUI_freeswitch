@@ -259,7 +259,7 @@ post('/', function(params)
 			end
 		end
 
-		return {id = ticket.id}
+		return ticket
 	else
 		return 500, "{}"
 	end

@@ -61,8 +61,7 @@ class NewTicket extends React.Component {
 			method:"POST",
 			body: JSON.stringify(ticket)
 		}).then((obj) => {
-			ticket.id = obj.id;
-			_this.props.handleNewTicketAdded(ticket);
+			_this.props.handleNewTicketAdded(obj);
 		}).catch((msg) => {
 			console.error("ticket", msg);
 			_this.setState({errmsg: '' + msg + ''});
