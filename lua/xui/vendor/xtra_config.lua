@@ -28,3 +28,4 @@ config.view_path = config.base_dir .. "/xui/lua/xui/view"
 -- config.httpFifoNotificationURL="http://localhost:9999"
 config.tz = 8
 config.wechat_base_url = "http://example.com"
+config.wechat_realm = "xyt"

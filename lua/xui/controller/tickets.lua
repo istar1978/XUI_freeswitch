@@ -196,15 +196,17 @@ post('/:id/comments', function(params)
 		"id = " .. ticket.id .. " AND status = 'TICKET_ST_NEW'",
 		{status = 'TICKET_ST_PROCESSING'})
 
-	realm = "xyt" -- fixme hardcoded
 
-	if ticket and ticket.current_user_id then
-		-- todo, send to all users subscribed to this ticket ?
+	if config.wechat_realm then
+		realm = config.wechat_realm
+		if ticket and ticket.current_user_id then
+			-- todo, send to all users subscribed to this ticket ?
 
-		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
-		content = '[回复] ' .. user.name .. ": " .. params.request.content
-		result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, user.name, content)
-		print(result)
+			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. params.id
+			content = '[回复] ' .. user.name .. ": " .. params.request.content
+			result = m_ticket.send_wechat_notification(realm, ticket.current_user_id, redirect_uri, ticket.subject, user.name, content)
+			print(result)
+		end
 	end
 
 	if ret then
@@ -244,14 +246,17 @@ post('/', function(params)
 
 	ticket = xdb.create_return_object('tickets', ticket)
 
-	realm = 'xyt' -- todo fixme hardcoded
 	if ticket then
-		user = xdb.find("users", xtra.session.user_id)
-		redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. ticket.id
-		result = m_ticket.send_wechat_notification(realm, ticket.user_id, redirect_uri, ticket.subject, user.name, ticket.content)
+		if config.wechat_realm then
+			realm = config.wechat_realm
 
-		if do_debug then
-			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", result)
+			user = xdb.find("users", xtra.session.user_id)
+			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. ticket.id
+			result = m_ticket.send_wechat_notification(realm, ticket.user_id, redirect_uri, ticket.subject, user.name, ticket.content)
+
+			if do_debug then
+				utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", result)
+			end
 		end
 
 		return {id = ticket.id}
