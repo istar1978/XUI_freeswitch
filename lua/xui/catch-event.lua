@@ -76,6 +76,7 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 
 		if config.fifo_ticket then -- create a ticket
 			ticket = {}
+			ticket.user_id = 0
 			ticket.channel_uuid = uuid
 			ticket.cid_number = cidNumber
 			ticket.status = 'TICKET_ST_NEW'
@@ -147,6 +148,6 @@ if httpFifoNotificationURL and fifoAction == "bridge-caller-start" then
 	api = freeswitch.API()
 	local url = httpFifoNotificationURL .. fifoAction .. "/" .. cidNumber .. "/" .. destNumber
 	local args = "curl " .. url
-	print(args)
+	-- print(args)
 	api:execute("bgapi", args)
 end
