@@ -553,6 +553,7 @@ END;
 
 CREATE TABLE tickets (
 	id INTEGER PRIMARY Key,
+	serial_number VARCHAR,
 	cid_number VARCHAR,
 	type VARCHAR,
 	subject VARCHAR,
@@ -572,6 +573,15 @@ CREATE TABLE tickets (
 CREATE TRIGGER t_tickets AFTER UPDATE ON tickets
 BEGIN
 	UPDATE tickets set updated_epoch = DATETIME('now', 'localtime') WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER t_tickets_serial AFTER INSERT ON tickets
+BEGIN
+	UPDATE tickets set serial_number = (
+		SELECT strftime('%Y%m%d', created_epoch) || substr('00000000' || id, -8, 8)
+		FROM tickets
+		WHERE id = New.id
+	) WHERE id = NEW.id;
 END;
 
 CREATE TABLE ticket_comments (
