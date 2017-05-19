@@ -76,9 +76,12 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 
 		if config.fifo_ticket then -- create a ticket
 			ticket = {}
+			ticket.channel_uuid = uuid
 			ticket.cid_number = cidNumber
-			ticket.status = 1
+			ticket.status = 'TICKET_ST_NEW'
+			ticket.type = 'TICKET_TYPE_1'
 			ticket.subject = cidNumber
+			ticket.content = cidNumber .. '来电'
 			xdb.create('tickets', ticket);
 		end
 
@@ -102,7 +105,6 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 	elseif fifoAction == "consumer_stop" then
 		uuid = event:getHeader("variable_bridge_uuid")
 		rec = {}
-		id = {}
 
 		filename = string.match(record_path, ".*/(fifo%-record%-.*)$")
 		ext = filename:match("^.+(%..+)$")
@@ -126,17 +128,17 @@ if fifoAction == "push" or fifoAction == "abort" or fifoAction == "pre-dial" or 
 		rec.original_file_name = filename
 		rec.rel_path = filename
 		
-		xdb.create('media_files', rec)
-
-		sql = "select id from media_files where channel_uuid = " .. '\"' .. uuid .. '\"' .. ";"
-		xdb.find_by_sql(sql,function(row)
-			id.media_file_id = row.id
-		end)
-	
-		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, id)
-
+		media_file_id = xdb.create_return_id('media_files', rec)
+		xdb.update_by_cond('fifo_cdrs', {channel_uuid = uuid}, {media_file_id = media_file_id})
 
 		if config.fifo_ticket then -- update ?
+			rec = {}
+			rec.media_file_id = media_file_id
+			media_file = xdb.find("media_files", media_file_id)
+			if media_file then
+				rec.record_path = media_file.rel_path
+			end
+			xdb.update_by_cond('tickets', {channel_uuid = uuid}, rec)
 		end
 	end
 end

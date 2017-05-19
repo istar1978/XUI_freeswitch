@@ -556,8 +556,10 @@ CREATE TABLE tickets (
 	cid_number VARCHAR,
 	type VARCHAR,
 	subject VARCHAR,
-	content VARCHAR,
+	content TEXT,
 	status VARCHAR,
+	channel_uuid VARCHAR,
+	media_file_id INTEGER,
 	record_path VARCHAR,
 	user_id INTEGER,            -- the user created this ticket
 	current_user_id INTEGER,    -- the user processing this ticket
