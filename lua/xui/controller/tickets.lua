@@ -245,6 +245,10 @@ post('/', function(params)
 	ticket.status = 'TICKET_ST_NEW'
 	ticket.user_id = xtra.session.user_id
 
+	if not ticket.type then
+		ticket.type = 'TICKET_TYPE_1'
+	end
+
 	ticket = xdb.create_return_object('tickets', ticket)
 
 	if ticket then
