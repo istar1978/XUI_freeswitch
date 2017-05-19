@@ -138,7 +138,7 @@ class NewTicket extends React.Component {
 class TicketPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null, edit: false};
+		this.state = {ticket: {}, users: [], user_options: null, ticket_comments: [], deal_user: null, edit: false, types: []};
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCommit = this.handleCommit.bind(this);
 		this.handleControlClick = this.handleControlClick.bind(this);
@@ -209,7 +209,7 @@ class TicketPage extends React.Component {
 			method: "PUT",
 			body: JSON.stringify(ticket)
 		}).then((data) => {
-			_this.setState({ticket: ticket, errmsg: {key: "Saved at", time: Date()}})
+			_this.setState({ticket: ticket, errmsg: {key: "Saved at", time: Date()}, edit: !_this.state.edit});
 		}).catch((msg) => {
 			console.error("ticket", msg);
 		});
@@ -235,6 +235,10 @@ class TicketPage extends React.Component {
 		xFetchJSON("/api/tickets/" + _this.props.params.id + '/comments').then((data) => {
 			console.log('addddd', data)
 			this.setState({ticket_comments: data});
+		});
+
+		xFetchJSON("/api/dicts?realm=TICKET_TYPE").then((data) => {
+			_this.setState({types: data});
 		});
 	}
 
@@ -304,7 +308,28 @@ class TicketPage extends React.Component {
 		} else {
 			let Audio = <div></div>;
 		};
-		
+		let FORM;
+		if (this.state.edit == false) {
+			FORM = <FormGroup controlId="formType">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Type"/></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="type" defaultValue={ticket.type}/></Col>
+				</FormGroup>;
+		} else {
+			FORM = <FormGroup controlId="formType">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Type"/></Col>
+					<Col sm={10}>
+						<FormControl componentClass="select" name="type">
+							{this.state.types.map(function(t) {
+								if (t.v == ticket.type) {
+									return <option key={t.id} value={t.v} selected="selected">{T.translate(t.v)}</option>;
+								} else {
+									return <option key={t.id} value={t.v}>{T.translate(t.v)}</option>;
+								};								
+							})}
+						</FormControl>
+					</Col>
+				</FormGroup>;
+		};
 		return <div>
 			<ButtonToolbar className="pull-right">
 			<ButtonGroup>
@@ -328,10 +353,7 @@ class TicketPage extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="created_epoch" defaultValue={ticket.created_epoch}/></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formType">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="Type"/></Col>
-					<Col sm={10}><EditControl edit={this.state.edit} name="type" defaultValue={ticket.type}/></Col>
-				</FormGroup>
+				{FORM}				
 
 				<FormGroup controlId="formStatus">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Status"/></Col>
