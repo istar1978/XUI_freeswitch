@@ -112,6 +112,10 @@ class Member extends React.Component {
 			});
 
 			return;
+		} else if (data == "floor") {
+			console.log(member.conference_name + " vid-floor " + member.memberID + " force")
+			verto.fsAPI("conference", member.conference_name + " vid-floor " + member.memberID + " force");
+			return;
 		}
 
 		verto.fsAPI("conference", member.conference_name + " " + data + " " + member.memberID);
@@ -121,12 +125,13 @@ class Member extends React.Component {
 		const _this = this;
 		const member = this.props.member;
 		var className = this.state.active ? "member active selected" : "member";
+		const which_floor = member.status.video ? member.status.video : member.status.audio;
 
-		const floor_color   = member.status.audio.floor   ? "blue"   : "#777" ;
+		const floor_color   = which_floor.floor ? "blue"   : "#777" ;
 		const muted_color   = member.status.audio.muted   ? "red"    : "green";
 		const talking_color = member.status.audio.talking ? "green"  : "#777" ;
 		const deaf_color    = member.status.audio.deaf    ? "red"    : "green";
-		const hold_color    = member.status.audio.onHold  ? "red":   "#ccc" ;
+		const hold_color    = member.status.audio.onHold  ? "red"    : "#ccc" ;
 
 		const muted_class   = member.status.audio.muted   ? "conf-control fa fa-microphone-slash" : "conf-control fa fa-microphone";
 		const deaf_class    = member.status.audio.deaf    ? "conf-control fa fa-bell-slash-o" : "conf-control fa fa-bell-o";
@@ -137,7 +142,15 @@ class Member extends React.Component {
 			return <tr className={className} onClick={(e) => _this.handleClick(e, member.memberID)} key={member.uuid}>
 					<td>{member.memberID}</td>
 					<td>"{member.cidName}" &lt;{member.cidNumber}&gt;</td>
-					<td><div className='inlineleft'><i className="fa fa-star" style={{color: floor_color}} aria-hidden="true"></i> |&nbsp;
+					<td><div className='inlineleft'>
+						<a className="conf-control fa fa-star" style={{color: floor_color}} aria-hidden="true" onClick={(e) => {
+							if (!which_floor.floor) {
+								_this.handleControlClick(e, "floor");
+							} else {
+								e.stopPropagation();
+								return false;
+							}
+						}}></a> |&nbsp;
 						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i> |&nbsp;
 						<a className={deaf_class} style={{color: deaf_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.deaf ? "undeaf" : "deaf")}></a> |&nbsp;
 						<a className={muted_class} style={{color: muted_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.muted ? "unmute" : "mute")}></a> |&nbsp;
@@ -163,7 +176,7 @@ class Member extends React.Component {
 					<div>"{member.cidName}"</div>
 					<div>{member.cidNumber}</div>
 					<div style={{marginTop: "23px"}}>
-						<i className="fa fa-star" style={{color: floor_color}} aria-hidden="true"></i>&nbsp;
+						<a className="conf-control fa fa-star" style={{color: floor_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, "floor")}></a>&nbsp;
 						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i>&nbsp;
 						<a className={deaf_class} style={{color: deaf_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.deaf ? "undeaf" : "deaf")}></a>&nbsp;
 						<a className={muted_class} style={{color: muted_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, member.status.audio.muted ? "unmute" : "mute")}></a>&nbsp;
