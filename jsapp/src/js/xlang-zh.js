@@ -21,6 +21,7 @@ LANGUAGES["zh"] = {
 	Show: "Show",
 	Blocks: "Blocks",
 	Conferences: "会议",
+	Monitor: "监控",
 	CDRs: "话单",
 	CDR: "话单",
 	About: "关于",
