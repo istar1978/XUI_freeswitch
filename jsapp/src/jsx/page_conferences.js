@@ -167,14 +167,16 @@ class Member extends React.Component {
 					<td>{member.email}</td>
 			</tr>;
 		} else if (this.props.displayStyle == 'list') {
+			const imgClass = which_floor.floor ? "conf-avatar conf-avatar-1" : (member.status.audio.muted ? "conf-avatar conf-avatar-3" : "conf-avatar conf-avatar-2");
+
 			return  <div  className={className} data-member-id={member.memberID} onClick={this.handleClick} style={{width: "185px", height: "90px", marginTop:"30px", marginRight:"20px", border:"1px solid #c0c0c0", display:"inline-block"}}>
 				<div style={{float:"left"}}>
-					<div style={{width: "68px", height: "68px", backgroundImage: "url(/assets/img/z-2.jpg)"}}></div>
+					<div className={imgClass}></div>
 					<div style={{textAlign: "center"}}>{member.memberID}</div>
 				</div>
 				<div style={{float: "left", marginLeft: "5px", marginTop: "5px"}}>
-					<div>"{member.cidName}"</div>
-					<div>{member.cidNumber}</div>
+					<div className="conf-member-cidname">{member.cidName}</div>
+					<div className="conf-member-cidnumber">{member.cidNumber}</div>
 					<div style={{marginTop: "23px"}}>
 						<a className="conf-control fa fa-star" style={{color: floor_color}} aria-hidden="true" onClick={(e) => _this.handleControlClick(e, "floor")}></a>&nbsp;
 						<i className="fa fa-volume-up" style={{color: talking_color}} aria-hidden="true"></i>&nbsp;
@@ -284,6 +286,7 @@ class ConferencePage extends React.Component {
 			return;
 		} else if (data == "table" || data == "list") {
 			this.setState({displayStyle: data});
+			localStorage.setItem("xui.conference.displayStyle", data);
 			return;
 		}
 
@@ -315,6 +318,9 @@ class ConferencePage extends React.Component {
 		const _this = this;
 		console.log("conference name:", this.props.name);
 		window.addEventListener("verto-login", this.handleVertoLogin);
+
+		const displayStyle = localStorage.getItem("xui.conference.displayStyle") || "table";
+		this.setState({displayStyle: displayStyle});
 
 		xFetchJSON("/api/conference_rooms/" + this.props.room_id + "/members").then((members) => {
 			_this.state.static_rows = members.map(function(m) {

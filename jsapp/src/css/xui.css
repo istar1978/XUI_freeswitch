@@ -200,6 +200,37 @@ a.conf-control:hover {
 	color: red;
 }
 
+.conf-avatar {
+	width: 68px;
+	height: 68px;
+}
+
+.conf-avatar-1 {
+	background-image: url(/assets/img/z-1.jpg);
+}
+
+.conf-avatar-2 {
+	background-image: url(/assets/img/z-2.jpg);
+}
+
+.conf-avatar-3 {
+	background-image: url(/assets/img/z-3.jpg);
+}
+
+.conf-member-cidname {
+	max-width: 110px;
+	white-space:nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.conf-member-cidnumber {
+	max-width: 110px;
+	white-space:nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 /* console,debug,info,notice,warning,err,crit,alert */
 
 span.log8 {color: #FFFF00;}
