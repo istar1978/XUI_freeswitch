@@ -200,8 +200,8 @@ class Phone extends React.Component {
 		// return;
 		verto.newCall({
 			destination_number: this.state.destNumber,
-			caller_id_name: '0000',
-			caller_id_number: '0000',
+			caller_id_name: localStorage.getItem('xui.username'),
+			caller_id_number: localStorage.getItem('xui.username'),
 			useVideo: useVideo,
 			useCamera: ds.videoDevice,
 			useStereo: true,
