@@ -169,7 +169,7 @@ class Member extends React.Component {
 		} else if (this.props.displayStyle == 'list') {
 			const imgClass = which_floor.floor ? "conf-avatar conf-avatar-1" : ((parseInt(member.memberID) < 0 || member.status.audio.muted) ? "conf-avatar conf-avatar-3" : "conf-avatar conf-avatar-2");
 
-			return  <div  className={className} data-member-id={member.memberID} onClick={this.handleClick} style={{width: "185px", height: "90px", marginTop:"30px", marginRight:"20px", border:"1px solid #c0c0c0", display:"inline-block"}}>
+			return  <div  className={className} onClick={(e) => _this.handleClick(e, member.memberID)} style={{width: "185px", height: "90px", marginTop:"30px", marginRight:"20px", border:"1px solid #c0c0c0", display:"inline-block"}}>
 				<div style={{float:"left"}}>
 					<div className={imgClass}></div>
 					<div style={{textAlign: "center"}}>{member.memberID}</div>

@@ -66,9 +66,14 @@
 	color: red;
 }
 
+div.selected {
+	border: 1px dashed blue !important;
+	/*background-color: red !important;*/
+}
+
 tr.selected {
 	border: 2px dashed grey;
-	background-color: red !important;
+	/*background-color: red !important;*/
 }
 
 tr.disabled {
