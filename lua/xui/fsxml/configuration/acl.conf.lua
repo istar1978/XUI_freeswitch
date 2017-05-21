@@ -55,7 +55,7 @@ end
 
 
 
-XML_STRING=[[
+xXML_STRING=[[
 <configuration name="acl.conf" description="Network Lists">
 <network-lists>]] ..
 	build() ..
