@@ -87,12 +87,36 @@ end)
 post('/', function(params)
 	print(serialize(params))
 
-	ret = xdb.create_return_id('users', params.request)
+	if params.request.extn then
+		ret = xdb.create_return_id('users', params.request)
 
-	if ret then
-		return {id = ret}
-	else
-		return 500, "{}"
+		if ret then
+			return {id = ret}
+		else
+			return 500, "{}"
+		end
+	else -- import multi lines
+		users = params.request
+		user = table.remove(users, 1)
+		if user then
+			ret = xdb.create_return_id('users', user)
+		end
+
+		user = table.remove(users, 1)
+		i = 0;
+
+		while user and i < 65536 do
+			xdb.create('users', user)
+			user = table.remove(users, 1)
+			i = i + 1
+		end
+
+		if ret then
+			n, users = xdb.find_by_cond("users", "id >= " .. ret)
+			return users;
+		else
+			return 500
+		end
 	end
 end)
 

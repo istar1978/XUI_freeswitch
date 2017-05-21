@@ -61,7 +61,7 @@ class NewUser extends React.Component {
 			body: JSON.stringify(user)
 		}).then((obj) => {
 			user.id = obj.id;
-			this.props.handleNewUserAdded(user);
+			this.props.handleNewUserAdded([user]);
 		}).catch((msg) => {
 			console.error("user:", msg);
 			this.setState({errmsg: msg});
@@ -153,7 +153,9 @@ class ImportUser extends React.Component {
 			this.setState({errmsg: "Mandatory fields left blank"});
 			return;
 		}
-		var inputInfo = info.info.split("\r\n");
+
+		var inputInfo = info.info.split(/\r?\n/);
+		var users = [];
 
 		for (var i = 0; i < inputInfo.length; i++) {
 
@@ -165,27 +167,28 @@ class ImportUser extends React.Component {
 			user.extn = inputInfoI[0];
 			user.name = inputInfoI[1];
 			user.password = inputInfoI[2];
-			user.vm_password = inputInfoI[3];
-			user.context = inputInfoI[4];
-			user.cid_name = inputInfoI[5];
-			user.cid_number = inputInfoI[6];
-
-			xFetchJSON("/api/users",{
-				method: "POST",
-				body: JSON.stringify(user)
-			}).then((obj) => {
-				user.id = obj.id;
-				this.props.handleNewUserAdded1(user);
-			}).then((msg) => {
-				console.error("user", msg);
-				this.setState({errmsg: <T.span text={{key: "Internal Error", msg: msg}}/>});
-			});
+			user.context = inputInfoI[3] || 'default';
+			user.cid_name = inputInfoI[4];
+			user.cid_number = inputInfoI[5];
+			user.vm_password = inputInfoI[6];
+			users.push(user);
 		}
+
+		xFetchJSON("/api/users",{
+			method: "POST",
+			body: JSON.stringify(users)
+		}).then((newUsers) => {
+			console.log("users created", newUsers);
+			this.props.handleNewUserAdded(newUsers);
+		}).then((msg) => {
+			console.error("user", msg);
+			this.setState({errmsg: <T.span text={{key: "Internal Error", msg: msg}}/>});
+		});
 	}
 
 	render() {
 		const props = Object.assign({}, this.props);
-		delete props.handleNewUserAdded1;
+		delete props.handleNewUserAdded;
 
 		return <Modal {...props} aria-labelledby="contained-modal-title-lg">
 			<Modal.Header closeButton>
@@ -194,8 +197,8 @@ class ImportUser extends React.Component {
 			<Modal.Body>
 			<Form horizontal id="importUserForm">
 				<FormGroup controlId="formExtn">
-					<Col sm={12}><FormControl componentClass="textarea" name="info"
-					placeholder={"在此处粘贴,Excel表格格式如下： \nextn1 name1 password1 vm_password context1 cid_name1 cid_number1 \nextn2 name2 password2 vm_password2 context2 cid_name2 cid_number2"} />
+					<Col sm={12}><FormControl componentClass="textarea" name="info" rows="5"
+					placeholder={"1000\tSeven\t1234\n1001\t杜金房\t1234\tdefault\n1002\tMike\t1234\tdefault\t1002\tMike\t1002"} />
 					</Col>
 				</FormGroup>
 
@@ -211,7 +214,16 @@ class ImportUser extends React.Component {
 
 				<FormGroup>
 					<Col sm={12}>
-						<T.span text="说明：复制Excel表格中的数据，在文本框内粘贴,点击上方导入即可。" />
+						<T.span text="说明：导入以制表符分隔的数据，数据可以在Excel中制作，按格式直接粘贴即可导入。" />
+						<br/>
+						<T.span text="格式："/>
+						&lt;<T.span className="mandatory" text="Extn"/>&gt;&nbsp;
+						&lt;<T.span className="mandatory" text="Name"/>&gt;&nbsp;
+						&lt;<T.span className="mandatory" text="Password"/>&gt;&nbsp;
+						[<T.span text="Context"/>]&nbsp;
+						[<T.span text="CID Number"/>]&nbsp;
+						[<T.span text="CID Name"/>]&nbsp;
+						[<T.span text="VM Password"/>]&nbsp;
 					</Col>
 				</FormGroup>
 			</Form>
@@ -547,16 +559,9 @@ class UsersPage extends React.Component {
 	handleFSEvent(v, e) {
 	}
 
-	handleUserAdded(user) {
-		var rows = this.state.rows;
-		rows.unshift(user);
-		this.setState({rows: rows, formShow: false});
-	}
-
-	handleUserAdded1(user) {
-		var rows = this.state.rows;
-		rows.unshift(user);
-		this.setState({rows: rows, formShow1: false});
+	handleUserAdded(users) {
+		var rows = users.concat(this.state.rows);
+		this.setState({rows: rows, formShow: false, formShow1: false});
 	}
 
 	render() {
@@ -620,7 +625,7 @@ class UsersPage extends React.Component {
 			</div>
 
 			<NewUser show={this.state.formShow} onHide={formClose} handleNewUserAdded={this.handleUserAdded.bind(this)}/>
-			<ImportUser show={this.state.formShow1} onHide={formClose1} handleNewUserAdded1={this.handleUserAdded1.bind(this)}/>
+			<ImportUser show={this.state.formShow1} onHide={formClose1} handleNewUserAdded={this.handleUserAdded.bind(this)}/>
 		</div>
 	}
 }
