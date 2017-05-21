@@ -112,6 +112,7 @@ LANGUAGES["zh"] = {
 	Speak: "发言",
 	Capacity: "容量",
 	PIN: "密码",
+	Moderator: "管理员",
 
 	"Conference Rooms": "会议室",
 	"Create New Room": "创建新会议室",

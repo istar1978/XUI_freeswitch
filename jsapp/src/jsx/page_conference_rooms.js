@@ -461,6 +461,11 @@ class ConferenceRoom extends React.Component {
 					<Col sm={10}><EditControl edit={this.state.edit} name="capacity" defaultValue={room.capacity}/></Col>
 				</FormGroup>
 
+				<FormGroup controlId="formModerator">
+					<Col componentClass={ControlLabel} sm={2}><T.span text="Moderator" /></Col>
+					<Col sm={10}><EditControl edit={this.state.edit} name="moderator" defaultValue={room.moderator}/></Col>
+				</FormGroup>
+
 				<FormGroup controlId="formRealm">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Realm" /></Col>
 					<Col sm={10}><EditControl edit={this.state.edit} name="realm" defaultValue={room.realm}/></Col>

@@ -33,6 +33,7 @@
 require 'sqlescape'
 local escape = sqlescape.EscapeFunction()
 
+print(params:serialize())
 local actions = ""
 local dest = params:getHeader("Hunt-Destination-Number")
 local context = params:getHeader("Hunt-Context")
@@ -109,7 +110,22 @@ xdb.find_by_sql(sql, function(row)
 		local block_prefix = config.block_path .. "/blocks-"
 		table.insert(actions_table, {app = "lua", data = block_prefix .. row.dest_uuid .. ".lua"})
 	elseif (row.dest_type == 'FS_DEST_CONFERENCE') then
-		table.insert(actions_table, {app = "conference", data = row.body .. "-$${domain}"})
+		local cidNumber = params:getHeader('Hunt-Caller-ID-Number')
+		local room = xdb.find("conference_rooms", row.dest_uuid)
+		local flags = ""
+
+		if cidNumber == room.moderator then
+			flags = "+flags{join-vid-floor|moderator}"
+		end
+
+		local profile_name = "default"
+
+		if room.profile_id then
+			profile = xdb.find("conference_profiles", room.profile_id)
+			profile_name = profile.name
+		end
+
+		table.insert(actions_table, {app = "conference", data = row.body .. "-$${domain}@" .. profile_name .. flags})
 	end
 end)
 

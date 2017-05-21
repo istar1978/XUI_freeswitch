@@ -69,6 +69,9 @@ post('/', function(params)
 	elseif params.request.dest_type == 'IVRBLOCK' then
 		block = xdb.find("blocks", params.request.dest_uuid)
 		params.request.body = block.name
+	elseif params.request.dest_type == 'FS_DEST_CONFERENCE' then
+		room = xdb.find("conference_rooms", params.request.dest_uuid)
+		params.request.body = room.nbr
 	end
 
 	route = xdb.create_return_object('routes', params.request)

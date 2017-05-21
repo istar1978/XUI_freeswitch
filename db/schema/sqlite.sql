@@ -263,6 +263,7 @@ CREATE TABLE conference_rooms (
 	realm VARCHAR,
 	pin VARCHAR,
 	profile_id INTEGER,
+	moderator VARCHAR,
 
 	created_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
 	updated_epoch INTEGER DEFAULT (DATETIME('now', 'localtime')),
