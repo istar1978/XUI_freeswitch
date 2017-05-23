@@ -51,14 +51,15 @@ class SystemPage extends React.Component {
 
 		return <div>
 			<h1><T.span text="System Settings"/></h1>
+
 			<hr/>
-			<SettingBaiduTTS/>
+			<SettingDevice/>
 
 			<hr/>
 			<SettingEventSocket/>
 
 			<hr/>
-			<SettingDevice/>
+			<SettingBaiduTTS/>
 
 			<hr/>
 			<h2><T.span text="Log"/></h2>

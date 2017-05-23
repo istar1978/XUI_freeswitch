@@ -325,14 +325,17 @@ class SettingDevice extends React.Component {
 					<Button onClick={_this.hanldeTestSpeed}><T.span text="Check Network Speed" /></Button>
 				</ButtonGroup>
 			</ButtonToolbar>
-			<h2><T.span text="Video Settings" /></h2>
-			{video_rows}
+			<h2><T.span text="General Settings"/></h2>
+			{general_rows}
+
 			<hr/>
 			<h2><T.span text="Audio Settings" /></h2>
 			{audio_rows}
+
 			<hr/>
-			<h2><T.span text="General Settings"/></h2>
-			{general_rows}
+			<h2><T.span text="Video Settings" /></h2>
+			{video_rows}
+
 		</div>;
 	}
 }
