@@ -615,7 +615,12 @@ class ConferencePage extends React.Component {
 
 			</ButtonToolbar>
 
-			<h1><T.span text={{ key: "Conference"}} /><small>{this.props.name}</small></h1>
+			<h1><T.span text={{ key: "Conference"}} /></h1>
+
+			<ButtonToolbar>
+				<T.span text="Conference Name"/>: {this.props.name} |&nbsp;
+				<T.span text="Total"/>: {this.state.rows.length}
+			</ButtonToolbar>
 
 			<div>
 				{member_list}

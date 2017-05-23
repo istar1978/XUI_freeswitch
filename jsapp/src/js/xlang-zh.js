@@ -102,6 +102,7 @@ LANGUAGES["zh"] = {
 	"Task SQL Manager": "SQL管理器",
 
 	Conference: "会议",
+	"Conference Name": "会议名称",
 	Mute: "静音",
 	unMute: "解除",
 	Hangup: "挂机",
@@ -113,6 +114,7 @@ LANGUAGES["zh"] = {
 	Capacity: "容量",
 	PIN: "密码",
 	Moderator: "管理员",
+	Total: "总数",
 
 	"Conference Rooms": "会议室",
 	"Create New Room": "创建新会议室",
