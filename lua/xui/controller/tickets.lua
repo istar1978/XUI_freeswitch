@@ -55,7 +55,7 @@ get('/', function(params)
 		n, tickets = xdb.find_all("tickets", "id desc")
 	else
 		local cond = "user_id = " .. xtra.session.user_id .. " or current_user_id = " .. xtra.session.user_id
-		n, tickets = xdb.find_by_cond("tickets", cond)
+		n, tickets = xdb.find_by_cond("tickets", cond, "id desc")
 	end
 
 	if (n > 0) then
