@@ -36,20 +36,20 @@ xtra.require_login()
 content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
+require 'm_user'
 
 get('/', function(params)
-	-- local check = xdb.checkPermission('7','users','get','/')
-	-- if check then
+	if m_user.has_permission() then
 		n, users = xdb.find_all("users")
+	else
+		n, users = xdb.find_by_cond("users", {id = xtra.session.user_id})
+	end
 
-		if (users) then
-			return users
-		else
-			return "[]"
-		end
-	-- else
-		-- return '{}'
-	-- end
+	if n > 0 then
+		return users
+	else
+		return "[]"
+	end
 end)
 
 get('/bind', function(params)
@@ -86,6 +86,10 @@ end)
 
 post('/', function(params)
 	print(serialize(params))
+
+	if not m_user.has_permission() then
+		return 403
+	end
 
 	if params.request.extn then
 		local user = params.request

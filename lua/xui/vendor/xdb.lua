@@ -274,17 +274,6 @@ function xdb.find_by_sql(sql, cb, limit, offset)
 	return found, rows
 end
 
-
--- 权限测试
-function xdb.checkPermission(user_id,action,method,param)
-	local sql = "select * from permissions where action = '" .. action .. "' and method = '" .. method .. "' and param = '" .. param .. "' and id in(select permission_id from group_permissions where group_id in(select group_id from user_groups where user_id = " .. user_id .. "))"
-	xdb.dbh:query(sql, function(row)
-		r = row
-	end)
-	return r
-end
-
-
 -- update a model
 function xdb.update(t, m)
 	local id = m.id

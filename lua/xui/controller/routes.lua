@@ -37,11 +37,17 @@ content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
 require 'm_route'
+require 'm_user'
 
 local block_prefix = config.block_path .. "/blocks-"
 
 get('/', function(params)
-	n, routes = xdb.find_all("routes")
+	if m_user.has_permission() then
+		n, routes = xdb.find_all("routes")
+	else
+		return "[]"
+	end
+
 	if (n > 0)	then
 		return routes
 	else

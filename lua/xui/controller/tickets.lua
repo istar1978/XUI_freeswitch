@@ -47,10 +47,17 @@ require 'm_dict'
 require 'xtra_config'
 require 'utils'
 require 'm_ticket'
+require 'm_user'
 xdb.bind(xtra.dbh)
 
 get('/', function(params)
-	n, tickets = xdb.find_all("tickets", "id desc")
+	if m_user.has_permission() then
+		n, tickets = xdb.find_all("tickets", "id desc")
+	else
+		local cond = "user_id = " .. xtra.session.user_id .. " or current_user_id = " .. xtra.session.user_id
+		n, tickets = xdb.find_by_cond("tickets", cond)
+	end
+
 	if (n > 0) then
 		return tickets
 	else

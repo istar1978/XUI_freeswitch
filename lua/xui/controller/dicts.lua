@@ -36,8 +36,13 @@ xtra.require_login()
 content_type("application/json")
 require 'xdb'
 xdb.bind(xtra.dbh)
+require 'm_user'
 
 get('/', function(params)
+
+	if not m_user.has_permission() then
+		return "[]"
+	end
 
 	realm = env:getHeader('realm')
 
