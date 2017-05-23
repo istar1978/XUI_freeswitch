@@ -30,6 +30,17 @@
  */
 ]]
 
+-- do_debug = true
+
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+
+if do_debug then
+	require 'utils'
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", params:serialize())
+end
+
 if not params then
 	XML_STRING = [[<domain name="]] .. '$${domain}' .. [[">]]
 
@@ -114,4 +125,8 @@ if (found) then
 			</variables>
 		</user>
 	</domain>]]
+end
+
+if do_debug then
+	utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", XML_STRING)
 end

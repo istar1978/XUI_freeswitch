@@ -30,8 +30,19 @@
  */
 ]]
 
+-- local do_debug = true
+
+function __FILE__() return debug.getinfo(2,'S').source end
+function __LINE__() return debug.getinfo(2, 'l').currentline end
+function __FUNC__() return debug.getinfo(1).name end
+
+
 xdb = {}
 require 'sqlescape'
+
+if do_debug then
+	require 'utils'
+end
 
 local escape = sqlescape.EscapeFunction()
 local escapek = function(k)
@@ -239,6 +250,10 @@ function xdb.find_by_sql(sql, cb, limit, offset)
 	if offset then sql = sql .. " OFFSET " .. offset end
 
 	if (cb) then
+		if do_debug then
+			utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", sql)
+		end
+
 		return xdb.dbh:query(sql, cb)
 	end
 
@@ -248,6 +263,10 @@ function xdb.find_by_sql(sql, cb, limit, offset)
 	local cb = function(row)
 		found = found + 1
 		table.insert(rows, row)
+	end
+
+	if do_debug then
+		utils.xlog(__FILE__() .. ':' .. __LINE__(), "INFO", sql)
 	end
 
 	xdb.dbh:query(sql, cb)

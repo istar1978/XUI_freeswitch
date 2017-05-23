@@ -88,7 +88,11 @@ post('/', function(params)
 	print(serialize(params))
 
 	if params.request.extn then
-		ret = xdb.create_return_id('users', params.request)
+		local user = params.request
+
+		if (user.disabled == nil) then user.disabled = 0 end
+
+		ret = xdb.create_return_id('users', user)
 
 		if ret then
 			return {id = ret}
@@ -99,6 +103,7 @@ post('/', function(params)
 		users = params.request
 		user = table.remove(users, 1)
 		if user then
+			if (user.disabled == nil) then user.disabled = 0 end
 			ret = xdb.create_return_id('users', user)
 		end
 

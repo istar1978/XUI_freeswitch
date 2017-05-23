@@ -308,4 +308,35 @@ end
 utils.utf8len = utf8len
 utils.utf8sub = utf8sub
 
+
+function serialize(o)
+	s = ""
+
+	if type(o) == "number" then
+		s = s .. o
+	elseif type(o) == "string" then
+		s = s .. string.format("%q", o)
+	elseif type(o) == "table" then
+		s = s .. "{\n"
+		for k, v in pairs(o) do
+			s = s .. '  ' .. k .. ' = '
+			s = s .. serialize(v)
+			s = s .. ",\n"
+		end
+		s = s .. "}"
+	elseif type(o) == "boolean" then
+		if o then
+			s = s .. "true"
+		else
+			s = s .. "false"
+		end
+	else
+		s = s .. " [" .. type(o) .. "]"
+	end
+
+	return s
+end
+
+utils.serialize = serialize
+
 return utils
