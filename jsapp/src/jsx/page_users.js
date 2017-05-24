@@ -603,10 +603,10 @@ class UsersPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<ButtonGroup>
-				<Button>
-					<img src="/assets/img/wechat.png" style={{width: "24px"}}/>&nbsp;
-					<Link to={`/settings/wechat_users`} ><T.span text="Wechat User"/></Link>
-				</Button>
+					<Link to={`/settings/wechat_users`} className="btn btn-default">
+						<img src="/assets/img/wechat.png" style={{width: "20px"}}/>&nbsp;
+						<T.span text="Wechat User"/>
+					</Link>
 				</ButtonGroup>
 
 				<ButtonGroup>
