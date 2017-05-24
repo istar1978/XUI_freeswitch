@@ -67,7 +67,13 @@ end)
 
 get('/:id', function(params)
 	local ticket = {}
-	ticket = xdb.find("tickets", params.id)
+	local pid = params.id
+	n, tickets = xdb.find_by_sql([[SELECT u.*, w.v as dtype
+	FROM tickets as u left join dicts as w
+	ON u.type = w.k
+	WHERE u.id = 
+	]] .. pid)
+	ticket = tickets[1]
 	if ticket then
 		n, user_name = xdb.find_by_cond("users", {id = ticket.user_id})
 		ticket.user_name = user_name[1].name
