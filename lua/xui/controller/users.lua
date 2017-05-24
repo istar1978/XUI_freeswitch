@@ -138,3 +138,13 @@ delete('/:id', function(params)
 		return 500, "{}"
 	end
 end)
+
+put('/:id/unbind', function(params)
+	print(serialize(params))
+	ret = xdb.delete("wechat_users", {user_id = params.id})
+	if ret then
+		return 200, "{}"
+	else
+		return 500
+	end
+end)
