@@ -60,7 +60,10 @@ end)
 
 get('/:realm/all', function(params)
 	local user_id = xtra.session.user_id
-	n, tickets = xdb.find_all('tickets', "id desc")
+	n, tickets = xdb.find_by_sql([[SELECT u.*, w.v as dtype
+	FROM tickets as u left join dicts as w
+	ON u.type = w.k
+	ORDER BY id DESC]])
 	return tickets
 end)
 

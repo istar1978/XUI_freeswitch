@@ -166,7 +166,7 @@ class Home extends React.Component {
 			<div className="weui-form-preview__bd">
 				<div className="weui-form-preview__item">
 					<span style={{color:"black"}} className="weui-form-preview__label">类型</span>
-					<span className="weui-form-preview__value"><T.span text={ticket.type}/></span>
+					<span className="weui-form-preview__value"><T.span text={ticket.dtype}/></span>
 				</div>
 			</div>
 			<div className="weui-form-preview__ft">
@@ -331,9 +331,17 @@ class Comment extends React.Component {
 class Newticket extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {input: {}}
+		this.state = {input: {}, ticket_type: []}
 	}
 	componentDidMount() {
+		xFetchJSON("/api/dicts/", {
+			method:"GET",
+			headers: {"realm":"TICKET_TYPE"}
+		}).then((data) => {
+			this.setState({ticket_type: data})
+		}).catch((msg) => {
+			console.error("dicts", msg);
+		});
 		this.setState({users: null})
 	}
 	handleCidNumber(e) {
@@ -368,6 +376,9 @@ class Newticket extends React.Component {
 		});
 	}
 	render() {
+		 const ticket_type = this.state.ticket_type.map((type) => {
+			 return <option value={type.k}>{type.v}</option>
+		 })
 		return <div>
 				<div className="weui-cells weui-cells_form">
 					<div className="weui-cells__title">
@@ -395,11 +406,7 @@ class Newticket extends React.Component {
 					<div className="weui-cell weui-cell_select">
 						<div className="weui-cell__bd">
 							<select className="weui-select" name="select1" onChange={this.handleType.bind(this)}>
-								<option value="热线投诉">热线投诉</option>
-								<option value="网站留言投诉">网站留言投诉</option>
-								<option value="热线转办单">热线转办单</option>
-								<option value="来人来访事件">来人来访事件</option>
-								<option value="媒体曝光事件">媒体曝光事件</option>
+								{ticket_type}
 							</select>
 						</div>
 					</div>
@@ -451,7 +458,7 @@ class Tickets extends React.Component {
 							<span className="weui-form-preview__value" style={{color:"black"}}>来电:{ticket.cid_number}</span>
 						</div>
 						<div className="weui-form-preview__item">
-							<label className="weui-form-preview__label">类型:{ticket.type}</label>
+							<label className="weui-form-preview__label">类型:{ticket.dtype}</label>
 							<span className="weui-form-preview__value"></span>
 						</div>
 						<div className="weui-form-preview__item">

@@ -64,18 +64,6 @@ get('/:id', function(params)
 	end
 end)
 
-get('/:id/assign', function(params)
-	wechat_user = xdb.find_one("wechat_users", {user_id = params.id})
-	if wechat_user then
-		wechat_user.users = xdb.find_one("users", {id = wechat_user.user_id})
-		wechat_user.extn = wechat_user.users.extn
-		wechat_user.name = wechat_user.users.name
-		return wechat_user
-	else
-		return 404
-	end
-end)
-
 delete('/:id', function(params)
 	ret = xdb.delete("wechat_users", params.id);
 
