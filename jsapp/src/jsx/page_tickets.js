@@ -201,8 +201,8 @@ class TicketPage extends React.Component {
 		var _this = this;
 		var ticket = form2json('#ticketAppointForm');
 
-		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/appoint", {
-			method: "POST",
+		xFetchJSON("/api/tickets/" + this.state.ticket.id + "/assign/" + ticket.current_user_id, {
+			method: "PUT",
 			body: JSON.stringify(ticket)
 		}).then(() => {
 			console.log('appoint successfully')
@@ -401,11 +401,6 @@ class TicketPage extends React.Component {
 					<Col sm={10}><FormControl.Static><T.span text={ticket.user_id}/></FormControl.Static></Col>
 				</FormGroup>
 
-				<FormGroup controlId="formUser1">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="执行人"/></Col>
-					<Col sm={10}><FormControl.Static><T.span text={ticket.current_user_id}/></FormControl.Static></Col>
-				</FormGroup>
-
 				<FormGroup controlId="formCaller_id_name">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Record"/></Col>
 					<Col sm={10}>{Audio}</Col>
@@ -422,7 +417,7 @@ class TicketPage extends React.Component {
 				</FormGroup>
 			</Form>
 			<br/>
-			<Form horizontal id="ticketProcessingForm">				
+			<Form horizontal id="ticketAppointForm">				
 				{options}
 				{this.state.hidden_user}
 				<FormGroup>
@@ -430,7 +425,7 @@ class TicketPage extends React.Component {
 					<Col sm={10}>{save_btn}</Col>
 				</FormGroup>
 			</Form>
-			<Form horizontal id="ticketAppointForm">
+			<Form horizontal id="ticketProcessingForm">
 				<FormGroup>
 					<Col componentClass={ControlLabel} sm={2}><T.span text="内容"/></Col>
 					<Col sm={8}>
