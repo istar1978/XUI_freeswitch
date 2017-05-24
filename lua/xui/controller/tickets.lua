@@ -68,16 +68,23 @@ end)
 get('/:id', function(params)
 	local ticket = {}
 	ticket = xdb.find("tickets", params.id)
-
 	if ticket then
+		n, user_name = xdb.find_by_cond("users", {id = ticket.user_id})
+		ticket.user_name = user_name[1].name
+		freeswitch.consoleLog("ERR",current_user_id)
+		if (ticket.current_user_id == '') then
+			cname = "待定"
+		else
+			n, current_user_name = xdb.find_by_cond("users", {id = ticket.current_user_id})
+			cname = current_user_name[1].name
+		end
+		ticket.current_user_name = cname
 		user = xdb.find_one("users", {id = ticket.user_id})
 
 		if user then
 			ticket.user_name = user.name
 		end
-
 		current_user = xdb.find_one("users", {id = ticket.current_user_id})
-
 		if current_user then
 			ticket.current_user_name = current_user.name
 		end
@@ -156,12 +163,18 @@ end)
 
 put('/:id/assign/:dest_id',function(params)
 	local pid = params.id
-	ret = xdb.update_by_cond("tickets", { id = pid }, { current_user_id = params.dest_id })
+	local dest_id = params.dest_id
+	ret = xdb.update_by_cond("tickets", { id = pid }, { current_user_id = dest_id })
 	if ret == 1 then
-		ticket = {id = pid, current_user_id = params.dest_id}
-		dest_user = xdb.find("users", params.dest_id)
+		ticket = xdb.find_one("tickets", { id = pid })
+		dest_user = xdb.find("users", dest_id)
 		if dest_user then
 			ticket.current_user_name = dest_user.name
+			realm = config.wechat_realm
+			redirect_uri = config.wechat_base_url .. "/api/wechat/" .. realm .. "/tickets/" .. pid
+			freeswitch.consoleLog("ERR",serialize(ticket))
+			result = m_ticket.send_wechat_notification(realm, dest_id, redirect_uri, ticket.subject, ticket.current_user_name, ticket.content)
+			print(result)
 		end
 		return ticket
 	else
