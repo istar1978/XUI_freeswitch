@@ -41,12 +41,10 @@ get('/', function(params)
 		n, wechatusers = xdb.find_all("wechat_users")
 		local wechat_users = {}
 
-		for i, v in pairs(wechatusers) do
-			user = xdb.find("users",v['user_id'])
-			v['extn'] = user['extn']
-			v['name'] = user['name']
-			table.insert(wechat_users,v)
-		end
+		n, wechat_users = xdb.find_by_sql([[SELECT w.*, u.extn, u.name
+			FROM wechat_users w, users u
+			WHERE w.user_id = u.id
+			ORDER BY id]])
 
 		if (wechat_users) then
 			return wechat_users
@@ -56,7 +54,7 @@ get('/', function(params)
 end)
 
 get('/:id', function(params)
-	wechat_user = xdb.find_one("wechat_users", {user_id = params.id})
+	wechat_user = xdb.find("wechat_users", params.id)
 	if wechat_user then
 		return wechat_user
 	else

@@ -177,7 +177,7 @@ class Home extends React.Component{
 						<IndexRoute components={{sidebar: Settings, main: UsersPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: UserPage}}/>
 					</Route>
-					<Route path="wechatusers">
+					<Route path="wechat_users">
 						<IndexRoute components={{sidebar: Settings, main: WechatUsersPage}}/>
 						<Route path=":id" components={{sidebar: Settings, main: WechatUserPage}}/>
 					</Route>

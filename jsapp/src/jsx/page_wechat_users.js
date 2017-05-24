@@ -74,7 +74,7 @@ class WechatUserPage extends React.Component {
 			</ButtonGroup>
 			</ButtonToolbar>
 
-			<h1><T.span text="WechatUser"/> <small>{wechatuser.nickname}</small></h1>
+			<h1><T.span text="Wechat User"/> <small>{wechatuser.nickname}</small></h1>
 			<hr/>
 
 			<Form horizontal id="newWechatUserForm">
@@ -102,11 +102,6 @@ class WechatUserPage extends React.Component {
 				<FormGroup controlId="formExtn">
 					<Col componentClass={ControlLabel} sm={2}><T.span text="Sex"/></Col>
 					<Col sm={10}><FormControl.Static><T.span text={sex}/></FormControl.Static></Col>
-				</FormGroup>
-
-				<FormGroup controlId="formExtn">
-					<Col componentClass={ControlLabel} sm={2}><T.span text="OpenID"/></Col>
-					<Col sm={10}><FormControl.Static><T.span text={wechatuser.openid}/></FormControl.Static></Col>
 				</FormGroup>
 
 				<FormGroup controlId="formExtn">
@@ -183,15 +178,16 @@ class WechatUsersPage extends React.Component {
 		var rows = this.state.rows.map(function(row) {
 			let sex;
 			if (row.sex == 1) {
-				sex = '男';
+				sex = T.translate("Male");
 			} else if (row.sex == 2) {
-				sex = '女';
+				sex = T.translate("Female");
 			} else {
-				sex = '未知';
+				sex = T.translate("Unknown");
 			};
+
 			return <tr key={row.id}>
 					<td>{row.id}</td>
-					<td><Link to={`/settings/wechatusers/${row.id}`}>{row.nickname}</Link></td>
+					<td><Link to={`/settings/wechat_users/${row.id}`}>{row.nickname}</Link></td>
 					<td>{row.city}</td>
 					<td>{sex}</td>
 					<td><T.a style={hand} onClick={_this.handleDelete} data-id={row.id} text="Delete" className={danger}/></td>
@@ -199,7 +195,7 @@ class WechatUsersPage extends React.Component {
 		})
 
 		return <div>
-			<h1><T.span text="WechatUsers"/></h1>
+			<h1><T.span text="Wechat Users"/></h1>
 			<div>
 				<table className="table">
 				<tbody>

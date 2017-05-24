@@ -603,6 +603,13 @@ class UsersPage extends React.Component {
 		return <div>
 			<ButtonToolbar className="pull-right">
 				<ButtonGroup>
+				<Button>
+					<img src="/assets/img/wechat.png" style={{width: "24px"}}/>&nbsp;
+					<Link to={`/settings/wechat_users`} ><T.span text="Wechat User"/></Link>
+				</Button>
+				</ButtonGroup>
+
+				<ButtonGroup>
 				<Button onClick={this.handleControlClick} data="new">
 					<i className="fa fa-plus" aria-hidden="true" onClick={this.handleControlClick} data="new"></i>&nbsp;
 					<T.span onClick={this.handleControlClick} data="new" text="New" />

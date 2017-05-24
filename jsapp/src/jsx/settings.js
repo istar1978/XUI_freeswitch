@@ -47,12 +47,6 @@ class Settings extends React.Component {
 					<T.span text="Users"/>
 				</NavItem>
 			</LinkContainer>
-			<LinkContainer to="/settings/wechatusers" key="M_WECHATUSERS">
-				<NavItem eventKey="M_WECHATUSER">
-					<i className="fa fa-user" aria-hidden="true"></i>&nbsp;
-					<T.span text="WechatUsers"/>
-				</NavItem>
-			</LinkContainer>
 			<LinkContainer to="/settings/groups" key="M_GROUPS">
 				<NavItem eventKey="M_GROUP">
 					<i className="fa fa-group" aria-hidden="true"></i>&nbsp;
